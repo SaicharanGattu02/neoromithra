@@ -96,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  void _navigateToDetails(BuildContext context, String text) {
+  void _navigateToDetails(BuildContext context,String text) {
     Widget detailsScreen;
 
     switch (text) {
