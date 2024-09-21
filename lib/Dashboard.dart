@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:neuromithra/HomeScreen.dart';
+import 'package:neuromithra/profile_screen.dart';
 
 import 'CounsellingListScreen.dart';
 import 'TherapiesListScreen.dart';
@@ -51,6 +52,7 @@ class _DashboardState extends State<Dashboard> {
             HomeScreen(),
             TherapiesListScreen(),
             CounsellingListScreen(),
+            ProfileScreen()
           ],
           physics: const NeverScrollableScrollPhysics(),
         ),
@@ -138,6 +140,26 @@ class _DashboardState extends State<Dashboard> {
                       height: 25,
                     ),
                     Text("Counselling"),
+                  ],
+                ),
+                label: 'Counselling',
+              ),
+              BottomNavigationBarItem(
+                icon: Column(
+                  children: [
+                    _selectedIndex == 3
+                        ? Image.asset(
+                      'assets/profile-filled.png',
+                      width: 25,
+                      height: 25,
+                      color:Colors.black,
+                    )
+                        : Image.asset(
+                      'assets/profunfiled.png',
+                      width: 25,
+                      height: 25,
+                    ),
+                    Text("Profile"),
                   ],
                 ),
                 label: 'Counselling',
