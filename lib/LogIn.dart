@@ -56,6 +56,7 @@ class _LogInState extends State<LogIn> {
           backgroundColor:  Color(0xFF32657B),
         ));
         PreferenceService().saveString("user_id",loginResponse.userDetails?.id.toString()??"");
+        print("Usr id:${loginResponse.userDetails?.id}");
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Dashboard()),

@@ -4,11 +4,12 @@ import 'package:http/http.dart' as http;
 
 import '../Model/BookApointmentModel.dart';
 import '../Model/LoginModel.dart';
+import '../Model/ProfileDetailsModel.dart';
 import '../Model/RegisterModel.dart';
 
 
 class Userapi {
-
+  static String host="https://admin.neuromitra.com";
   static Future<BookApointmentModel?> Apointment(
       String fname,
       String pnum,
@@ -34,9 +35,7 @@ class Userapi {
       });
       print("Apointment data: $body");
 
-      final url = Uri.parse("https://admin.neuromitra.com/api/bookappointments?page_source=${page_source}&time_of_appointment=${time_of_appointment}");
-      print("${url}");
-      print("${page_source}");
+      final url = Uri.parse("${host}/api/bookappointments?page_source=${page_source}&time_of_appointment=${time_of_appointment}");
       final headers = {
         'Content-Type': 'application/json'
       };
@@ -45,16 +44,10 @@ class Userapi {
         headers: headers,
         body: body,
       );
-      // if (response.statusCode == 200) {
-         final jsonResponse = jsonDecode(response.body);
-        // print("Response JSON: ${jsonResponse}");
-        print("Apointment Status:${response.body}");
 
+         final jsonResponse = jsonDecode(response.body);
+        print("Apointment Status:${response.body}");
         return BookApointmentModel.fromJson(jsonResponse);
-      // } else {
-      //   print("Request failed with status: ${response.statusCode}");
-      //   return null;
-      // }
     } catch (e) {
       print("Error occurred: $e");
       return null;
@@ -71,7 +64,7 @@ class Userapi {
         "phone": phone,
         "fcm_token": fcm_token
       };
-      final url = Uri.parse("https://admin.neuromitra.com/api/user-signup");
+      final url = Uri.parse("${host}/api/user-signup");
       final response = await http.post(
         url,
         headers: {
@@ -102,7 +95,7 @@ class Userapi {
         "password": password,
       };
       print("PostLogin: $data");
-      final url = Uri.parse("https://admin.neuromitra.com/api/user-signin");
+      final url = Uri.parse("${host}/api/user-signin");
       print("PostLogin : $url");
       final response = await http.post(
         url,
@@ -115,6 +108,30 @@ class Userapi {
         final jsonResponse = jsonDecode(response.body);
         print("PostLogin Status:${response.body}");
         return LoginModel.fromJson(jsonResponse);
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print("Error occurred: $e");
+      return null;
+    }
+  }
+
+
+  static Future<ProfileDetailsModel?> getprofiledetails(String user_id) async {
+    try {
+      final url = Uri.parse("${host}/api/get_user_details/${user_id}");
+      final response = await http.get(
+        url,
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        },
+      );
+      if (response!=null) {
+        final jsonResponse = jsonDecode(response.body);
+        print("getprofiledetails Status:${response.body}");
+        return ProfileDetailsModel.fromJson(jsonResponse);
       } else {
         print("Request failed with status: ${response.statusCode}");
         return null;

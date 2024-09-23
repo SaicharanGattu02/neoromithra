@@ -51,6 +51,7 @@ dependencies:
   firebase_analytics: ^11.2.0
   fluttertoast: ^8.1.2
   image_picker: ^0.8.7+4
+  dotted_border: ^2.1.0
 
 
 
