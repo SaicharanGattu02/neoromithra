@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:neuromithra/Aboutus%20_Screen.dart';
 import 'package:neuromithra/Booking%20History%20screen.dart';
 import 'package:neuromithra/Settings_Screen.dart';
+
+import 'Aboutus.dart';
+import 'CancellationPolicyScreen.dart';
+import 'PrivacyPolicyScreen.dart';
+import 'ShippingPolicyScreen.dart';
+import 'WebViewScreen.dart';
 
 
 class ProfileScreen extends StatefulWidget {
@@ -51,7 +56,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
               title: Text('About Us'),
               onTap: () {
                 // Navigate to About Us screen
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AboutUs()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AboutUsScreen()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.info),
+              title: Text('Privacy & Policy'),
+              onTap: () {
+                // Navigate to About Us screen
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PrivacyPolicyScreen()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.info),
+              title: Text('Shipping & Policy'),
+              onTap: () {
+                // Navigate to About Us screen
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ShippingPolicyScreen()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.info),
+              title: Text('Cancellation & Policy'),
+              onTap: () {
+                // Navigate to About Us screen
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CancellationPolicyScreen()));
               },
             ),
           ],

@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +27,7 @@ class _RegisterState extends State<Register> {
 
   bool _loading = false;
   bool _isPasswordVisible = false;
+  String fcm_token="";
   // String token="";
 
   @override
@@ -43,9 +47,20 @@ class _RegisterState extends State<Register> {
     setState(() {
       _loading = true;
     });
+    if (Platform.isAndroid) {
+      FirebaseMessaging.instance.getToken().then((value) {
+      fcm_token = value??"";
+        print("Androidfbstoken:{$fcm_token}");
+      });
+    } else {
+      FirebaseMessaging.instance.getToken().then((value) {
+        fcm_token = value??"";
+        print("IOSfbstoken:{$fcm_token}");
+      });
+    }
 
     final registerResponse = await Userapi.PostRegister(
-        name, email, pwd, _mobilenumberController.text);
+        name, email, pwd, _mobilenumberController.text,fcm_token);
     if (registerResponse != null) {
       setState(() {
         if (registerResponse.status == true) {

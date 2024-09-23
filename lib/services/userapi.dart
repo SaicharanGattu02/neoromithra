@@ -62,13 +62,14 @@ class Userapi {
   }
 
 
-  static Future<RegisterModel?> PostRegister(String name,String mail, String password,String phone) async {
+  static Future<RegisterModel?> PostRegister(String name,String mail, String password,String phone,String fcm_token) async {
     try {
       Map<String, String> data = {
         "name":name,
         "email": mail,
         "password": password,
         "phone": phone,
+        "fcm_token": fcm_token
       };
       final url = Uri.parse("https://admin.neuromitra.com/api/user-signup");
       final response = await http.post(
