@@ -1,10 +1,16 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'FirstLetterCaps.dart'; // For image picking
+import 'dart:async';
+import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
+import 'package:mime/mime.dart';
+import 'package:http_parser/http_parser.dart';
+
 class EditProfileScreen extends StatefulWidget {
   final String? userName;
   final String? userEmail;
@@ -18,43 +24,158 @@ class EditProfileScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<EditProfileScreen> createState() => _EditProfileScreen();
+  State<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
-class _EditProfileScreen extends State<EditProfileScreen> {
+class _EditProfileScreenState extends State<EditProfileScreen> {
   File? _image;
   final picker = ImagePicker();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
 
   String profile_image = "";
   bool is_loading = false;
+  bool image_uploading = false;
+
+  final String userId = "20"; // Static User ID
 
   @override
   void initState() {
     super.initState();
-    // Initialize the controllers with the passed data (if available)
     _nameController.text = widget.userName ?? "";
     _emailController.text = widget.userEmail ?? "";
     profile_image = widget.profileImageUrl ?? "";
   }
 
-  // Method to pick an image from gallery
+  // Method to pick an image from gallery and upload it
   Future<void> _pickImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
+        _uploadImage(_image!); // Trigger image upload
       } else {
         print('No image selected.');
       }
     });
   }
 
+  // Method to upload image to the server
+  Future<void> _uploadImage(File image) async {
+    setState(() {
+      image_uploading = true;
+    });
+
+    // API endpoint
+    final String url = 'https://admin.neuromitra.com/api/update_profile_image/20';
+
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(url));
+      request.headers['Authorization'] = 'Bearer token_here'; // Add token if required
+
+      // Attach image file
+      var mimeType = lookupMimeType(image.path);
+      var multipartFile = await http.MultipartFile.fromPath(
+        'user_profile', // Parameter name expected by the API
+        image.path,
+        contentType: mimeType != null ? MediaType.parse(mimeType) : null,
+      );
+      request.files.add(multipartFile);
+
+      // Send request
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        setState(() {
+          profile_image = image.path; // Use file path as mock for uploaded image URL
+        });
+        ScaffoldMessenger.of(context as BuildContext).showSnackBar(
+          SnackBar(content: Text('Image uploaded successfully!')),
+        );
+      } else {
+        print('Image upload failed with status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
+    }
+
+    setState(() {
+      image_uploading = false;
+    });
+  }
+
+  // Method to update user details
+  Future<void> _updateProfileDetails() async {
+    // Validate input fields
+    if (_nameController.text.isEmpty) {
+      ScaffoldMessenger.of(context as BuildContext).showSnackBar(
+        SnackBar(content: Text('Please enter your name')),
+      );
+      return;
+    }
+
+    if (_emailController.text.isEmpty) {
+      ScaffoldMessenger.of(context as BuildContext).showSnackBar(
+        SnackBar(content: Text('Please enter your email')),
+      );
+      return;
+    }
+
+    if (_phoneController.text.isEmpty) {
+      ScaffoldMessenger.of(context as BuildContext).showSnackBar(
+        SnackBar(content: Text('Please enter your phone number')),
+      );
+      return;
+    }
+
+    setState(() {
+      is_loading = true;
+    });
+
+    final String url = 'https://admin.neuromitra.com/api/update_user_details/20';
+
+    try {
+      var response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer token_here', // Add token if required
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'name': _nameController.text,
+          'email': _emailController.text,
+          'phone': _phoneController.text,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context as BuildContext).showSnackBar(
+          SnackBar(content: Text('Profile details updated successfully!')),
+        );
+      } else {
+        ScaffoldMessenger.of(context as BuildContext).showSnackBar(
+          SnackBar(
+            content: Text('Failed to update details: ${response.statusCode}'),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context as BuildContext).showSnackBar(
+        SnackBar(
+          content: Text('Error updating profile: $e'),
+        ),
+      );
+    }
+
+    setState(() {
+      is_loading = false;
+    });
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
-    // double screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile Details'),
@@ -79,7 +200,8 @@ class _EditProfileScreen extends State<EditProfileScreen> {
                     _nameController.text.isNotEmpty
                         ? _nameController.text[0].toUpperCase()
                         : "",
-                    style: const TextStyle(fontSize: 50, color: Color(0xffFFF6E9)),
+                    style: const TextStyle(
+                        fontSize: 50, color: Color(0xffFFF6E9)),
                   )
                       : null,
                 ),
@@ -91,7 +213,13 @@ class _EditProfileScreen extends State<EditProfileScreen> {
                     child: CircleAvatar(
                       radius: 18,
                       backgroundColor: Colors.grey,
-                      child: const Icon(
+                      child: image_uploading
+                          ? CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor:
+                        AlwaysStoppedAnimation<Color>(Colors.white),
+                      )
+                          : const Icon(
                         Icons.edit,
                         color: Colors.white,
                       ),
@@ -118,26 +246,26 @@ class _EditProfileScreen extends State<EditProfileScreen> {
               TextInputType.emailAddress,
               "",
               FocusNode(),
-              r'[a-zA-Z0-9@._-]',
+              r'[a-zA-Z0-9@._-]+',
               0,
               [],
             ),
-
+            const SizedBox(height: 20),
             _buildTextField(
               "Phone number",
-              _emailController,
-              TextInputType.emailAddress,
+              _phoneController,
+              TextInputType.phone,
               "",
               FocusNode(),
-              r'[a-zA-Z0-9@._-]',
-              0,
+              r'^\d+$', // Validation for numbers only
+              10, // Max length 10 for phone number
               [],
             ),
             const SizedBox(height: 50),
             GestureDetector(
               onTap: () {
-                if (!is_loading) {
-
+                if (!is_loading && !image_uploading) {
+                  _updateProfileDetails(); // Update profile details
                 }
               },
               child: Container(
@@ -151,7 +279,8 @@ class _EditProfileScreen extends State<EditProfileScreen> {
                   child: is_loading
                       ? CircularProgressIndicator(
                     strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    valueColor:
+                    AlwaysStoppedAnimation<Color>(Colors.white),
                   )
                       : const Text(
                     "Save",
@@ -169,6 +298,7 @@ class _EditProfileScreen extends State<EditProfileScreen> {
       ),
     );
   }
+
   Widget _buildTextField(
       String labelText,
       TextEditingController controller,
@@ -200,7 +330,5 @@ class _EditProfileScreen extends State<EditProfileScreen> {
       },
     );
   }
-
-
-// Other methods like _validateFields(), _buildTextField() remain the same
 }
+
