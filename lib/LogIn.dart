@@ -26,8 +26,6 @@ class _LogInState extends State<LogIn> {
 
   @override
   void dispose() {
-    // _emailController.dispose();
-    // _passwordController.dispose();
     _focusNodeEmail.dispose();
     _focusNodePassword.dispose();
     super.dispose();
@@ -37,7 +35,6 @@ class _LogInState extends State<LogIn> {
   Future<void> logIn() async {
     String email = _emailController.text;
     String pwd = _passwordController.text;
-
     setState(() {
       _loading = true;
     });
@@ -72,10 +69,6 @@ class _LogInState extends State<LogIn> {
           duration: Duration(seconds: 1),
           backgroundColor:  Color(0xFF32657B),
         ));
-
-
-
-
       }
     } else {
       print("Login failed.");

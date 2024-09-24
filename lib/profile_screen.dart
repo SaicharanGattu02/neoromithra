@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:neuromithra/Aboutus.dart';
-import 'package:neuromithra/Booking%20History%20screen.dart';
 import 'package:neuromithra/PrivacyPolicyScreen.dart';
-import 'package:neuromithra/Settings_Screen.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'AddRating.dart';
 import 'Editprofile _screen.dart';
+import 'LastBooking.dart';
 import 'Model/ProfileDetailsModel.dart'; // Import the Edit Profile Screen
 
 class ProfileScreen extends StatefulWidget {
@@ -91,7 +90,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               onTap: () {
                 // Navigate to Booking History screen
                 Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => BookingHistory()));
+                    context, MaterialPageRoute(builder: (context) => LastBooking()));
               },
             ),
             // About Us Option
@@ -115,8 +114,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               leading: Icon(Icons.login_rounded),
               title: Text('Log out'),
               onTap: () {
-                // Navigate to About Us screen
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductRating()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductRating(app_id: "",page_source: "",)));
               },
             ),
           ],

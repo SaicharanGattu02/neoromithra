@@ -143,4 +143,62 @@ class Userapi {
   }
 
 
+  static Future<ProfileDetailsModel?>SubmitReview(String user_id) async {
+    try {
+      Map<String, dynamic> data = {
+        "app_id":"11",
+        "rating":3,
+        "details":"text",
+        "page_source":"Speech terapy"
+      };
+      final url = Uri.parse("${host}/api/create_review");
+      final response = await http.post(
+        url,
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        },
+        body: jsonEncode(data)
+      );
+      if (response!=null) {
+        final jsonResponse = jsonDecode(response.body);
+        print("SubmitReview Status:${response.body}");
+        return ProfileDetailsModel.fromJson(jsonResponse);
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print("Error occurred: $e");
+      return null;
+    }
+  }
+
+  static Future<ProfileDetailsModel?> getbookinghistory(String user_id) async {
+    try {
+      final url = Uri.parse("${host}/api/get_user_booking_hisrory/${user_id}");
+      final response = await http.get(
+        url,
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        },
+      );
+      if (response!=null) {
+        final jsonResponse = jsonDecode(response.body);
+        print("getbookinghistory Status:${response.body}");
+        return ProfileDetailsModel.fromJson(jsonResponse);
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print("Error occurred: $e");
+      return null;
+    }
+  }
+
+
+
+
+
+
 }

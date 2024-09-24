@@ -1,16 +1,12 @@
 import 'dart:io';
-
-import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
+
 
 class AddProductRating extends StatefulWidget {
-  const AddProductRating({super.key,});
-
+  final app_id;
+  final page_source;
+  const AddProductRating({super.key, required this.app_id,required this.page_source});
   @override
   State<AddProductRating> createState() => _AddProductRatingState();
 }
@@ -46,14 +42,10 @@ class _AddProductRatingState extends State<AddProductRating> {
   }
 
   void updateStarStates(int rating, List<bool> starStates) {
-    // Reset all stars to false
     starStates.fillRange(0, starStates.length, false);
-
-    // Set stars according to rating
     for (int i = 0; i < rating; i++) {
       starStates[i] = true;
     }
-    // print(starStates);
   }
 
 
@@ -99,6 +91,14 @@ class _AddProductRatingState extends State<AddProductRating> {
                     Container(
                       margin: const EdgeInsets.only(bottom: 10.0),
                       decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              spreadRadius: 5,
+                              blurRadius: 10,
+                              offset: Offset(1, 1)
+                          )
+                        ],
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(15.0),
                       ),
@@ -163,99 +163,20 @@ class _AddProductRatingState extends State<AddProductRating> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(15.0),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              spreadRadius: 5,
+                              blurRadius: 10,
+                              offset: Offset(1, 1)
+                          )
+                        ],
                       ),
                       padding: EdgeInsets.all(15),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            child: TextField(
-                              focusNode: _focusNode,
-                              onTapOutside: (event) {
-                                _focusNode.unfocus();
-                                setState(() {
-                                  isFocused = false;
-                                });
-                              },
-                              onTap: () {
-                                setState(() {
-                                  isFocused = true;
-                                });
-                              },
-                              keyboardType: TextInputType.text,
-                              cursorWidth: 1,
-                              cursorColor: Colors.black,
-                              style: TextStyle(
-                                  fontFamily: "Inter",
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize:  18
-                                      ),
-                              enableSuggestions: false,
-                              controller: _headlineController,
-                              textInputAction: TextInputAction.next,
-                              decoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color:
-                                        _headlineController.text.length > 0
-                                            ? Colors.black
-                                            : Color(0xffE8ECFF),
-                                        width: 1.0),
-                                    borderRadius: BorderRadius.circular(35)),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.black,
-                                        width: 1,
-                                        style: BorderStyle.solid),
-                                    borderRadius: BorderRadius.circular(35)),
-                                contentPadding: EdgeInsets.only(left: 25),
-                                disabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide.none),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(35),
-                                ),
-                                label: Container(
-                                    width: (isFocused) ? 100 : 40,
-                                    height: 23,
-                                    decoration: BoxDecoration(
-                                      color: (isFocused)
-                                          ? Color(0xffF4F5FA)
-                                          : Colors.transparent,
-                                      borderRadius: BorderRadius.circular(16.0),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        "Title",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          color: (isFocused)
-                                              ? Colors.black
-                                              : Color(0xffB9BEDA),
-                                          fontFamily: "Inter",
-                                          fontSize: 13, // Background color of the label text
-                                        ),
-                                      ),
-                                    )),
-                              ),
-                            ),
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text("Optional",
-                                  style: TextStyle(
-                                      fontFamily: "Inter",
-                                      color: Color(0xffCED2E8),
-                                      fontWeight: FontWeight.w500,
-                                      fontSize:10)),
-                              SizedBox(
-                                width: 10,
-                              )
-                            ],
-                          ),
                           SizedBox(
                             height: 10,
                           ),
@@ -278,7 +199,7 @@ class _AddProductRatingState extends State<AddProductRating> {
                                   const EdgeInsets.only(left: 30, top: 10),
                                   enabledBorder: InputBorder.none,
                                   focusedBorder: InputBorder.none,
-                                  hintText: "Write a message",
+                                  hintText: "Write a feedback",
                                   hintStyle: TextStyle(
                                     fontSize: 18,
                                     fontFamily: "Inter",
