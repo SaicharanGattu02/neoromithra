@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:neuromithra/services/Preferances.dart';
+import 'package:neuromithra/services/userapi.dart';
 import 'FirstLetterCaps.dart'; // For image picking
 import 'dart:async';
 import 'package:http/http.dart' as http;
@@ -11,16 +13,11 @@ import 'package:path/path.dart';
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
 
-class EditProfileScreen extends StatefulWidget {
-  final String? userName;
-  final String? userEmail;
-  final String? profileImageUrl;
+import 'Model/ProfileDetailsModel.dart';
 
+class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({
     Key? key,
-    this.userName,
-    this.userEmail,
-    this.profileImageUrl,
   }) : super(key: key);
 
   @override
@@ -43,9 +40,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _nameController.text = widget.userName ?? "";
-    _emailController.text = widget.userEmail ?? "";
-    profile_image = widget.profileImageUrl ?? "";
+    GetProfileDetails();
+  }
+
+  ProfilePicture? profilePicture;
+  Future<void> GetProfileDetails() async {
+    String user_id = await PreferenceService().getString('user_id')??"";
+    final registerResponse = await Userapi.getprofiledetails(user_id);
+    if (registerResponse != null) {
+      setState(() {
+        if (registerResponse.status == true) {
+          profilePicture=registerResponse.profilePicture;
+          _nameController.text=profilePicture?.name??"";
+          _emailController.text=profilePicture?.email??"";
+          _phoneController.text=profilePicture?.phone.toString()??"";
+          profile_image=profilePicture?.userProfile??'';
+        }
+      });
+    }
   }
 
   // Method to pick an image from gallery and upload it
@@ -53,8 +65,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     setState(() {
       if (pickedFile != null) {
-        _image = File(pickedFile.path);
-        _uploadImage(_image!); // Trigger image upload
+        _image = File(pickedFile.path);// Trigger image upload
       } else {
         print('No image selected.');
       }
@@ -264,8 +275,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             const SizedBox(height: 50),
             GestureDetector(
               onTap: () {
-                if (!is_loading && !image_uploading) {
-                  _updateProfileDetails(); // Update profile details
+                if(_image!=null){
+                  _uploadImage(_image!);
+                  _updateProfileDetails();
+                }else{
+                  _updateProfileDetails();
                 }
               },
               child: Container(
