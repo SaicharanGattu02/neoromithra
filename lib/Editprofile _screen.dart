@@ -43,19 +43,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     GetProfileDetails();
   }
 
-  ProfilePicture? profilePicture;
+  ProfileDetailsModel profilePicture=ProfileDetailsModel();
   Future<void> GetProfileDetails() async {
     String user_id = await PreferenceService().getString('user_id')??"";
     final registerResponse = await Userapi.getprofiledetails(user_id);
     if (registerResponse != null) {
       setState(() {
-        if (registerResponse.status == true) {
-          profilePicture=registerResponse.profilePicture;
+          profilePicture=registerResponse;
           _nameController.text=profilePicture?.name??"";
           _emailController.text=profilePicture?.email??"";
           _phoneController.text=profilePicture?.phone.toString()??"";
           profile_image=profilePicture?.userProfile??'';
-        }
       });
     }
   }

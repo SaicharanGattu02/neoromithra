@@ -38,10 +38,9 @@ class _LogInState extends State<LogIn> {
     setState(() {
       _loading = true;
     });
-
     final loginResponse = await Userapi.PostLogin(email, pwd);
     if (loginResponse != null) {
-      if (loginResponse.userType == 1) {
+      if (loginResponse.accessToken!="") {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
             "you are loged in successfully",
@@ -52,8 +51,8 @@ class _LogInState extends State<LogIn> {
           duration: Duration(seconds: 1),
           backgroundColor:  Color(0xFF32657B),
         ));
-        PreferenceService().saveString("user_id",loginResponse.userDetails?.id.toString()??"");
-        print("Usr id:${loginResponse.userDetails?.id}");
+        PreferenceService().saveString("token",loginResponse.accessToken??"");
+        PreferenceService().saveString("access_expiry_timestamp", loginResponse.expiresIn.toString()??"");
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Dashboard()),

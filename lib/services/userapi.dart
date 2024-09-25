@@ -3,13 +3,17 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import '../Model/BookApointmentModel.dart';
+import '../Model/BookingHistoryModel.dart';
 import '../Model/LoginModel.dart';
 import '../Model/ProfileDetailsModel.dart';
 import '../Model/RegisterModel.dart';
-
+import '../Model/ReviewListModel.dart';
+import '../Model/ReviewSubmitModel.dart';
+import 'other_services.dart';
 
 class Userapi {
-  static String host="https://admin.neuromitra.com";
+  static String host = "https://admin.neuromitra.com";
+
   static Future<BookApointmentModel?> Apointment(
       String fname,
       String pnum,
@@ -20,45 +24,46 @@ class Userapi {
       String location,
       String page_source,
       String time_of_appointment,
-      String user_id
-      ) async {
-    try {
-      final body = jsonEncode({
-        'Full_Name': fname,
-        'phone_Number': pnum,
-        'appointment':appointment,
-        'age': age,
-        'appointment_type': appointment_type,
-        'Date_of_appointment': Date_of_appointment,
-        'location': location,
-        'user_id': user_id,
-      });
-      print("Apointment data: $body");
+      String user_id) async {
+    if (await CheckHeaderValidity()) {
+      try {
+        final body = jsonEncode({
+          'Full_Name': fname,
+          'phone_Number': pnum,
+          'appointment': appointment,
+          'age': age,
+          'appointment_type': appointment_type,
+          'Date_of_appointment': Date_of_appointment,
+          'location': location,
+          'user_id': user_id,
+        });
+        print("Apointment data: $body");
 
-      final url = Uri.parse("${host}/api/bookappointments?page_source=${page_source}&time_of_appointment=${time_of_appointment}");
-      final headers = {
-        'Content-Type': 'application/json'
-      };
-      final response = await http.post(
-        url,
-        headers: headers,
-        body: body,
-      );
-
-         final jsonResponse = jsonDecode(response.body);
+        final url = Uri.parse(
+            "${host}/api/bookappointments?page_source=${page_source}&time_of_appointment=${time_of_appointment}");
+        final headers = await getheader();
+        final response = await http.post(
+          url,
+          headers: headers,
+          body: body,
+        );
+        final jsonResponse = jsonDecode(response.body);
         print("Apointment Status:${response.body}");
         return BookApointmentModel.fromJson(jsonResponse);
-    } catch (e) {
-      print("Error occurred: $e");
+      } catch (e) {
+        print("Error occurred: $e");
+        return null;
+      }
+    }else{
       return null;
     }
   }
 
-
-  static Future<RegisterModel?> PostRegister(String name,String mail, String password,String phone,String fcm_token) async {
+  static Future<RegisterModel?> PostRegister(String name, String mail,
+      String password, String phone, String fcm_token) async {
     try {
       Map<String, String> data = {
-        "name":name,
+        "name": name,
         "email": mail,
         "password": password,
         "phone": phone,
@@ -72,7 +77,7 @@ class Userapi {
         },
         body: jsonEncode(data),
       );
-      if (response!=null) {
+      if (response != null) {
         final jsonResponse = jsonDecode(response.body);
         print("PostRegister Status:${response.body}");
         return RegisterModel.fromJson(jsonResponse);
@@ -86,8 +91,6 @@ class Userapi {
     }
   }
 
-
-
   static Future<LoginModel?> PostLogin(String mail, String password) async {
     try {
       Map<String, String> data = {
@@ -95,7 +98,7 @@ class Userapi {
         "password": password,
       };
       print("PostLogin: $data");
-      final url = Uri.parse("${host}/api/user-signin");
+      final url = Uri.parse("${host}/api/user/login");
       print("PostLogin : $url");
       final response = await http.post(
         url,
@@ -118,53 +121,105 @@ class Userapi {
     }
   }
 
-
   static Future<ProfileDetailsModel?> getprofiledetails(String user_id) async {
-    try {
-      final url = Uri.parse("${host}/api/get_user_details/${user_id}");
-      final response = await http.get(
-        url,
-        headers: {
-          HttpHeaders.contentTypeHeader: "application/json",
-        },
-      );
-      if (response!=null) {
-        final jsonResponse = jsonDecode(response.body);
-        print("getprofiledetails Status:${response.body}");
-        return ProfileDetailsModel.fromJson(jsonResponse);
-      } else {
-        print("Request failed with status: ${response.statusCode}");
+    if (await CheckHeaderValidity()) {
+      try {
+        final url = Uri.parse("${host}/api/get_user_details/${user_id}");
+        final headers = await getheader1();
+        final response = await http.get(url, headers: headers);
+        if (response != null) {
+          final jsonResponse = jsonDecode(response.body);
+          print("getprofiledetails Status:${response.body}");
+          return ProfileDetailsModel.fromJson(jsonResponse);
+        } else {
+          print("Request failed with status: ${response.statusCode}");
+          return null;
+        }
+      } catch (e) {
+        print("Error occurred: $e");
         return null;
       }
-    } catch (e) {
-      print("Error occurred: $e");
+    }else{
       return null;
     }
   }
 
+  static Future<ReviewSubmitModel?> SubmitReviewApi(String appid, String page_source, String rating, String review) async {
+    if (await CheckHeaderValidity()) {
+      try {
+        // Prepare the data
+        Map<String, String> data = {
+          "app_id": appid,
+          "rating": rating,
+          "details": review,
+          "page_source": page_source,
+        };
+        print("SubmitReviewApi: ${data}");
 
-  static Future<ProfileDetailsModel?>SubmitReview(String user_id) async {
+        final url = Uri.parse("$host/api/create_review");
+        final headers = await getheader2(); // Assuming this fetches headers with Authorization
+
+        // Send the POST request
+        final response = await http.post(
+          url,
+          headers: headers,
+          body: data, // Use data directly for x-www-form-urlencoded
+        );
+
+        // Check the response status
+        if (response.statusCode == 200) {
+          final jsonResponse = jsonDecode(response.body);
+          print("SubmitReview Status: ${response.body}");
+          return ReviewSubmitModel.fromJson(jsonResponse);; // Return as string or adjust as needed
+        } else {
+          print("Error: ${response.statusCode} ${response.body}");
+          return null;
+        }
+      } catch (e) {
+        print("Error occurred: $e");
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<BookingHistoryModel?> getbookinghistory() async {
+    if (await CheckHeaderValidity()) {
+      try {
+        final url = Uri.parse("${host}/api/get_user_booking_hisrory");
+        final headers = await getheader();
+        final response = await http.get(url, headers: headers);
+        if (response != null) {
+          final jsonResponse = jsonDecode(response.body);
+          print("getbookinghistory Status:${response.body}");
+          return BookingHistoryModel.fromJson(jsonResponse);
+        } else {
+          print("Request failed with status: ${response.statusCode}");
+          return null;
+        }
+      } catch (e) {
+        print("Error occurred: $e");
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<LoginModel?> UpdateRefreshToken() async {
     try {
-      Map<String, dynamic> data = {
-        "app_id":"11",
-        "rating":3,
-        "details":"text",
-        "page_source":"Speech terapy"
-      };
-      final url = Uri.parse("${host}/api/create_review");
+      final url = Uri.parse("${host}/api/refreshToken");
+      final headers = await getheader();
       final response = await http.post(
         url,
-        headers: {
-          HttpHeaders.contentTypeHeader: "application/json",
-        },
-        body: jsonEncode(data)
+        headers: headers
       );
-      if (response!=null) {
+      if (response != null) {
         final jsonResponse = jsonDecode(response.body);
-        print("SubmitReview Status:${response.body}");
-        return ProfileDetailsModel.fromJson(jsonResponse);
+        print("UpdateRefreshToken response:${response.body}");
+        return LoginModel.fromJson(jsonResponse);
       } else {
-        print("Request failed with status: ${response.statusCode}");
         return null;
       }
     } catch (e) {
@@ -173,32 +228,27 @@ class Userapi {
     }
   }
 
-  static Future<ProfileDetailsModel?> getbookinghistory(String user_id) async {
-    try {
-      final url = Uri.parse("${host}/api/get_user_booking_hisrory/${user_id}");
-      final response = await http.get(
-        url,
-        headers: {
-          HttpHeaders.contentTypeHeader: "application/json",
-        },
-      );
-      if (response!=null) {
-        final jsonResponse = jsonDecode(response.body);
-        print("getbookinghistory Status:${response.body}");
-        return ProfileDetailsModel.fromJson(jsonResponse);
-      } else {
-        print("Request failed with status: ${response.statusCode}");
+  static Future<ReviewListModel?> getreviewlist() async {
+    if (await CheckHeaderValidity()) {
+      try {
+        final url = Uri.parse("${host}/api/get_review/test");
+        final headers = await getheader();
+        final response = await http.get(url, headers: headers);
+        if (response != null) {
+          final jsonResponse = jsonDecode(response.body);
+          print("getreviewlist response:${response.body}");
+          return ReviewListModel.fromJson(jsonResponse);
+        } else {
+          print("Request failed with status: ${response.statusCode}");
+          return null;
+        }
+      } catch (e) {
+        print("Error occurred: $e");
         return null;
       }
-    } catch (e) {
-      print("Error occurred: $e");
+    } else {
       return null;
     }
   }
-
-
-
-
-
 
 }

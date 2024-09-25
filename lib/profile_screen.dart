@@ -19,15 +19,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     GetProfileDetails();
     super.initState();
   }
-  ProfilePicture? profilePicture;
+  ProfileDetailsModel user_data = ProfileDetailsModel();
   Future<void> GetProfileDetails() async {
     String user_id = await PreferenceService().getString('user_id')??"";
-    final registerResponse = await Userapi.getprofiledetails(user_id);
-    if (registerResponse != null) {
+    final Response = await Userapi.getprofiledetails(user_id);
+    if (Response != null) {
       setState(() {
-        if (registerResponse.status == true) {
-          profilePicture=registerResponse.profilePicture;
-        }
+        user_data=Response;
       });
     }
   }
@@ -63,7 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           height: 80, // Set height for the oval
                           color: Colors.grey[300], // Background color when the image is loading
                           child: Image.network(
-                            "${profilePicture?.userProfile}", // Local asset image
+                            "${user_data?.userProfile}", // Local asset image
                             fit: BoxFit.cover, // Cover the entire oval
                           ),
                         ),
@@ -73,8 +71,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text( "${profilePicture?.name}"),
-                        Text("${profilePicture?.email}"),
+                        Text( "${user_data?.name}"),
+                        Text("${user_data?.email}"),
                       ],
                     ),
                   ],
@@ -114,7 +112,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               leading: Icon(Icons.login_rounded),
               title: Text('Log out'),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductRating(app_id: "",page_source: "",)));
               },
             ),
           ],

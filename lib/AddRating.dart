@@ -1,44 +1,30 @@
 import 'dart:io';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-
+import 'package:neuromithra/services/userapi.dart';
 
 class AddProductRating extends StatefulWidget {
   final app_id;
   final page_source;
-  const AddProductRating({super.key, required this.app_id,required this.page_source});
+  const AddProductRating(
+      {super.key, required this.app_id, required this.page_source});
   @override
   State<AddProductRating> createState() => _AddProductRatingState();
 }
 
 class _AddProductRatingState extends State<AddProductRating> {
-
   var bar;
   bool isLoading = false;
-
-  var image = "";
   var rating = 0;
-  var image_picked = 0;
 
   var is_tapped = false;
   List<bool> starStates = [false, false, false, false, false];
   final TextEditingController _reviewController = TextEditingController();
-  final TextEditingController _headlineController = TextEditingController();
-  bool isFocused = false;
-  FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
-    FirebaseAnalytics.instance.logScreenView(screenName: "Add Rating");
-    _focusNode.addListener(_onFocusChange);
     updateStarStates(rating, starStates);
     super.initState();
-  }
-
-  void _onFocusChange() {
-    setState(() {
-      isFocused = _focusNode.hasFocus;
-    });
   }
 
   void updateStarStates(int rating, List<bool> starStates) {
@@ -48,24 +34,26 @@ class _AddProductRatingState extends State<AddProductRating> {
     }
   }
 
+  Future<void> SubmitReview() async {
+    final data = await Userapi.SubmitReviewApi(
+        widget.app_id.toString(), widget.page_source, rating.toString(), _reviewController.text);
+    if (data != "") {
+      setState(() {});
+    } else {
+      print("Data not fetched.");
+    }
+  }
 
   var buttonLoading = false;
-
-
 
   Future<bool> _onBackPressed() async {
     Navigator.pop(context, true);
     return true;
   }
 
-
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      body: _scaffold(context)
-    );
+    return Scaffold(body: _scaffold(context));
   }
 
   Widget _scaffold(BuildContext context) {
@@ -73,12 +61,14 @@ class _AddProductRatingState extends State<AddProductRating> {
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
         backgroundColor: Color(0xffF4F5FA),
-        appBar: AppBar(title: Text("Write a review"),),
+        appBar: AppBar(
+          title: Text("Write a review"),
+        ),
         body: SingleChildScrollView(
           child: Padding(
               padding: (Platform.isAndroid)
                   ? EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom)
+                      bottom: MediaQuery.of(context).padding.bottom)
                   : EdgeInsets.all(0),
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 15),
@@ -96,8 +86,7 @@ class _AddProductRatingState extends State<AddProductRating> {
                               color: Colors.black.withOpacity(0.1),
                               spreadRadius: 5,
                               blurRadius: 10,
-                              offset: Offset(1, 1)
-                          )
+                              offset: Offset(1, 1))
                         ],
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(15.0),
@@ -112,44 +101,44 @@ class _AddProductRatingState extends State<AddProductRating> {
                                   fontFamily: "Inter",
                                   color: Colors.black,
                                   fontWeight: FontWeight.w600,
-                                  fontSize:20)),
+                                  fontSize: 20)),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
                                   child: Row(
-                                    children: List.generate(
-                                      starStates.length,
-                                          (index) => InkWell(
-                                        onTap: () {
-                                          // toast(context, "${index + 1}"); // Display the selected star's rating
-                                          setState(() {
-                                            rating = index + 1;
-                                            // toast(context,rating);
-                                            for (int i = 0;
+                                children: List.generate(
+                                  starStates.length,
+                                  (index) => InkWell(
+                                    onTap: () {
+                                      // toast(context, "${index + 1}"); // Display the selected star's rating
+                                      setState(() {
+                                        rating = index + 1;
+                                        // toast(context,rating);
+                                        for (int i = 0;
                                             i < starStates.length;
                                             i++) {
-                                              starStates[i] = i <= index;
-                                              // rating = i + 1;// Set the state of stars based on the tapped star
-                                            }
-                                          });
-                                        },
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              starStates[index]
-                                                  ? Icons.star
-                                                  : Icons.star,
-                                              color: starStates[index]
-                                                  ? Color(0xffFFB703)
-                                                  : Color(0xffD9D9D9),
-                                              size: 35,
-                                            ),
-                                          ],
+                                          starStates[i] = i <= index;
+                                          // rating = i + 1;// Set the state of stars based on the tapped star
+                                        }
+                                      });
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          starStates[index]
+                                              ? Icons.star
+                                              : Icons.star,
+                                          color: starStates[index]
+                                              ? Color(0xffFFB703)
+                                              : Color(0xffD9D9D9),
+                                          size: 35,
                                         ),
-                                      ),
+                                      ],
                                     ),
-                                  ))
+                                  ),
+                                ),
+                              ))
                             ],
                           ),
                         ],
@@ -168,8 +157,7 @@ class _AddProductRatingState extends State<AddProductRating> {
                               color: Colors.black.withOpacity(0.1),
                               spreadRadius: 5,
                               blurRadius: 10,
-                              offset: Offset(1, 1)
-                          )
+                              offset: Offset(1, 1))
                         ],
                       ),
                       padding: EdgeInsets.all(15),
@@ -196,7 +184,7 @@ class _AddProductRatingState extends State<AddProductRating> {
                               maxLines: 100,
                               decoration: InputDecoration(
                                   contentPadding:
-                                  const EdgeInsets.only(left: 30, top: 10),
+                                      const EdgeInsets.only(left: 30, top: 10),
                                   enabledBorder: InputBorder.none,
                                   focusedBorder: InputBorder.none,
                                   hintText: "Write a feedback",
@@ -217,7 +205,7 @@ class _AddProductRatingState extends State<AddProductRating> {
                                       fontFamily: "Inter",
                                       color: Color(0xffCED2E8),
                                       fontWeight: FontWeight.w500,
-                                      fontSize:10)),
+                                      fontSize: 10)),
                               SizedBox(
                                 width: 10,
                               )
@@ -233,45 +221,38 @@ class _AddProductRatingState extends State<AddProductRating> {
                     SizedBox(
                       height: 15,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                            alignment: Alignment.center,
-                            width: screenWidth * 0.88,
-                            child:InkResponse(
-                          onTap: () {
-                          },
-                          child: Container(
-                            height: 40,
-                            width: screenWidth * 0.88,
-                            decoration: BoxDecoration(
-                                color: (rating == 0)
-                                    ? Color(0xffF4F5FA)
-                                    : Color(0xffE7A500),
-                                border: Border.all(
-                                    color: (rating == 0)
-                                        ? Color(0xffE0E3F1)
-                                        : Colors.transparent),
-                                borderRadius: BorderRadius.circular(
-                                  39,
-                                )),
-                            child: Center(
-                                child: Text(
-                                  "Submit",
-                                  style: TextStyle(
-                                      fontFamily: "Inter",
-                                      color: (rating == 0)
-                                          ? Colors.grey
-                                          : Colors.black,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize:13),
-                                ),
-                                )
-                          ),
-                          ),
-                        ),
-                      ],
+                    InkResponse(
+                      onTap: () {
+                        if(rating>0){
+                          SubmitReview();
+                        }
+                      },
+                      child: Container(
+                          height: 40,
+                          width: screenWidth * 0.88,
+                          decoration: BoxDecoration(
+                              color: (rating == 0)
+                                  ? Color(0xffF4F5FA)
+                                  : Color(0xffE7A500),
+                              border: Border.all(
+                                  color: (rating == 0)
+                                      ? Color(0xffE0E3F1)
+                                      : Colors.transparent),
+                              borderRadius: BorderRadius.circular(
+                                39,
+                              )),
+                          child: Center(
+                            child: Text(
+                              "Submit",
+                              style: TextStyle(
+                                  fontFamily: "Inter",
+                                  color: (rating == 0)
+                                      ? Colors.grey
+                                      : Colors.black,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13),
+                            ),
+                          )),
                     ),
                     SizedBox(
                       height: 30,

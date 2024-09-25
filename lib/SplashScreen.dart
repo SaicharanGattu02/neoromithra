@@ -48,12 +48,12 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
     Fetchdetails();
   }
   Fetchdetails() async {
-    var user_id = (await PreferenceService().getString('user_id'))??"";
+    var token = (await PreferenceService().getString('token'))??"";
     // var status = (await PreferenceService().getString('onboard_status'))??"";
     setState(() {
-      User_id=user_id;
+      User_id=token;
     });
-    print("Token:${user_id}");
+    print("Token:${token}");
   }
 
   @override

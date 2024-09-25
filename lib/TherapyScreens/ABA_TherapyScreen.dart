@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../BookAppointment.dart';
 import '../CustomAppBar.dart';
+import '../services/userapi.dart';
 
 class ABA_TherapyScreen extends StatefulWidget {
   const ABA_TherapyScreen({super.key});
@@ -14,6 +15,22 @@ class _ABA_TherapyScreenState extends State<ABA_TherapyScreen> {
   bool showFocus = true;
   bool showBenefits = false;
 
+@override
+  void initState() {
+    super.initState();
+    GetReviewsList();
+  }
+
+  Future<void> GetReviewsList() async {
+    final Response = await Userapi.getreviewlist();
+    if (Response != null) {
+      setState(() {
+        if(Response.status==true){
+
+        }
+      });
+    }
+  }
 
   Future<void> _launchCall(String phoneNumber) async {
     final Uri launchUri = Uri(
@@ -214,7 +231,6 @@ class _ABA_TherapyScreenState extends State<ABA_TherapyScreen> {
                 Expanded(
                   child:
                   InkWell(onTap: (){
-
                     Navigator.push(context, MaterialPageRoute(builder: (context)=>Bookappointment(pagesource: "ABA Therapy",)));
                   },
                     child: Container(

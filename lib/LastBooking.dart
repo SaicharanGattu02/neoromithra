@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:neuromithra/AddRating.dart';
+import 'package:neuromithra/services/userapi.dart';
+
+import 'Model/BookingHistoryModel.dart';
 
 class LastBooking extends StatefulWidget {
   const LastBooking({super.key});
@@ -11,21 +15,31 @@ class LastBooking extends StatefulWidget {
 class _LastBookingState extends State<LastBooking> {
   @override
   void initState() {
+    GetBookingHistory();
     super.initState();
+  }
+  List<BookingHistory> bookingHistory=[];
+  Future<void> GetBookingHistory() async {
+    final Response = await Userapi.getbookinghistory();
+    if (Response != null) {
+      setState(() {
+        if(Response.status==true){
+          bookingHistory = Response.bookingHistory??[];
+        }
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     var w = MediaQuery.of(context).size.width;
     var h = MediaQuery.of(context).size.height;
-
     // Sample list of bookings (can be replaced with dynamic data)
-    List<Map<String, String>> bookings = [
-      {"order": "#24856", "type": "Online", "time": "11:00 - 12:00 AM", "date": "Sunday, 12 June"},
-      {"order": "#24857", "type": "Self", "time": "12:00 - 1:00 PM", "date": "Monday, 13 June"},
-      // Add more bookings here...
-    ];
-
+    // List<Map<String, String>> bookings = [
+    //   {"order": "#24856", "type": "Online", "time": "11:00 - 12:00 AM", "date": "Sunday, 12 June"},
+    //   {"order": "#24857", "type": "Self", "time": "12:00 - 1:00 PM", "date": "Monday, 13 June"},
+    //   // Add more bookings here...
+    // ];
     return Scaffold(
       appBar: AppBar(
         leading: Icon(
@@ -43,17 +57,16 @@ class _LastBookingState extends State<LastBooking> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 15),
         child: GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 1, // Number of items per row (you can change to 2 if needed)
-            mainAxisSpacing: 20.0, // Spacing between grid items vertically
-            crossAxisSpacing: 10.0, // Spacing between grid items horizontally
-            childAspectRatio: 2.5, // Aspect ratio for controlling the size of each item
+            crossAxisCount: 1,
+            mainAxisSpacing: 10.0,
+            childAspectRatio: 2.35,
           ),
-          itemCount: bookings.length,
+          itemCount: bookingHistory.length,
           itemBuilder: (BuildContext context, int index) {
-            var booking = bookings[index];
+            var booking = bookingHistory[index];
             return Container(
               width: w,
               padding: EdgeInsets.all(20),
@@ -66,9 +79,9 @@ class _LastBookingState extends State<LastBooking> {
                   Row(
                     children: [
                       Text(
-                        "Order ${booking['order']}",
+                        "Order No-${booking.id}",
                         style: TextStyle(
-                          fontFamily: 'Nunito',
+                          fontFamily: 'Poppins',
                           fontSize: 16.0,
                           fontWeight: FontWeight.w700,
                           height: 21.82 / 16.0,
@@ -83,9 +96,9 @@ class _LastBookingState extends State<LastBooking> {
                             color: Color(0x4DA0F2A3),
                             borderRadius: BorderRadius.circular(20)),
                         child: Text(
-                          "${booking['type']}",
+                          "${booking.appointmentType}",
                           style: TextStyle(
-                            fontFamily: 'Nunito',
+                            fontFamily: 'Poppins',
                             fontSize: 10.0,
                             color: Color(0xff0DC613),
                             fontWeight: FontWeight.w700,
@@ -95,18 +108,18 @@ class _LastBookingState extends State<LastBooking> {
                       ),
                       Spacer(),
                       Container(
-                        padding: EdgeInsets.only(left: 12, right: 12),
+                        height: 32,
+                        padding: EdgeInsets.symmetric(horizontal: 10,vertical: 3),
                         decoration: BoxDecoration(
                             color: Color(0x80A0F2F0),
                             borderRadius: BorderRadius.circular(8)),
                         child: Text(
-                          "Self",
+                          "${booking.appointment}",
                           style: TextStyle(
-                            fontFamily: 'Nunito',
+                            fontFamily: 'Poppins',
                             fontSize: 14,
                             color: Color(0xff088A87),
                             fontWeight: FontWeight.w700,
-                            height: 19.01 / 14,
                           ),
                         ),
                       ),
@@ -125,7 +138,7 @@ class _LastBookingState extends State<LastBooking> {
                         width: 8,
                       ),
                       Text(
-                        "${booking['date']}",
+                        "${booking.dateOfAppointment}",
                         style: TextStyle(
                           fontFamily: 'Poppins', // Font family
                           fontSize: 12.0, // Font size (12px)
@@ -143,7 +156,7 @@ class _LastBookingState extends State<LastBooking> {
                         width: 8,
                       ),
                       Text(
-                        "${booking['time']}",
+                        "${booking.timeOfAppointment}",
                         style: TextStyle(
                           fontFamily: 'Poppins', // Font family
                           fontSize: 12.0, // Font size (12px)
@@ -154,6 +167,32 @@ class _LastBookingState extends State<LastBooking> {
                       ),
                     ],
                   ),
+                  Divider(
+                    thickness: 0.5,
+                  ),
+                  InkResponse(
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AddProductRating(app_id: booking.id, page_source: booking.pageSource)),
+                      );
+                    },
+                    child: Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.star,color: Colors.yellow,),
+                          SizedBox(width: 5,),
+                          Text("Rate us",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight:FontWeight.w500,
+                            fontFamily: "Inter"
+                          ),),
+                        ],
+                      ),
+                    ),
+                  )
                 ],
               ),
             );
