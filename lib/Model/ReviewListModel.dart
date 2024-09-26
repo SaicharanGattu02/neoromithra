@@ -28,6 +28,7 @@ class Review {
   int? id;
   int? appId;
   int? userId;
+  String? userName;
   int? rating;
   String? details;
   String? pageSource;
@@ -37,6 +38,7 @@ class Review {
       {this.id,
         this.appId,
         this.userId,
+        this.userName,
         this.rating,
         this.details,
         this.pageSource,
@@ -46,6 +48,7 @@ class Review {
     id = json['id'];
     appId = json['app_id'];
     userId = json['user_id'];
+    userName = json['user_name'];
     rating = json['rating'];
     details = json['details'];
     pageSource = json['page_source'];
@@ -57,6 +60,7 @@ class Review {
     data['id'] = this.id;
     data['app_id'] = this.appId;
     data['user_id'] = this.userId;
+    data['user_name'] = this.userName;
     data['rating'] = this.rating;
     data['details'] = this.details;
     data['page_source'] = this.pageSource;

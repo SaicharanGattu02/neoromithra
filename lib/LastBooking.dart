@@ -91,12 +91,11 @@ class _LastBookingState extends State<LastBooking> {
                         width: w * 0.020,
                       ),
                       Container(
-                        padding: EdgeInsets.only(left: 12, right: 12),
+                        padding: EdgeInsets.symmetric(horizontal: 12,vertical: 3),
                         decoration: BoxDecoration(
                             color: Color(0x4DA0F2A3),
                             borderRadius: BorderRadius.circular(20)),
-                        child: Text(
-                          "${booking.appointmentType}",
+                        child: Text((booking.appointmentType==0)? "Online":"Offline",
                           style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 10.0,
@@ -108,7 +107,6 @@ class _LastBookingState extends State<LastBooking> {
                       ),
                       Spacer(),
                       Container(
-                        height: 32,
                         padding: EdgeInsets.symmetric(horizontal: 10,vertical: 3),
                         decoration: BoxDecoration(
                             color: Color(0x80A0F2F0),
@@ -167,32 +165,34 @@ class _LastBookingState extends State<LastBooking> {
                       ),
                     ],
                   ),
-                  Divider(
-                    thickness: 0.5,
-                  ),
-                  InkResponse(
-                    onTap: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AddProductRating(app_id: booking.id, page_source: booking.pageSource)),
-                      );
-                    },
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.star,color: Colors.yellow,),
-                          SizedBox(width: 5,),
-                          Text("Rate us",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight:FontWeight.w500,
-                            fontFamily: "Inter"
-                          ),),
-                        ],
-                      ),
+                  if(booking.ratingStatus!=1)...[
+                    Divider(
+                      thickness: 0.5,
                     ),
-                  )
+                    InkResponse(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => AddProductRating(app_id: booking.id, page_source: booking.pageSource)),
+                        );
+                      },
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.star,color: Colors.yellow,),
+                            SizedBox(width: 5,),
+                            Text("Rate us",
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight:FontWeight.w500,
+                                  fontFamily: "Inter"
+                              ),),
+                          ],
+                        ),
+                      ),
+                    )
+                  ]
                 ],
               ),
             );

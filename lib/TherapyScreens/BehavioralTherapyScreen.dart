@@ -3,6 +3,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../BookAppointment.dart';
 import '../CustomAppBar.dart';
+import '../Model/ReviewListModel.dart';
+import '../ReviewListScreen.dart';
+import '../services/userapi.dart';
+import '../utils/ReviewCard.dart';
 
 class BehavioralTherapyScreen extends StatefulWidget {
   const BehavioralTherapyScreen({super.key});
@@ -14,6 +18,21 @@ class BehavioralTherapyScreen extends StatefulWidget {
 class _BehavioralTherapyScreenState extends State<BehavioralTherapyScreen> {
   bool showFocus = true;
   bool showBenefits = false;
+
+  @override
+  void initState() {
+    super.initState();
+    GetReviewsList();
+  }
+  List<Review> reviews=[];
+  Future<void> GetReviewsList() async {
+    final response = await Userapi.getreviewlist("Behavioral Therapy");
+    if (response != null) {
+      setState(() {
+        reviews=response.review??[];
+      });
+    }
+  }
 
 
   Future<void> _launchCall(String phoneNumber) async {
@@ -184,6 +203,21 @@ class _BehavioralTherapyScreenState extends State<BehavioralTherapyScreen> {
                     ),
                   ),
                 ),
+                SizedBox(height: 20),
+                if(reviews.length>0)...[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: Text(
+                      'Customer Reviews',
+                      style: TextStyle(
+                          fontFamily: "Inter",
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18),
+                    ),
+                  ),
+                  _buildReviewsList(),
+                ],
               ],
             ),
           ),
@@ -243,6 +277,44 @@ class _BehavioralTherapyScreenState extends State<BehavioralTherapyScreen> {
     );
   }
 
+  Widget _buildReviewsList() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 0.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ListView.builder(
+            itemCount: reviews.length > 3 ? 3 : reviews.length,
+            physics: NeverScrollableScrollPhysics(), // Disable scrolling on this ListView
+            shrinkWrap: true, // Allows the ListView to take the height of its children
+            itemBuilder: (context, index) {
+              return ReviewCard(
+                customerName: reviews[index].userName??"",
+                rating: reviews[index].rating??0,
+                review: reviews[index].details??"",
+              );
+            },
+          ),
+          if (reviews.length > 3)
+            InkResponse(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>ReviewListScreen(pageSource: "Behavioral Therapy",)));
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(right: 18.0),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: Text(
+                    'More >>',
+                    style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
   Widget _buildTextWithCircle(String? boldText, String normalText) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,

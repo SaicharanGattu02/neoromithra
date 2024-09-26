@@ -15,7 +15,6 @@ class ApointmentSuccess extends StatefulWidget {
 class _ApointmentSuccessState extends State<ApointmentSuccess> {
   @override
   Widget build(BuildContext context) {
-    // Disable back navigation
     return WillPopScope(
       onWillPop: () async {
         return false; // Prevent back navigation

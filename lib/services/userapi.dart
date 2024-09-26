@@ -69,7 +69,8 @@ class Userapi {
         "phone": phone,
         "fcm_token": fcm_token
       };
-      final url = Uri.parse("${host}/api/user-signup");
+      print(data);
+      final url = Uri.parse("${host}/api/user/userregister");
       final response = await http.post(
         url,
         headers: {
@@ -98,7 +99,7 @@ class Userapi {
         "password": password,
       };
       print("PostLogin: $data");
-      final url = Uri.parse("${host}/api/user/login");
+      final url = Uri.parse("${host}/api/user/userlogin");
       print("PostLogin : $url");
       final response = await http.post(
         url,
@@ -228,10 +229,10 @@ class Userapi {
     }
   }
 
-  static Future<ReviewListModel?> getreviewlist() async {
+  static Future<ReviewListModel?> getreviewlist(String page_source) async {
     if (await CheckHeaderValidity()) {
       try {
-        final url = Uri.parse("${host}/api/get_review/test");
+        final url = Uri.parse("${host}/api/get_review/${page_source}");
         final headers = await getheader();
         final response = await http.get(url, headers: headers);
         if (response != null) {
