@@ -224,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         toolbarHeight: height * 0.1,
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Image.asset(
               'assets/logo.png',
@@ -232,12 +232,12 @@ class _HomeScreenState extends State<HomeScreen> {
               width: 200,
               height: 50,
             ),
-            Spacer(),
-            InkWell(onTap: (){
-              _showLogoutConfirmationDialog(context);
-
-            },
-                child: Icon(Icons.logout_outlined,color: Color(0xff000000),),)
+            // Spacer(),
+            // InkWell(onTap: (){
+            //   _showLogoutConfirmationDialog(context);
+            //
+            // },
+            //     child: Icon(Icons.logout_outlined,color: Color(0xff000000),),)
           ],
         ),
       ),

@@ -38,7 +38,28 @@ class _AddProductRatingState extends State<AddProductRating> {
     final data = await Userapi.SubmitReviewApi(
         widget.app_id.toString(), widget.page_source, rating.toString(), _reviewController.text);
     if (data != "") {
-      setState(() {});
+      setState(() {
+        if(data?.status==true){
+          isLoading=false;
+          Navigator.pop(context,true);
+        }else{
+          isLoading=false;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Please give your valuable feedback!',
+              style: TextStyle(
+                fontFamily: "Inter",
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.white
+              ),
+              ),
+              duration: Duration(seconds: 1),
+              backgroundColor: Colors.blue,
+            ),
+          );
+        }
+      });
     } else {
       print("Data not fetched.");
     }
@@ -76,7 +97,7 @@ class _AddProductRatingState extends State<AddProductRating> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      height: 10,
+                      height: 30,
                     ),
                     Container(
                       margin: const EdgeInsets.only(bottom: 10.0),
@@ -141,32 +162,8 @@ class _AddProductRatingState extends State<AddProductRating> {
                               ))
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                    // SizedBox(
-                    //   height: 10,
-                    // ),
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 10.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15.0),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              spreadRadius: 5,
-                              blurRadius: 10,
-                              offset: Offset(1, 1))
-                        ],
-                      ),
-                      padding: EdgeInsets.all(15),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
                           SizedBox(
-                            height: 10,
+                            height: 25,
                           ),
                           Container(
                             width: screenWidth * 0.85,
@@ -184,7 +181,7 @@ class _AddProductRatingState extends State<AddProductRating> {
                               maxLines: 100,
                               decoration: InputDecoration(
                                   contentPadding:
-                                      const EdgeInsets.only(left: 30, top: 10),
+                                  const EdgeInsets.only(left: 30, top: 10),
                                   enabledBorder: InputBorder.none,
                                   focusedBorder: InputBorder.none,
                                   hintText: "Write a feedback",
@@ -196,35 +193,23 @@ class _AddProductRatingState extends State<AddProductRating> {
                                   )),
                             ),
                           ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text("Optional",
-                                  style: TextStyle(
-                                      fontFamily: "Inter",
-                                      color: Color(0xffCED2E8),
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 10)),
-                              SizedBox(
-                                width: 10,
-                              )
-                            ],
-                          ),
                         ],
                       ),
                     ),
-                    // SizedBox(
-                    //   height: 15,
-                    // ),
-
                     SizedBox(
-                      height: 15,
+                      height: 105,
                     ),
                     InkResponse(
                       onTap: () {
                         if(rating>0){
-                          SubmitReview();
+                          if(isLoading){
+
+                          }else{
+                            setState(() {
+                              isLoading=true;
+                            });
+                            SubmitReview();
+                          }
                         }
                       },
                       child: Container(
@@ -242,7 +227,10 @@ class _AddProductRatingState extends State<AddProductRating> {
                                 39,
                               )),
                           child: Center(
-                            child: Text(
+                            child:(isLoading && rating>0)?CircularProgressIndicator(
+                              color: Colors.white,
+                            ):
+                            Text(
                               "Submit",
                               style: TextStyle(
                                   fontFamily: "Inter",

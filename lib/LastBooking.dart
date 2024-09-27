@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:neuromithra/AddRating.dart';
 import 'package:neuromithra/services/userapi.dart';
 
@@ -13,6 +14,7 @@ class LastBooking extends StatefulWidget {
 }
 
 class _LastBookingState extends State<LastBooking> {
+  bool is_loading=true;
   @override
   void initState() {
     GetBookingHistory();
@@ -24,7 +26,10 @@ class _LastBookingState extends State<LastBooking> {
     if (Response != null) {
       setState(() {
         if(Response.status==true){
+          is_loading=false;
           bookingHistory = Response.bookingHistory??[];
+        }else{
+          is_loading=false;
         }
       });
     }
@@ -42,10 +47,6 @@ class _LastBookingState extends State<LastBooking> {
     // ];
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(
-          Icons.arrow_back,
-          color: Color(0xff747474),
-        ),
         title: Text(
           "Last Booking",
           style: TextStyle(
@@ -56,20 +57,30 @@ class _LastBookingState extends State<LastBooking> {
               height: 24.2 / 20),
         ),
       ),
-      body: Padding(
+      body:(is_loading)?Center(
+        child: CircularProgressIndicator(
+          color: Colors.blue,
+        ),
+      ):
+      (bookingHistory.length==0)?
+      Center(
+        child: Lottie.asset(
+          'assets/animations/nodata1.json',
+          height: 360,
+          width: 360,
+        ),
+      ):
+      Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 15),
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 1,
-            mainAxisSpacing: 10.0,
-            childAspectRatio: 2.35,
-          ),
+        child:ListView.builder(
+          shrinkWrap: true,
           itemCount: bookingHistory.length,
           itemBuilder: (BuildContext context, int index) {
             var booking = bookingHistory[index];
             return Container(
               width: w,
               padding: EdgeInsets.all(20),
+              margin: EdgeInsets.symmetric(vertical: 5),
               decoration: BoxDecoration(
                 color: Color(0x4DA0F2F0),
                 borderRadius: BorderRadius.circular(12),
@@ -87,15 +98,15 @@ class _LastBookingState extends State<LastBooking> {
                           height: 21.82 / 16.0,
                         ),
                       ),
-                      SizedBox(
-                        width: w * 0.020,
-                      ),
+                      SizedBox(width: w * 0.020),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12,vertical: 3),
+                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
                         decoration: BoxDecoration(
-                            color: Color(0x4DA0F2A3),
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Text((booking.appointmentType==0)? "Online":"Offline",
+                          color: Color(0x4DA0F2A3),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          (booking.appointmentType == 0) ? "Online" : "Offline",
                           style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 10.0,
@@ -107,10 +118,11 @@ class _LastBookingState extends State<LastBooking> {
                       ),
                       Spacer(),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10,vertical: 3),
+                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                         decoration: BoxDecoration(
-                            color: Color(0x80A0F2F0),
-                            borderRadius: BorderRadius.circular(8)),
+                          color: Color(0x80A0F2F0),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                         child: Text(
                           "${booking.appointment}",
                           style: TextStyle(
@@ -123,41 +135,29 @@ class _LastBookingState extends State<LastBooking> {
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
+                  SizedBox(height: 20),
                   Row(
                     children: [
-                      Icon(
-                        Icons.calendar_month,
-                        size: 16,
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
+                      Icon(Icons.calendar_month, size: 16),
+                      SizedBox(width: 8),
                       Text(
                         "${booking.dateOfAppointment}",
                         style: TextStyle(
-                          fontFamily: 'Poppins', // Font family
-                          fontSize: 12.0, // Font size (12px)
+                          fontFamily: 'Poppins',
+                          fontSize: 12.0,
                           fontWeight: FontWeight.w400,
                           color: Color(0xff000000),
                           height: 18 / 12.0,
                         ),
                       ),
                       Spacer(),
-                      Icon(
-                        Icons.access_time,
-                        size: 16,
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
+                      Icon(Icons.access_time, size: 16),
+                      SizedBox(width: 8),
                       Text(
                         "${booking.timeOfAppointment}",
                         style: TextStyle(
-                          fontFamily: 'Poppins', // Font family
-                          fontSize: 12.0, // Font size (12px)
+                          fontFamily: 'Poppins',
+                          fontSize: 12.0,
                           fontWeight: FontWeight.w400,
                           color: Color(0xff000000),
                           height: 18 / 12.0,
@@ -165,34 +165,49 @@ class _LastBookingState extends State<LastBooking> {
                       ),
                     ],
                   ),
-                  if(booking.ratingStatus!=1)...[
-                    Divider(
-                      thickness: 0.5,
-                    ),
-                    InkResponse(
-                      onTap: (){
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => AddProductRating(app_id: booking.id, page_source: booking.pageSource)),
-                        );
-                      },
-                      child: Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.star,color: Colors.yellow,),
-                            SizedBox(width: 5,),
-                            Text("Rate us",
-                              style: TextStyle(
+                  // Use Visibility widget to conditionally show widgets without taking up space
+                  Visibility(
+                    visible: booking.ratingStatus != 1,
+                    child: Column(
+                      children: [
+                        Divider(thickness: 0.5),
+                        InkResponse(
+                          onTap: () async {
+                            var res= await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AddProductRating(
+                                  app_id: booking.id,
+                                  page_source: booking.pageSource,
+                                ),
+                              ),
+                            );
+                            if(res==true){
+                              setState(() {
+                                is_loading=true;
+                                GetBookingHistory();
+                              });
+                            }
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.star, color: Colors.yellow),
+                              SizedBox(width: 5),
+                              Text(
+                                "Rate us",
+                                style: TextStyle(
                                   fontSize: 15,
-                                  fontWeight:FontWeight.w500,
-                                  fontFamily: "Inter"
-                              ),),
-                          ],
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: "Inter",
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    )
-                  ]
+                      ],
+                    ),
+                  ),
                 ],
               ),
             );

@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
-import 'FirstLetterCaps.dart'; // For image picking
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
@@ -25,14 +24,69 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
+
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _mobileController = TextEditingController();
+
+  String name="";
+
+  String? _validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your name';
+    }
+    return null;
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your email';
+    }
+    String pattern =
+        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+    if (!RegExp(pattern).hasMatch(value)) {
+      return 'Please enter a valid email address';
+    }
+    return null;
+  }
+
+  String? _validateMobile(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your mobile number';
+    }
+    if (value.length != 10 || !RegExp(r'^[0-9]+$').hasMatch(value)) {
+      return 'Please enter a valid 10-digit mobile number';
+    }
+    return null;
+  }
+
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      // Here you can send the data to the server or process it further
+      print('Name: ${_nameController.text}, Email: ${_emailController.text}, Mobile: ${_mobileController.text}');
+      // Clear the fields after submission
+      _updateProfileDetails();
+    }else{
+      setState(() {
+        is_loading=false;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _mobileController.dispose();
+    super.dispose();
+  }
+
   File? _image;
   final picker = ImagePicker();
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
-
   String profile_image = "";
   bool is_loading = false;
+  bool isloading = true;
   bool image_uploading = false;
 
   final String userId = "20"; // Static User ID
@@ -49,10 +103,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final registerResponse = await Userapi.getprofiledetails(user_id);
     if (registerResponse != null) {
       setState(() {
+        isloading=false;
           profilePicture=registerResponse;
           _nameController.text=profilePicture?.name??"";
+          name=profilePicture?.name??"";
           _emailController.text=profilePicture?.email??"";
-          _phoneController.text=profilePicture?.phone.toString()??"";
+          _mobileController.text=profilePicture?.phone.toString()??"";
           profile_image=profilePicture?.userProfile??'';
       });
     }
@@ -72,11 +128,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   // Method to upload image to the server
   Future<void> _uploadImage(File image) async {
-    setState(() {
-      image_uploading = true;
-    });
+    final response = await Userapi.UploadImage(image);
+    if (response != null) {
+      setState(() {
 
-    // API endpoint
+      });
+    }
+
     final String url = 'https://admin.neuromitra.com/api/update_profile_image/20';
 
     try {
@@ -115,70 +173,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   // Method to update user details
   Future<void> _updateProfileDetails() async {
-    // Validate input fields
-    if (_nameController.text.isEmpty) {
-      ScaffoldMessenger.of(context as BuildContext).showSnackBar(
-        SnackBar(content: Text('Please enter your name')),
-      );
-      return;
-    }
 
-    if (_emailController.text.isEmpty) {
-      ScaffoldMessenger.of(context as BuildContext).showSnackBar(
-        SnackBar(content: Text('Please enter your email')),
-      );
-      return;
-    }
-
-    if (_phoneController.text.isEmpty) {
-      ScaffoldMessenger.of(context as BuildContext).showSnackBar(
-        SnackBar(content: Text('Please enter your phone number')),
-      );
-      return;
-    }
-
-    setState(() {
-      is_loading = true;
-    });
-
-    final String url = 'https://admin.neuromitra.com/api/update_user_details/20';
-
-    try {
-      var response = await http.post(
-        Uri.parse(url),
-        headers: {
-          'Authorization': 'Bearer token_here', // Add token if required
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'name': _nameController.text,
-          'email': _emailController.text,
-          'phone': _phoneController.text,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context as BuildContext).showSnackBar(
-          SnackBar(content: Text('Profile details updated successfully!')),
-        );
-      } else {
-        ScaffoldMessenger.of(context as BuildContext).showSnackBar(
-          SnackBar(
-            content: Text('Failed to update details: ${response.statusCode}'),
-          ),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context as BuildContext).showSnackBar(
-        SnackBar(
-          content: Text('Error updating profile: $e'),
-        ),
-      );
-    }
-
-    setState(() {
-      is_loading = false;
-    });
   }
 
 
@@ -189,7 +184,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       appBar: AppBar(
         title: const Text('Profile Details'),
       ),
-      body: SingleChildScrollView(
+      body: (isloading)?Center(
+        child: CircularProgressIndicator(
+          color: Colors.blue,
+        ),
+      ):
+      SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -206,8 +206,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       : null) as ImageProvider?,
                   child: (_image == null && profile_image.isEmpty)
                       ? Text(
-                    _nameController.text.isNotEmpty
-                        ? _nameController.text[0].toUpperCase()
+                    name.isNotEmpty
+                        ? name[0].toUpperCase()
                         : "",
                     style: const TextStyle(
                         fontSize: 50, color: Color(0xffFFF6E9)),
@@ -237,51 +237,96 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
-            _buildTextField(
-              "Name",
-              _nameController,
-              TextInputType.text,
-              "",
-              FocusNode(),
-              r'^[a-zA-Z\s]+$',
-              0,
-              [CapitalizationInputFormatter()],
-            ),
-            const SizedBox(height: 20),
-            _buildTextField(
-              "Email",
-              _emailController,
-              TextInputType.emailAddress,
-              "",
-              FocusNode(),
-              r'[a-zA-Z0-9@._-]+',
-              0,
-              [],
-            ),
-            const SizedBox(height: 20),
-            _buildTextField(
-              "Phone number",
-              _phoneController,
-              TextInputType.phone,
-              "",
-              FocusNode(),
-              r'^\d+$', // Validation for numbers only
-              10, // Max length 10 for phone number
-              [],
+            const SizedBox(height: 30),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      labelText: 'Name',
+                      labelStyle: TextStyle(
+                          fontSize: 15,fontFamily: "Inter",
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black
+                      ),
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                      border: OutlineInputBorder(), // Add border
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                      ),
+                    ),
+                    validator: _validateName,
+                  ),
+                  SizedBox(height: 16), // Space between fields
+                  TextFormField(
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      labelStyle: TextStyle(
+                        fontSize: 15,fontFamily: "Inter",
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black
+                      ),
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                      border: OutlineInputBorder(), // Add border
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                      ),
+                    ),
+                    validator: _validateEmail,
+                  ),
+                  SizedBox(height: 16), // Space between fields
+                  TextFormField(
+                    controller: _mobileController,
+                    decoration: InputDecoration(
+                      labelText: 'Mobile Number',
+                      labelStyle: TextStyle(
+                          fontSize: 15,fontFamily: "Inter",
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black
+                      ),
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                      border: OutlineInputBorder(), // Add border
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                      ),
+                    ),
+                    keyboardType: TextInputType.phone,
+                    validator: _validateMobile,
+                  ),
+                  SizedBox(height: 20),
+                ],
+              ),
             ),
             const SizedBox(height: 50),
             GestureDetector(
               onTap: () {
-                if(_image!=null){
-                  _uploadImage(_image!);
-                  _updateProfileDetails();
+                if(is_loading){
+
                 }else{
-                  _updateProfileDetails();
+                  setState(() {
+                    is_loading=true;
+                  });
+                  if(_image!=null){
+                    _uploadImage(_image!);
+                    _submitForm();
+                  }else{
+                    _submitForm();
+                  }
                 }
               },
               child: Container(
-                width: 240,
                 height: 56,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),

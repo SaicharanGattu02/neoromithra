@@ -85,8 +85,6 @@ class ReturnRefundPolicyScreen extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.circle, size: 16),
-          SizedBox(width: 8),
           Expanded(child: Text(point)),
         ],
       ),

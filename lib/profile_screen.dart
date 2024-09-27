@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:neuromithra/Aboutus.dart';
+import 'package:neuromithra/CancellationPolicyScreen.dart';
 import 'package:neuromithra/PrivacyPolicyScreen.dart';
+import 'package:neuromithra/ReturnRefundPolicyScreen.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'AddRating.dart';
 import 'Editprofile _screen.dart';
 import 'LastBooking.dart';
+import 'LogIn.dart';
 import 'Model/ProfileDetailsModel.dart'; // Import the Edit Profile Screen
 
 class ProfileScreen extends StatefulWidget {
@@ -14,6 +17,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  bool is_loading=true;
   @override
   void initState() {
     GetProfileDetails();
@@ -26,6 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (Response != null) {
       setState(() {
         user_data=Response;
+        is_loading=false;
       });
     }
   }
@@ -37,7 +42,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         leading: Container(),
         leadingWidth: 0,
       ),
-      body: Padding(
+      body: (is_loading)?Center(
+        child: CircularProgressIndicator(),
+      ):
+      Padding(
         padding: EdgeInsets.symmetric(horizontal: 15),
         child: Column(
           children: <Widget>[
@@ -47,38 +55,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 Row(
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        // Navigate to Edit Profile screen when image is tapped
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => EditProfileScreen()),
-                        );
-                      },
-                      child: ClipOval(
-                        child: Container(
-                          width: 80, // Set width for the oval
-                          height: 80, // Set height for the oval
-                          color: Colors.grey[300], // Background color when the image is loading
-                          child: Image.network(
-                            "${user_data?.userProfile}", // Local asset image
-                            fit: BoxFit.cover, // Cover the entire oval
-                          ),
+                    CircleAvatar(
+                      child: Text(
+                        (user_data?.name != null && user_data!.name!.isNotEmpty)
+                            ? user_data!.name![0].toUpperCase()
+                            : '',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
                         ),
                       ),
+                      backgroundColor: Colors.blue, // Customize the background color
+                      radius: 30,
                     ),
                     SizedBox(width: 20,),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text( "${user_data?.name}"),
-                        Text("${user_data?.email}"),
+                        Text( "${user_data?.name}",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: "Inter",
+                        ),),
+                        Text("${user_data?.email}",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: "Inter",
+                          ),
+                        ),
                       ],
                     ),
                   ],
                 ),
                 Spacer(),
-                Image(image: AssetImage("assets/Fill 1.png"),height: 20,width: 25,),
+                // InkResponse(
+                //     onTap: () {
+                //       // Navigate to Edit Profile screen when image is tapped
+                //       Navigator.push(
+                //         context,
+                //         MaterialPageRoute(builder: (context) => EditProfileScreen()),
+                //       );
+                //     },
+                //     child: Image(image: AssetImage("assets/Fill 1.png"),height: 20,width: 25,color: Colors.blue,)),
               ]
             ),
             const SizedBox(height: 20),
@@ -93,7 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             // About Us Option
             ListTile(
-              leading: Icon(Icons.info),
+              leading: Icon(Icons.info_outline),
               title: Text('About Us'),
               onTap: () {
                 // Navigate to About Us screen
@@ -101,22 +119,67 @@ class _ProfileScreenState extends State<ProfileScreen> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.privacy_tip_rounded),
+              leading: Icon(Icons.privacy_tip_outlined),
               title: Text('Privacy Policy'),
               onTap: () {
                 // Navigate to About Us screen
                 Navigator.push(context, MaterialPageRoute(builder: (context) => PrivacyPolicyScreen()));
               },
             ),
+            // ListTile(
+            //   leading: Icon(Icons.assignment_return_outlined),
+            //   title: Text('Return and Refund Policy'),
+            //   onTap: () {
+            //     // Navigate to About Us screen
+            //     Navigator.push(context, MaterialPageRoute(builder: (context) => ReturnRefundPolicyScreen()));
+            //   },
+            // ),
+            // ListTile(
+            //   leading: Icon(Icons.cancel_presentation),
+            //   title: Text('Cancellation Policy'),
+            //   onTap: () {
+            //     // Navigate to About Us screen
+            //     Navigator.push(context, MaterialPageRoute(builder: (context) => CancellationPolicyScreen()));
+            //   },
+            // ),
             ListTile(
-              leading: Icon(Icons.login_rounded),
+              leading: Icon(Icons.logout_outlined,color: Color(0xff000000),),
               title: Text('Log out'),
               onTap: () {
+                _showLogoutConfirmationDialog(context);
               },
+
             ),
           ],
         ),
       ),
+    );
+  }
+  void _showLogoutConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Logout'),
+          content: Text('Are you sure you want to logout?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Dismiss dialog
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                PreferenceService().clearPreferences();
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>LogIn()));
+                print('User logged out');
+              },
+              child: Text('Logout'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

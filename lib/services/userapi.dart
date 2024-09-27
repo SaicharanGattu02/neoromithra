@@ -10,6 +10,8 @@ import '../Model/RegisterModel.dart';
 import '../Model/ReviewListModel.dart';
 import '../Model/ReviewSubmitModel.dart';
 import 'other_services.dart';
+import 'package:mime/mime.dart';
+import 'package:http_parser/http_parser.dart';
 
 class Userapi {
   static String host = "https://admin.neuromitra.com";
@@ -248,6 +250,37 @@ class Userapi {
         return null;
       }
     } else {
+      return null;
+    }
+  }
+
+  static Future<LoginModel?>UploadImage(File image) async {
+    try {
+      final url = Uri.parse("${host}/api/update_profile_image");
+      final headers = await getheader1();
+      var request = http.MultipartRequest('POST', url);
+      request.headers['Authorization'] = headers; // Add token if required
+
+      // Attach image file
+      var mimeType = lookupMimeType(image.path);
+      var multipartFile = await http.MultipartFile.fromPath(
+        'user_profile', // Parameter name expected by the API
+        image.path,
+        contentType: mimeType != null ? MediaType.parse(mimeType) : null,
+      );
+      request.files.add(multipartFile);
+
+      // Send request
+      var response = await request.send();
+      if (response != null) {
+        // final jsonResponse = jsonDecode(response.body);
+        // print("UpdateRefreshToken response:${response.body}");
+        // return LoginModel.fromJson(jsonResponse);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print("Error occurred: $e");
       return null;
     }
   }
