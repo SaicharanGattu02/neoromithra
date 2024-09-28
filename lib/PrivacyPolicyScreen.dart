@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'CustomAppBar.dart';
+
 class PrivacyPolicyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Privacy Policy'),
+      appBar: CustomAppBar(
+        title: 'Privacy Policy',
+        onBackButtonPressed: () {
+          Navigator.pop(context);
+        },
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
@@ -95,7 +100,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             SizedBox(height: 10),
             Text(
               'If you have any questions or concerns about this Privacy Policy or our privacy practices, please contact us at:\n\n'
-                  'Email: info@neuromitra.in\n'
+                  'Email: neuromitra@gmail.com\n'
                   'Phone: +91 8885320115',
               style: TextStyle(fontSize: 16),
             ),

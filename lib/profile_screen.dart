@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:neuromithra/Aboutus.dart';
+import 'package:neuromithra/AddAddressScreen.dart';
 import 'package:neuromithra/CancellationPolicyScreen.dart';
 import 'package:neuromithra/PrivacyPolicyScreen.dart';
 import 'package:neuromithra/ReturnRefundPolicyScreen.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'AddRating.dart';
+import 'AddressListScreen.dart';
 import 'Editprofile _screen.dart';
 import 'LastBooking.dart';
 import 'LogIn.dart';
@@ -43,7 +45,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         leadingWidth: 0,
       ),
       body: (is_loading)?Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(
+          color: Colors.blue,
+        ),
       ):
       Padding(
         padding: EdgeInsets.symmetric(horizontal: 15),
@@ -126,22 +130,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => PrivacyPolicyScreen()));
               },
             ),
-            // ListTile(
-            //   leading: Icon(Icons.assignment_return_outlined),
-            //   title: Text('Return and Refund Policy'),
-            //   onTap: () {
-            //     // Navigate to About Us screen
-            //     Navigator.push(context, MaterialPageRoute(builder: (context) => ReturnRefundPolicyScreen()));
-            //   },
-            // ),
-            // ListTile(
-            //   leading: Icon(Icons.cancel_presentation),
-            //   title: Text('Cancellation Policy'),
-            //   onTap: () {
-            //     // Navigate to About Us screen
-            //     Navigator.push(context, MaterialPageRoute(builder: (context) => CancellationPolicyScreen()));
-            //   },
-            // ),
+            ListTile(
+              leading: Icon(Icons.area_chart_outlined),
+              title: Text('Address List'),
+              onTap: () {
+                // Navigate to About Us screen
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AddressListScreen()));
+              },
+            ),
             ListTile(
               leading: Icon(Icons.logout_outlined,color: Color(0xff000000),),
               title: Text('Log out'),

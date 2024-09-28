@@ -6,6 +6,7 @@ import 'package:neuromithra/Dashboard.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'FirstLetterCaps.dart';
+import 'Model/AddressListModel.dart';
 import 'ShakeWidget.dart';
 import 'TherapyScreens/BookedApointmentsuccessfully.dart';
 
@@ -32,10 +33,11 @@ class _BookappointmentState extends State<Bookappointment> {
   String? appointmenttype;
   bool isUpdate = false;
   bool _isConnected = true;
+  int? address_id;
 
   @override
   void initState() {
-    // _initConnectivity();
+    GetAddressList();
     super.initState();
 
     _fullNameController.addListener(() {
@@ -88,6 +90,21 @@ class _BookappointmentState extends State<Bookappointment> {
 
   }
 
+  List<Address> addresses=[];
+  Future<void> GetAddressList() async {
+    final response = await Userapi.getaddresslist();
+    setState(() {
+      if (response?.status==true) {
+        addresses=response?.address??[];
+        print(addresses);
+      }else{
+      }
+    });
+
+  }
+
+  int? selectedAddressIndex;
+
   // Future<void> _initConnectivity() async {
   //   try {
   //     var connectivityResult = await (Connectivity().checkConnectivity());
@@ -113,10 +130,10 @@ class _BookappointmentState extends State<Bookappointment> {
     String appointmentType = _appointmentTypeController.text.trim();
     String date = _dateOfAppointmentController.text.trim();
     String timeOfAppointment = _timeOfAppointmentController.text.trim();
-    String location = _locationController.text.trim();
+
 
     final data = await Userapi.Apointment(
-      fullname, phone, appointment, age, appointmentType, date, location, widget.pagesource, timeOfAppointment,user_id
+      fullname, phone, appointment, age, appointmentType, date, address_id.toString(), widget.pagesource, timeOfAppointment,user_id
     );
 
     if (data != null) {
@@ -150,7 +167,7 @@ class _BookappointmentState extends State<Bookappointment> {
       _validateAppointmentType = _appointmentTypeController.text.isEmpty ? "Please enter appointment type" : "";
       _validateDateOfAppointment = _dateOfAppointmentController.text.isEmpty ? "Please enter the date of appointment" : "";
       _validateTimeOfAppointment = _timeOfAppointmentController.text.isEmpty ? "Please enter the time of appointment" : "";
-      _validateLocation = _locationController.text.isEmpty ? "Please enter your location" : "";
+      _validateLocation = address_id==0 ? "Please select your location" : "";
 
       _isLoading = _validateFullName.isEmpty &&
           _validatePhoneNumber.isEmpty &&
@@ -367,7 +384,63 @@ class _BookappointmentState extends State<Bookappointment> {
 
             _buildDateField("Date Of Appointment", _dateOfAppointmentController, _validateDateOfAppointment, context),
             _buildTimeField("Time Of Appointment", _timeOfAppointmentController, _validateTimeOfAppointment, context),
-            _buildTextField("Location", _locationController, _validateLocation, TextInputType.text),
+
+            Column(
+              children: List.generate(addresses.length, (index) {
+                String title = addresses[index].typeOfAddress == 1
+                    ? "Current Address"
+                    : "Permanent Address";
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0,),
+                  child: Row(
+                    children: [
+                      Checkbox(
+                        value: selectedAddressIndex == index,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            // Update the selected index
+                            selectedAddressIndex = value == true ? index : null;
+                            address_id=addresses[index].id;
+                            print("Address id:${address_id}");
+                            _validateLocation="";
+                          });
+                        },
+                      ),
+                      Expanded(
+                        child: ListTile(
+                          title: Text(title),
+                          subtitle: Text("${addresses[index].flatNo}, ${addresses[index].street}, ${addresses[index].area} - ${addresses[index].landmark}, ${addresses[index].pincode}"),
+                          contentPadding: EdgeInsets.zero, // Remove padding for better alignment
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ),
+            if (_validateLocation.isNotEmpty) ...[
+              Container(
+                alignment: Alignment.topLeft,
+                margin: EdgeInsets.only(left: 8, bottom: 10, top: 5),
+                width: MediaQuery.of(context).size.width * 0.6,
+                child: ShakeWidget(
+                  key: Key("value"),
+                  duration: Duration(milliseconds: 700),
+                  child: Text(
+                    _validateLocation,
+                    style: TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 12,
+                      color: Colors.red,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ] else ...[
+              SizedBox(height: 15),
+            ],
+            // _buildTextField("Location", _locationController, _validateLocation, TextInputType.text),
             const SizedBox(height: 20),
             Center(
               child: GestureDetector(

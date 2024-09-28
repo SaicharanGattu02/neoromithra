@@ -8,32 +8,43 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   CustomAppBar({
     required this.title,
     required this.onBackButtonPressed,
-    this.toolbarHeight = 56.0,
+    this.toolbarHeight = 60.0,
   });
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      title: Text(
-        title,
-        style: TextStyle(
-          color: Color(0xFF000000),
-          fontSize: 24,
-          fontWeight: FontWeight.w700,
-          fontFamily: "Inter",
-        ), // Set the title text color
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color(0xff86E7ED),
+            Color(0xff72CCF2),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
       ),
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: Color(0xFF000000),), // Set the back button color
-        onPressed: () {
-          Navigator.pop(context);
-        },
+      child: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black), // Customize the leading icon
+          onPressed: () {
+            Navigator.pop(context); // Back navigation
+          },
+        ),
+        title: Text(
+          title, // Use the dynamic title
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w500,
+            fontFamily: "Inter",
+            color: Colors.black, // Set text color
+          ),
+        ),
+        backgroundColor: Colors.transparent, // Make the AppBar background transparent
+        elevation: 0, // Remove shadow
       ),
-      backgroundColor: Color(0xFFFFFFFF), // Set your preferred background color
-      toolbarHeight: toolbarHeight,
     );
   }
-
   @override
   Size get preferredSize => Size.fromHeight(toolbarHeight);
 

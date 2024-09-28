@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,7 +25,6 @@ class _LogInState extends State<LogIn> {
 
   bool _loading = false;
   bool _isPasswordVisible = false;
-  // String token="";
 
   @override
   void dispose() {
@@ -38,7 +40,8 @@ class _LogInState extends State<LogIn> {
     setState(() {
       _loading = true;
     });
-    final loginResponse = await Userapi.PostLogin(email, pwd);
+    String fcm_token = await PreferenceService().getString("fbstoken")??"";
+    final loginResponse = await Userapi.PostLogin(email, pwd,fcm_token);
     if (loginResponse != null) {
       if (loginResponse.accessToken!="") {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(

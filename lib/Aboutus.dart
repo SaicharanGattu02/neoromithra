@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'CustomAppBar.dart';
+
 class AboutUsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('About Us'),
+      appBar: CustomAppBar(
+        title: 'About Us',
+        onBackButtonPressed: () {
+          Navigator.pop(context);
+        },
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),

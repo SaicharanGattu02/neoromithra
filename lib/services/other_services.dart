@@ -38,12 +38,10 @@ getheader1() async {
 }
 
 CheckHeaderValidity() async {
-  String timestamp =
-      DateTime.now().millisecondsSinceEpoch.toString().substring(0, 10);
+  String timestamp = DateTime.now().millisecondsSinceEpoch.toString().substring(0, 10);
   LoginModel response = LoginModel();
   final token = await PreferenceService().getString("token");
-  final validityTimestamp =
-      await PreferenceService().getString("access_expiry_timestamp");
+  final validityTimestamp = await PreferenceService().getString("access_expiry_timestamp");
   var status = true;
   if (int.parse(validityTimestamp!) <= int.parse(timestamp)) {
     await Userapi.UpdateRefreshToken().then((data) => {
@@ -57,9 +55,7 @@ CheckHeaderValidity() async {
                   PreferenceService().saveString("access_expiry_timestamp",
                       response.expiresIn.toString() ?? ""),
                   status = true,
-                }
-              else
-                {
+                } else {
                   status = false,
                 }
             }

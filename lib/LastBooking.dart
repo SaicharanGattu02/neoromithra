@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:neuromithra/AddRating.dart';
 import 'package:neuromithra/services/userapi.dart';
 
+import 'CustomAppBar.dart';
 import 'Model/BookingHistoryModel.dart';
 
 class LastBooking extends StatefulWidget {
@@ -46,16 +47,11 @@ class _LastBookingState extends State<LastBooking> {
     //   // Add more bookings here...
     // ];
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Last Booking",
-          style: TextStyle(
-              color: Color(0xff000000),
-              fontWeight: FontWeight.w600,
-              fontSize: 20,
-              fontFamily: "Inter",
-              height: 24.2 / 20),
-        ),
+      appBar: CustomAppBar(
+        title: 'Booking History',
+        onBackButtonPressed: () {
+          Navigator.pop(context);
+        },
       ),
       body:(is_loading)?Center(
         child: CircularProgressIndicator(
@@ -92,7 +88,7 @@ class _LastBookingState extends State<LastBooking> {
                       Text(
                         "Order No-${booking.id}",
                         style: TextStyle(
-                          fontFamily: 'Poppins',
+                          fontFamily: 'Inter',
                           fontSize: 16.0,
                           fontWeight: FontWeight.w700,
                           height: 21.82 / 16.0,
@@ -100,7 +96,7 @@ class _LastBookingState extends State<LastBooking> {
                       ),
                       SizedBox(width: w * 0.020),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+                        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
                         decoration: BoxDecoration(
                           color: Color(0x4DA0F2A3),
                           borderRadius: BorderRadius.circular(20),
@@ -108,7 +104,7 @@ class _LastBookingState extends State<LastBooking> {
                         child: Text(
                           (booking.appointmentType == 0) ? "Online" : "Offline",
                           style: TextStyle(
-                            fontFamily: 'Poppins',
+                            fontFamily: 'Inter',
                             fontSize: 10.0,
                             color: Color(0xff0DC613),
                             fontWeight: FontWeight.w700,
@@ -126,7 +122,7 @@ class _LastBookingState extends State<LastBooking> {
                         child: Text(
                           "${booking.appointment}",
                           style: TextStyle(
-                            fontFamily: 'Poppins',
+                            fontFamily: 'Inter',
                             fontSize: 14,
                             color: Color(0xff088A87),
                             fontWeight: FontWeight.w700,

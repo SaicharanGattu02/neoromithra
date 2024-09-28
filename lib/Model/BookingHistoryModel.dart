@@ -33,13 +33,15 @@ class BookingHistory {
   int? age;
   int? appointmentType;
   String? dateOfAppointment;
-  String? location;
+  int? location;
+  Null? presentAddress;
+  Null? permanentAddress;
   String? pageSource;
   int? appointmentStatus;
   String? timeOfAppointment;
-  int? therapistId;
+  Null? therapistId;
   int? userId;
-  String? filePath;
+  Null? filePath;
   int? ratingStatus;
 
   BookingHistory(
@@ -51,6 +53,8 @@ class BookingHistory {
         this.appointmentType,
         this.dateOfAppointment,
         this.location,
+        this.presentAddress,
+        this.permanentAddress,
         this.pageSource,
         this.appointmentStatus,
         this.timeOfAppointment,
@@ -68,6 +72,8 @@ class BookingHistory {
     appointmentType = json['appointment_type'];
     dateOfAppointment = json['Date_of_appointment'];
     location = json['location'];
+    presentAddress = json['present_address'];
+    permanentAddress = json['permanent address'];
     pageSource = json['page_source'];
     appointmentStatus = json['appointment_status'];
     timeOfAppointment = json['time_of_appointment'];
@@ -87,6 +93,8 @@ class BookingHistory {
     data['appointment_type'] = this.appointmentType;
     data['Date_of_appointment'] = this.dateOfAppointment;
     data['location'] = this.location;
+    data['present_address'] = this.presentAddress;
+    data['permanent address'] = this.permanentAddress;
     data['page_source'] = this.pageSource;
     data['appointment_status'] = this.appointmentStatus;
     data['time_of_appointment'] = this.timeOfAppointment;

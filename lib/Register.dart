@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neuromithra/LogIn.dart';
+import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 
 class Register extends StatefulWidget {
@@ -28,8 +29,6 @@ class _RegisterState extends State<Register> {
 
   bool _loading = false;
   bool _isPasswordVisible = false;
-  String fcm_token="";
-  // String token="";
 
   @override
   void dispose() {
@@ -48,18 +47,7 @@ class _RegisterState extends State<Register> {
     setState(() {
       _loading = true;
     });
-    if (Platform.isAndroid) {
-      FirebaseMessaging.instance.getToken().then((value) {
-      fcm_token = value??"";
-        print("Androidfbstoken:{$fcm_token}");
-      });
-    } else {
-      FirebaseMessaging.instance.getToken().then((value) {
-        fcm_token = value??"";
-        print("IOSfbstoken:{$fcm_token}");
-      });
-    }
-
+    String fcm_token = await PreferenceService().getString("fbstoken")??"";
     final registerResponse = await Userapi.PostRegister(
         name, email, pwd, _mobilenumberController.text,fcm_token);
     if (registerResponse != null) {
