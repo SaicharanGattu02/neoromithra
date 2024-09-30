@@ -9,6 +9,7 @@ import 'package:neuromithra/services/userapi.dart';
 import 'AddRating.dart';
 import 'AddressListScreen.dart';
 import 'Editprofile _screen.dart';
+import 'GovtSupportinfo.dart';
 import 'LastBooking.dart';
 import 'LogIn.dart';
 import 'Model/ProfileDetailsModel.dart'; // Import the Edit Profile Screen
@@ -111,6 +112,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 // Navigate to Booking History screen
                 Navigator.push(
                     context, MaterialPageRoute(builder: (context) => LastBooking()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.support),
+              title: Text('Govt Support information'),
+              onTap: () {
+                // Navigate to About Us screen
+                Navigator.push(context, MaterialPageRoute(builder: (context) => SupportProgramsScreen()));
               },
             ),
             // About Us Option
