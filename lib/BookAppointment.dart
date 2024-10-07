@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
-import 'package:neuromithra/Dashboard.dart';
-import 'package:neuromithra/services/Preferances.dart';
+import 'package:lottie/lottie.dart';
+import 'package:neuromithra/AddRating.dart';
 import 'package:neuromithra/services/userapi.dart';
-import 'FirstLetterCaps.dart';
-import 'Model/AddressListModel.dart';
-import 'ShakeWidget.dart';
-import 'TherapyScreens/BookedApointmentsuccessfully.dart';
+import 'Bookappointment1.dart';
+import 'CustomAppBar.dart';
+import 'Model/PreviousBookingModel.dart';
+
 
 class Bookappointment extends StatefulWidget {
   final String pagesource;
@@ -19,746 +18,207 @@ class Bookappointment extends StatefulWidget {
 }
 
 class _BookappointmentState extends State<Bookappointment> {
-  final TextEditingController _fullNameController = TextEditingController();
-  final TextEditingController _phoneNumberController = TextEditingController();
-  final TextEditingController _appointmentController = TextEditingController();
-  final TextEditingController _ageController = TextEditingController();
-  final TextEditingController _appointmentTypeController = TextEditingController();
-  final TextEditingController _dateOfAppointmentController = TextEditingController();
-  final TextEditingController _timeOfAppointmentController = TextEditingController();
-  final TextEditingController _locationController = TextEditingController();
-
-  bool _isLoading = false;
-  String? appointment;
-  String? appointmenttype;
-  bool isUpdate = false;
-  bool _isConnected = true;
-  int? address_id;
-
+  bool is_loading=true;
   @override
   void initState() {
-    GetAddressList();
+    GetPreviousBookingHistory();
     super.initState();
-
-    _fullNameController.addListener(() {
-      setState(() {
-        _validateFullName = "";
-      });
-    });
-    _phoneNumberController.addListener(() {
-      setState(() {
-        _validatePhoneNumber = "";
-      });
-    });
-
-    _appointmentController.addListener(() {
-      setState(() {
-        _validateAppointment = "";
-      });
-    });
-
-    _ageController.addListener(() {
-      setState(() {
-        _validateAge = "";
-      });
-    });
-
-    _appointmentTypeController.addListener(() {
-      setState(() {
-        _validateAppointmentType = "";
-      });
-    });
-
-    _dateOfAppointmentController.addListener(() {
-      setState(() {
-        _validateDateOfAppointment = "";
-      });
-    });
-
-    _timeOfAppointmentController.addListener(() {
-
-      setState(() {
-        _validateTimeOfAppointment = "";
-      });
-    });
-    _locationController.addListener(() {
-      setState(() {
-        _validateLocation = "";
-      });
-    });
-
-
   }
-
-  List<Address> addresses=[];
-  Future<void> GetAddressList() async {
-    final response = await Userapi.getaddresslist();
-    setState(() {
-      if (response?.status==true) {
-        addresses=response?.address??[];
-        print(addresses);
-      }else{
-      }
-    });
-
-  }
-
-  int? selectedAddressIndex;
-
-  // Future<void> _initConnectivity() async {
-  //   try {
-  //     var connectivityResult = await (Connectivity().checkConnectivity());
-  //     _updateConnectionStatus(connectivityResult);
-  //   } on PlatformException catch (e) {
-  //     print("Couldn't check connectivity status: $e");
-  //   }
-  // }
-  //
-  // // Update connectivity status
-  // void _updateConnectionStatus(ConnectivityResult result) {
-  //   setState(() {
-  //     _isConnected = result != ConnectivityResult.none;
-  //   });
-  // }
-
-  Future<void> BookAppointmentData() async {
-    String user_id = await PreferenceService().getString('user_id')??"";
-    String fullname = _fullNameController.text.trim();
-    String phone = _phoneNumberController.text.trim();
-    String appointment = _appointmentController.text.trim();
-    String age = _ageController.text.trim();
-    String appointmentType = _appointmentTypeController.text.trim();
-    String date = _dateOfAppointmentController.text.trim();
-    String timeOfAppointment = _timeOfAppointmentController.text.trim();
-
-
-    final data = await Userapi.Apointment(
-      fullname, phone, appointment, age, appointmentType, date, address_id.toString(), widget.pagesource, timeOfAppointment,user_id
-    );
-
-    if (data != null) {
+  List<Patients> patients=[];
+  Future<void> GetPreviousBookingHistory() async {
+    final Response = await Userapi.getpreviousbookings(widget.pagesource);
+    if (Response != null) {
       setState(() {
-        if (data.status == true) {
-
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>ApointmentSuccess()));
-
+        if(Response.status==true){
+          patients=Response.patients??[];
+          is_loading=false;
+        }else{
+          is_loading=false;
         }
       });
-    } else {
-      print("Data not fetched.");
     }
   }
 
-  String _validateFullName = "";
-  String _validatePhoneNumber = "";
-  String _validateAppointment = "";
-  String _validateAge = "";
-  String _validateAppointmentType = "";
-  String _validateDateOfAppointment = "";
-  String _validateTimeOfAppointment = "";
-  String _validateLocation = "";
-
-  void _validateFields() {
-    setState(() {
-      _validateFullName = _fullNameController.text.isEmpty ? "Please enter your full name" : "";
-      _validatePhoneNumber = _phoneNumberController.text.isEmpty ||  _phoneNumberController.text.length<10 ? "Please enter your phone number" : "";
-      _validateAppointment = _appointmentController.text.isEmpty ? "Please select your appointment" : "";
-      _validateAge = _ageController.text.isEmpty ? "Please enter your age" : "";
-      _validateAppointmentType = _appointmentTypeController.text.isEmpty ? "Please enter appointment type" : "";
-      _validateDateOfAppointment = _dateOfAppointmentController.text.isEmpty ? "Please enter the date of appointment" : "";
-      _validateTimeOfAppointment = _timeOfAppointmentController.text.isEmpty ? "Please enter the time of appointment" : "";
-      _validateLocation = address_id==0 ? "Please select your location" : "";
-
-      _isLoading = _validateFullName.isEmpty &&
-          _validatePhoneNumber.isEmpty &&
-          _validateAppointment.isEmpty &&
-          _validateAge.isEmpty &&
-          _validateAppointmentType.isEmpty &&
-          _validateDateOfAppointment.isEmpty &&
-          _validateTimeOfAppointment.isEmpty &&
-          _validateLocation.isEmpty;
-
-      if (_isLoading) {
-        BookAppointmentData();
-      }
-    });
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2050),
-    );
-
-    if (pickedDate != null) {
+  Future<void> downloadscript() async {
+    final Response = await Userapi.downloadscriptapi();
+    if (Response != null) {
       setState(() {
-        _dateOfAppointmentController.text = DateFormat('yyyy/MM/dd').format(pickedDate);
+
       });
     }
   }
-
-  Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-      builder: (BuildContext context, Widget? child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-          child: child!,
-        );
-      },
-    );
-
-    if (pickedTime != null) {
-      final now = DateTime.now();
-      // Parse the selected date from the date controller
-      final selectedDate = DateFormat('yyyy/MM/dd').parse(_dateOfAppointmentController.text);
-
-      // Create DateTime objects for today and the selected time
-      final selectedDateTime = DateTime(
-        selectedDate.year,
-        selectedDate.month,
-        selectedDate.day,
-        pickedTime.hour,
-        pickedTime.minute,
-      );
-
-      // Check if the selected date is today
-      if (selectedDate.isAtSameMomentAs(DateTime(now.year, now.month, now.day))) {
-        // If the selected time is before the current time today, show an error
-        if (selectedDateTime.isBefore(now)) {
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Selected time cannot be in the past.'),
-
-            ),
-          );
-          setState(() {
-            _timeOfAppointmentController.text="";
-
-          });
-          return;
-        }
-      }
-
-      // Update the time field if everything is valid
-      setState(() {
-        _timeOfAppointmentController.text = DateFormat('HH:mm').format(selectedDateTime);
-      });
-    }
-  }
-
-
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-
+    var w = MediaQuery.of(context).size.width;
+    var h = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        shadowColor: Colors.white,
-        title: Row(
-          children: [
-            Text(
-              "Booking Appointment",
-              style: TextStyle(
-                color: Colors.black,
-                fontFamily: 'Poppins',
-                fontSize: 22,
-                fontWeight: FontWeight.w500,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
-        leadingWidth: 25,
+      appBar: CustomAppBar(
+        title: 'Previous Booking History',
+        onBackButtonPressed: () {
+          Navigator.pop(context);
+        },
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 30),
-            _buildTextField("Full Name", _fullNameController, _validateFullName, TextInputType.name, r'^[a-zA-Z\s]+$'),
-            _buildTextField("Phone Number", _phoneNumberController, _validatePhoneNumber, TextInputType.number, r'^\d{0,10}$'),
-            _buildDropdownField("Appointment", appointment, _appointmentController, _validateAppointment, ['Self', 'Children']),
-            _buildTextField("Age", _ageController, _validateAge, TextInputType.number, r'^\d{0,3}$'),
-            // _buildTextField("Appointment Mode", _appointmentTypeController, _validateAppointmentType, TextInputType.text),
-            Text(
-              "Appointment Mode",
-              style: TextStyle(
-                fontSize: 16,
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF374151),
-              ),
+      body:(is_loading)? Center(
+        child: CircularProgressIndicator(
+          color: Colors.blue,
+        ),
+      ):
+      (patients.length==0)?
+      InkResponse(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Bookappointment1(pagesource: widget.pagesource,patientID: "",),
             ),
-            const SizedBox(height: 4),
-            DropdownButtonFormField<String>(
-              value: appointmenttype,
-              onChanged: (value) {
-                setState(() {
-                  appointmenttype = value;
-                  if(appointmenttype=="Online"){
-                    _appointmentTypeController.text="0";
-                  }else{
-                    _appointmentTypeController.text="1";
-                  }
-                  _validateAppointmentType="";
-                });
-              },
-              items: [
-                'Online',
-                'Offline',
-              ].map((status) {
-                return DropdownMenuItem<String>(
-                  value: status,
-                  child: Text(
-                    status,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: "Poppins",
-                      letterSpacing: 0,
-                      height: 1.2,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w400,
+          );
+        },
+        child: Center(
+          child: Container(
+            width: 150.0,
+            height: 150.0,
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Color(0x4DA0F2F0),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.add_circle_outline,
+                  color: Colors.black,
+                  size: 24.0,
+                ),
+                SizedBox(height: 4.0),
+                Text(
+                  "Add New Appointment",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
+                ),
+              ],
+            ),
+          ),
+        ),
+      )
+
+      // Center(
+      //   child: Lottie.asset(
+      //     'assets/animations/nodata1.json',
+      //     height: 360,
+      //     width: 360,
+      //   ),
+      // )
+          :
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2, // Number of columns
+            childAspectRatio: 1.2, // Aspect ratio for each item
+            crossAxisSpacing: 10, // Spacing between items in the cross-axis
+            mainAxisSpacing: 10, // Spacing between items in the main-axis
+          ),
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(), // Prevent scrolling of the GridView
+          itemCount: patients.length + 1, // +1 for the "Add New Appointment" button
+          itemBuilder: (BuildContext context, int index) {
+            if (index == 0) {
+              // Add New Appointment Button
+              return InkResponse(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Bookappointment1(pagesource: widget.pagesource, patientID: patients[index].pid),
+                    ),
+                  );
+                },
+                child: Center(
+                  child: Container(
+                    width: 200.0,
+                    height: 120.0,
+                    decoration: BoxDecoration(
+                      color: Color(0x4DA0F2F0),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.add_circle_outline,
+                          color: Colors.black,
+                          size: 24.0,
+                        ),
+                        SizedBox(height: 4.0),
+                        Text(
+                          "Add New Appointment",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ],
                     ),
                   ),
-                );
-              }).toList(),
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Color(0xffffffff),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                  borderSide: BorderSide(width: 1, color: Color(0xffCDE2FB)),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                  borderSide: BorderSide(width: 1, color: Color(0xffCDE2FB)),
+              );
+            } else {
+              // Display the booking history
+              var booking = patients[index - 1]; // Adjust index for bookingHistory
+              return Container(
+                padding: EdgeInsets.all(20),
+                margin: EdgeInsets.symmetric(vertical: 5),
+                decoration: BoxDecoration(
+                  color: Color(0x4DA0F2F0),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-              ),
-              hint: Align(
-                alignment: Alignment.center,
-                child: Text(
-                  "Select appointment type",
-                  style: TextStyle(
-                    fontSize: 15,
-                    letterSpacing: 0,
-                    color: Color(0xffAFAFAF),
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-            ),
-            if (_validateAppointmentType.isNotEmpty) ...[
-              Container(
-                alignment: Alignment.topLeft,
-                margin: EdgeInsets.only(left: 8,bottom: 10,top: 5),
-                width: screenWidth * 0.6,
-                child: ShakeWidget(
-                  key: Key("value"),
-                  duration: Duration(milliseconds: 700),
-                  child: Text(
-                    _validateAppointmentType,
-                    style: TextStyle(
-                      fontFamily: "Poppins",
-                      fontSize: 12,
-                      color:Colors.red,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-            ] else ...[
-              const SizedBox(
-                height: 15,
-              ),
-            ],
-
-            _buildDateField("Date Of Appointment", _dateOfAppointmentController, _validateDateOfAppointment, context),
-            _buildTimeField("Time Of Appointment", _timeOfAppointmentController, _validateTimeOfAppointment, context),
-
-            Column(
-              children: List.generate(addresses.length, (index) {
-                String title = addresses[index].typeOfAddress == 1
-                    ? "Current Address"
-                    : "Permanent Address";
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0,),
-                  child: Row(
-                    children: [
-                      Checkbox(
-                        value: selectedAddressIndex == index,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            // Update the selected index
-                            selectedAddressIndex = value == true ? index : null;
-                            address_id=addresses[index].id;
-                            print("Address id:${address_id}");
-                            _validateLocation="";
-                          });
-                        },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Patient ID-${booking.pid}",
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w700,
+                        height: 21.82 / 16.0,
                       ),
-                      Expanded(
-                        child: ListTile(
-                          title: Text(title),
-                          subtitle: Text("${addresses[index].flatNo}, ${addresses[index].street}, ${addresses[index].area} - ${addresses[index].landmark}, ${addresses[index].pincode}"),
-                          contentPadding: EdgeInsets.zero, // Remove padding for better alignment
+                    ),
+                    SizedBox(width: w * 0.020),
+                    Text(
+                      booking.pname ?? "",
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 16.0,
+                        color:Colors.black,
+                        fontWeight: FontWeight.w700,
+                        height: 13.64 / 10.0,
+                      ),
+                    ),
+                    SizedBox(height: 10,),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: Color(0x80A0F2F0),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        "Age: ${booking.page}",
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 14,
+                          color: Color(0xff088A87),
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
-                    ],
-                  ),
-                );
-              }),
-            ),
-            if (_validateLocation.isNotEmpty) ...[
-              Container(
-                alignment: Alignment.topLeft,
-                margin: EdgeInsets.only(left: 8, bottom: 10, top: 5),
-                width: MediaQuery.of(context).size.width * 0.6,
-                child: ShakeWidget(
-                  key: Key("value"),
-                  duration: Duration(milliseconds: 700),
-                  child: Text(
-                    _validateLocation,
-                    style: TextStyle(
-                      fontFamily: "Poppins",
-                      fontSize: 12,
-                      color: Colors.red,
-                      fontWeight: FontWeight.w500,
                     ),
-                  ),
+                  ],
                 ),
-              ),
-            ] else ...[
-              SizedBox(height: 15),
-            ],
-            // _buildTextField("Location", _locationController, _validateLocation, TextInputType.text),
-            const SizedBox(height: 20),
-            Center(
-              child: GestureDetector(
-                onTap: _validateFields,
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-                  decoration: BoxDecoration(
-                    color:Colors.blue,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: _isLoading ?
-                  Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.white,),
-                  )
-                    : Text(
-                      "Book Appointment",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Poppins',
-                      ),
-                    ),
-
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField(String label, TextEditingController controller, String validation, TextInputType keyboardType, [String? pattern]) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 16,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w500,
-            color: Color(0xFF374151),
-          ),
-        ),
-        const SizedBox(height: 4),
-        TextFormField(
-          controller: controller,
-          cursorColor: Colors.black,
-          keyboardType: keyboardType,
-          inputFormatters: pattern != null
-              ? [FilteringTextInputFormatter.allow(RegExp(pattern))]
-              : [],
-          decoration: InputDecoration(
-            hintText: "Enter your $label",
-            hintStyle: TextStyle(
-              fontSize: 15,
-              letterSpacing: 0,
-              height: 1.2,
-              color: Color(0xffAFAFAF),
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w400,
-            ),
-            filled: true,
-            fillColor: Color(0xffffffff),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(width: 1, color: Color(0xffCDE2FB)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(width: 1, color: Color(0xffCDE2FB)),
-            ),
-          ),
-        ),
-        if (validation.isNotEmpty) ...[
-          Container(
-            alignment: Alignment.topLeft,
-            margin: EdgeInsets.only(left: 8, bottom: 10, top: 5),
-            width: MediaQuery.of(context).size.width * 0.6,
-            child: ShakeWidget(
-              key: Key("value"),
-              duration: Duration(milliseconds: 700),
-              child: Text(
-                validation,
-                style: TextStyle(
-                  fontFamily: "Poppins",
-                  fontSize: 12,
-                  color: Colors.red,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
-        ] else ...[
-          SizedBox(height: 15),
-        ]
-      ],
-    );
-  }
-
-  Widget _buildDropdownField(String label, String? value, TextEditingController controller, String validation, List<String> options) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 16,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w500,
-            color: Color(0xFF374151),
-          ),
-        ),
-        const SizedBox(height: 4),
-        DropdownButtonFormField<String>(
-          value: value,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Color(0xffffffff),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(width: 1, color: Color(0xffCDE2FB)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(width: 1, color: Color(0xffCDE2FB)),
-            ),
-          ),
-          hint: Align(
-            alignment: Alignment.center,
-            child: Text(
-              "Select appointment",
-              style: TextStyle(
-                fontSize: 15,
-                letterSpacing: 0,
-                color: Color(0xffAFAFAF),
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ),
-          items: options.map((String option) {
-            return DropdownMenuItem<String>(
-              value: option,
-              child: Text(option),
-            );
-          }).toList(),
-          onChanged: (String? newValue) {
-            setState(() {
-              controller.text = newValue!;
-              appointment = newValue;
-            });
-          },
-          onSaved: (String? newValue) {
-            controller.text = newValue!;
-            appointment = newValue;
+              );
+            }
           },
         ),
-        if (validation.isNotEmpty) ...[
-          Container(
-            alignment: Alignment.topLeft,
-            margin: EdgeInsets.only(left: 8, bottom: 10, top: 5),
-            width: MediaQuery.of(context).size.width * 0.6,
-            child: ShakeWidget(
-              key: Key("value"),
-              duration: Duration(milliseconds: 700),
-              child: Text(
-                validation,
-                style: TextStyle(
-                  fontFamily: "Poppins",
-                  fontSize: 12,
-                  color: Colors.red,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
-        ] else ...[
-          SizedBox(height: 15),
-        ]
-      ],
-    );
-  }
-
-  Widget _buildDateField(String label, TextEditingController controller, String validation, BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 16,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w500,
-            color: Color(0xFF374151),
-          ),
-        ),
-        const SizedBox(height: 4),
-        TextFormField(
-          controller: controller,
-          cursorColor: Colors.black,
-          readOnly: true,
-          onTap: () => _selectDate(context),
-          decoration: InputDecoration(
-            hintText: "Select your $label",
-            hintStyle: TextStyle(
-              fontSize: 15,
-              letterSpacing: 0,
-              height: 1.2,
-              color: Color(0xffAFAFAF),
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w400,
-            ),
-            filled: true,
-            fillColor: Color(0xffffffff),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(width: 1, color: Color(0xffCDE2FB)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(width: 1, color: Color(0xffCDE2FB)),
-            ),
-          ),
-        ),
-        if (validation.isNotEmpty) ...[
-          Container(
-            alignment: Alignment.topLeft,
-            margin: EdgeInsets.only(left: 8, bottom: 10, top: 5),
-            width: MediaQuery.of(context).size.width * 0.8,
-            child: ShakeWidget(
-              key: Key("value"),
-              duration: Duration(milliseconds: 700),
-              child: Text(
-                validation,
-                style: TextStyle(
-                  fontFamily: "Poppins",
-                  fontSize: 12,
-                  color: Colors.red,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
-        ] else ...[
-          SizedBox(height: 15),
-        ]
-      ],
-    );
-  }
-
-  Widget _buildTimeField(String label, TextEditingController controller, String validation, BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 16,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w500,
-            color: Color(0xFF374151),
-          ),
-        ),
-        const SizedBox(height: 4),
-        TextFormField(
-          controller: controller,
-          cursorColor: Colors.black,
-          readOnly: true,
-          onTap: () => _selectTime(context),
-          decoration: InputDecoration(
-            hintText: "Select your $label",
-            hintStyle: TextStyle(
-              fontSize: 15,
-              letterSpacing: 0,
-              height: 1.2,
-              color: Color(0xffAFAFAF),
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w400,
-            ),
-            filled: true,
-            fillColor: Color(0xffffffff),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(width: 1, color: Color(0xffCDE2FB)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(width: 1, color: Color(0xffCDE2FB)),
-            ),
-          ),
-        ),
-        if (validation.isNotEmpty) ...[
-          Container(
-            alignment: Alignment.topLeft,
-            margin: EdgeInsets.only(left: 8, bottom: 10, top: 5),
-            width: MediaQuery.of(context).size.width * 0.6,
-            child: ShakeWidget(
-              key: Key("value"),
-              duration: Duration(milliseconds: 700),
-              child: Text(
-                validation,
-                style: TextStyle(
-                  fontFamily: "Poppins",
-                  fontSize: 12,
-                  color: Colors.red,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
-        ] else ...[
-          SizedBox(height: 15),
-        ]
-      ],
+      )
     );
   }
 }

@@ -7,6 +7,7 @@ import '../Model/AddressListModel.dart';
 import '../Model/BookApointmentModel.dart';
 import '../Model/BookingHistoryModel.dart';
 import '../Model/LoginModel.dart';
+import '../Model/PreviousBookingModel.dart';
 import '../Model/ProfileDetailsModel.dart';
 import '../Model/RegisterModel.dart';
 import '../Model/ReviewListModel.dart';
@@ -18,7 +19,7 @@ import 'package:http_parser/http_parser.dart';
 class Userapi {
   static String host = "https://admin.neuromitra.com";
 
-  static Future<BookApointmentModel?> Apointment(
+  static Future<BookApointmentModel?> NewApointment(
       String fname,
       String pnum,
       String appointment,
@@ -38,13 +39,64 @@ class Userapi {
           'age': age,
           'appointment_type': appointment_type,
           'Date_of_appointment': Date_of_appointment,
+          'time_of_appointment':time_of_appointment,
           'location': location,
-          'user_id': user_id,
+          'page_source': page_source
         });
         print("Apointment data: $body");
 
         final url = Uri.parse(
-            "${host}/api/bookappointments?page_source=${page_source}&time_of_appointment=${time_of_appointment}");
+            "${host}/api/for_new_bookappointments");
+        final headers = await getheader();
+        final response = await http.post(
+          url,
+          headers: headers,
+          body: body,
+        );
+        final jsonResponse = jsonDecode(response.body);
+        print("Apointment Status:${response.body}");
+        return BookApointmentModel.fromJson(jsonResponse);
+      } catch (e) {
+        print("Error occurred: $e");
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+
+  static Future<BookApointmentModel?> ExistApointment(
+      String fname,
+      String pnum,
+      String appointment,
+      String age,
+      String appointment_type,
+      String Date_of_appointment,
+      String location,
+      String page_source,
+      String time_of_appointment,
+      String user_id,
+      String patient_id
+      ) async {
+    if (await CheckHeaderValidity()) {
+      try {
+        final body = jsonEncode({
+          'Full_Name': fname,
+          'phone_Number': pnum,
+          'appointment': appointment,
+          'age': age,
+          'appointment_type': appointment_type,
+          'Date_of_appointment': Date_of_appointment,
+          'time_of_appointment':time_of_appointment,
+          'location': location,
+          'page_source': page_source,
+          'patient_id': patient_id
+        });
+        print("Apointment data: $body");
+
+        final url = Uri.parse(
+            "${host}/api/for_exesting_bookappointments");
         final headers = await getheader();
         final response = await http.post(
           url,
@@ -204,6 +256,29 @@ class Userapi {
           final jsonResponse = jsonDecode(response.body);
           print("getbookinghistory Status:${response.body}");
           return BookingHistoryModel.fromJson(jsonResponse);
+        } else {
+          print("Request failed with status: ${response.statusCode}");
+          return null;
+        }
+      } catch (e) {
+        print("Error occurred: $e");
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<PreviousBookingModel?> getpreviousbookinghistory() async {
+    if (await CheckHeaderValidity()) {
+      try {
+        final url = Uri.parse("${host}/api/get_user_booking_hisrory");
+        final headers = await getheader();
+        final response = await http.get(url, headers: headers);
+        if (response != null) {
+          final jsonResponse = jsonDecode(response.body);
+          print("getbookinghistory Status:${response.body}");
+          return PreviousBookingModel.fromJson(jsonResponse);
         } else {
           print("Request failed with status: ${response.statusCode}");
           return null;
@@ -406,13 +481,37 @@ class Userapi {
   static Future<String?> downloadscriptapi() async {
     if (await CheckHeaderValidity()) {
       try {
-        final url = Uri.parse("${host}/api/downloadfile/64");
+        final url = Uri.parse("${host}/api/downloadfile/79");
         final headers = await getheader3();
         final response = await http.get(url, headers: headers);
         if (response != null) {
           final jsonResponse = jsonDecode(response.body);
           print("getaddresslist response:${response.body}");
           return jsonResponse;
+        } else {
+          print("Request failed with status: ${response.statusCode}");
+          return null;
+        }
+      } catch (e) {
+        print("Error occurred: $e");
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+
+  static Future<PreviousBookingModel?> getpreviousbookings(String pagesource) async {
+    if (await CheckHeaderValidity()) {
+      try {
+        final url = Uri.parse("${host}/api/check_previous_bookings/${pagesource}");
+        final headers = await getheader1();
+        final response = await http.get(url, headers: headers);
+        if (response != null) {
+          final jsonResponse = jsonDecode(response.body);
+          print("getpreviousbookings response:${response.body}");
+          return PreviousBookingModel.fromJson(jsonResponse);
         } else {
           print("Request failed with status: ${response.statusCode}");
           return null;
