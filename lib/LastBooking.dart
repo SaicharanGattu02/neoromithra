@@ -36,6 +36,15 @@ class _LastBookingState extends State<LastBooking> {
     }
   }
 
+  Future<void> downloadscript() async {
+    final Response = await Userapi.downloadscriptapi();
+    if (Response != null) {
+      setState(() {
+
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var w = MediaQuery.of(context).size.width;
@@ -113,19 +122,25 @@ class _LastBookingState extends State<LastBooking> {
                         ),
                       ),
                       Spacer(),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: Color(0x80A0F2F0),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          "${booking.appointment}",
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 14,
-                            color: Color(0xff088A87),
-                            fontWeight: FontWeight.w700,
+
+                      InkResponse(
+                        onTap: (){
+                          downloadscript();
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: Color(0x80A0F2F0),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            "${booking.appointment}",
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 14,
+                              color: Color(0xff088A87),
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                       ),

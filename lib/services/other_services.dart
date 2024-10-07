@@ -29,6 +29,16 @@ getheader2() async {
   return a;
 }
 
+getheader3() async {
+  final sessionid = await PreferenceService().getString("token");
+  print(sessionid);
+  String Token = "Bearer ${sessionid}";
+  Map<String, String> a = {
+    authorization: Token.toString(),
+  };
+  return a;
+}
+
 getheader1() async {
   final sessionid = await PreferenceService().getString("token");
   print(sessionid);
@@ -51,7 +61,7 @@ CheckHeaderValidity() async {
               if (response.accessToken != "")
                 {
                   PreferenceService()
-                      .saveString("access_token", response.accessToken ?? ""),
+                      .saveString("token", response.accessToken ?? ""),
                   PreferenceService().saveString("access_expiry_timestamp",
                       response.expiresIn.toString() ?? ""),
                   status = true,

@@ -402,4 +402,27 @@ class Userapi {
       return null;
     }
   }
+
+  static Future<String?> downloadscriptapi() async {
+    if (await CheckHeaderValidity()) {
+      try {
+        final url = Uri.parse("${host}/api/downloadfile/64");
+        final headers = await getheader3();
+        final response = await http.get(url, headers: headers);
+        if (response != null) {
+          final jsonResponse = jsonDecode(response.body);
+          print("getaddresslist response:${response.body}");
+          return jsonResponse;
+        } else {
+          print("Request failed with status: ${response.statusCode}");
+          return null;
+        }
+      } catch (e) {
+        print("Error occurred: $e");
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
 }

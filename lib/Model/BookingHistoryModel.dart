@@ -39,9 +39,9 @@ class BookingHistory {
   String? pageSource;
   int? appointmentStatus;
   String? timeOfAppointment;
-  Null? therapistId;
+  int? therapistId;
   int? userId;
-  Null? filePath;
+  String? filePath;
   int? ratingStatus;
 
   BookingHistory(
