@@ -94,25 +94,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    GetProfileDetails();
+    // GetProfileDetails();
   }
-
-  ProfileDetailsModel profilePicture=ProfileDetailsModel();
-  Future<void> GetProfileDetails() async {
-    String user_id = await PreferenceService().getString('user_id')??"";
-    final registerResponse = await Userapi.getprofiledetails(user_id);
-    if (registerResponse != null) {
-      setState(() {
-        isloading=false;
-          profilePicture=registerResponse;
-          _nameController.text=profilePicture?.name??"";
-          name=profilePicture?.name??"";
-          _emailController.text=profilePicture?.email??"";
-          _mobileController.text=profilePicture?.phone.toString()??"";
-          profile_image=profilePicture?.userProfile??'';
-      });
-    }
-  }
+  //
+  // ProfileDetailsModel profilePicture=ProfileDetailsModel();
+  // Future<void> GetProfileDetails() async {
+  //   String user_id = await PreferenceService().getString('user_id')??"";
+  //   final registerResponse = await Userapi.getprofiledetails(user_id);
+  //   if (registerResponse != null) {
+  //     setState(() {
+  //       isloading=false;
+  //         profilePicture=registerResponse;
+  //         _nameController.text=profilePicture?.name??"";
+  //         name=profilePicture?.name??"";
+  //         _emailController.text=profilePicture?.email??"";
+  //         _mobileController.text=profilePicture?.phone.toString()??"";
+  //         profile_image=profilePicture?.userProfile??'';
+  //     });
+  //   }
+  // }
 
   // Method to pick an image from gallery and upload it
   Future<void> _pickImage() async {

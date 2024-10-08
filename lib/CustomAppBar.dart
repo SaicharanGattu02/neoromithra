@@ -34,7 +34,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         title: Text(
           title, // Use the dynamic title
           style: TextStyle(
-            fontSize: 22,
+            fontSize: 20,
             fontWeight: FontWeight.w500,
             fontFamily: "Inter",
             color: Colors.black, // Set text color
@@ -47,6 +47,5 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
   @override
   Size get preferredSize => Size.fromHeight(toolbarHeight);
-
 
 }

@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 
 import '../Model/AddAddressModel.dart';
 import '../Model/AddressListModel.dart';
+import '../Model/BehaviouralTrackingModel.dart';
 import '../Model/BookApointmentModel.dart';
 import '../Model/BookingHistoryModel.dart';
 import '../Model/LoginModel.dart';
@@ -148,17 +149,17 @@ class Userapi {
     }
   }
 
-  static Future<LoginModel?> PostLogin(
-      String mail, String password, String device_token) async {
+  static Future<Map<String, dynamic>?> postLogin(
+      String mail, String password, String deviceToken) async {
     try {
       Map<String, String> data = {
         "email": mail,
         "password": password,
-        "fcm_token": device_token,
+        "fcm_token": deviceToken,
       };
       print("PostLogin: $data");
       final url = Uri.parse("${host}/api/user/userlogin");
-      print("PostLogin : $url");
+      print("PostLogin: $url");
       final response = await http.post(
         url,
         headers: {
@@ -166,10 +167,24 @@ class Userapi {
         },
         body: jsonEncode(data),
       );
-      if (response != null) {
+
+      if (response.statusCode == 200) {
+        // Successful login
         final jsonResponse = jsonDecode(response.body);
-        print("PostLogin Status:${response.body}");
-        return LoginModel.fromJson(jsonResponse);
+        print("PostLogin Status: ${response.body}");
+        return {
+          "access_token": jsonResponse["access_token"],
+          "token_type": jsonResponse["token_type"],
+          "expires_in": jsonResponse["expires_in"],
+        };
+      } else if (response.statusCode == 401) {
+        // Unauthorized
+        final jsonResponse = jsonDecode(response.body);
+        print("Unauthorized: ${jsonResponse['error']}");
+        return {
+          "error": jsonResponse["error"],
+          "status": jsonResponse["status"],
+        };
       } else {
         print("Request failed with status: ${response.statusCode}");
         return null;
@@ -179,6 +194,7 @@ class Userapi {
       return null;
     }
   }
+
 
   static Future<ProfileDetailsModel?> getprofiledetails(String user_id) async {
     if (await CheckHeaderValidity()) {
@@ -512,6 +528,29 @@ class Userapi {
           final jsonResponse = jsonDecode(response.body);
           print("getpreviousbookings response:${response.body}");
           return PreviousBookingModel.fromJson(jsonResponse);
+        } else {
+          print("Request failed with status: ${response.statusCode}");
+          return null;
+        }
+      } catch (e) {
+        print("Error occurred: $e");
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<BehaviouralTrackingModel?> getbehaviourallist(String id) async {
+    if (await CheckHeaderValidity()) {
+      try {
+        final url = Uri.parse("${host}/api/get_therapy_traking/${id}");
+        final headers = await getheader1();
+        final response = await http.get(url, headers: headers);
+        if (response != null) {
+          final jsonResponse = jsonDecode(response.body);
+          print("getbehaviourallist response:${response.body}");
+          return BehaviouralTrackingModel.fromJson(jsonResponse);
         } else {
           print("Request failed with status: ${response.statusCode}");
           return null;

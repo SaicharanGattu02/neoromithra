@@ -40,46 +40,66 @@ class _LogInState extends State<LogIn> {
     setState(() {
       _loading = true;
     });
-    String fcm_token = await PreferenceService().getString("fbstoken")??"";
-    final loginResponse = await Userapi.PostLogin(email, pwd,fcm_token);
+
+    String fcmToken = await PreferenceService().getString("fbstoken") ?? "";
+    final loginResponse = await Userapi.postLogin(email, pwd, fcmToken);
+
     if (loginResponse != null) {
-      if (loginResponse.accessToken!="") {
+      if (loginResponse.containsKey("access_token")) {
+        // Successful login
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
-            "you are loged in successfully",
-            style: TextStyle(color: Color(0xFFFFFFFF),
-                fontFamily: "Inter"
-            ),
+            "You are logged in successfully",
+            style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
           ),
           duration: Duration(seconds: 1),
-          backgroundColor:  Color(0xFF32657B),
+          backgroundColor: Color(0xFF32657B),
         ));
-        PreferenceService().saveString("token",loginResponse.accessToken??"");
-        PreferenceService().saveString("access_expiry_timestamp", loginResponse.expiresIn.toString()??"");
+        PreferenceService().saveString("token", loginResponse["access_token"] ?? "");
+        PreferenceService().saveString("access_expiry_timestamp", loginResponse["expires_in"].toString() ?? "");
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Dashboard()),
         );
-      } else {
+      } else if (loginResponse.containsKey("error")) {
+        // Handle unauthorized or error response
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
-            "Enter valid credentials",
-            style: TextStyle(color: Color(0xFFFFFFFF),
-                fontFamily: "Inter"
-            ),
+            loginResponse["error"],
+            style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
           ),
           duration: Duration(seconds: 1),
-          backgroundColor:  Color(0xFF32657B),
+          backgroundColor: Color(0xFF32657B),
+        ));
+      } else {
+        // Handle other unexpected responses
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            "An unexpected error occurred. Please try again.",
+            style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
+          ),
+          duration: Duration(seconds: 1),
+          backgroundColor: Color(0xFF32657B),
         ));
       }
     } else {
+      // Login request failed
       print("Login failed.");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          "Login request failed. Please try again.",
+          style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
+        ),
+        duration: Duration(seconds: 1),
+        backgroundColor: Color(0xFF32657B),
+      ));
     }
 
     setState(() {
       _loading = false;
     });
   }
+
 
 
   @override

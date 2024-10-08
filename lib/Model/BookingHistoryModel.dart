@@ -34,8 +34,8 @@ class BookingHistory {
   int? appointmentType;
   String? dateOfAppointment;
   int? location;
-  Null? presentAddress;
-  Null? permanentAddress;
+  String? presentAddress;
+  String? permanentAddress;
   String? pageSource;
   int? appointmentStatus;
   String? timeOfAppointment;
@@ -43,6 +43,7 @@ class BookingHistory {
   int? userId;
   String? filePath;
   int? ratingStatus;
+  int? pid;
 
   BookingHistory(
       {this.id,
@@ -61,7 +62,8 @@ class BookingHistory {
         this.therapistId,
         this.userId,
         this.filePath,
-        this.ratingStatus});
+        this.ratingStatus,
+        this.pid});
 
   BookingHistory.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -81,6 +83,7 @@ class BookingHistory {
     userId = json['user_id'];
     filePath = json['file_path'];
     ratingStatus = json['rating_status'];
+    pid = json['pid'];
   }
 
   Map<String, dynamic> toJson() {
@@ -102,6 +105,7 @@ class BookingHistory {
     data['user_id'] = this.userId;
     data['file_path'] = this.filePath;
     data['rating_status'] = this.ratingStatus;
+    data['pid'] = this.pid;
     return data;
   }
 }

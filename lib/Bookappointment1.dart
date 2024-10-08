@@ -15,9 +15,11 @@ import 'ShakeWidget.dart';
 import 'TherapyScreens/BookedApointmentsuccessfully.dart';
 
 class Bookappointment1 extends StatefulWidget {
-  final pagesource;
-  final patientID;
-  const Bookappointment1({super.key, required this.pagesource,required this.patientID});
+  final String pagesource;
+  final String patientID;
+  final String patient_name;
+  final String p_age;
+  const Bookappointment1({super.key, required this.pagesource,required this.patientID,required this.patient_name,required this.p_age});
 
   @override
   State<Bookappointment1> createState() => _Bookappointment1State();
@@ -41,12 +43,17 @@ class _Bookappointment1State extends State<Bookappointment1> {
   String? appointmenttype;
   bool isUpdate = false;
   bool _isConnected = true;
-  int? address_id;
+  int address_id=0;
 
   @override
   void initState() {
     GetAddressList();
     super.initState();
+    setState(() {
+      _fullNameController.text=widget.patient_name;
+      _ageController.text=widget.p_age;
+    });
+    print("ID :${widget.patientID}");
 
     _fullNameController.addListener(() {
       setState(() {
@@ -178,7 +185,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
         widget.pagesource,
         timeOfAppointment,
         user_id,
-        widget.patientID
+        widget.patientID.toString()
     );
     if (data != null) {
       setState(() {
@@ -470,7 +477,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                           setState(() {
                             // Update the selected index
                             selectedAddressIndex = value == true ? index : null;
-                            address_id = addresses[index].id;
+                            address_id = addresses[index].id??0;
                             print("Address id:${address_id}");
                             _validateLocation = "";
                           });
@@ -523,11 +530,22 @@ class _Bookappointment1State extends State<Bookappointment1> {
             Center(
               child: GestureDetector(
                 onTap: () {
-                  if(_isLoading){
+                  if(addresses.length>0){
+                    if(_isLoading){
 
+                    }else{
+                      _validateFields();
+                    }
                   }else{
-                    _validateFields();
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Please first add address.",
+                        style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
+                      ),
+                      duration: Duration(seconds: 1),
+                      backgroundColor: Color(0xFF32657B),
+                    ));
                   }
+
                 },
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
