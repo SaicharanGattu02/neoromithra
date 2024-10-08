@@ -49,11 +49,14 @@ class _BehavioralTrackingReportState extends State<BehavioralTrackingReport> {
             Navigator.pop(context);
           },
         ),
-        body: SingleChildScrollView(
+        body: (is_loading)?Center(
+          child: CircularProgressIndicator(),
+        )
+        :SingleChildScrollView(
           child: details.isEmpty
               ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Lottie.asset(
                       'assets/animations/nodata1.json',
