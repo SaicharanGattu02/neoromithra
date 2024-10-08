@@ -23,7 +23,6 @@ class _BehavioralTrackingReportState extends State<BehavioralTrackingReport> {
     GetBehaviouraltrackingreport();
     super.initState();
   }
-
   bool is_loading = true;
   List<Details> details = [];
   Future<void> GetBehaviouraltrackingreport() async {
