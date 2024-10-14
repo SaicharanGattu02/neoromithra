@@ -541,10 +541,12 @@ class Userapi {
     }
   }
 
-  static Future<BehaviouralTrackingModel?> getbehaviourallist(String id) async {
+  static Future<BehaviouralTrackingModel?> getbehaviourallist(String id,String page_source) async {
     if (await CheckHeaderValidity()) {
       try {
-        final url = Uri.parse("${host}/api/get_therapy_traking/${id}");
+        final url = Uri.parse("${host}/api/get_therapy_traking/${id}/${page_source}");
+        // final url = Uri.parse("${host}/api/get_therapy_traking/${id}");
+        print("URL :${url}");
         final headers = await getheader1();
         final response = await http.get(url, headers: headers);
         if (response != null) {

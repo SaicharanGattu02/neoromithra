@@ -300,7 +300,26 @@ class _LastBookingState extends State<LastBooking> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 20),
+                        SizedBox(height: 10),
+                        Text(
+                          "${booking.fullName}",
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 15.0, color: Color(0xff088A87),
+                            fontWeight: FontWeight.w500,
+                            overflow: TextOverflow.ellipsis
+                          ),
+                        ),
+                        Text(
+                          "${booking.pageSource}",
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: 10),
                         Row(
                           children: [
                             Icon(Icons.calendar_month, size: 16),
@@ -355,7 +374,8 @@ class _LastBookingState extends State<LastBooking> {
                           children: [
                             InkResponse(
                               onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => BehavioralTrackingReport(id: booking.id??0),));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => BehavioralTrackingReport(id: booking.pid??0,page_source:booking.pageSource??"",),));
+                                 // Navigator.push(context, MaterialPageRoute(builder: (context) => BehavioralTrackingReport(id: booking.id??0,page_source:booking.pageSource??"",),));
                               },
                               child: Row(
                                 children: [

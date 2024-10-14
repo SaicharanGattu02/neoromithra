@@ -8,8 +8,8 @@ import 'Model/BehaviouralTrackingModel.dart';
 
 class BehavioralTrackingReport extends StatefulWidget {
   final int id;
-
-  const BehavioralTrackingReport({Key? key, required this.id})
+  final String page_source;
+  const BehavioralTrackingReport({Key? key, required this.id,required this.page_source})
       : super(key: key);
 
   @override
@@ -26,7 +26,7 @@ class _BehavioralTrackingReportState extends State<BehavioralTrackingReport> {
   bool is_loading = true;
   List<Details> details = [];
   Future<void> GetBehaviouraltrackingreport() async {
-    final Response = await Userapi.getbehaviourallist(widget.id.toString());
+    final Response = await Userapi.getbehaviourallist(widget.id.toString(),widget.page_source);
     if (Response != null) {
       setState(() {
         if (Response.status == true) {
@@ -57,6 +57,7 @@ class _BehavioralTrackingReportState extends State<BehavioralTrackingReport> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    SizedBox(height: MediaQuery.of(context).size.height*0.2,),
                     Lottie.asset(
                       'assets/animations/nodata1.json',
                       height: 360,
