@@ -9,6 +9,8 @@ import 'package:neuromithra/Register.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 
+import 'ForgotPasswordScreen.dart';
+
 class LogIn extends StatefulWidget {
   const LogIn({super.key});
 
@@ -275,6 +277,24 @@ class _LogInState extends State<LogIn> {
                           return null;
                         },
 
+                      ),
+                      SizedBox(height: 15,),
+                      InkWell(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPasswordScreen(),));
+                        },
+                        child: Align(
+                          alignment: Alignment.topRight,
+                          child: Text(
+                            "Forgot Password",
+                            style: TextStyle(
+                              color: Colors.teal,
+                              fontFamily: "Inter",
+                              fontWeight: FontWeight.w700,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
                       ),
                       SizedBox(height: height * 0.1),
                       InkWell(

@@ -393,7 +393,7 @@ class _LastBookingState extends State<LastBooking> {
                                 ],
                               ),
                             ),
-                            if (booking.ratingStatus != 1) // Show only if not rated
+                            if (booking.ratingStatus != 1 && booking.filePath!=null) // Show only if not rated
                               InkResponse(
                                 onTap: () async {
                                   var res = await Navigator.push(

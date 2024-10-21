@@ -7,6 +7,7 @@ import 'package:neuromithra/Dashboard.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'AddRating.dart';
+import 'AddressListScreen.dart';
 import 'CustomAppBar.dart';
 import 'FirstLetterCaps.dart';
 import 'Model/AddressListModel.dart';
@@ -537,6 +538,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                       _validateFields();
                     }
                   }else{
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AddressListScreen(),));
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text("Please first add address.",
                         style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),

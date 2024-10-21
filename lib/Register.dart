@@ -47,57 +47,63 @@ class _RegisterState extends State<Register> {
     setState(() {
       _loading = true;
     });
-    String fcm_token = await PreferenceService().getString("fbstoken")??"";
-    final registerResponse = await Userapi.PostRegister(
-        name, email, pwd, _mobilenumberController.text,fcm_token);
-    if (registerResponse != null) {
-      setState(() {
-        if (registerResponse.status == true) {
-          _loading = false;
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(
-              "${registerResponse.message}",
-              style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
-            ),
-            duration: Duration(seconds: 1),
-            backgroundColor: Color(0xFF32657B),
-          ));
 
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => LogIn()),
-          );
-        } else {
-          // Handle login failure
-          _loading = false;
-          print("registerrr:${registerResponse.message}");
+    String? fcm_token = await FirebaseMessaging.instance.getToken();
 
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(
-              "${registerResponse.message}",
-              style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
-            ),
-            duration: Duration(seconds: 1),
-            backgroundColor: Color(0xFF32657B),
-          ));
-        }
-      });
-    }
-    else{
+    if (fcm_token != null && fcm_token.isNotEmpty) {
+      final registerResponse = await Userapi.PostRegister(
+        name,
+        email,
+        pwd,
+        _mobilenumberController.text,
+        fcm_token,
+      );
+
       setState(() {
-        _loading=false;
+        _loading = false;
       });
+
+      if (registerResponse != null && registerResponse.status==true) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            registerResponse.message??"",
+            style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
+          ),
+          duration: Duration(seconds: 1),
+          backgroundColor: Color(0xFF32657B),
+        ));
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LogIn()),
+        );
+      } else {
+        print("registerrr: ${registerResponse?.message}");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            registerResponse?.message ?? "Registration failed",
+            style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
+          ),
+          duration: Duration(seconds: 1),
+          backgroundColor: Color(0xFF32657B),
+        ));
+      }
+    } else {
+      setState(() {
+        _loading = false;
+      });
+
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
-          "${registerResponse?.message}",
+          "Failed to retrieve FCM token. Please try again.",
           style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
         ),
         duration: Duration(seconds: 1),
         backgroundColor: Color(0xFF32657B),
       ));
-
     }
   }
+
 
   @override
   void initState() {

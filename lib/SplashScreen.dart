@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:neuromithra/Dashboard.dart';
+import 'package:neuromithra/LogIn.dart';
 import 'package:neuromithra/Register.dart';
 import 'package:neuromithra/services/Preferances.dart';
 
@@ -40,7 +41,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
         if(User_id!=""){
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =>Dashboard()));
         }else{
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =>Register()));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =>LogIn()));
         }
 
       });

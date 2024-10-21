@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'CustomAppBar.dart';
+
 class SupportProgramsScreen extends StatelessWidget {
   final List<Map<String, String>> programs = [
     {
@@ -38,8 +40,11 @@ class SupportProgramsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Govt Support Info'),
+      appBar: CustomAppBar(
+        title: 'Govt Support Info',
+        onBackButtonPressed: () {
+          Navigator.pop(context);
+        },
       ),
       body: ListView.builder(
         itemCount: programs.length,
