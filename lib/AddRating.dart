@@ -203,7 +203,6 @@ class _AddProductRatingState extends State<AddProductRating> {
                       onTap: () {
                         if(rating>0){
                           if(isLoading){
-
                           }else{
                             setState(() {
                               isLoading=true;
