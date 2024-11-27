@@ -117,14 +117,15 @@ class Userapi {
   }
 
   static Future<RegisterModel?> PostRegister(String name, String mail,
-      String password, String phone, String fcm_token) async {
+      String password, String phone, String fcm_token,String SOSNumber) async {
     try {
       Map<String, String> data = {
         "name": name,
         "email": mail,
         "password": password,
         "phone": phone,
-        "fcm_token": fcm_token
+        "fcm_token": fcm_token,
+        "sos_1": SOSNumber
       };
       print(data);
       final url = Uri.parse("${host}/api/user/userregister");

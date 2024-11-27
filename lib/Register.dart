@@ -20,6 +20,7 @@ class _RegisterState extends State<Register> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _mobilenumberController = TextEditingController();
+  TextEditingController _sosNumberController = TextEditingController();
 
   final FocusNode _focusNodeEmail = FocusNode();
   final FocusNode _focusNodePassword = FocusNode();
@@ -57,6 +58,7 @@ class _RegisterState extends State<Register> {
         pwd,
         _mobilenumberController.text,
         fcm_token,
+        _sosNumberController.text
       );
 
       setState(() {
@@ -362,6 +364,62 @@ class _RegisterState extends State<Register> {
                           borderRadius: BorderRadius.circular(15.0),
                           borderSide:
                               BorderSide(width: 1, color: Color(0xffCDE2FB)),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                          borderSide: BorderSide(width: 1, color: Colors.red),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                          borderSide: BorderSide(width: 1, color: Colors.red),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your mobile number';
+                        }
+                        if (value.length < 10) {
+                          return 'Please enter a valid mobile number';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 15),
+                    Text(
+                      "SOS Mobile Number",
+                      style: TextStyle(
+                        color: Color(0xFF32657B),
+                        fontFamily: "Inter",
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    TextFormField(
+                      controller: _sosNumberController,
+                      cursorColor: Colors.black,
+                      keyboardType: TextInputType.phone,
+                      inputFormatters: [LengthLimitingTextInputFormatter(10)],
+                      decoration: InputDecoration(
+                        hintText: "Enter your SOS mobile number",
+                        hintStyle: TextStyle(
+                          fontSize: 15,
+                          letterSpacing: 0,
+                          height: 1.2,
+                          color: Color(0xffAFAFAF),
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w400,
+                        ),
+                        filled: true,
+                        fillColor: Color(0xffffffff),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                          borderSide:
+                          BorderSide(width: 1, color: Color(0xffCDE2FB)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                          borderSide:
+                          BorderSide(width: 1, color: Color(0xffCDE2FB)),
                         ),
                         errorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15.0),
