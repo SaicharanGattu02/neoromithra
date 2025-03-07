@@ -20,6 +20,41 @@ import 'package:http_parser/http_parser.dart';
 class Userapi {
   static String host = "https://admin.neuromitra.com";
 
+  static Future<String?> makeSOSCallApi() async {
+    try {
+      Map<String, String> data = {
+        "location": "Hyderabad",
+      };
+
+      final url = Uri.parse("https://admin.neuromitra.com/api/sos-call");
+      final headers = await getheader2();
+
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: data, // Correct encoding for form data
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        print("makeSOSCallApi Status: ${jsonResponse}");
+        return jsonResponse["message"];
+      } else if (response.statusCode == 401) {
+        final jsonResponse = jsonDecode(response.body);
+        print("Unauthorized: ${jsonResponse['error']}");
+        return jsonResponse["error"];
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+        return "Something went wrong!";
+      }
+    } catch (e) {
+      print("Error occurred: $e");
+      return "Error: $e";
+    }
+  }
+
+
+
   static Future<BookApointmentModel?> NewApointment(
       String fname,
       String pnum,
