@@ -24,14 +24,15 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-
-
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _mobileController = TextEditingController();
+  final TextEditingController _sos1Controller = TextEditingController();
+  final TextEditingController _sos2Controller = TextEditingController();
+  final TextEditingController _sos3Controller = TextEditingController();
 
-  String name="";
+  String name = "";
 
   String? _validateName(String? value) {
     if (value == null || value.isEmpty) {
@@ -44,8 +45,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (value == null || value.isEmpty) {
       return 'Please enter your email';
     }
-    String pattern =
-        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+    String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
     if (!RegExp(pattern).hasMatch(value)) {
       return 'Please enter a valid email address';
     }
@@ -62,15 +62,46 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return null;
   }
 
+  String? _validateMobileSos1(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your sos1 mobile number';
+    }
+    if (value.length != 10 || !RegExp(r'^[0-9]+$').hasMatch(value)) {
+      return 'Please enter a valid 10-digit mobile number';
+    }
+    return null;
+  }
+
+  String? _validateMobileSos2(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your sos2 mobile number';
+    }
+    if (value.length != 10 || !RegExp(r'^[0-9]+$').hasMatch(value)) {
+      return 'Please enter a valid 10-digit mobile number';
+    }
+    return null;
+  }
+
+  String? _validateMobileSos3(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your sos3 mobile number';
+    }
+    if (value.length != 10 || !RegExp(r'^[0-9]+$').hasMatch(value)) {
+      return 'Please enter a valid 10-digit mobile number';
+    }
+    return null;
+  }
+
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       // Here you can send the data to the server or process it further
-      print('Name: ${_nameController.text}, Email: ${_emailController.text}, Mobile: ${_mobileController.text}');
+      print(
+          'Name: ${_nameController.text}, Email: ${_emailController.text}, Mobile: ${_mobileController.text}');
       // Clear the fields after submission
       _updateProfileDetails();
-    }else{
+    } else {
       setState(() {
-        is_loading=false;
+        is_loading = false;
       });
     }
   }
@@ -120,7 +151,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     setState(() {
       if (pickedFile != null) {
-        _image = File(pickedFile.path);// Trigger image upload
+        _image = File(pickedFile.path); // Trigger image upload
       } else {
         print('No image selected.');
       }
@@ -131,16 +162,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future<void> _uploadImage(File image) async {
     final response = await Userapi.UploadImage(image);
     if (response != null) {
-      setState(() {
-
-      });
+      setState(() {});
     }
 
-    final String url = 'https://admin.neuromitra.com/api/update_profile_image/20';
+    final String url =
+        'https://admin.neuromitra.com/api/update_profile_image/20';
 
     try {
       var request = http.MultipartRequest('POST', Uri.parse(url));
-      request.headers['Authorization'] = 'Bearer token_here'; // Add token if required
+      request.headers['Authorization'] =
+          'Bearer token_here'; // Add token if required
 
       // Attach image file
       var mimeType = lookupMimeType(image.path);
@@ -155,7 +186,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       var response = await request.send();
       if (response.statusCode == 200) {
         setState(() {
-          profile_image = image.path; // Use file path as mock for uploaded image URL
+          profile_image =
+              image.path; // Use file path as mock for uploaded image URL
         });
         ScaffoldMessenger.of(context as BuildContext).showSnackBar(
           SnackBar(content: Text('Image uploaded successfully!')),
@@ -172,12 +204,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     });
   }
 
-  // Method to update user details
   Future<void> _updateProfileDetails() async {
+    final res = await Userapi.postProfileDetails(
+        _nameController.text,
+        _emailController.text,
+        _mobileController.text,
+        _sos1Controller.text,
+        _sos2Controller.text,
+        _sos3Controller.text);
+    if(res!=null){
+      print(res);
+    }else{
+      print('failuree');
 
+    }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -185,60 +226,61 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       appBar: AppBar(
         title: const Text('Profile Details'),
       ),
-      body: (isloading)?Center(
-        child: CircularProgressIndicator(
-          color: Colors.blue,
-        ),
-      ):
-      SingleChildScrollView(
+      body:
+          // (isloading)?Center(
+          //   child: CircularProgressIndicator(
+          //     color: Colors.blue,
+          //   ),
+          // ):
+          SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Stack(
-              children: [
-                CircleAvatar(
-                  radius: 60,
-                  backgroundColor: const Color(0xff80C4E9),
-                  backgroundImage: _image != null
-                      ? FileImage(_image!)
-                      : (profile_image.isNotEmpty
-                      ? NetworkImage(profile_image)
-                      : null) as ImageProvider?,
-                  child: (_image == null && profile_image.isEmpty)
-                      ? Text(
-                    name.isNotEmpty
-                        ? name[0].toUpperCase()
-                        : "",
-                    style: const TextStyle(
-                        fontSize: 50, color: Color(0xffFFF6E9)),
-                  )
-                      : null,
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: GestureDetector(
-                    onTap: _pickImage,
-                    child: CircleAvatar(
-                      radius: 18,
-                      backgroundColor: Colors.grey,
-                      child: image_uploading
-                          ? CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor:
-                        AlwaysStoppedAnimation<Color>(Colors.white),
-                      )
-                          : const Icon(
-                        Icons.edit,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 30),
+            // Stack(
+            //   children: [
+            //     CircleAvatar(
+            //       radius: 60,
+            //       backgroundColor: const Color(0xff80C4E9),
+            //       backgroundImage: _image != null
+            //           ? FileImage(_image!)
+            //           : (profile_image.isNotEmpty
+            //           ? NetworkImage(profile_image)
+            //           : null) as ImageProvider?,
+            //       child: (_image == null && profile_image.isEmpty)
+            //           ? Text(
+            //         name.isNotEmpty
+            //             ? name[0].toUpperCase()
+            //             : "",
+            //         style: const TextStyle(
+            //             fontSize: 50, color: Color(0xffFFF6E9)),
+            //       )
+            //           : null,
+            //     ),
+            //     Positioned(
+            //       bottom: 0,
+            //       right: 0,
+            //       child: GestureDetector(
+            //         onTap: _pickImage,
+            //         child: CircleAvatar(
+            //           radius: 18,
+            //           backgroundColor: Colors.grey,
+            //           child: image_uploading
+            //               ? CircularProgressIndicator(
+            //             strokeWidth: 2,
+            //             valueColor:
+            //             AlwaysStoppedAnimation<Color>(Colors.white),
+            //           )
+            //               : const Icon(
+            //             Icons.edit,
+            //             color: Colors.white,
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            // const SizedBox(height: 30),
             Form(
               key: _formKey,
               child: Column(
@@ -248,10 +290,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     decoration: InputDecoration(
                       labelText: 'Name',
                       labelStyle: TextStyle(
-                          fontSize: 15,fontFamily: "Inter",
+                          fontSize: 15,
+                          fontFamily: "Inter",
                           fontWeight: FontWeight.w400,
-                          color: Colors.black
-                      ),
+                          color: Colors.black),
                       floatingLabelBehavior: FloatingLabelBehavior.auto,
                       border: OutlineInputBorder(), // Add border
                       enabledBorder: OutlineInputBorder(
@@ -263,16 +305,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                     validator: _validateName,
                   ),
-                  SizedBox(height: 16), // Space between fields
+                  SizedBox(height: 16),
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
                       labelText: 'Email',
                       labelStyle: TextStyle(
-                        fontSize: 15,fontFamily: "Inter",
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black
-                      ),
+                          fontSize: 15,
+                          fontFamily: "Inter",
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black),
                       floatingLabelBehavior: FloatingLabelBehavior.auto,
                       border: OutlineInputBorder(), // Add border
                       enabledBorder: OutlineInputBorder(
@@ -290,10 +332,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     decoration: InputDecoration(
                       labelText: 'Mobile Number',
                       labelStyle: TextStyle(
-                          fontSize: 15,fontFamily: "Inter",
+                          fontSize: 15,
+                          fontFamily: "Inter",
                           fontWeight: FontWeight.w400,
-                          color: Colors.black
-                      ),
+                          color: Colors.black),
                       floatingLabelBehavior: FloatingLabelBehavior.auto,
                       border: OutlineInputBorder(), // Add border
                       enabledBorder: OutlineInputBorder(
@@ -307,66 +349,135 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     validator: _validateMobile,
                   ),
                   SizedBox(height: 20),
+                  TextFormField(
+                    controller: _sos1Controller,
+                    decoration: InputDecoration(
+                      labelText: 'SOS Mobile Number 1',
+                      labelStyle: TextStyle(
+                          fontSize: 15,
+                          fontFamily: "Inter",
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black),
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                      border: OutlineInputBorder(), // Add border
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                      ),
+                    ),
+                    keyboardType: TextInputType.phone,
+                    validator: _validateMobileSos1,
+                  ),
+                  SizedBox(height: 20),
+                  TextFormField(
+                    controller: _sos2Controller,
+                    decoration: InputDecoration(
+                      labelText: 'SOS Mobile Number 2',
+                      labelStyle: TextStyle(
+                          fontSize: 15,
+                          fontFamily: "Inter",
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black),
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                      border: OutlineInputBorder(), // Add border
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                      ),
+                    ),
+                    keyboardType: TextInputType.phone,
+                    validator: _validateMobileSos2,
+                  ),
+                  SizedBox(height: 20),
+                  TextFormField(
+                    controller: _sos3Controller,
+                    decoration: InputDecoration(
+                      labelText: 'SOS Mobile Number 3',
+                      labelStyle: TextStyle(
+                          fontSize: 15,
+                          fontFamily: "Inter",
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black),
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                      border: OutlineInputBorder(), // Add border
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                      ),
+                    ),
+                    keyboardType: TextInputType.phone,
+                    validator: _validateMobileSos3,
+                  ),
+                  SizedBox(height: 20),
                 ],
               ),
             ),
-            const SizedBox(height: 50),
-            GestureDetector(
-              onTap: () {
-                if(is_loading){
-
-                }else{
-                  setState(() {
-                    is_loading=true;
-                  });
-                  if(_image!=null){
-                    _uploadImage(_image!);
-                    _submitForm();
-                  }else{
-                    _submitForm();
-                  }
-                }
-              },
-              child: Container(
-                height: 56,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: const Color(0xFF2DB3FF),
-                ),
-                child: Center(
-                  child: is_loading
-                      ? CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor:
-                    AlwaysStoppedAnimation<Color>(Colors.white),
-                  )
-                      : const Text(
-                    "Save",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ),
           ],
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        child: GestureDetector(
+          onTap: () {
+            _submitForm();
+
+            // if (is_loading) {
+            // } else {
+            //   setState(() {
+            //     is_loading = true;
+            //   });
+            //   if (_image != null) {
+            //     // _uploadImage(_image!);
+            //     _submitForm();
+            //   }
+            //   else {
+            //     _submitForm();
+            //   }
+            // }
+          },
+          child: Container(
+            height: 56,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: const Color(0xFF2DB3FF),
+            ),
+            child: Center(
+              child: is_loading
+                  ? CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    )
+                  : const Text(
+                      "Save",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+            ),
+          ),
         ),
       ),
     );
   }
 
   Widget _buildTextField(
-      String labelText,
-      TextEditingController controller,
-      TextInputType keyboardType,
-      String hintText,
-      FocusNode focusNode,
-      String validationRegex,
-      int maxLength,
-      List<TextInputFormatter> inputFormatters,
-      ) {
+    String labelText,
+    TextEditingController controller,
+    TextInputType keyboardType,
+    String hintText,
+    FocusNode focusNode,
+    String validationRegex,
+    int maxLength,
+    List<TextInputFormatter> inputFormatters,
+  ) {
     return TextFormField(
       controller: controller,
       focusNode: focusNode,
@@ -389,4 +500,3 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 }
-

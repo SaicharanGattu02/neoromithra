@@ -195,6 +195,52 @@ class Userapi {
       return null;
     }
   }
+  static Future<Map<String, dynamic>?> postProfileDetails(
+      String name, String email,String phone,String sos1,String sos2,String sos3) async {
+    try {
+      Map<String, String> data = {
+        "name": name,
+        "email": email,
+        "phone": phone,
+        "sos_1": sos1,
+        "sos_2": sos2,
+        "sos_3": sos3,
+      };
+      print("postProfileDetails: $data");
+      final url = Uri.parse("${host}/api/update_user_details1");
+      final headers = await getheader2();
+      print("postProfileDetails: $url");
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: data,
+      );
+
+      if (response.statusCode == 200) {
+        // Successful login
+        final jsonResponse = jsonDecode(response.body);
+        print("postProfileDetails Status: ${response.body}");
+        return {
+          "access_token": jsonResponse["access_token"],
+          "token_type": jsonResponse["token_type"],
+          "expires_in": jsonResponse["expires_in"],
+        };
+      } else if (response.statusCode == 401) {
+        final jsonResponse = jsonDecode(response.body);
+        print("Unauthorized: ${jsonResponse['error']}");
+        return {
+          "error": jsonResponse["error"],
+          "status": jsonResponse["status"],
+        };
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print("Error occurred: $e");
+      return null;
+    }
+  }
 
 
   static Future<ProfileDetailsModel?> getprofiledetails(String user_id) async {
