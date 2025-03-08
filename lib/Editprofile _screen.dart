@@ -1,18 +1,14 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
-
-import 'Model/ProfileDetailsModel.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({
@@ -94,10 +90,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      // Here you can send the data to the server or process it further
-      print(
-          'Name: ${_nameController.text}, Email: ${_emailController.text}, Mobile: ${_mobileController.text}');
-      // Clear the fields after submission
       _updateProfileDetails();
     } else {
       setState(() {
@@ -118,7 +110,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final picker = ImagePicker();
   String profile_image = "";
   bool is_loading = false;
-  bool isloading = true;
   bool image_uploading = false;
 
   final String userId = "20"; // Static User ID
@@ -212,12 +203,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         _sos1Controller.text,
         _sos2Controller.text,
         _sos3Controller.text);
-    if(res!=null){
-      print(res);
-    }else{
-      print('failuree');
-
-    }
+    setState(() {
+      is_loading=true;
+      if (res != null) {
+        is_loading=false;
+      } else {
+        is_loading=false;
+      }
+    });
   }
 
   @override
@@ -424,23 +417,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       bottomNavigationBar: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: GestureDetector(
-          onTap: () {
-            _submitForm();
-
-            // if (is_loading) {
-            // } else {
-            //   setState(() {
-            //     is_loading = true;
-            //   });
-            //   if (_image != null) {
-            //     // _uploadImage(_image!);
-            //     _submitForm();
-            //   }
-            //   else {
-            //     _submitForm();
-            //   }
-            // }
-          },
+          onTap: is_loading
+              ? null
+              : () {
+                  _submitForm();
+                },
           child: Container(
             height: 56,
             decoration: BoxDecoration(

@@ -212,7 +212,6 @@ class _HomeScreenState extends State<HomeScreen> {
         screen = ParentCounsellingForAutismScreen();
         break;
       default:
-        // Handle unknown text
         screen = Scaffold(
           appBar: AppBar(title: Text('Unknown')),
           body: Center(child: Text('No details available')),
@@ -224,20 +223,25 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  bool makingSOSCall=false;
+
   void _makeSOSCall() async {
     try{
       var res = await Userapi.makeSOSCallApi();
-      if(res!=null){
-        print("Resposnse:${res}");
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-            res ?? "",
-            style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
-          ),
-          duration: Duration(seconds: 1),
-          backgroundColor: Color(0xFF32657B),
-        ));
-      }
+      setState(() {
+        makingSOSCall=true;
+        if(res!=null){
+          makingSOSCall=false;
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+              res ?? "",
+              style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
+            ),
+            duration: Duration(seconds: 1),
+            backgroundColor: Color(0xFF32657B),
+          ));
+        }
+      });
     }catch(e){
       debugPrint("${e.toString()}");
     }
@@ -246,8 +250,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    String nameInitial =
-        (name.trim().isNotEmpty) ? name.trim()[0].toUpperCase() : "";
+    String nameInitial = (name.trim().isNotEmpty) ? name.trim()[0].toUpperCase() : "";
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -266,7 +269,7 @@ class _HomeScreenState extends State<HomeScreen> {
               width: 100,
               height: 40,
               child: ElevatedButton.icon(
-                onPressed: () {
+                onPressed:makingSOSCall? null: () {
                   _makeSOSCall();
                 },
                 style: ElevatedButton.styleFrom(
@@ -349,8 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 ClipRRect(
-                                  borderRadius: BorderRadius.circular(
-                                      12), // Border radius for the image
+                                  borderRadius: BorderRadius.circular(12), // Border radius for the image
                                   child: Image.asset(
                                     item['image']!,
                                     width: 150, // Adjust width as needed

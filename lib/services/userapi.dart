@@ -25,16 +25,13 @@ class Userapi {
       Map<String, String> data = {
         "location": "Hyderabad",
       };
-
-      final url = Uri.parse("https://admin.neuromitra.com/api/sos-call");
+      final url = Uri.parse("${host}/api/sos-call");
       final headers = await getheader2();
-
       final response = await http.post(
         url,
         headers: headers,
         body: data, // Correct encoding for form data
       );
-
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
         print("makeSOSCallApi Status: ${jsonResponse}");
@@ -45,11 +42,11 @@ class Userapi {
         return jsonResponse["error"];
       } else {
         print("Request failed with status: ${response.statusCode}");
-        return "Something went wrong!";
+        return null;
       }
     } catch (e) {
       print("Error occurred: $e");
-      return "Error: $e";
+      return null;
     }
   }
 
@@ -230,6 +227,7 @@ class Userapi {
       return null;
     }
   }
+
   static Future<Map<String, dynamic>?> postProfileDetails(
       String name, String email,String phone,String sos1,String sos2,String sos3) async {
     try {
@@ -244,29 +242,19 @@ class Userapi {
       print("postProfileDetails: $data");
       final url = Uri.parse("${host}/api/update_user_details1");
       final headers = await getheader2();
-      print("postProfileDetails: $url");
       final response = await http.post(
         url,
         headers: headers,
         body: data,
       );
-
       if (response.statusCode == 200) {
-        // Successful login
         final jsonResponse = jsonDecode(response.body);
-        print("postProfileDetails Status: ${response.body}");
-        return {
-          "access_token": jsonResponse["access_token"],
-          "token_type": jsonResponse["token_type"],
-          "expires_in": jsonResponse["expires_in"],
-        };
+        print("postProfileDetails Status: ${jsonResponse}");
+        return jsonResponse["message"];
       } else if (response.statusCode == 401) {
         final jsonResponse = jsonDecode(response.body);
-        print("Unauthorized: ${jsonResponse['error']}");
-        return {
-          "error": jsonResponse["error"],
-          "status": jsonResponse["status"],
-        };
+        print("postProfileDetails Status: ${jsonResponse}");
+        return jsonResponse["error"];
       } else {
         print("Request failed with status: ${response.statusCode}");
         return null;
