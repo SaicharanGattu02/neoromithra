@@ -81,16 +81,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   radius: 30,
                                 ),
                                 Positioned(
-                                    right: -12,
-                                    bottom: -15,
-                                    child: IconButton(
-                                        onPressed: () {
-                                          Navigator.push(context, MaterialPageRoute(builder: (context)=>EditProfileScreen()));
-                                        },
-                                        icon: Icon(
-                                          Icons.edit,
-                                          color: Colors.red,size: 18,
-                                        )))
+                                    right: -10,
+                                    bottom: -8,
+                                    child: Container(height: 30,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle,
+
+                                      ),
+                                      child: IconButton(visualDensity: VisualDensity.compact,
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EditProfileScreen()));
+                                          },
+                                          icon: Icon(
+                                            Icons.edit,
+                                            color: Colors.blue,
+                                            size: 16,
+                                          )),
+                                    ))
                               ],
                             ),
                             SizedBox(

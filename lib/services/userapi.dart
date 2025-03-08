@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-
 import '../Model/AddAddressModel.dart';
 import '../Model/AddressListModel.dart';
 import '../Model/BehaviouralTrackingModel.dart';

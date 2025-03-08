@@ -17,9 +17,9 @@ import 'TherapyScreens/SpeechTheraphyScreen.dart';
 
 class TherapiesListScreen extends StatelessWidget {
   final List<Map<String, String>> therapies = [
-    {'image': 'assets/SpeechTherapy.png', 'text': 'Speech Therapy'},
-    {'image': 'assets/OccupationalTherapy.png', 'text': 'Occupational Therapy'},
-    {'image': 'assets/PhysicalTherapy.png', 'text': 'Physical Therapy'},
+    {'image': 'assets/Therephy/speech_theraphy.jpg', 'text': 'Speech Therapy'},
+    {'image': 'assets/Therephy/occupational_theraphy', 'text': 'Occupational Therapy'},
+    {'image': 'assets/Therephy/physical_theraphy.jpeg', 'text': 'Physical Therapy'},
     {'image':'assets/BehavioralTherapy.png', 'text': 'Behavioral Therapy'},
     {'image': 'assets/(ABA)Therapy.png', 'text': 'Applied Behaviour Analysis(ABA) Therapy'},
     {'image': 'assets/SensoryIntegrationTherapy.png', 'text': 'Sensory Integration Therapy'},

@@ -71,7 +71,7 @@ class _PhysicalTherapyScreenState extends State<PhysicalTherapyScreen> {
                   width: w,
                   height: h * 0.3,
                   child: Image.asset(
-                    "assets/PhysicalTherapy.png",
+                    "assets/Therephy/physical_theraphy.jpeg",
                     fit: BoxFit.cover,
                   ),
                 ),

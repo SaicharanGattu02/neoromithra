@@ -69,7 +69,7 @@ class _SpeechTherapyScreenState extends State<SpeechTherapyScreen> {
                   width: w,
                   height: h * 0.3,
                   child: Image.asset(
-                    'assets/SpeechTherapy.png',
+                    'assets/Therephy/speech_theraphy.jpg',
                     fit: BoxFit.cover,
                   ),
                 ),

@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +5,6 @@ import 'package:neuromithra/Dashboard.dart';
 import 'package:neuromithra/Register.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
-
 import 'ForgotPasswordScreen.dart';
 
 class LogIn extends StatefulWidget {

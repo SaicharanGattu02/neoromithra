@@ -45,61 +45,79 @@ class _HomeScreenState extends State<HomeScreen> {
   String profile_image = "";
   String name = "";
   final List<Map<String, String>> items = [
-    {'image': 'assets/SpeechTherapy.png', 'text': 'Speech Therapy'},
-    {'image': 'assets/OccupationalTherapy.png', 'text': 'Occupational Therapy'},
-    {'image': 'assets/PhysicalTherapy.png', 'text': 'Physical Therapy'},
-    {'image': 'assets/BehavioralTherapy.png', 'text': 'Behavioral Therapy'},
-    {'image': 'assets/(ABA)Therapy.png', 'text': 'ABA Therapy'},
+    {'image': 'assets/Therephy/speech_theraphy.jpg', 'text': 'Speech Therapy'},
     {
-      'image': 'assets/SensoryIntegrationTherapy.png',
+      'image': 'assets/Therephy/occupational_theraphy.jpeg',
+      'text': 'Occupational Therapy'
+    },
+    {
+      'image': 'assets/Therephy/physical_theraphy.jpeg',
+      'text': 'Physical Therapy'
+    },
+    {
+      'image': 'assets/Therephy/behavioural_theraphy.jpg',
+      'text': 'Behavioral Therapy'
+    },
+    {'image': 'assets/Therephy/ABA_theraphy.jpeg', 'text': 'ABA Therapy'},
+    {
+      'image': 'assets/Therephy/sensor_integration.jpeg',
       'text': 'Sensory Integration Therapy'
     },
-    {'image': 'assets/PlayTherapy.png', 'text': 'Play Therapy'},
-    {'image': 'assets/FeedingTherapy.png', 'text': 'Feeding Therapy'},
+    {'image': 'assets/Therephy/play_theraphy.png', 'text': 'Play Therapy'},
     {
-      'image': 'assets/CognitiveBehavioralTherapy(CBT).png',
+      'image': 'assets/Therephy/feeding_theraphy.jpg',
+      'text': 'Feeding Therapy'
+    },
+    {
+      'image': 'assets/Therephy/cbt_theraphy.jpeg',
       'text': 'Cognitive Behavioral Therapy(CBT)'
     },
-    {'image': 'assets/SocialSkills.png', 'text': 'Social Skills Training'},
-    {'image': 'assets/MusicTherapy.png', 'text': 'Music Therapy'},
-    {'image': 'assets/ArtTherapy.png', 'text': 'Art Therapy'},
-    {'image': 'assets/developmentTherepy.png', 'text': 'Developmental Therapy'},
+    {
+      'image': 'assets/Therephy/socail_skill_theraphy.jpeg',
+      'text': 'Social Skills Training Therapy'
+    },
+    {'image': 'assets/Therephy/music_theraphy.jpeg', 'text': 'Music Therapy'},
+    {'image': 'assets/Therephy/art_theraphy.png', 'text': 'Art Therapy'},
+    {
+      'image': 'assets/Therephy/development_theraphy.jpeg',
+      'text': 'Developmental Therapy'
+    },
   ];
 
   final List<Map<String, String>> items1 = [
     {
-      'image': 'assets/RelationshipCounseling.png',
+      'image': 'assets/Counciling/relationship_counsiling.jpeg',
       'text': 'Relationship Counselling'
     },
     {
-      'image': 'assets/BehavioralCounseling.png',
+      'image': 'assets/Counciling/behavioral_counciling.jpeg',
       'text': 'Behavioral Counselling'
     },
-    {'image': 'assets/GriefCounseling.png', 'text': 'Grief Counselling'},
-    {'image': 'assets/GroupCounseling.png', 'text': 'Group Counselling'},
-    {'image': 'assets/CrisisCounseling.png', 'text': 'Crisis Counselling'},
+    {'image': 'assets/Counciling/grief_counsiling.jpeg', 'text': 'Grief Counselling'},
+    {'image': 'assets/Counciling/group_counsiling.jpeg', 'text': 'Group Counselling'},
+    {'image': 'assets/Counciling/crisis_counsiling.jpeg', 'text': 'Crisis Counselling'},
     {
-      'image': 'assets/CareerCounseling.png',
+      'image': 'assets/Counciling/carreer_counsling.jpeg',
       'text': 'Career Counselling for parents'
     },
-    {'image': 'assets/SiblingCounseling.png', 'text': 'Sibling Counselling'},
+    {'image': 'assets/Counciling/sibiling_counciling.jpeg', 'text': 'Sibling Counselling'},
     {
-      'image': 'assets/EducationalCounseling.png',
+      'image': 'assets/Counciling/educationol_counsiling.jpeg',
       'text': 'Educational Counselling'
     },
     {
-      'image': 'assets/Parent-ChildRelationship.png',
-      'text': 'Parent-Child Relationship'
+      'image': 'assets/Counciling/parent_children_relationship.jpeg',
+      'text': 'Parent-Child Relationship Counselling'
     },
     {
-      'image': 'assets/IndividualCounseling.png',
+      'image': 'assets/Counciling/individual_counsilng_children.jpeg',
       'text': 'Individual Counselling for children'
     },
-    {'image': 'assets/FamilyCounseling.png', 'text': 'Family Counselling'},
-    {'image': 'assets/MentalHealth.png', 'text': 'Mental Health Counselling'},
-    {'image': 'assets/GeneralStress.png', 'text': 'General stress management'},
+    {'image': 'assets/Counciling/family_counsiling.jpeg', 'text': 'Family Counselling'},
+    {'image': 'assets/Counciling/mental_health_counsiling.jpeg', 'text': 'Mental Health Counselling'},
+    {'image': 'assets/Counciling/generalstress_councsiling.jpeg', 'text': 'General stress management Counselling'},
     {
-      'image': 'assets/ParentCounseling.png',
+      'image': 'assets/Counciling/autism_Counsiling.png',
       'text': 'Parent Counselling for Autism'
     },
   ];
@@ -140,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 'Cognitive Behavioral Therapy(CBT)':
         detailsScreen = CBT_Screen();
         break;
-      case 'Social Skills Training':
+      case 'Social Skills Training Therapy':
         detailsScreen = SocialSkillsTrainingScreen();
         break;
       case 'Music Therapy':
@@ -193,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 'Educational Counselling':
         screen = EducationalCounsellingScreen();
         break;
-      case 'Parent-Child Relationship':
+      case 'Parent-Child Relationship Counselling':
         screen = ParentChildRelationshipCounsellingScreen();
         break;
       case 'Individual Counselling for children':
@@ -223,15 +241,15 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  bool makingSOSCall=false;
+  bool makingSOSCall = false;
 
   void _makeSOSCall() async {
-    try{
+    try {
       var res = await Userapi.makeSOSCallApi();
       setState(() {
-        makingSOSCall=true;
-        if(res!=null){
-          makingSOSCall=false;
+        makingSOSCall = true;
+        if (res != null) {
+          makingSOSCall = false;
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(
               res ?? "",
@@ -242,7 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ));
         }
       });
-    }catch(e){
+    } catch (e) {
       debugPrint("${e.toString()}");
     }
   }
@@ -250,7 +268,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    String nameInitial = (name.trim().isNotEmpty) ? name.trim()[0].toUpperCase() : "";
+    String nameInitial =
+        (name.trim().isNotEmpty) ? name.trim()[0].toUpperCase() : "";
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -269,9 +288,11 @@ class _HomeScreenState extends State<HomeScreen> {
               width: 100,
               height: 40,
               child: ElevatedButton.icon(
-                onPressed:makingSOSCall? null: () {
-                  _makeSOSCall();
-                },
+                onPressed: makingSOSCall
+                    ? null
+                    : () {
+                        _makeSOSCall();
+                      },
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
                   backgroundColor: Colors.blue,
@@ -313,27 +334,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Therapies",
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontFamily: "Inter",
-                            fontWeight: FontWeight.w600),
-                      ),
-                      // Text(
-                      //   "See All",
-                      //   style: TextStyle(
-                      //       fontSize: 17,
-                      //       fontFamily: "Inter",
-                      //       fontWeight: FontWeight.w500),
-                      // ),
-                    ],
+                  Text(
+                    "Therapies",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w600),
                   ),
+                  SizedBox(height: 10,),
                   Container(
-                    height: 180, // Adjust the height as needed
+                    height: 180,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       physics: AlwaysScrollableScrollPhysics(),
@@ -348,11 +358,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             padding: EdgeInsets.all(
                                 8), // Padding inside the item container
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 ClipRRect(
-                                  borderRadius: BorderRadius.circular(12), // Border radius for the image
+                                  borderRadius: BorderRadius.circular(
+                                      12), // Border radius for the image
                                   child: Image.asset(
                                     item['image']!,
                                     width: 150, // Adjust width as needed
@@ -383,31 +394,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Counselling",
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontFamily: "Inter",
-                            fontWeight: FontWeight.w600),
-                      ),
-                      //
-                      // Text(
-                      //   "See All",
-                      //   style: TextStyle(
-                      //       fontSize: 17,
-                      //       fontFamily: "Inter",
-                      //       fontWeight: FontWeight.w500),
-                      // ),
-                    ],
+                  Text(
+                    "Counselling",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w600),
                   ),
                   SizedBox(
-                    height: 15,
+                    height: 5,
                   ),
                   Container(
-                    height: 180, // Adjust the height as needed
+                    height: 200, // Adjust the height as needed
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       physics: AlwaysScrollableScrollPhysics(),
@@ -422,17 +420,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             padding: EdgeInsets.all(
                                 8), // Padding inside the item container
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(
                                       12), // Border radius for the image
                                   child: Image.asset(
                                     item['image']!,
-                                    fit: BoxFit.contain,
-                                    width: 150,
-                                    height: 106,
+                                    width: 150, // Adjust width as needed
+                                    height: 106, // Adjust height as needed
+                                    fit: BoxFit
+                                        .cover, // Ensure image covers the container
                                   ),
                                 ),
                                 SizedBox(
