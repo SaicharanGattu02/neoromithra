@@ -70,7 +70,7 @@ class _BehavioralCounsellingScreenState extends State<BehavioralCounsellingScree
                   width: w,
                   height: h * 0.3,
                   child: Image.asset(
-                    "assets/BehavioralCounseling.png",
+                    "assets/Counciling/behavioral_counciling.jpeg",
                     fit: BoxFit.cover,
                   ),
                 ),

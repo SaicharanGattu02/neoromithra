@@ -3,12 +3,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:neuromithra/Dashboard.dart';
+import 'package:neuromithra/profile_screen.dart';
+import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:neuromithra/utils/CustomSnackBar.dart';
 import 'package:path/path.dart';
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
+
+import 'Model/ProfileDetailsModel.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({
@@ -88,12 +94,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return null;
   }
 
-  void _submitForm() {
+  void _submitForm(context) {
     if (_formKey.currentState!.validate()) {
-      _updateProfileDetails();
+      setState(() {
+        isLoading=true;
+      });
+      _updateProfileDetails(context);
+
     } else {
       setState(() {
-        is_loading = false;
+        isLoading = false;
       });
     }
   }
@@ -109,7 +119,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   File? _image;
   final picker = ImagePicker();
   String profile_image = "";
-  bool is_loading = false;
+  bool is_loading = true;
+  bool isLoading = false;
   bool image_uploading = false;
 
   final String userId = "20"; // Static User ID
@@ -117,7 +128,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    // GetProfileDetails();
+    GetProfileDetails();
   }
   //
   // ProfileDetailsModel profilePicture=ProfileDetailsModel();
@@ -195,22 +206,52 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     });
   }
 
-  Future<void> _updateProfileDetails() async {
-    final res = await Userapi.postProfileDetails(
-        _nameController.text,
-        _emailController.text,
-        _mobileController.text,
-        _sos1Controller.text,
-        _sos2Controller.text,
-        _sos3Controller.text);
+  Future<void> _updateProfileDetails(BuildContext context) async {
     setState(() {
-      is_loading=true;
-      if (res != null) {
-        is_loading=false;
-      } else {
-        is_loading=false;
-      }
+      isLoading = true;
     });
+
+    final result = await Userapi.postProfileDetails(
+      _nameController.text,
+      _emailController.text,
+      _mobileController.text,
+      _sos1Controller.text,
+      _sos2Controller.text,
+      _sos3Controller.text,
+    );
+
+    setState(() {
+      if (result != null && result.containsKey("message")) {
+        CustomSnackBar.show(context, '${result["message"]}');
+        print("Success: ${result["message"]}");
+        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Dashboard()));
+
+      } else if (result != null && result.containsKey("error")) {
+        CustomSnackBar.show(context, '${result["error"]}');
+        print("Error: ${result["error"]}");
+      }
+      isLoading = false;
+    });
+  }
+
+  ProfileDetailsModel user_data = ProfileDetailsModel();
+  Future<void> GetProfileDetails() async {
+    String user_id = await PreferenceService().getString('user_id') ?? "";
+    final Response = await Userapi.getprofiledetails(user_id);
+    if (Response != null) {
+      setState(() {
+        user_data = Response;
+        _nameController.text=user_data.name??'';
+        _emailController.text=user_data.email??'';
+        _mobileController.text=user_data.phone.toString();
+        _sos1Controller.text=user_data.sos1.toString();
+        _sos2Controller.text=user_data.sos2.toString();
+        _sos3Controller.text=user_data.sos3.toString();
+        is_loading = false;
+      });
+    }else{
+      is_loading = false;
+    }
   }
 
   @override
@@ -220,11 +261,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         title: const Text('Profile Details'),
       ),
       body:
-          // (isloading)?Center(
-          //   child: CircularProgressIndicator(
-          //     color: Colors.blue,
-          //   ),
-          // ):
+          (is_loading)?Center(
+            child: CircularProgressIndicator(
+              color: Colors.blue,
+            ),
+          ):
           SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -383,7 +424,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                     ),
                     keyboardType: TextInputType.phone,
-                    validator: _validateMobileSos2,
+                    // validator: _validateMobileSos2,
                   ),
                   SizedBox(height: 20),
                   TextFormField(
@@ -405,7 +446,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                     ),
                     keyboardType: TextInputType.phone,
-                    validator: _validateMobileSos3,
+                    // validator: _validateMobileSos3,
                   ),
                   SizedBox(height: 20),
                 ],
@@ -417,10 +458,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       bottomNavigationBar: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: GestureDetector(
-          onTap: is_loading
+          onTap: isLoading
               ? null
               : () {
-                  _submitForm();
+                  _submitForm(context);
                 },
           child: Container(
             height: 56,
@@ -429,7 +470,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               color: const Color(0xFF2DB3FF),
             ),
             child: Center(
-              child: is_loading
+              child: isLoading
                   ? CircularProgressIndicator(
                       strokeWidth: 2,
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),

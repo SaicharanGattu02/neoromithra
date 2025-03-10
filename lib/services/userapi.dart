@@ -19,10 +19,10 @@ import 'package:http_parser/http_parser.dart';
 class Userapi {
   static String host = "https://admin.neuromitra.com";
 
-  static Future<String?> makeSOSCallApi() async {
+  static Future<String?> makeSOSCallApi(String loc) async {
     try {
       Map<String, String> data = {
-        "location": "Hyderabad",
+        "location": loc,
       };
       final url = Uri.parse("${host}/api/sos-call");
       final headers = await getheader2();
@@ -228,7 +228,7 @@ class Userapi {
   }
 
   static Future<Map<String, dynamic>?> postProfileDetails(
-      String name, String email,String phone,String sos1,String sos2,String sos3) async {
+      String name, String email, String phone, String sos1, String sos2, String sos3) async {
     try {
       Map<String, String> data = {
         "name": name,
@@ -239,30 +239,45 @@ class Userapi {
         "sos_3": sos3,
       };
       print("postProfileDetails: $data");
+
       final url = Uri.parse("${host}/api/update_user_details1");
       final headers = await getheader2();
+
       final response = await http.post(
         url,
         headers: headers,
         body: data,
       );
-      if (response.statusCode == 200) {
+
+      if (response.statusCode == 200) { // Success response
         final jsonResponse = jsonDecode(response.body);
-        print("postProfileDetails Status: ${jsonResponse}");
-        return jsonResponse["message"];
-      } else if (response.statusCode == 401) {
+        print("postProfileDetails Status: $jsonResponse");
+        return {"message": jsonResponse["message"]}; // Success message
+      } else if (response.statusCode == 401) { // Unauthorized response
         final jsonResponse = jsonDecode(response.body);
-        print("postProfileDetails Status: ${jsonResponse}");
-        return jsonResponse["error"];
+        print("postProfileDetails Status: $jsonResponse");
+        return {"error": jsonResponse["error"]}; // Unauthorized error message
+      } else if (response.statusCode == 400) { // Handle Bad Request (validation error)
+        final jsonResponse = jsonDecode(response.body);
+        print("postProfileDetails Error: $jsonResponse");
+
+        // Check if errors field exists in the response
+        if (jsonResponse.containsKey("errors")) {
+          return {"error": jsonResponse["errors"]}; // Return validation errors in map
+        } else {
+          return {"error": "Bad request with status 400, no specific error details available."};
+        }
       } else {
+        // Handle other non-200, non-400, non-401 status codes
         print("Request failed with status: ${response.statusCode}");
-        return null;
+        return {"error": "Request failed with status: ${response.statusCode}"};
       }
     } catch (e) {
       print("Error occurred: $e");
-      return null;
+      return {"error": e.toString()}; // Catch any other errors
     }
   }
+
 
 
   static Future<ProfileDetailsModel?> getprofiledetails(String user_id) async {

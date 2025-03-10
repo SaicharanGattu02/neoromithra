@@ -18,18 +18,18 @@ import 'TherapyScreens/SpeechTheraphyScreen.dart';
 class TherapiesListScreen extends StatelessWidget {
   final List<Map<String, String>> therapies = [
     {'image': 'assets/Therephy/speech_theraphy.jpg', 'text': 'Speech Therapy'},
-    {'image': 'assets/Therephy/occupational_theraphy', 'text': 'Occupational Therapy'},
+    {'image': 'assets/Therephy/occupational_theraphy.jpeg', 'text': 'Occupational Therapy'},
     {'image': 'assets/Therephy/physical_theraphy.jpeg', 'text': 'Physical Therapy'},
-    {'image':'assets/BehavioralTherapy.png', 'text': 'Behavioral Therapy'},
-    {'image': 'assets/(ABA)Therapy.png', 'text': 'Applied Behaviour Analysis(ABA) Therapy'},
-    {'image': 'assets/SensoryIntegrationTherapy.png', 'text': 'Sensory Integration Therapy'},
-    {'image':'assets/PlayTherapy.png', 'text': 'Play Therapy'},
-    {'image': 'assets/FeedingTherapy.png', 'text': 'Feeding Therapy'},
-    {'image': 'assets/CognitiveBehavioralTherapy(CBT).png', 'text': 'Cognitive Behavioral Therapy(CBT)'},
-    {'image': 'assets/SocialSkills.png', 'text': 'Social Skills Training'},
-    {'image':'assets/MusicTherapy.png', 'text': 'Music Therapy'},
-    {'image':'assets/ArtTherapy.png','text': 'Art Therapy'},
-    {'image': 'assets/developmentTherepy.png','text': 'Developmental Therapy'},
+    {'image':'assets/Therephy/behavioural_theraphy.jpg', 'text': 'Behavioral Therapy'},
+    {'image': 'assets/Therephy/ABA_theraphy.jpeg', 'text': 'Applied Behaviour Analysis(ABA) Therapy'},
+    {'image': 'assets/Therephy/sensor_integration.jpeg', 'text': 'Sensory Integration Therapy'},
+    {'image':'assets/Therephy/play_theraphy.png', 'text': 'Play Therapy'},
+    {'image': 'assets/Therephy/feeding_theraphy.jpg', 'text': 'Feeding Therapy'},
+    {'image': 'assets/Therephy/cbt_theraphy.jpeg', 'text': 'Cognitive Behavioral Therapy(CBT)'},
+    {'image': 'assets/Therephy/socail_skill_theraphy.jpeg', 'text': 'Social Skills Training'},
+    {'image':'assets/Therephy/music_theraphy.jpeg', 'text': 'Music Therapy'},
+    {'image':'assets/Therephy/art_theraphy.png','text': 'Art Therapy'},
+    {'image': 'assets/Therephy/development_theraphy.jpeg','text': 'Developmental Therapy'},
   ];
 
   void _navigateToDetails(BuildContext context, String text) {

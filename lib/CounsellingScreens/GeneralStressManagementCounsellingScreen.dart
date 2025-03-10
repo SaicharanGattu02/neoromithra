@@ -70,7 +70,7 @@ class _GeneralStressManagementCounsellingScreenState extends State<GeneralStress
                   width: w,
                   height: h * 0.3,
                   child: Image.asset(
-                    "assets/GeneralStress.png",
+                    "assets/Counciling/generalstress_councsiling.jpeg",
                     fit: BoxFit.cover,
                   ),
                 ),

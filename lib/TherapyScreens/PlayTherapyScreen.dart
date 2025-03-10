@@ -72,7 +72,7 @@ class _PlayTherapyScreenState extends State<PlayTherapyScreen> {
                   width: w,
                   height: h * 0.3,
                   child: Image.asset(
-                    "assets/PlayTherapy.png",
+                    "assets/Therephy/play_theraphy.png",
                     fit: BoxFit.cover,
                   ),
                 ),

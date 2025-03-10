@@ -70,7 +70,7 @@ class _OccupationalTherapyScreenState extends State<OccupationalTherapyScreen> {
                   width: w,
                   height: h * 0.3,
                   child: Image.asset(
-                    "assets/Therephy/occupational_theraphy",
+                    "assets/Therephy/occupational_theraphy.jpeg",
                     fit: BoxFit.cover,
                   ),
                 ),

@@ -69,7 +69,7 @@ class _MentalHealthCounsellingScreenState extends State<MentalHealthCounsellingS
                   width: w,
                   height: h * 0.3,
                   child: Image.asset(
-                    "assets/MentalHealth.png",
+                    "assets/Counciling/mental_health_counsiling.jpeg",
                     fit: BoxFit.cover,
                   ),
                 ),

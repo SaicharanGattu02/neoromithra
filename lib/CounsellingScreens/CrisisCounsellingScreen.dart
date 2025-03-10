@@ -69,7 +69,7 @@ class _CrisisCounsellingScreenState extends State<CrisisCounsellingScreen> {
                   width: w,
                   height: h * 0.3,
                   child: Image.asset(
-                    "assets/CrisisCounseling.png",
+                    "assets/Counciling/crisis_counsiling.jpeg",
                     fit: BoxFit.cover,
                   ),
                 ),

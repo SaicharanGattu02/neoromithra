@@ -44,7 +44,6 @@ class _LogInState extends State<LogIn> {
 
     if (loginResponse != null) {
       if (loginResponse.containsKey("access_token")) {
-        // Successful login
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
             "You are logged in successfully",

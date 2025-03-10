@@ -69,7 +69,7 @@ class _GriefCounsellingScreenState extends State<GriefCounsellingScreen> {
                   width: w,
                   height: h * 0.3,
                   child: Image.asset(
-                    "assets/GriefCounseling.png",
+                    "assets/Counciling/grief_counsiling.jpeg",
                     fit: BoxFit.cover,
                   ),
                 ),

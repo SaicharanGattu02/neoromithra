@@ -1,7 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:neuromithra/LogIn.dart';
+import 'package:neuromithra/Logic/Location/location_state.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 
@@ -19,6 +21,7 @@ import 'CounsellingScreens/ParentChildRelationshipCounsellingScreen.dart';
 import 'CounsellingScreens/ParentCounsellingForAutismScreen.dart';
 import 'CounsellingScreens/RelationshipCounsellingScreen.dart';
 import 'CounsellingScreens/SiblingCounsellingScreen.dart';
+import 'Logic/Location/location_cubit.dart';
 import 'TherapyScreens/ABA_TherapyScreen.dart';
 import 'TherapyScreens/ArtTherapyScreen.dart';
 import 'TherapyScreens/BehavioralTherapyScreen.dart';
@@ -93,14 +96,26 @@ class _HomeScreenState extends State<HomeScreen> {
       'image': 'assets/Counciling/behavioral_counciling.jpeg',
       'text': 'Behavioral Counselling'
     },
-    {'image': 'assets/Counciling/grief_counsiling.jpeg', 'text': 'Grief Counselling'},
-    {'image': 'assets/Counciling/group_counsiling.jpeg', 'text': 'Group Counselling'},
-    {'image': 'assets/Counciling/crisis_counsiling.jpeg', 'text': 'Crisis Counselling'},
+    {
+      'image': 'assets/Counciling/grief_counsiling.jpeg',
+      'text': 'Grief Counselling'
+    },
+    {
+      'image': 'assets/Counciling/group_counsiling.jpeg',
+      'text': 'Group Counselling'
+    },
+    {
+      'image': 'assets/Counciling/crisis_counsiling.jpeg',
+      'text': 'Crisis Counselling'
+    },
     {
       'image': 'assets/Counciling/carreer_counsling.jpeg',
       'text': 'Career Counselling for parents'
     },
-    {'image': 'assets/Counciling/sibiling_counciling.jpeg', 'text': 'Sibling Counselling'},
+    {
+      'image': 'assets/Counciling/sibiling_counciling.jpeg',
+      'text': 'Sibling Counselling'
+    },
     {
       'image': 'assets/Counciling/educationol_counsiling.jpeg',
       'text': 'Educational Counselling'
@@ -113,9 +128,18 @@ class _HomeScreenState extends State<HomeScreen> {
       'image': 'assets/Counciling/individual_counsilng_children.jpeg',
       'text': 'Individual Counselling for children'
     },
-    {'image': 'assets/Counciling/family_counsiling.jpeg', 'text': 'Family Counselling'},
-    {'image': 'assets/Counciling/mental_health_counsiling.jpeg', 'text': 'Mental Health Counselling'},
-    {'image': 'assets/Counciling/generalstress_councsiling.jpeg', 'text': 'General stress management Counselling'},
+    {
+      'image': 'assets/Counciling/family_counsiling.jpeg',
+      'text': 'Family Counselling'
+    },
+    {
+      'image': 'assets/Counciling/mental_health_counsiling.jpeg',
+      'text': 'Mental Health Counselling'
+    },
+    {
+      'image': 'assets/Counciling/generalstress_councsiling.jpeg',
+      'text': 'General stress management Counselling'
+    },
     {
       'image': 'assets/Counciling/autism_Counsiling.png',
       'text': 'Parent Counselling for Autism'
@@ -243,11 +267,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool makingSOSCall = false;
 
-  void _makeSOSCall() async {
+  void _makeSOSCall(loc) async {
+    setState(() {
+      makingSOSCall = true;
+    });
     try {
-      var res = await Userapi.makeSOSCallApi();
+      var res = await Userapi.makeSOSCallApi(loc);
       setState(() {
-        makingSOSCall = true;
         if (res != null) {
           makingSOSCall = false;
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -266,203 +292,229 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
-    var width = MediaQuery.of(context).size.width;
     String nameInitial =
         (name.trim().isNotEmpty) ? name.trim()[0].toUpperCase() : "";
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Image.asset(
-              'assets/logo.png',
-              fit: BoxFit.contain,
-              width: 200,
-              height: 50,
-            ),
-            SizedBox(
-              width: 100,
-              height: 40,
-              child: ElevatedButton.icon(
-                onPressed: makingSOSCall
-                    ? null
-                    : () {
-                        _makeSOSCall();
-                      },
-                style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  backgroundColor: Colors.blue,
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+    return
+      Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.white,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Image.asset(
+                  'assets/logo.png',
+                  fit: BoxFit.contain,
+                  width: 200,
+                  height: 50,
+                ),
+                SizedBox(
+                  width: 100,
+                  height: 40,
+                  child: BlocBuilder<LocationCubit,LocationState>(builder: (context, state) {
+                    if(state is LocationLoaded){
+                      return
+                        ElevatedButton.icon(
+                        onPressed: makingSOSCall
+                            ? null
+                            : () {
+                          _makeSOSCall(state.locationName);
+                          print("loction:${state.locationName}");
+                        },
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          backgroundColor:
+                          Colors.blue, // Keep background blue during loading
+                          foregroundColor: Colors.blue,
+                          padding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        icon: makingSOSCall
+                            ? SizedBox.shrink() // No icon when loading
+                            : Icon(Icons.phone, color: Colors.white), // Phone icon
+                        label: Center(
+                          child: makingSOSCall
+                              ? SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                                color: Colors
+                                    .white), // Limit the size of the loader
+                          )
+                              : Text(
+                            "SOS Call",
+                            style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: "Inter"),
+                          ),
+                        ),
+                      );
+
+                    }
+                    return Container();
+
+                  },
+
+
                   ),
                 ),
-                icon: Icon(Icons.phone, color: Colors.white), // Phone icon
-                label: Text(
-                  "SOS Call",
-                  style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: "Inter"),
+              ],
+            ),
+          ),
+          body: SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Image.asset(
+                  'assets/homeimg.png',
+                  fit: BoxFit.contain,
                 ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      body: SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.asset(
-              'assets/homeimg.png',
-              fit: BoxFit.contain,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 15, right: 15),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Therapies",
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontFamily: "Inter",
-                        fontWeight: FontWeight.w600),
-                  ),
-                  SizedBox(height: 10,),
-                  Container(
-                    height: 180,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      physics: AlwaysScrollableScrollPhysics(),
-                      itemCount: items.length,
-                      itemBuilder: (context, index) {
-                        final item = items[index];
-                        return InkWell(
-                          onTap: () =>
-                              _navigateToDetails(context, item['text']!),
-                          child: Container(
-                            width: 170,
-                            padding: EdgeInsets.all(
-                                8), // Padding inside the item container
-                            child: Column(
-
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(
-                                      12), // Border radius for the image
-                                  child: Image.asset(
-                                    item['image']!,
-                                    width: 150, // Adjust width as needed
-                                    height: 106, // Adjust height as needed
-                                    fit: BoxFit
-                                        .cover, // Ensure image covers the container
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  item['text']!,
-                                  textAlign:
-                                      TextAlign.center, // Center-align text
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: "Inter"
-                                      // Bold text
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 15, right: 15),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Therapies",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: "Inter",
+                            fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        height: 180,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          physics: AlwaysScrollableScrollPhysics(),
+                          itemCount: items.length,
+                          itemBuilder: (context, index) {
+                            final item = items[index];
+                            return InkWell(
+                              onTap: () =>
+                                  _navigateToDetails(context, item['text']!),
+                              child: Container(
+                                width: 170,
+                                padding: EdgeInsets.all(
+                                    8), // Padding inside the item container
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(
+                                          12), // Border radius for the image
+                                      child: Image.asset(
+                                        item['image']!,
+                                        width: 150, // Adjust width as needed
+                                        height: 106, // Adjust height as needed
+                                        fit: BoxFit
+                                            .cover, // Ensure image covers the container
                                       ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      item['text']!,
+                                      textAlign:
+                                          TextAlign.center, // Center-align text
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: "Inter"
+                                          // Bold text
+                                          ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  Text(
-                    "Counselling",
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontFamily: "Inter",
-                        fontWeight: FontWeight.w600),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Container(
-                    height: 200, // Adjust the height as needed
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      physics: AlwaysScrollableScrollPhysics(),
-                      itemCount: items1.length,
-                      itemBuilder: (context, index) {
-                        final item = items1[index];
-                        return InkWell(
-                          onTap: () =>
-                              _onCounsellingTap(context, item['text']!),
-                          child: Container(
-                            width: 170,
-                            padding: EdgeInsets.all(
-                                8), // Padding inside the item container
-                            child: Column(
-
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(
-                                      12), // Border radius for the image
-                                  child: Image.asset(
-                                    item['image']!,
-                                    width: 150, // Adjust width as needed
-                                    height: 106, // Adjust height as needed
-                                    fit: BoxFit
-                                        .cover, // Ensure image covers the container
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  item['text']!,
-                                  textAlign:
-                                      TextAlign.center, // Center-align text
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: "Inter"
-                                      // Bold text
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      Text(
+                        "Counselling",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: "Inter",
+                            fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Container(
+                        height: 200, // Adjust the height as needed
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          physics: AlwaysScrollableScrollPhysics(),
+                          itemCount: items1.length,
+                          itemBuilder: (context, index) {
+                            final item = items1[index];
+                            return InkWell(
+                              onTap: () =>
+                                  _onCounsellingTap(context, item['text']!),
+                              child: Container(
+                                width: 170,
+                                padding: EdgeInsets.all(
+                                    8), // Padding inside the item container
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(
+                                          12), // Border radius for the image
+                                      child: Image.asset(
+                                        item['image']!,
+                                        width: 150, // Adjust width as needed
+                                        height: 106, // Adjust height as needed
+                                        fit: BoxFit
+                                            .cover, // Ensure image covers the container
                                       ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      item['text']!,
+                                      textAlign:
+                                          TextAlign.center, // Center-align text
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: "Inter"
+                                          // Bold text
+                                          ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    );
+          ),
+        );
   }
 
   void _showLogoutConfirmationDialog(BuildContext context) {

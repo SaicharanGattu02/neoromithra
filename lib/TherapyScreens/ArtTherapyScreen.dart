@@ -73,7 +73,7 @@ class _ArtTherapyScreenState extends State<ArtTherapyScreen> {
                   width: w,
                   height: h * 0.3,
                   child: Image.asset(
-                      'assets/ArtTherapy.png',
+                      'assets/Therephy/art_theraphy.png',
                       fit: BoxFit.cover),
                 ),
                 Padding(

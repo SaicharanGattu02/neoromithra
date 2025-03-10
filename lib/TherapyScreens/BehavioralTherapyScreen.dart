@@ -70,7 +70,7 @@ class _BehavioralTherapyScreenState extends State<BehavioralTherapyScreen> {
                   width: w,
                   height: h * 0.3,
                   child: Image.asset(
-                    "assets/BehavioralTherapy.png",
+                    "assets/Therephy/behavioural_theraphy.jpg",
                     fit: BoxFit.cover,
                   ),
                 ),

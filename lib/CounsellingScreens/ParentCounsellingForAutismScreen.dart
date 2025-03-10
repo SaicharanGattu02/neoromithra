@@ -69,7 +69,7 @@ class _ParentCounsellingForAutismScreenState extends State<ParentCounsellingForA
                   width: w,
                   height: h * 0.3,
                   child: Image.asset(
-                    "assets/ParentCounseling.png",
+                    "assets/Counciling/autism_Counsiling.png",
                     fit: BoxFit.cover,
                   ),
                 ),

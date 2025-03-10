@@ -70,7 +70,7 @@ class _FeedingTherapyScreenState extends State<FeedingTherapyScreen> {
                   width: w,
                   height: h * 0.3,
                   child: Image.asset(
-                    "assets/FeedingTherapy.png",
+                    "assets/Therephy/feeding_theraphy.jpg",
                     fit: BoxFit.cover,
                   ),
                 ),

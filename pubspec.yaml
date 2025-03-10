@@ -54,6 +54,12 @@ dependencies:
   dotted_border: ^2.1.0
   permission_handler: ^11.3.1
   flutter_file_downloader: ^2.0.0
+  equatable: ^2.0.7
+  flutter_bloc: ^9.0.0
+  google_maps_flutter: ^2.7.1
+  geocoding: ^3.0.0
+  geolocator: ^13.0.1
+  location: ^8.0.0
 
 
 

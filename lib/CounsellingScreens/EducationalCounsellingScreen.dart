@@ -70,7 +70,7 @@ class _EducationalCounsellingScreenState extends State<EducationalCounsellingScr
                   width: w,
                   height: h * 0.3,
                   child: Image.asset(
-                    "assets/EducationalCounseling.png",
+                    "assets/Counciling/educationol_counsiling.jpeg",
                     fit: BoxFit.cover,
                   ),
                 ),

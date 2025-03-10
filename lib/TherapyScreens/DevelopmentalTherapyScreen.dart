@@ -69,7 +69,7 @@ class _DevelopmentalTherapyScreenState extends State<DevelopmentalTherapyScreen>
                 Container(
                   width: w,
                   height: h * 0.3,
-                  child: Image.asset("assets/developmentTherepy.png", fit: BoxFit.cover),
+                  child: Image.asset("assets/Therephy/development_theraphy.jpeg", fit: BoxFit.cover),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(20.0),

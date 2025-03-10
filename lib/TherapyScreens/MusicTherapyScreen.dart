@@ -74,7 +74,7 @@ class _MusicTherapyScreenState extends State<MusicTherapyScreen> {
                   width: w,
                   height: h * 0.3,
                   child:  Image.asset(
-                      "assets/MusicTherapy.png",
+                      "assets/Therephy/music_theraphy.jpeg",
                       fit: BoxFit.cover),
                 ),
                 Padding(

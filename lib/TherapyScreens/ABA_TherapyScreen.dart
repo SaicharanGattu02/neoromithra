@@ -75,7 +75,7 @@ class _ABA_TherapyScreenState extends State<ABA_TherapyScreen> {
               width: w,
               height: h * 0.3,
               child: Image.asset(
-                "assets/(ABA)Therapy.png",
+                "assets/Therephy/ABA_theraphy.jpeg",
                 fit: BoxFit.cover,
               ),
             ),

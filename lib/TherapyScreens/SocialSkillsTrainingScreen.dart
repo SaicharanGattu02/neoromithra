@@ -72,7 +72,7 @@ class _SocialSkillsTrainingScreen extends State<SocialSkillsTrainingScreen> {
                   width: w,
                   height: h * 0.3,
                   child: Image.asset(
-                    "assets/SocialSkills.png",
+                    "assets/Therephy/socail_skill_theraphy.jpeg",
                     fit: BoxFit.cover,
                   ),
                 ),

@@ -70,7 +70,7 @@ class _CareerCounsellingScreenState extends State<CareerCounsellingScreen> {
                   width: w,
                   height: h * 0.3,
                   child: Image.asset(
-                    "assets/CareerCounseling.png",
+                    "assets/Counciling/carreer_counsling.jpeg",
                     fit: BoxFit.cover,
                   ),
                 ),

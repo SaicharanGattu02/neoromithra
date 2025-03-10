@@ -69,7 +69,7 @@ class _ParentChildRelationshipCounsellingScreenState extends State<ParentChildRe
                   width: w,
                   height: h * 0.3,
                   child: Image.asset(
-                    "assets/Parent-ChildRelationship.png",
+                    "assets/Counciling/parent_children_relationship.jpeg",
                     fit: BoxFit.cover,
                   ),
                 ),

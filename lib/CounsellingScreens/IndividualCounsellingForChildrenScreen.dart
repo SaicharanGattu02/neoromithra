@@ -69,7 +69,7 @@ class _IndividualCounsellingForChildrenScreenState extends State<IndividualCouns
                   width: w,
                   height: h * 0.3,
                   child: Image.asset(
-                    "assets/IndividualCounseling.png",
+                    "assets/Counciling/individual_counsilng_children.jpeg",
                     fit: BoxFit.cover,
                   ),
                 ),

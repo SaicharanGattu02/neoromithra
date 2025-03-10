@@ -70,7 +70,7 @@ class _CBT_ScreenState extends State<CBT_Screen> {
                   width: w,
                   height: h * 0.3,
                   child: Image.asset(
-                    "assets/CognitiveBehavioralTherapy(CBT).png",
+                    "assets/Therephy/cbt_theraphy.jpeg",
                     fit: BoxFit.cover,
                   ),
                 ),

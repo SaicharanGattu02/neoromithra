@@ -70,7 +70,7 @@ class _SensoryIntegrationTherapyScreenState extends State<SensoryIntegrationTher
                   width: w,
                   height: h * 0.3,
                   child: Image.asset(
-                    "assets/SensoryIntegrationTherapy.png",
+                    "assets/Therephy/sensor_integration.jpeg",
                     fit: BoxFit.cover,
                   ),
                 ),
