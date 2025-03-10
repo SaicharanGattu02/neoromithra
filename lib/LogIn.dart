@@ -34,6 +34,7 @@ class _LogInState extends State<LogIn> {
   Future<void> logIn() async {
     String email = _emailController.text;
     String pwd = _passwordController.text;
+
     setState(() {
       _loading = true;
     });
