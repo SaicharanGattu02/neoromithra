@@ -31,7 +31,6 @@ class _LogInState extends State<LogIn> {
     super.dispose();
   }
 
-
   Future<void> logIn() async {
     String email = _emailController.text;
     String pwd = _passwordController.text;
@@ -52,8 +51,10 @@ class _LogInState extends State<LogIn> {
           duration: Duration(seconds: 1),
           backgroundColor: Color(0xFF32657B),
         ));
-        PreferenceService().saveString("token", loginResponse["access_token"] ?? "");
-        PreferenceService().saveString("access_expiry_timestamp", loginResponse["expires_in"].toString() ?? "");
+        PreferenceService()
+            .saveString("token", loginResponse["access_token"] ?? "");
+        PreferenceService().saveString("access_expiry_timestamp",
+            loginResponse["expires_in"].toString() ?? "");
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => Dashboard()),
@@ -97,8 +98,6 @@ class _LogInState extends State<LogIn> {
     });
   }
 
-
-
   @override
   void initState() {
     super.initState();
@@ -110,51 +109,50 @@ class _LogInState extends State<LogIn> {
     var width = MediaQuery.of(context).size.width;
 
     return WillPopScope(
-      onWillPop: () async{
+      onWillPop: () async {
         SystemNavigator.pop();
         return false;
-
-
       },
       child: Scaffold(
         body: SingleChildScrollView(
           child: Column(
             children: [
               SizedBox(
-                height: height * 0.3,
-                width: width,
-                child: Center(
-                  child: Image.asset(
-                    "assets/logo.png",
-                    height: 150,
-                    width: 200,
-                  ),
+                height: 50,
+              ),
+              Center(
+                child: Image.asset(
+                  "assets/neuromitralogo.png",
+                  height: 100,
+                  width: 100,
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16, top: 20),
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 38),
                 child: Form(
                   key: _formKey,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Let's Login to Your Account",
-                        style: TextStyle(
-                          color: Color(0xFF32657B),
-                          fontFamily: "Inter",
-                          fontSize: 24,
-                          fontWeight: FontWeight.w400,
+                      Center(
+                        child: Text(
+                          "Sign In",
+                          style: TextStyle(
+                            color: Color(0xFF1F2937),
+                            fontFamily: "Inter",
+                            fontSize: 32,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                       ),
                       SizedBox(height: 20),
                       Text(
-                        "Email",
+                        "Email Address",
                         style: TextStyle(
-                          color: Color(0xFF32657B),
+                          color: Color(0xFF1F2937),
                           fontFamily: "Inter",
-                          fontSize: 20,
+                          fontSize: 13,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -176,22 +174,29 @@ class _LogInState extends State<LogIn> {
                           filled: true,
                           fillColor: Color(0xffffffff),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                            borderSide:
-                            BorderSide(width: 1, color: Color(0xffCDE2FB)),
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: BorderSide(width: 1, color: Color(0xffCDE2FB)),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                            borderSide:
-                            BorderSide(width: 1, color: Color(0xffCDE2FB)),
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: BorderSide(width: 1, color: Color(0xffCDE2FB)),
                           ),
                           errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0),
+                            borderRadius: BorderRadius.circular(8.0),
                             borderSide: BorderSide(width: 1, color: Colors.red),
                           ),
                           focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0),
+                            borderRadius: BorderRadius.circular(18.0),
                             borderSide: BorderSide(width: 1, color: Colors.red),
+                          ),
+
+                          // Always visible email icon at the start
+                          prefixIcon: Padding(
+                            padding: EdgeInsets.only(left: 10, right: 5), // Adjust padding
+                            child: Icon(
+                              Icons.email_outlined,
+                              color: Color(0xff4B5563),
+                            ),
                           ),
                         ),
                         validator: (value) {
@@ -201,20 +206,21 @@ class _LogInState extends State<LogIn> {
                           if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                             return 'Please enter a valid email address';
                           }
-
-                          // return null;
-
+                          return null;
                         },
                       ),
+
                       SizedBox(height: 20),
                       Text(
                         "Password",
                         style: TextStyle(
-                          color: Color(0xFF32657B),
+                          color: Color(0xFF1F2937),
                           fontFamily: "Inter",
-                          fontSize: 20,
+                          fontSize: 13,
                           fontWeight: FontWeight.w400,
+
                         ),
+
                       ),
                       TextFormField(
                         controller: _passwordController,
@@ -234,28 +240,35 @@ class _LogInState extends State<LogIn> {
                           filled: true,
                           fillColor: Color(0xffffffff),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                            borderSide:
-                            BorderSide(width: 1, color: Color(0xffCDE2FB)),
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: BorderSide(width: 1, color: Color(0xffCDE2FB)),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                            borderSide:
-                            BorderSide(width: 1, color: Color(0xffCDE2FB)),
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: BorderSide(width: 1, color: Color(0xffCDE2FB)),
                           ),
                           errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0),
+                            borderRadius: BorderRadius.circular(8.0),
                             borderSide: BorderSide(width: 1, color: Colors.red),
                           ),
                           focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0),
+                            borderRadius: BorderRadius.circular(8.0),
                             borderSide: BorderSide(width: 1, color: Colors.red),
                           ),
+
+                          // Lock icon at the start
+                          prefixIcon: Padding(
+                            padding: EdgeInsets.only(left: 10, right: 5), // Adjust padding
+                            child: Icon(
+                              Icons.lock_outline, // Lock symbol
+                              color: Color(0xff1E293B),
+                            ),
+                          ),
+
+                          // Visibility toggle at the end
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _isPasswordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
+                              _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
                               color: Color(0xffAFAFAF),
                             ),
                             onPressed: () {
@@ -271,79 +284,95 @@ class _LogInState extends State<LogIn> {
                           }
                           return null;
                         },
+                      ),
 
+                      SizedBox(
+                        height: 25,
                       ),
-                      SizedBox(height: 15,),
-                      InkWell(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPasswordScreen(),));
-                        },
-                        child: Align(
-                          alignment: Alignment.topRight,
-                          child: Text(
-                            "Forgot Password",
-                            style: TextStyle(
-                              color: Colors.teal,
-                              fontFamily: "Inter",
-                              fontWeight: FontWeight.w700,
-                              fontSize: 15,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: height * 0.1),
                       InkWell(
                         onTap: () {
                           if (_formKey.currentState?.validate() ?? false) {
                             logIn();
                           }
                         },
+
                         child: Container(
                           width: width,
-                          height: 48,
+                          height: 56,
                           decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.circular(100),
+                            color: Color(0xff3EA4D2),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           child: Center(
                             child: _loading
                                 ? CircularProgressIndicator(
                               color: Color(0xFFFFFFFF),
                             )
-                                : Text(
-                              "Log In",
-                              style: TextStyle(
-                                color: Color(0xFFFFFFFF),
-                                fontFamily: "Inter",
-                                fontWeight: FontWeight.w700,
-                                fontSize: 20,
-                              ),
+                                : Row(
+                              mainAxisSize: MainAxisSize.min, // To keep the row centered
+                              children: [
+                                Center(
+                                  child: Text(
+                                    "Sign In",
+                                    style: TextStyle(
+                                      color: Color(0xFFFFFFFF),
+                                      fontFamily: "Inter",
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 28), // Space between text and icon
+                                Icon(
+                                  Icons.arrow_forward, // Your preferred suffix icon
+                                  color: Colors.white,
+                                  size: 18,
+                                ),
+                              ],
                             ),
                           ),
                         ),
+
+
+
                       ),
-                      SizedBox(height: 15,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Create an account?'),
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Register()),
-                          );
-                        },
+                      SizedBox(
+                        height: 45,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Don’t have an account?',style: TextStyle(fontSize: 16,)    ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Register()),
+                              );
+                            },
+                            child: Text(
+                              ' Sign Up.',
+                              style: TextStyle(
+                                color: Color(0xff4949C9),
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+
+
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      Center(
                         child: Text(
-                          ' Register',
+                          ' Forgot Password',
                           style: TextStyle(
-                            color: Colors.teal,
-                            fontWeight: FontWeight.bold,
+                            color: Color(0xff4949C9),
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                       ),
-                    ],
-                  )
                     ],
                   ),
                 ),
