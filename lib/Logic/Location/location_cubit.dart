@@ -8,7 +8,7 @@ import 'location_state.dart';
 class LocationCubit extends Cubit<LocationState> {
   LocationCubit() : super(LocationInitial());
 
-  /// Check if location permission & services are enabled
+
   Future<void> checkLocationPermission() async {
     emit(LocationLoading());
 
@@ -92,8 +92,8 @@ class LocationCubit extends Cubit<LocationState> {
 
       String latlngs= "${position.latitude},${position.longitude}";
 
-       PreferenceService().saveString('LocName', locationName);
-       PreferenceService().saveString('latlngs', latlngs);
+      PreferenceService().saveString('LocName', locationName);
+      PreferenceService().saveString('latlngs', latlngs);
 
       emit(LocationLoaded(locationName: locationName,latlng: latlngs));
     } catch (e) {

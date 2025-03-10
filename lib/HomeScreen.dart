@@ -47,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool onclick = false;
   String profile_image = "";
   String name = "";
+
   final List<Map<String, String>> items = [
     {'image': 'assets/Therephy/speech_theraphy.jpg', 'text': 'Speech Therapy'},
     {
@@ -148,6 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+
     super.initState();
   }
 
@@ -312,7 +314,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                   width: 100,
                   height: 40,
-                  child: BlocBuilder<LocationCubit,LocationState>(builder: (context, state) {
+                  child:
+                  BlocBuilder<LocationCubit,LocationState>(builder: (context, state) {
                     if(state is LocationLoaded){
                       return
                         ElevatedButton.icon(

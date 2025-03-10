@@ -47,8 +47,8 @@ class _DashboardState extends State<Dashboard> {
         return false;
       },
       child:  BlocListener<LocationCubit, LocationState>(
-        listener: (context, Loactionstate) {
-          if (Loactionstate is LocationPermissionDenied) {
+        listener: (context, state) {
+          if (state is LocationPermissionDenied) {
             showLocationBottomSheet(context);
           }
         },
@@ -191,11 +191,12 @@ class _DashboardState extends State<Dashboard> {
       enableDrag: false,
       builder: (BuildContext bottomSheetContext) {
         return BlocConsumer<LocationCubit, LocationState>(
-          listener: (context, state) {
-            if (state is LocationLoaded) {
-              Navigator.pop(bottomSheetContext);
-            }
-          },
+            listener: (context, state) {
+          if (state is LocationLoaded) {
+            print('loadided');
+            Navigator.pop(bottomSheetContext);
+          }
+      },
           builder: (context, state) {
             bool isLoading = state is LocationLoading;
             return WillPopScope(
@@ -218,9 +219,8 @@ class _DashboardState extends State<Dashboard> {
                           onPressed: isLoading
                               ? null
                               : () async {
-                            context
-                                .read<LocationCubit>()
-                                .requestLocationPermission();
+                            // Request location permission when user taps the 'GRANT' button
+                            context.read<LocationCubit>().requestLocationPermission();
                           },
                           child: isLoading
                               ? CircularProgressIndicator(strokeWidth: 2)
@@ -242,4 +242,5 @@ class _DashboardState extends State<Dashboard> {
       },
     );
   }
+
 }
