@@ -8,6 +8,7 @@ import 'package:neuromithra/services/Preferances.dart';
 
 import 'BookAppointment.dart';
 import 'HomeScreen.dart';
+import 'OnBoardScreen.dart';
 
 
 class Splash extends StatefulWidget {
@@ -17,75 +18,49 @@ class Splash extends StatefulWidget {
   State<Splash> createState() => _SplashState();
 }
 
-class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
-  String User_id="";
-  String status="";
+class _SplashState extends State<Splash> {
+  String userId = "";
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: Duration(seconds: 2),
-      vsync: this,
-    );
-
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
-
-    _controller.forward();
-
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(Duration(seconds: 2), () {
-        if(User_id!=""){
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =>Dashboard()));
-        }else{
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =>LogIn()));
-        }
-
-      });
-    });
-    Fetchdetails();
+    _initialize();
   }
-  Fetchdetails() async {
-    var token = (await PreferenceService().getString('token'))??"";
-    // var status = (await PreferenceService().getString('onboard_status'))??"";
+
+  Future<void> _initialize() async {
+    await _fetchDetails();
+    // Navigate only if the widget is still mounted
+    if (!mounted) return;
+
+    Future.delayed(Duration(seconds: 2), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => userId.isNotEmpty ? Dashboard() : OnBoardScreen(),
+        ),
+      );
+    });
+  }
+
+  Future<void> _fetchDetails() async {
+    String token = await PreferenceService().getString('token') ?? "";
     setState(() {
-      User_id=token;
+      userId = token;
     });
-    print("Token:${token}");
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+    debugPrint("Token: $token");
   }
 
   @override
   Widget build(BuildContext context) {
-    var screenwidth = MediaQuery.of(context).size.width;
-    var screenheight = MediaQuery.of(context).size.height;
     return Scaffold(
-      body:
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            color: Colors.white,
-            height: screenheight,
-            child: Center(
-              child: Image.asset(
-                "assets/logo.png",
-                width: 260,
-                height: 150,
-                fit:BoxFit.contain,
-              ),
-            ),
-          ),
-        ],
+      backgroundColor: Colors.white, // Ensures consistent background color
+      body: Center(
+        child: Image.asset(
+          "assets/neuromitralogo.png",
+          width: 200,
+          height: 200,
+          fit: BoxFit.contain,
+        ),
       ),
     );
   }

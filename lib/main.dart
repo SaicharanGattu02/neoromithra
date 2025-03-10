@@ -9,7 +9,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:neuromithra/LogIn.dart';
 import 'package:neuromithra/MainDashBoard.dart';
 import 'package:neuromithra/SplashScreen.dart';
 import 'package:neuromithra/services/Preferances.dart';
@@ -195,7 +194,7 @@ class MyApp extends StatelessWidget {
           },
 
         debugShowCheckedModeBanner: false,
-        title: 'Local Auth Example',
+        title: 'NeuroMitra',
           theme: ThemeData(
             visualDensity: VisualDensity.adaptivePlatformDensity,
             splashColor: Colors.transparent,
@@ -209,7 +208,7 @@ class MyApp extends StatelessWidget {
             dialogTheme: const DialogTheme(
               shadowColor: Colors.white,
               surfaceTintColor: Colors.white,
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.white, 
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(
                     Radius.circular(5.0)), // Set the border radius of the dialog
@@ -238,7 +237,7 @@ class MyApp extends StatelessWidget {
                 .copyWith(background: Colors.white),
           ),
 
-        home:LogIn()
+        home:Splash()
       ),
     );
   }
