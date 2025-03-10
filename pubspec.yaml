@@ -121,6 +121,13 @@ flutter:
          - asset: fonts/Poppins-Bold.ttf
          - asset: fonts/Poppins-SemiBold.ttf
            weight: 700
+     - family: Epi
+       fonts:
+         - asset: fonts/Epilogue-Regular.ttf
+
+
+
+
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
