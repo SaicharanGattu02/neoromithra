@@ -21,6 +21,7 @@ class Splash extends StatefulWidget {
 
 class _SplashState extends State<Splash> {
   String userId = "";
+  String Status = '';
 
   @override
   void initState() {
@@ -37,7 +38,7 @@ class _SplashState extends State<Splash> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => userId.isNotEmpty ? MainDashBoard() : OnBoardScreen(),
+          builder: (_) => Status == ''? OnBoardScreen():userId.isNotEmpty ?MainDashBoard() : LogIn(),
         ),
       );
     });
@@ -45,7 +46,9 @@ class _SplashState extends State<Splash> {
 
   Future<void> _fetchDetails() async {
     String token = await PreferenceService().getString('token') ?? "";
+    var status = await PreferenceService().getString('on_boarding');
     setState(() {
+      Status = status ?? '';
       userId = token;
     });
     debugPrint("Token: $token");

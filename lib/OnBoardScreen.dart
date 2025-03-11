@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neuromithra/services/Preferances.dart';
 
 import 'LogIn.dart';
 
@@ -11,18 +12,23 @@ class OnBoardScreen extends StatefulWidget {
 
 class _OnBoardScreenState extends State<OnBoardScreen> {
   @override
+  void initState() {
+    PreferenceService().saveString('on_boarding', '1');
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          /// **Background Image & Logo**
+
           Expanded(
             child: Stack(
               alignment: Alignment.center,
               children: [
                 Image.asset(
                   "assets/onboardbg.png",
-                  fit: BoxFit.cover, // Ensures image fills the screen
+                  fit: BoxFit.cover,
                 ),
                 Image.asset(
                   "assets/neuromitralogo.png",
@@ -33,7 +39,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
             ),
           ),
 
-          /// **Text & Button Section**
+
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: SingleChildScrollView(

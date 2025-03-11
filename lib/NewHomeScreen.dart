@@ -745,7 +745,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
             ),
           ),
           actions: [
-           
+
           ],
         ),
         SingleChildScrollView(

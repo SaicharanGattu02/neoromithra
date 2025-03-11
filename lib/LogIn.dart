@@ -178,11 +178,12 @@ class _LogInState extends State<LogIn> {
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
                             borderSide:
-                            BorderSide(width: 1, color: Colors.transparent),
+                                BorderSide(width: 1, color: Colors.transparent),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
-                            borderSide:   BorderSide(width: 1, color: Color(0xff14B8A6)),
+                            borderSide:
+                                BorderSide(width: 1, color: Color(0xff14B8A6)),
                           ),
                           errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
@@ -195,7 +196,8 @@ class _LogInState extends State<LogIn> {
 
                           // Always visible email icon at the start
                           prefixIcon: Padding(
-                            padding: EdgeInsets.only(left: 10, right: 5), // Adjust padding
+                            padding: EdgeInsets.only(
+                                left: 10, right: 5), // Adjust padding
                             child: Icon(
                               Icons.email_outlined,
                               color: Color(0xff4B5563),
@@ -212,7 +214,6 @@ class _LogInState extends State<LogIn> {
                           return null;
                         },
                       ),
-
                       SizedBox(height: 20),
                       Text(
                         "Password",
@@ -221,9 +222,7 @@ class _LogInState extends State<LogIn> {
                           fontFamily: "Inter",
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
-
                         ),
-
                       ),
                       TextFormField(
                         controller: _passwordController,
@@ -245,11 +244,12 @@ class _LogInState extends State<LogIn> {
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
                             borderSide:
-                            BorderSide(width: 1, color: Colors.transparent),
+                                BorderSide(width: 1, color: Colors.transparent),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
-                            borderSide:   BorderSide(width: 1, color: Color(0xff14B8A6)),
+                            borderSide:
+                                BorderSide(width: 1, color: Color(0xff14B8A6)),
                           ),
                           errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
@@ -262,7 +262,8 @@ class _LogInState extends State<LogIn> {
 
                           // Lock icon at the start
                           prefixIcon: Padding(
-                            padding: EdgeInsets.only(left: 10, right: 5), // Adjust padding
+                            padding: EdgeInsets.only(
+                                left: 10, right: 5), // Adjust padding
                             child: Icon(
                               Icons.lock_outline, // Lock symbol
                               color: Color(0xff1E293B),
@@ -272,7 +273,9 @@ class _LogInState extends State<LogIn> {
                           // Visibility toggle at the end
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                              _isPasswordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
                               color: Color(0xffAFAFAF),
                             ),
                             onPressed: () {
@@ -289,7 +292,6 @@ class _LogInState extends State<LogIn> {
                           return null;
                         },
                       ),
-
                       SizedBox(
                         height: 25,
                       ),
@@ -299,7 +301,6 @@ class _LogInState extends State<LogIn> {
                             logIn();
                           }
                         },
-
                         child: Container(
                           width: width,
                           height: 56,
@@ -310,35 +311,36 @@ class _LogInState extends State<LogIn> {
                           child: Center(
                             child: _loading
                                 ? CircularProgressIndicator(
-                              color: Color(0xFFFFFFFF),
-                            )
+                                    color: Color(0xFFFFFFFF),
+                                  )
                                 : Row(
-                              mainAxisSize: MainAxisSize.min, // To keep the row centered
-                              children: [
-                                Center(
-                                  child: Text(
-                                    "Sign In",
-                                    style: TextStyle(
-                                      color: Color(0xFFFFFFFF),
-                                      fontFamily: "Inter",
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 16,
-                                    ),
+                                    mainAxisSize: MainAxisSize
+                                        .min, // To keep the row centered
+                                    children: [
+                                      Center(
+                                        child: Text(
+                                          "Sign In",
+                                          style: TextStyle(
+                                            color: Color(0xFFFFFFFF),
+                                            fontFamily: "Inter",
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                          width:
+                                              28), // Space between text and icon
+                                      Icon(
+                                        Icons
+                                            .arrow_forward, // Your preferred suffix icon
+                                        color: Colors.white,
+                                        size: 18,
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                SizedBox(width: 28), // Space between text and icon
-                                Icon(
-                                  Icons.arrow_forward, // Your preferred suffix icon
-                                  color: Colors.white,
-                                  size: 18,
-                                ),
-                              ],
-                            ),
                           ),
                         ),
-
-
-
                       ),
                       SizedBox(
                         height: 45,
@@ -346,7 +348,10 @@ class _LogInState extends State<LogIn> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Don’t have an account?',style: TextStyle(fontSize: 16,)    ),
+                          Text('Don’t have an account?',
+                              style: TextStyle(
+                                fontSize: 16,
+                              )),
                           InkWell(
                             onTap: () {
                               Navigator.push(
@@ -362,20 +367,26 @@ class _LogInState extends State<LogIn> {
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
-
-
                           ),
                         ],
                       ),
                       SizedBox(height: 20),
                       Center(
-                        child: Text(
-                          ' Forgot Password',
-                          style: TextStyle(
-                            color: Color(0xff4949C9),
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
+                        child: TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ForgotPasswordScreen()));
+                            },
+                            child: Text(
+                              ' Forgot Password',
+                              style: TextStyle(
+                                color: Color(0xff4949C9),
+                                fontWeight: FontWeight.w400,
+                              ),
+                            )),
                       ),
                     ],
                   ),

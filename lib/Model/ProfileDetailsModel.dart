@@ -31,7 +31,7 @@ class User {
   int? phone;
   int? sos1;
   int? sos2;
-  Null? sos3;
+  int? sos3;
   int? userType;
   Null? userProfile;
   String? fcmToken;
