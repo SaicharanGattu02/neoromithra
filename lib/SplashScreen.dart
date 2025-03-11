@@ -49,6 +49,7 @@ class _SplashState extends State<Splash> {
     var status = await PreferenceService().getString('on_boarding');
     setState(() {
       Status = status ?? '';
+      print('Status::${Status}');
       userId = token;
     });
     debugPrint("Token: $token");

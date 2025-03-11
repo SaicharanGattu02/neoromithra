@@ -237,8 +237,8 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     return isLoading
         ? _shimmers(context)
         : Scaffold(
-            appBar: AppBar(
-              leadingWidth: 0,
+            appBar: AppBar(automaticallyImplyLeading: false,
+
               title: Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Row(

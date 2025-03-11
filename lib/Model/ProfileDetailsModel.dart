@@ -33,13 +33,13 @@ class User {
   int? sos2;
   int? sos3;
   int? userType;
-  Null? userProfile;
+  String? userProfile;
   String? fcmToken;
-  Null? addressId;
+  String? addressId;
   String? createdAt;
   String? updatedAt;
-  Null? code;
-  Null? codeexp;
+  int? code;
+  String? codeexp;
   int? codestatus;
 
   User(
