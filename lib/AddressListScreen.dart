@@ -35,7 +35,7 @@ class _AddressListScreenState extends State<AddressListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: 'Address List',
+        title: 'Address List ',
         onBackButtonPressed: () {
           Navigator.pop(context);
         },
