@@ -441,10 +441,12 @@ class CounsellingListScreen extends StatelessWidget {
             InkWell(
               // onTap: () => _onCounsellingTap(context, counselling['text']!),
               onTap: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DetailsScreen(
+                Navigator.of(context)
+                    .push(PageRouteBuilder(
+                  pageBuilder: (context,
+                      animation,
+                      secondaryAnimation) {
+                    return DetailsScreen(
                       assetImage: counselling['image'],
                       title: counselling['text'],
                       descHeading1: counselling['heading1'],
@@ -453,9 +455,32 @@ class CounsellingListScreen extends StatelessWidget {
                       description2: counselling['description2'],
                       keyAreas: List<String>.from(counselling['keyAreas']),
                       benefits: List<String>.from(counselling['benefits']),
-                    ),
-                  ),
-                );
+                    );
+                  },
+                  transitionsBuilder:
+                      (context,
+                      animation,
+                      secondaryAnimation,
+                      child) {
+                    const begin =
+                    Offset(1.0, 0.0);
+                    const end = Offset.zero;
+                    const curve =
+                        Curves.easeInOut;
+                    var tween = Tween(
+                        begin: begin,
+                        end: end)
+                        .chain(CurveTween(
+                        curve: curve));
+                    var offsetAnimation =
+                    animation
+                        .drive(tween);
+                    return SlideTransition(
+                        position:
+                        offsetAnimation,
+                        child: child);
+                  },
+                ));
               },
               child: ProductGridItem(
                 imageUrl: counselling['image']!,

@@ -340,10 +340,12 @@ class TherapiesListScreen extends StatelessWidget {
           return InkWell(
             // onTap: () => _navigateToDetails(context,product['text']!),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DetailsScreen(
+              Navigator.of(context)
+                  .push(PageRouteBuilder(
+                pageBuilder: (context,
+                    animation,
+                    secondaryAnimation) {
+                  return DetailsScreen(
                     assetImage: therapies[index]['image'],
                     title: therapies[index]['text'],
                     descHeading1: "",
@@ -352,9 +354,33 @@ class TherapiesListScreen extends StatelessWidget {
                     description2: "",
                     keyAreas: List<String>.from(therapies[index]['keyAreas']),
                     benefits: List<String>.from(therapies[index]['benefits']),
-                  ),
-                ),
-              );
+                  );
+                },
+                transitionsBuilder:
+                    (context,
+                    animation,
+                    secondaryAnimation,
+                    child) {
+                  const begin =
+                  Offset(1.0, 0.0);
+                  const end = Offset.zero;
+                  const curve =
+                      Curves.easeInOut;
+                  var tween = Tween(
+                      begin: begin,
+                      end: end)
+                      .chain(CurveTween(
+                      curve: curve));
+                  var offsetAnimation =
+                  animation
+                      .drive(tween);
+                  return SlideTransition(
+                      position:
+                      offsetAnimation,
+                      child: child);
+                },
+              ));
+
             },
             child: ProductGridItem(
               imageUrl: product['image']!,
