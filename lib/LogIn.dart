@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neuromithra/Dashboard.dart';
@@ -348,29 +349,33 @@ class _LogInState extends State<LogIn> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Don’t have an account?',
+                          Text.rich(
+                            TextSpan(
+                              text: 'Don’t have an account? ',
                               style: TextStyle(
                                 fontSize: 16,
-                              )),
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Register()),
-                              );
-                            },
-                            child: Text(
-                              ' Sign Up.',
-                              style: TextStyle(
-                                color: Color(0xff4949C9),
-                                fontWeight: FontWeight.w400,
                               ),
+                              children: [
+                                TextSpan(
+                                  text: 'Sign Up.',
+                                  style: TextStyle(decoration: TextDecoration.underline,
+                                    decorationColor: Color(0xff4949C9),
+                                    color: Color(0xff4949C9),
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => Register()),
+                                      );
+                                    },
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 20),
                       Center(
                         child: TextButton(
                             onPressed: () {
@@ -381,10 +386,13 @@ class _LogInState extends State<LogIn> {
                                           ForgotPasswordScreen()));
                             },
                             child: Text(
-                              ' Forgot Password',
-                              style: TextStyle(
+                              'Forgot Password',
+                              style: TextStyle(decoration: TextDecoration.underline,
+                                decorationColor: Color(0xff4949C9).withOpacity(0.5),
                                 color: Color(0xff4949C9),
                                 fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                                fontFamily: 'Poppins',
                               ),
                             )),
                       ),

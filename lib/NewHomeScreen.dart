@@ -102,7 +102,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     },
     {
       'image': 'assets/Therephy/occupational_theraphy.jpeg',
-      'subtitle': "Enhancing Daily Living Skills for Greater Independence.",
+      'subtitle':"Helping Individuals Achieve Independence and Improve Daily Functioning.",
       'text': 'Occupational Therapy',
       'description':
           'Occupational Therapy focuses on helping children perform daily activities and tasks that are essential for their growth and development. This therapy addresses a range of skills, including fine motor skills, sensory processing, self-care tasks, and hand-eye coordination, to support overall functional independence and participation in daily life.',
@@ -124,8 +124,8 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     },
     {
       'image': 'assets/Therephy/physical_theraphy.jpeg',
-      'subtitle': "Enhancing Daily Living Skills for Greater Independence.",
       'text': "Restoring Mobility and Improving Quality of Life.",
+      'subtitle': "Empowering Movement and Enhancing Well-being for a Fuller Life.",
       'description':
           'Physical Therapy is a therapeutic approach focused on enhancing physical function, strength, and mobility through various techniques and exercises. This therapy aims to address and treat musculoskeletal, neurological, and developmental issues that impact an individual’s ability to perform daily activities and enjoy a fulfilling life.',
       'keyAreas': [
@@ -173,7 +173,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     {
       'image': 'assets/Counciling/behavioral_counciling.jpeg',
       'text': "Promoting Positive Change and Emotional Well-being.",
-      'subtitle': "Strengthening Bonds and Fostering Healthy Communication.",
+      'subtitle':"Fostering Growth, Resilience, and Mental Wellness.",
       'heading1': 'Behavioral Counseling Services at NeuroMitra',
       'description1':
           'At NeuroMitra, we are committed to helping individuals understand and modify behaviors that may be affecting their lives. Our Behavioral Counseling Services are designed to support clients in identifying negative behavior patterns, developing positive coping strategies, and achieving lasting change.',
@@ -197,7 +197,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     {
       'image': 'assets/Counciling/grief_counsiling.jpeg',
       'text': 'Grief Counselling',
-      'subtitle': "Strengthening Bonds and Fostering Healthy Communication.",
+      'subtitle': "Supporting Healing and Emotional Recovery Through Compassionate Guidance.",
       'heading1': '"Supporting Healing and Helping You Navigate Loss."',
       'description1':
           'At NeuroMitra, we understand that grief is a deeply personal and often overwhelming experience. Our Grief Counseling Services are here to provide compassionate support and guidance as you navigate the difficult journey of loss.',
@@ -801,7 +801,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                 shimmerText(120, 12, context),
                 CarouselSlider(
                   options: CarouselOptions(
-                    height: h * 0.16,
+                    height: h * 0.2,
                     onPageChanged: (index, reason) {
                       setState(() {
                         // currentIndex = index;
@@ -855,7 +855,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                 shimmerText(120, 12, context),
                 CarouselSlider(
                   options: CarouselOptions(
-                    height: h * 0.16,
+                    height: h * 0.2,
                     onPageChanged: (index, reason) {
                       setState(() {
                         // currentIndex = index;

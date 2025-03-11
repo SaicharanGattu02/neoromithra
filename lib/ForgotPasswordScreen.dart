@@ -148,9 +148,48 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               if (!_isCodeSent) ...[
                 TextFormField(
                   controller: _emailController,
+                  cursorColor: Colors.black,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
+                    hintText: "Enter Your Email",
+                    hintStyle: TextStyle(
+                      fontSize: 15,
+                      letterSpacing: 0,
+                      height: 1.2,
+                      color: Color(0xffAFAFAF),
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                    ),
+                    filled: true,
+                    fillColor: Color(0xffF3F4F6),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide:
+                      BorderSide(width: 1, color: Colors.transparent),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide:
+                      BorderSide(width: 1, color: Color(0xff14B8A6)),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(width: 1, color: Colors.red),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      borderSide: BorderSide(width: 1, color: Colors.red),
+                    ),
+
+                    // Always visible email icon at the start
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.only(
+                          left: 10, right: 5), // Adjust padding
+                      child: Icon(
+                        Icons.email_outlined,
+                        color: Color(0xff4B5563),
+                      ),
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -162,6 +201,22 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     return null;
                   },
                 ),
+                // TextFormField(
+                //   controller: _emailController,
+                //   decoration: InputDecoration(
+                //     labelText: 'Email',
+                //     border: OutlineInputBorder(),
+                //   ),
+                //   validator: (value) {
+                //     if (value == null || value.isEmpty) {
+                //       return 'Please enter your email';
+                //     }
+                //     if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                //       return 'Please enter a valid email address';
+                //     }
+                //     return null;
+                //   },
+                // ),
                 SizedBox(height: 20.0),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -197,7 +252,35 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   controller: _codeController,
                   decoration: InputDecoration(
                     labelText: 'Code',
-                    border: OutlineInputBorder(),
+                    hintStyle: TextStyle(
+                      fontSize: 15,
+                      letterSpacing: 0,
+                      height: 1.2,
+                      color: Color(0xffAFAFAF),
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                    ),
+                    filled: true,
+                    fillColor: Color(0xffF3F4F6),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide:
+                      BorderSide(width: 1, color: Colors.transparent),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide:
+                      BorderSide(width: 1, color: Color(0xff14B8A6)),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(width: 1, color: Colors.red),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      borderSide: BorderSide(width: 1, color: Colors.red),
+                    ),
+
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -212,7 +295,35 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
                     labelText: 'New Password',
-                    border: OutlineInputBorder(),
+                    hintStyle: TextStyle(
+                      fontSize: 15,
+                      letterSpacing: 0,
+                      height: 1.2,
+                      color: Color(0xffAFAFAF),
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                    ),
+                    filled: true,
+                    fillColor: Color(0xffF3F4F6),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide:
+                      BorderSide(width: 1, color: Colors.transparent),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide:
+                      BorderSide(width: 1, color: Color(0xff14B8A6)),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(width: 1, color: Colors.red),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      borderSide: BorderSide(width: 1, color: Colors.red),
+                    ),
+
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscurePassword
@@ -242,7 +353,35 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   obscureText: _obscureConfirmPassword,
                   decoration: InputDecoration(
                     labelText: 'Confirm Password',
-                    border: OutlineInputBorder(),
+                    hintStyle: TextStyle(
+                      fontSize: 15,
+                      letterSpacing: 0,
+                      height: 1.2,
+                      color: Color(0xffAFAFAF),
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                    ),
+                    filled: true,
+                    fillColor: Color(0xffF3F4F6),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide:
+                      BorderSide(width: 1, color: Colors.transparent),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide:
+                      BorderSide(width: 1, color: Color(0xff14B8A6)),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(width: 1, color: Colors.red),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      borderSide: BorderSide(width: 1, color: Colors.red),
+                    ),
+
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscureConfirmPassword
