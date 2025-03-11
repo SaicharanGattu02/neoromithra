@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:neuromithra/MainDashBoard.dart';
+import 'package:neuromithra/Register.dart';
 import 'package:neuromithra/SplashScreen.dart';
 import 'package:neuromithra/services/Preferances.dart';
 
@@ -237,7 +238,7 @@ class MyApp extends StatelessWidget {
                 .copyWith(background: Colors.white),
           ),
 
-        home:Splash()
+        home:Register()
       ),
     );
   }

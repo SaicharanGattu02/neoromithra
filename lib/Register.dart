@@ -121,15 +121,12 @@ class _RegisterState extends State<Register> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              height: height * 0.23,
-              width: width,
-              child: Center(
-                child: Image.asset(
-                  "assets/logo.png",
-                  height: 100,
-                  width: 200,
-                ),
+            SizedBox(height: 30,),
+            Center(
+              child: Image.asset(
+                "assets/neuromitralogo.png",
+                height: 100,
+                width: 100,
               ),
             ),
             Padding(
@@ -140,32 +137,35 @@ class _RegisterState extends State<Register> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Center(
+                      child: Text(
+                        " Register ",
+                        style: TextStyle(
+                          color: Color(0xFF1F2937),
+                          fontFamily: "Inter",
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 11),
                     Text(
-                      "Let's Register to Your Account",
+                      "Name",
                       style: TextStyle(
-                        color: Color(0xFF32657B),
+                        color: Color(0xFF1F2937),
                         fontFamily: "Inter",
-                        fontSize: 22,
+                        fontSize: 13,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    SizedBox(height: 20),
-                    Text(
-                      "Full Name",
-                      style: TextStyle(
-                        color: Color(0xFF32657B),
-                        fontFamily: "Inter",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
+                    SizedBox(height: 8),
                     TextFormField(
                       controller: _nameController,
                       cursorColor: Colors.black,
                       focusNode: _focusNodeName,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
-                        hintText: "Enter your name",
+                        hintText: "Enter Your name",
                         hintStyle: TextStyle(
                           fontSize: 15,
                           letterSpacing: 0,
@@ -175,24 +175,31 @@ class _RegisterState extends State<Register> {
                           fontWeight: FontWeight.w400,
                         ),
                         filled: true,
-                        fillColor: Color(0xffffffff),
+                        fillColor: Color(0xffF3F4F6),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(8.0),
                           borderSide:
-                              BorderSide(width: 1, color: Color(0xffCDE2FB)),
+                          BorderSide(width: 1, color: Colors.transparent),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(8.0),
                           borderSide:
-                              BorderSide(width: 1, color: Color(0xffCDE2FB)),
+                          BorderSide(width: 1, color: Color(0xff14B8A6)),
                         ),
                         errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(8.0),
                           borderSide: BorderSide(width: 1, color: Colors.red),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(8.0),
                           borderSide: BorderSide(width: 1, color: Colors.red),
+                        ),
+                        prefixIcon: Padding(
+                          padding: EdgeInsets.only(left: 10, right: 5), // Adjust padding
+                          child: Icon(
+                            Icons.account_circle_outlined,
+                            color: Color(0xff1E293B),
+                          ),
                         ),
                       ),
                       validator: (value) {
@@ -204,16 +211,18 @@ class _RegisterState extends State<Register> {
                         }
                       },
                     ),
-                    SizedBox(height: 15),
+
+                    SizedBox(height: 11),
                     Text(
-                      "Email",
+                      "Email Address",
                       style: TextStyle(
-                        color: Color(0xFF32657B),
+                        color: Color(0xFF1F2937),
                         fontFamily: "Inter",
-                        fontSize: 16,
+                        fontSize: 13,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
+                    SizedBox(height: 8),
                     TextFormField(
                       controller: _emailController,
                       cursorColor: Colors.black,
@@ -230,24 +239,32 @@ class _RegisterState extends State<Register> {
                           fontWeight: FontWeight.w400,
                         ),
                         filled: true,
-                        fillColor: Color(0xffffffff),
+                        fillColor: Color(0xffF3F4F6),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(8.0),
                           borderSide:
-                              BorderSide(width: 1, color: Color(0xffCDE2FB)),
+                          BorderSide(width: 1, color: Colors.transparent),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                          borderSide:
-                              BorderSide(width: 1, color: Color(0xffCDE2FB)),
+                          borderRadius: BorderRadius.circular(8.0),
+                          borderSide:   BorderSide(width: 1, color: Color(0xff14B8A6)),
                         ),
                         errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(8.0),
                           borderSide: BorderSide(width: 1, color: Colors.red),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(18.0),
                           borderSide: BorderSide(width: 1, color: Colors.red),
+                        ),
+
+                        // Always visible email icon at the start
+                        prefixIcon: Padding(
+                          padding: EdgeInsets.only(left: 10, right: 5), // Adjust padding
+                          child: Icon(
+                            Icons.email_outlined,
+                            color: Color(0xff1E293B),
+                          ),
                         ),
                       ),
                       validator: (value) {
@@ -257,20 +274,23 @@ class _RegisterState extends State<Register> {
                         if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                           return 'Please enter a valid email address';
                         }
-
-                        // return null;
+                        return null;
                       },
                     ),
-                    SizedBox(height: 15),
+
+                    SizedBox(height: 11),
                     Text(
                       "Password",
                       style: TextStyle(
-                        color: Color(0xFF32657B),
+                        color: Color(0xFF1F2937),
                         fontFamily: "Inter",
-                        fontSize: 16,
+                        fontSize: 13,
                         fontWeight: FontWeight.w400,
+
                       ),
+
                     ),
+                    SizedBox(height: 8),
                     TextFormField(
                       controller: _passwordController,
                       cursorColor: Colors.black,
@@ -287,30 +307,38 @@ class _RegisterState extends State<Register> {
                           fontWeight: FontWeight.w400,
                         ),
                         filled: true,
-                        fillColor: Color(0xffffffff),
+                        fillColor: Color(0xffF3F4F6),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(8.0),
                           borderSide:
-                              BorderSide(width: 1, color: Color(0xffCDE2FB)),
+                          BorderSide(width: 1, color: Colors.transparent),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                          borderSide:
-                              BorderSide(width: 1, color: Color(0xffCDE2FB)),
+                          borderRadius: BorderRadius.circular(8.0),
+                          borderSide:   BorderSide(width: 1, color: Color(0xff14B8A6)),
                         ),
                         errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(8.0),
                           borderSide: BorderSide(width: 1, color: Colors.red),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(8.0),
                           borderSide: BorderSide(width: 1, color: Colors.red),
                         ),
+
+                        // Lock icon at the start
+                        prefixIcon: Padding(
+                          padding: EdgeInsets.only(left: 10, right: 5), // Adjust padding
+                          child: Icon(
+                            Icons.lock_outline, // Lock symbol
+                            color: Color(0xff1E293B),
+                          ),
+                        ),
+
+                        // Visibility toggle at the end
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _isPasswordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
+                            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
                             color: Color(0xffAFAFAF),
                           ),
                           onPressed: () {
@@ -327,16 +355,20 @@ class _RegisterState extends State<Register> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 15),
+                    SizedBox(height: 11),
+
+
                     Text(
                       "Mobile Number",
                       style: TextStyle(
-                        color: Color(0xFF32657B),
+                        color: Color(0xFF1F2937),
                         fontFamily: "Inter",
-                        fontSize: 16,
+                        fontSize: 13,
                         fontWeight: FontWeight.w400,
+
                       ),
                     ),
+                    SizedBox(height: 8),
                     TextFormField(
                       controller: _mobilenumberController,
                       cursorColor: Colors.black,
@@ -354,25 +386,35 @@ class _RegisterState extends State<Register> {
                           fontWeight: FontWeight.w400,
                         ),
                         filled: true,
-                        fillColor: Color(0xffffffff),
+                        fillColor: Color(0xffF3F4F6),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(8.0),
                           borderSide:
-                              BorderSide(width: 1, color: Color(0xffCDE2FB)),
+                          BorderSide(width: 1, color: Colors.transparent),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(8),
                           borderSide:
-                              BorderSide(width: 1, color: Color(0xffCDE2FB)),
+                          BorderSide(width: 1, color: Color(0xff14B8A6)),
                         ),
                         errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(width: 1, color: Colors.red),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(width: 1, color: Colors.red),
                         ),
+                        prefixIcon: Padding(
+                          padding: EdgeInsets.only(left: 10, right: 5), // Adjust padding
+                          child: Icon(
+                            Icons.phone, // Lock symbol
+                            color: Color(0xff1E293B),
+                          ),
+                        ),
+
+
+
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -384,16 +426,20 @@ class _RegisterState extends State<Register> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 15),
-                    Text(
-                      "SOS Mobile Number",
-                      style: TextStyle(
-                        color: Color(0xFF32657B),
-                        fontFamily: "Inter",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                      ),
+                    SizedBox(height: 11),
+              Text(
+                "SoS Mobile Number",
+                style: TextStyle(
+                  color: Color(0xFF1F2937),
+                  fontFamily: "Inter",
+
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+
+
+              ),
                     ),
+                    SizedBox(height: 8),
                     TextFormField(
                       controller: _sosNumberController,
                       cursorColor: Colors.black,
@@ -410,26 +456,35 @@ class _RegisterState extends State<Register> {
                           fontWeight: FontWeight.w400,
                         ),
                         filled: true,
-                        fillColor: Color(0xffffffff),
+                        fillColor: Color(0xffF3F4F6),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(8.0),
+
                           borderSide:
-                          BorderSide(width: 1, color: Color(0xffCDE2FB)),
+                            BorderSide(width: 1, color: Colors.transparent),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(8.0),
                           borderSide:
-                          BorderSide(width: 1, color: Color(0xffCDE2FB)),
+                          BorderSide(width: 1, color: Color(0xff14B8A6)),
                         ),
                         errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(8.0),
                           borderSide: BorderSide(width: 1, color: Colors.red),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(8.0),
                           borderSide: BorderSide(width: 1, color: Colors.red),
                         ),
+                        prefixIcon: Padding(
+                          padding: EdgeInsets.only(left: 10, right: 5), // Adjust padding
+                          child: Icon(
+                            Icons.phone, // Lock symbol
+                            color: Color(0xff1E293B),
+                          ),
+                        ),
                       ),
+
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your mobile number';
@@ -440,8 +495,8 @@ class _RegisterState extends State<Register> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 15),
-                    SizedBox(height: height * 0.1),
+                    SizedBox(height: 30),
+
                     InkWell(
                       onTap: () {
                         if (_formKey.currentState?.validate() ?? false) {
@@ -450,25 +505,38 @@ class _RegisterState extends State<Register> {
                       },
                       child: Container(
                         width: width,
-                        height: 48,
+                        height: 56,
                         decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(100),
+                          color: Color(0xff3EA4D2),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         child: Center(
                           child: _loading
                               ? CircularProgressIndicator(
-                                  color: Color(0xFFFFFFFF),
-                                )
-                              : Text(
+                            color: Color(0xFFFFFFFF),
+                          )
+                              : Row(
+                            mainAxisSize: MainAxisSize.min, // To keep the row centered
+                            children: [
+                              Center(
+                                child: Text(
                                   "Register",
                                   style: TextStyle(
                                     color: Color(0xFFFFFFFF),
                                     fontFamily: "Inter",
                                     fontWeight: FontWeight.w700,
-                                    fontSize: 20,
+                                    fontSize: 16,
                                   ),
                                 ),
+                              ),
+                              SizedBox(width: 28), // Space between text and icon
+                              Icon(
+                                Icons.arrow_forward, // Your preferred suffix icon
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -487,9 +555,9 @@ class _RegisterState extends State<Register> {
                             );
                           },
                           child: Text(
-                            ' Login',
+                            ' Sign In',
                             style: TextStyle(
-                              color: Colors.teal,
+                              color:Color(0xff4949C9),
                               fontWeight: FontWeight.bold,
                             ),
                           ),

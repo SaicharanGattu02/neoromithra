@@ -173,14 +173,15 @@ class _LogInState extends State<LogIn> {
                             fontWeight: FontWeight.w400,
                           ),
                           filled: true,
-                          fillColor: Color(0xffffffff),
+                          fillColor: Color(0xffF3F4F6),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
-                            borderSide: BorderSide(width: 1, color: Color(0xffCDE2FB)),
+                            borderSide:
+                            BorderSide(width: 1, color: Colors.transparent),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
-                            borderSide: BorderSide(width: 1, color: Color(0xffCDE2FB)),
+                            borderSide:   BorderSide(width: 1, color: Color(0xff14B8A6)),
                           ),
                           errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
@@ -239,14 +240,15 @@ class _LogInState extends State<LogIn> {
                             fontWeight: FontWeight.w400,
                           ),
                           filled: true,
-                          fillColor: Color(0xffffffff),
+                          fillColor: Color(0xffF3F4F6),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
-                            borderSide: BorderSide(width: 1, color: Color(0xffCDE2FB)),
+                            borderSide:
+                            BorderSide(width: 1, color: Colors.transparent),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
-                            borderSide: BorderSide(width: 1, color: Color(0xffCDE2FB)),
+                            borderSide:   BorderSide(width: 1, color: Color(0xff14B8A6)),
                           ),
                           errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
