@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neuromithra/BookAppointment.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../Model/ReviewListModel.dart';
@@ -39,14 +40,19 @@ class _TherapyDetailsScreenState extends State<DetailsScreen> {
   void initState() {
     super.initState();
     GetReviewsList();
+    if(widget.keyAreas.length==0){
+      setState(() {
+        showFocus = false;
+      });
+    }
   }
 
-  List<Review> reviews=[];
+  List<Review> reviews = [];
   Future<void> GetReviewsList() async {
     final response = await Userapi.getreviewlist(widget.title);
     if (response != null) {
       setState(() {
-        reviews=response.review??[];
+        reviews = response.review ?? [];
       });
     }
   }
@@ -66,12 +72,20 @@ class _TherapyDetailsScreenState extends State<DetailsScreen> {
     var w = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title, style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(widget.title,
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: "Inter",
+                color: Color(0xff3EA4D2),
+                fontSize: 18)),
         centerTitle: true,
-        backgroundColor: Colors.blue,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+        backgroundColor: Colors.white,
+        leading: IconButton.filled(
+          icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
           onPressed: () => Navigator.pop(context),
+          style: IconButton.styleFrom(
+            backgroundColor: Color(0xFFECFAFA), // Filled color
+          ),
         ),
       ),
       body: Stack(
@@ -87,28 +101,70 @@ class _TherapyDetailsScreenState extends State<DetailsScreen> {
                   height: h * 0.3,
                   fit: BoxFit.cover,
                 ),
+                SizedBox(height: 10,),
+                if(widget.descHeading1!="")...[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20.0, right: 20),
+                    child: Text(
+                      widget.descHeading1,
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: "Inter"),
+                    ),
+                  ),
+                ],
                 Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 10),
                   child: Text(
                     widget.description1,
-                    style: TextStyle(fontSize: 16, height: 1.5),
+                    style: TextStyle(
+                        fontSize: 16, height: 1.5, fontFamily: "Inter"),
                   ),
                 ),
+                if(widget.descHeading2!="")...[
+                  Padding(
+                    padding:
+                    const EdgeInsets.only(left: 20.0, right: 20, top: 20),
+                    child: Text(
+                      widget.descHeading2,
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: "Inter"),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0, vertical: 10),
+                    child: Text(
+                      widget.description2,
+                      style: TextStyle(
+                          fontSize: 16, height: 1.5, fontFamily: "Inter"),
+                    ),
+                  ),
+                ],
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     children: [
-                      _tabButton("Key Areas of Focus", showFocus, () {
-                        setState(() {
-                          showFocus = true;
-                        });
-                      }),
-                      SizedBox(width: 20),
-                      _tabButton("Benefits", !showFocus, () {
-                        setState(() {
-                          showFocus = false;
-                        });
-                      }),
+                      if(widget.keyAreas.length!=0)...[
+                        _tabButton("Key Areas of Focus", showFocus, () {
+                          setState(() {
+                            showFocus = true;
+                          });
+                        }),
+                        SizedBox(width: 20,),
+                      ],
+
+                      if(widget.benefits.length!=0)...[
+                        _tabButton("Benefits", !showFocus, () {
+                          setState(() {
+                            showFocus = false;
+                          });
+                        }),
+                      ]
                     ],
                   ),
                 ),
@@ -117,11 +173,13 @@ class _TherapyDetailsScreenState extends State<DetailsScreen> {
                   padding: EdgeInsets.symmetric(horizontal: 20.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: showFocus ? _buildPoints(widget.keyAreas) : _buildPoints(widget.benefits),
+                    children: showFocus
+                        ? _buildPoints(widget.keyAreas)
+                        : _buildPoints(widget.benefits),
                   ),
                 ),
                 SizedBox(height: 20),
-                if(reviews.length>0)...[
+                if (reviews.length > 0) ...[
                   Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: Text(
@@ -138,18 +196,49 @@ class _TherapyDetailsScreenState extends State<DetailsScreen> {
               ],
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Row(
-              children: [
-                _bottomButton("Call Us", Colors.blue, () => _launchCall("8885320115")),
-                _bottomButton("Book Appointment", Colors.blue, () {
-                  // Navigate to appointment booking screen
-                }),
-              ],
-            ),
-          ),
         ],
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 5),
+        child: Row(
+          children: [
+            _bottomButton("Call Us", Color(0xff0094FE), () => _launchCall("8885320115")),
+            SizedBox(width: 10), // Add spacing between buttons
+            _bottomButton("Book Now", Color(0xff0933A1), () {
+              Navigator.of(context)
+                  .push(PageRouteBuilder(
+                pageBuilder: (context,
+                    animation,
+                    secondaryAnimation) {
+                  return Bookappointment(pagesource: widget.title);
+                },
+                transitionsBuilder:
+                    (context,
+                    animation,
+                    secondaryAnimation,
+                    child) {
+                  const begin =
+                  Offset(1.0, 0.0);
+                  const end = Offset.zero;
+                  const curve =
+                      Curves.easeInOut;
+                  var tween = Tween(
+                      begin: begin,
+                      end: end)
+                      .chain(CurveTween(
+                      curve: curve));
+                  var offsetAnimation =
+                  animation
+                      .drive(tween);
+                  return SlideTransition(
+                      position:
+                      offsetAnimation,
+                      child: child);
+                },
+              ));
+            }),
+          ],
+        ),
       ),
     );
   }
@@ -162,20 +251,27 @@ class _TherapyDetailsScreenState extends State<DetailsScreen> {
         children: [
           ListView.builder(
             itemCount: reviews.length > 3 ? 3 : reviews.length,
-            physics: NeverScrollableScrollPhysics(), // Disable scrolling on this ListView
-            shrinkWrap: true, // Allows the ListView to take the height of its children
+            physics:
+                NeverScrollableScrollPhysics(), // Disable scrolling on this ListView
+            shrinkWrap:
+                true, // Allows the ListView to take the height of its children
             itemBuilder: (context, index) {
               return ReviewCard(
-                customerName: reviews[index].userName??"",
-                rating: reviews[index].rating??0,
-                review: reviews[index].details??"",
+                customerName: reviews[index].userName ?? "",
+                rating: reviews[index].rating ?? 0,
+                review: reviews[index].details ?? "",
               );
             },
           ),
           if (reviews.length > 3)
             InkResponse(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>ReviewListScreen(pageSource: widget.title,)));
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ReviewListScreen(
+                              pageSource: widget.title,
+                            )));
               },
               child: Padding(
                 padding: const EdgeInsets.only(right: 18.0),
@@ -183,7 +279,8 @@ class _TherapyDetailsScreenState extends State<DetailsScreen> {
                   alignment: Alignment.topRight,
                   child: Text(
                     'More >>',
-                    style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.blue, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -199,10 +296,12 @@ class _TherapyDetailsScreenState extends State<DetailsScreen> {
       child: Text(
         text,
         style: TextStyle(
-          color: isActive ? Colors.blue : Colors.black54,
+          color: isActive ? Color(0xff007BFF) : Colors.black,
           fontSize: 18,
-          fontWeight: FontWeight.w500,
+          fontFamily: "Inter",
+          fontWeight: FontWeight.w600,
           decoration: isActive ? TextDecoration.underline : TextDecoration.none,
+          decorationColor: isActive ? Color(0xff007BFF) : Colors.black54,
         ),
       ),
     );
@@ -222,28 +321,39 @@ class _TherapyDetailsScreenState extends State<DetailsScreen> {
             width: 8.0,
             height: 8.0,
             margin: EdgeInsets.only(top: 6.0),
-            decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.black),
+            decoration:
+                BoxDecoration(shape: BoxShape.circle, color: Colors.black),
           ),
           SizedBox(width: 8.0),
           Expanded(
-            child: Text(text, style: TextStyle(fontSize: 16.0, height: 1.4)),
+            child: Text(text,
+                style: TextStyle(
+                    fontSize: 16.0, height: 1.4, fontFamily: "Inter")),
           ),
         ],
       ),
     );
   }
-
   Widget _bottomButton(String text, Color color, VoidCallback onTap) {
     return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          height: 50,
-          color: color,
-          child: Center(
-            child: Text(
-              text,
-              style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500),
+      child: SizedBox(
+        height: 50,
+        child: ElevatedButton(
+          onPressed: onTap,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: color,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12), // Rounded corners
+            ),
+            elevation: 0, // Shadow effect
+          ),
+          child: Text(
+            text,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontFamily: "Inter",
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),
