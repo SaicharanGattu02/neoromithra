@@ -11,7 +11,6 @@ class LocationCubit extends Cubit<LocationState> {
 
   Future<void> checkLocationPermission() async {
     emit(LocationLoading());
-
     try {
       String locationName = await PreferenceService().getString('LocName') ?? "Gachibowli, Hyderabad";
       bool isServiceEnabled = await Geolocator.isLocationServiceEnabled();

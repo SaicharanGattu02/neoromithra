@@ -7,6 +7,7 @@ import 'package:neuromithra/Logic/Location/location_state.dart';
 import 'package:neuromithra/NewHomeScreen.dart';
 import 'package:neuromithra/profile_screen.dart';
 import 'package:neuromithra/services/userapi.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'CounsellingListScreen.dart';
 import 'TherapiesListScreen.dart';
 
@@ -42,23 +43,45 @@ class _MainDashBoardState extends State<MainDashBoard> {
     });
     try {
       var res = await Userapi.makeSOSCallApi(loc);
+      print('Response from API: $res');
       setState(() {
-        if (res != null) {
+        if (res != null && res.isNotEmpty) {
+          print("clickkk:::");
+
           makingSOSCall = false;
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(
-              res ?? "",
-              style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
-            ),
-            duration: Duration(seconds: 1),
-            backgroundColor: Color(0xFF32657B),
-          ));
+          showOverlayNotification((context) {
+            print("overlay:::");
+
+            return Card(
+              semanticContainer: true,
+              elevation: 5,
+              margin: EdgeInsets.all(10),
+              child: SafeArea(
+                child: ListTile(
+                  leading: SizedBox.fromSize(
+                    size: const Size(40, 40),
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(5.0),
+                        child: Image.asset(
+                          'assets/images/icon.png',
+                          height: 35,
+                          width: 35,
+                        )),
+                  ),
+                  title: Text(res),  // Ensure res is not empty or null
+                ),
+              ),
+            );
+          });
+        } else {
+          print('No message received from the API');
         }
       });
     } catch (e) {
       debugPrint("${e.toString()}");
     }
   }
+
   @override
   void initState() {
     context.read<LocationCubit>().checkLocationPermission();
@@ -88,43 +111,31 @@ class _MainDashBoardState extends State<MainDashBoard> {
             },
             controller: pageController,
             children: screen,
-            physics: const NeverScrollableScrollPhysics(), // Disable swipe gestures
+            physics: const NeverScrollableScrollPhysics(),
           ),
           floatingActionButton: BlocBuilder<LocationCubit,LocationState>(builder: (context, state) {
-            if(state is LocationLoaded){
-              return Container(
-                color: Colors.white,
-                width: 60,
-                height: 60,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    setState(() {
-                      _makeSOSCall(state.locationName);
-                      print("loction:${state.locationName}");
-                    });
-                  },
-                  child: Lottie.asset(
-                    'assets/animations/sos.json',
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.contain,
-                  ),
-                  backgroundColor: Colors.white,
-                  shape: CircleBorder(),
-                  elevation: 4.0,
+            if(state is LocationLoaded) {
+              return FloatingActionButton(
+                onPressed: () {
+                  setState(() {
+                    _makeSOSCall(state.locationName);
+                    print("loction:${state.locationName}");
+                  });
+                },
+                child: state is LocationLoading?CircularProgressIndicator(strokeWidth: 0.5,):Lottie.asset(
+                  'assets/animations/sos.json',
+                  width: 60,
+                  height: 60,
+                  fit: BoxFit.contain,
                 ),
+                backgroundColor: Colors.white,
+                shape: CircleBorder(),
+                elevation: 4.0,
               );
-            }return Container(
+            } return Container(
               color: Colors.white,
               width: 60,
-              height: 60,
-              child: Lottie.asset(
-                'assets/animations/sos.json',
-                width: 60,
-                height: 60,
-                fit: BoxFit.contain,
-              ),
-            );
+              height: 60,);
           },
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -207,7 +218,6 @@ class _MainDashBoardState extends State<MainDashBoard> {
       },
     );
   }
-  // Method to build icon buttons for the bottom navigation bar
   Widget _buildIconButton(String iconPath, int index) {
     bool isSelected = _selectedIndex == index;
 

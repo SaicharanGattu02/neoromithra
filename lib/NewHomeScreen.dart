@@ -270,10 +270,10 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                 ),
               ),
               actions: [
-                Padding(
-                  padding: EdgeInsets.only(right: 20),
-                  child: Icon(Icons.notifications_active_sharp),
-                )
+                // Padding(
+                //   padding: EdgeInsets.only(right: 20),
+                //   child: Icon(Icons.notifications_active_sharp),
+                // )
               ],
             ),
             body: SingleChildScrollView(
@@ -704,10 +704,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
             ),
           ),
           actions: [
-            Padding(
-              padding: EdgeInsets.only(right: 20),
-              child: Icon(Icons.notifications_active_sharp),
-            )
+           
           ],
         ),
         SingleChildScrollView(
