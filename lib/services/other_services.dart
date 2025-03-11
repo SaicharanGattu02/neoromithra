@@ -47,29 +47,30 @@ getheader1() async {
   return a;
 }
 
-CheckHeaderValidity() async {
-  String timestamp = DateTime.now().millisecondsSinceEpoch.toString().substring(0, 10);
+Future<bool> CheckHeaderValidity() async {
+  String timestamp = (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(); // Convert to seconds
   LoginModel response = LoginModel();
   final token = await PreferenceService().getString("token");
   final validityTimestamp = await PreferenceService().getString("access_expiry_timestamp");
   var status = true;
-  if (int.parse(validityTimestamp!) <= int.parse(timestamp)) {
+
+  if (validityTimestamp == null || int.parse(validityTimestamp) <= int.parse(timestamp)) {
     await Userapi.UpdateRefreshToken().then((data) => {
-          if (data != null)
+      if (data != null)
+        {
+          response = data,
+          if (response.accessToken!="")
             {
-              response = data,
-              if (response.accessToken != "")
-                {
-                  PreferenceService()
-                      .saveString("token", response.accessToken ?? ""),
-                  PreferenceService().saveString("access_expiry_timestamp",
-                      response.expiresIn.toString() ?? ""),
-                  status = true,
-                } else {
-                  status = false,
-                }
-            }
-        });
+              PreferenceService().saveString("token", response.accessToken??""),
+              // Store actual expiry timestamp
+              PreferenceService().saveString("access_expiry_timestamp",
+                  (DateTime.now().millisecondsSinceEpoch ~/ 1000 + response.expiresIn!).toString()),
+              status = true,
+            } else {
+            status = false,
+          }
+        }
+    });
   } else {
     status = true;
   }

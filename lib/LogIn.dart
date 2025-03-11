@@ -56,7 +56,7 @@ class _LogInState extends State<LogIn> {
         PreferenceService()
             .saveString("token", loginResponse["access_token"] ?? "");
         PreferenceService().saveString("access_expiry_timestamp",
-            loginResponse["expires_in"].toString() ?? "");
+            (DateTime.now().millisecondsSinceEpoch ~/ 1000 + loginResponse["expires_in"]).toString());
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => MainDashBoard()),

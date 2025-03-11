@@ -43,38 +43,12 @@ class _MainDashBoardState extends State<MainDashBoard> {
     });
     try {
       var res = await Userapi.makeSOSCallApi(loc);
-      print('Response from API: $res');
       setState(() {
         if (res != null && res.isNotEmpty) {
-          print("clickkk:::");
-
           makingSOSCall = false;
-          showOverlayNotification((context) {
-            print("overlay:::");
-
-            return Card(
-              semanticContainer: true,
-              elevation: 5,
-              margin: EdgeInsets.all(10),
-              child: SafeArea(
-                child: ListTile(
-                  leading: SizedBox.fromSize(
-                    size: const Size(40, 40),
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(5.0),
-                        child: Image.asset(
-                          'assets/images/icon.png',
-                          height: 35,
-                          width: 35,
-                        )),
-                  ),
-                  title: Text(res),  // Ensure res is not empty or null
-                ),
-              ),
-            );
-          });
         } else {
           print('No message received from the API');
+          makingSOSCall = false;
         }
       });
     } catch (e) {
@@ -113,32 +87,43 @@ class _MainDashBoardState extends State<MainDashBoard> {
             children: screen,
             physics: const NeverScrollableScrollPhysics(),
           ),
-          floatingActionButton: BlocBuilder<LocationCubit,LocationState>(builder: (context, state) {
-            if(state is LocationLoaded) {
-              return FloatingActionButton(
-                onPressed: () {
-                  setState(() {
-                    _makeSOSCall(state.locationName);
-                    print("loction:${state.locationName}");
-                  });
-                },
-                child: state is LocationLoading?CircularProgressIndicator(strokeWidth: 0.5,):Lottie.asset(
-                  'assets/animations/sos.json',
-                  width: 60,
-                  height: 60,
-                  fit: BoxFit.contain,
-                ),
-                backgroundColor: Colors.white,
-                shape: CircleBorder(),
-                elevation: 4.0,
+          floatingActionButton: BlocBuilder<LocationCubit, LocationState>(
+            builder: (context, state) {
+              if (state is LocationLoaded) {
+                return FloatingActionButton(
+                  onPressed: () {
+                    setState(() {
+                      _makeSOSCall(state.locationName);
+                      print("loction:${state.locationName}");
+                    });
+                  },
+                  child: makingSOSCall
+                      ? Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: CircularProgressIndicator(
+                        strokeWidth: 0.5,
+                                          ),
+                      )
+                      : Lottie.asset(
+                          'assets/animations/sos.json',
+                          width: 60,
+                          height: 60,
+                          fit: BoxFit.contain,
+                        ),
+                  backgroundColor: Colors.white,
+                  shape: CircleBorder(),
+                  elevation: 4.0,
+                );
+              }
+              return Container(
+                color: Colors.white,
+                width: 60,
+                height: 60,
               );
-            } return Container(
-              color: Colors.white,
-              width: 60,
-              height: 60,);
-          },
+            },
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
           bottomNavigationBar: BottomAppBar(
             surfaceTintColor: Colors.blue,
             shape: CircularNotchedRectangle(),
@@ -160,6 +145,7 @@ class _MainDashBoardState extends State<MainDashBoard> {
       ),
     );
   }
+
   void showLocationBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -195,9 +181,11 @@ class _MainDashBoardState extends State<MainDashBoard> {
                           onPressed: isLoading
                               ? null
                               : () async {
-                            // Request location permission when user taps the 'GRANT' button
-                            context.read<LocationCubit>().requestLocationPermission();
-                          },
+                                  // Request location permission when user taps the 'GRANT' button
+                                  context
+                                      .read<LocationCubit>()
+                                      .requestLocationPermission();
+                                },
                           child: isLoading
                               ? CircularProgressIndicator(strokeWidth: 2)
                               : const Text('GRANT'),
@@ -218,6 +206,7 @@ class _MainDashBoardState extends State<MainDashBoard> {
       },
     );
   }
+
   Widget _buildIconButton(String iconPath, int index) {
     bool isSelected = _selectedIndex == index;
 
@@ -226,7 +215,9 @@ class _MainDashBoardState extends State<MainDashBoard> {
         iconPath,
         width: 25,
         height: 25,
-        color: isSelected ? Colors.black : Colors.black.withOpacity(0.5), // Selected vs Unselected color
+        color: isSelected
+            ? Colors.black
+            : Colors.black.withOpacity(0.5), // Selected vs Unselected color
       ),
       onPressed: () {
         onItemTapped(index);

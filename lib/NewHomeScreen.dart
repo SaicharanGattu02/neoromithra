@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:neuromithra/TherapiesListScreen.dart';
 import 'package:neuromithra/services/Preferances.dart';
+import 'package:neuromithra/services/other_services.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:neuromithra/utils/CustomSnackBar.dart';
 import 'package:neuromithra/utils/Shimmers.dart';
@@ -31,6 +32,10 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
       isLoading = true;
     });
 
+    // Ensure token validity before making API requests
+    await CheckHeaderValidity(); // Ensures token is valid or refreshed
+
+    // Proceed with API calls regardless of token validity check
     await Future.wait([
       getProfileDetails(),
       getQuotes(),
@@ -40,6 +45,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
       isLoading = false;
     });
   }
+
 
   String quote = '';
   Future<void> getQuotes() async {
@@ -474,8 +480,11 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                       items: therapies.map((item) {
                         return InkResponse(
                             onTap: () {
-                              Navigator.of(context).push(PageRouteBuilder(
-                                pageBuilder: (context, animation, secondaryAnimation) {
+                              Navigator.of(context)
+                                  .push(PageRouteBuilder(
+                                pageBuilder: (context,
+                                    animation,
+                                    secondaryAnimation) {
                                   return DetailsScreen(
                                     assetImage: item['image'] ?? 'assets/default_image.png',  // Fallback for image
                                     title: item['text'] ?? 'No Title',  // Fallback for text
@@ -487,7 +496,31 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                     benefits: List<String>.from(item['benefits'] ?? []),  // Fallback for benefits
                                   );
                                 },
+                                transitionsBuilder:
+                                    (context,
+                                    animation,
+                                    secondaryAnimation,
+                                    child) {
+                                  const begin =
+                                  Offset(1.0, 0.0);
+                                  const end = Offset.zero;
+                                  const curve =
+                                      Curves.easeInOut;
+                                  var tween = Tween(
+                                      begin: begin,
+                                      end: end)
+                                      .chain(CurveTween(
+                                      curve: curve));
+                                  var offsetAnimation =
+                                  animation
+                                      .drive(tween);
+                                  return SlideTransition(
+                                      position:
+                                      offsetAnimation,
+                                      child: child);
+                                },
                               ));
+
                             },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
@@ -505,7 +538,9 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          item['text'] ?? 'No Title',  // Fallback for text
+                                          item['text'] ?? 'No Title',
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
                                               color: Color(0xffffffff),
                                               fontWeight: FontWeight.w800,
@@ -514,6 +549,8 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                         ),
                                         Text(
                                           textAlign: TextAlign.start,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
                                           item['subtitle'] ?? 'No Subtitle',  // Fallback for subtitle
                                           style: TextStyle(
                                               color: Color(0xffDEDEDE),
@@ -625,7 +662,9 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                       CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          item['text'] ?? 'No Title',  // Fallback for text
+                                          item['text'] ?? 'No Title',
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
                                               color: Color(0xff000000),
                                               fontWeight: FontWeight.w800,
@@ -634,7 +673,9 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                         ),
                                         Text(
                                           textAlign: TextAlign.start,
-                                          item['subtitle'] ?? 'No Subtitle',  // Fallback for subtitle
+                                          item['subtitle'] ?? 'No Subtitle',
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
                                               color: Color(0xff000000),
                                               fontWeight: FontWeight.w500,
