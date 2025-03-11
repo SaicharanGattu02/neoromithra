@@ -724,7 +724,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     return Column(
       children: [
         AppBar(
-          leadingWidth: 0,
+          automaticallyImplyLeading: false,
           title: Padding(
             padding: EdgeInsets.all(8.0),
             child: Row(

@@ -326,7 +326,12 @@ class TherapiesListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Therapies'),
+        automaticallyImplyLeading: false,
+        title: Text('Therapies List',   style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontFamily: "Inter",
+            color: Color(0xff3EA4D2),
+            fontSize: 20)),
       ),
       body: GridView.builder(
         padding: EdgeInsets.all(10.0),

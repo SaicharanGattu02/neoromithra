@@ -527,47 +527,57 @@ class _Bookappointment1State extends State<Bookappointment1> {
             ),
             const SizedBox(height: 20),
             Center(
-              child: GestureDetector(
-                onTap: () {
-                  if(addresses.length>0){
-                    if(_isLoading){
-
-                    }else{
-                      _validateFields();
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (addresses.isNotEmpty) {
+                      if (!_isLoading) {
+                        _validateFields();
+                      }
+                    } else {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => AddressListScreen()),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            "Please first add address.",
+                            style: TextStyle(color: Colors.white, fontFamily: "Inter"),
+                          ),
+                          duration: Duration(seconds: 1),
+                          backgroundColor: Color(0xFF32657B),
+                        ),
+                      );
                     }
-                  }else{
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AddressListScreen(),));
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text("Please first add address.",
-                        style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
-                      ),
-                      duration: Duration(seconds: 1),
-                      backgroundColor: Color(0xFF32657B),
-                    ));
-                  }
-
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(15),
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF3EA4D2), // Updated button color
+                    padding: EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 5, // Adds a slight shadow for better UI
                   ),
                   child: _isLoading
-                      ? Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                          ),
-                        )
+                      ? SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 3,
+                    ),
+                  )
                       : Text(
-                          "Book Appointment",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Poppins',
-                          ),
-                        ),
+                    "Book Appointment",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Epi',
+                    ),
+                  ),
                 ),
               ),
             ),

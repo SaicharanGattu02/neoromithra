@@ -427,7 +427,14 @@ class CounsellingListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Counselling List')),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text('Counselling List',   style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontFamily: "Inter",
+            color: Color(0xff3EA4D2),
+            fontSize: 20)),
+      ),
       body: GridView.builder(
         padding: EdgeInsets.all(10.0),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

@@ -254,7 +254,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile Details'),
+        title: Text("Edit Profile",
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: "Inter",
+                color: Color(0xff3EA4D2),
+                fontSize: 18)),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        leading: IconButton.filled(
+          icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
+          onPressed: () => Navigator.pop(context),
+          style: IconButton.styleFrom(
+            backgroundColor: Color(0xFFECFAFA), // Filled color
+          ),
+        ),
       ),
       body: (is_loading)
           ? Center(
@@ -465,32 +479,32 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        child: GestureDetector(
-          onTap: isLoading
-              ? null
-              : () {
-                  _submitForm(context);
-                },
-          child: Container(
-            height: 56,
-            decoration: BoxDecoration(
+        child: ElevatedButton(
+          onPressed: isLoading ? null : () => _submitForm(context),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF3EA4D2), // Button Background Color
+            padding: EdgeInsets.symmetric(vertical: 10),
+            shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
-              color: const Color(0xFF2DB3FF),
             ),
-            child: Center(
-              child: isLoading
-                  ? CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    )
-                  : const Text(
-                      "Save",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+            elevation: 3, // Light shadow for better visibility
+          ),
+          child: isLoading
+              ? SizedBox(
+            height: 24,
+            width: 24,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            ),
+          )
+              : Text(
+            "Save",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontFamily: "Inter",
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),

@@ -55,125 +55,142 @@ class _AddressListScreenState extends State<AddressListScreen> {
       Padding(
         padding: EdgeInsets.symmetric(horizontal: 15),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 25),
-            ElevatedButton(
-              onPressed: () async {
-                var result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AddAddressScreen(type: "add", id: "", hno: "", street: "", area: "", landmark: "", pincode: "",type_of_address: "0",)),
-                );
-                if(result==true){
-                  setState(() {
-                    GetAddressList();
-                  });
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 24.0),
-              ),
-              child: Text(
-                'Add Address',
-                style: TextStyle(color: Colors.white),
+            Align(
+              alignment: Alignment.centerRight,
+              child: ElevatedButton.icon(
+                onPressed: () async {
+                  var result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddAddressScreen(
+                        type: "add",
+                        id: "",
+                        hno: "",
+                        street: "",
+                        area: "",
+                        landmark: "",
+                        pincode: "",
+                        type_of_address: "0",
+                      ),
+                    ),
+                  );
+                  if (result == true) {
+                    setState(() {
+                      GetAddressList();
+                    });
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF3EA4D2),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                  elevation: 4,
+                ),
+                icon: Icon(Icons.add, color: Colors.white),
+                label: Text(
+                  'Add Address',
+                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
-            if(addresses.length>0)...[
+
+            SizedBox(height: 15),
+
+            // Address List
+            if (addresses.isNotEmpty) ...[
               Expanded(
                 child: ListView.builder(
                   itemCount: addresses.length,
                   itemBuilder: (context, index) {
                     var data = addresses[index];
-                    return Dismissible(
-                      key: Key(data.id.toString()),
-                      background: Container(
-                        color: Colors.green,
-                        alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Icon(Icons.edit, color: Colors.white),
+                    return Card(
+                      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 5.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      secondaryBackground: Container(
-                        color: Colors.red,
-                        alignment: Alignment.centerRight,
-                        padding: EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Icon(Icons.delete, color: Colors.white),
-                      ),
-                      confirmDismiss: (direction) async {
-                        if (direction == DismissDirection.endToStart) {
-                          return await showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: Text('Delete Address'),
-                              content: Text('Are you sure you want to delete this address?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.of(context).pop(false),
-                                  child: Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      addresses.removeAt(index);
-                                    });
-                                    Navigator.of(context).pop(true);
-                                  },
-                                  child: Text('Delete'),
+                      elevation: 3,
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Location Icon + Area
+                            Row(
+                              children: [
+                                Icon(Icons.location_on, color: Colors.red, size: 22),
+                                SizedBox(width: 6),
+                                Expanded(
+                                  child: Text(
+                                    data.area ?? "Unknown Area",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      fontFamily: "Inter",
+                                      color: Colors.blueGrey[800],
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
-                          );
-                        } else if (direction == DismissDirection.startToEnd) {
-                          var result= await Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => AddAddressScreen(type: "edit", id: data.id.toString()??"", hno: data.flatNo??"", street: data.street??"", area: data.area??"", landmark: data.landmark??"", pincode: data.pincode.toString()??"",type_of_address: data.typeOfAddress.toString()??"",)),
-                          );
-                          if(result==true){
-                            setState(() {
-                              GetAddressList();
-                            });
-                          }
-                          return false; // Prevent dismiss
-                        }
-                        return false;
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width - 30, // Full width minus padding
-                        child: Card(
-                          margin: EdgeInsets.all(8.0),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
+                            SizedBox(height: 8.0),
+
+                            // Address Details
+                            Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  data.area??"",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(height: 8.0),
-                                Text(
-                                  "${data.flatNo},${data.street},${data.landmark},${data.pincode}",
-                                  style: TextStyle(fontSize: 16.0),
+                                Icon(Icons.home, color: Colors.blueAccent, size: 20),
+                                SizedBox(width: 6),
+                                Expanded(
+                                  child: Text(
+                                    "${data.flatNo}, ${data.street}, ${data.landmark}",
+                                    style: TextStyle(fontSize: 15.0, color: Colors.black87, fontFamily: "Inter",),
+                                  ),
                                 ),
                               ],
                             ),
-                          ),
+                            SizedBox(height: 6.0),
+
+                            // Pincode with Icon
+                            Row(
+                              children: [
+                                Icon(Icons.pin_drop, color: Colors.green, size: 20),
+                                SizedBox(width: 6),
+                                Text(
+                                  data.pincode.toString(),
+                                  style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w500, color: Colors.black87, fontFamily: "Inter",),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                     );
                   },
                 ),
               ),
-            ]else...[
+            ] else ...[
               Center(
-                child: Lottie.asset(
-                  'assets/animations/nodata1.json',
-                  height: 360,
-                  width: 360,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Lottie.asset(
+                      'assets/animations/nodata1.json',
+                      height: 280,
+                      width: 280,
+                    ),
+                    SizedBox(height: 15),
+                    Text(
+                      "No addresses found",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.blueGrey),
+                    ),
+                  ],
                 ),
               ),
-            ]
-
+            ],
           ],
         ),
       ),
