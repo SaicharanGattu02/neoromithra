@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:lottie/lottie.dart';
+import 'package:neuromithra/MainDashBoard.dart';
 
 import '../Dashboard.dart';
 
@@ -51,7 +52,7 @@ class _ApointmentSuccessState extends State<ApointmentSuccess> {
     // Navigate to Dashboard after a delay
     SchedulerBinding.instance.addPostFrameCallback((_) {
       Future.delayed(Duration(seconds: 2), () {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => Dashboard()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => MainDashBoard()));
       });
     });
   }

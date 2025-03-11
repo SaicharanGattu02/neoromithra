@@ -60,6 +60,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
   Future<void> postHealthFeedBack(String msg) async {
     final res = await Userapi.posthelathFeedback(msg);
     if (res?.status == true) {
+      getProfileDetails();
       CustomSnackBar.show(context, res?.message ?? "Submitted Successfully");
     } else {
       CustomSnackBar.show(context, res?.message ?? "");

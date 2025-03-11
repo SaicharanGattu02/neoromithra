@@ -407,7 +407,7 @@ void _showLogoutConfirmationDialog(BuildContext context) {
                         style: TextStyle(
                             fontSize: 24.0,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xff27BDBE),
+                            color: Color(0xff3EA4D2),
                             fontFamily: "Poppins"),
                       ),
                       const SizedBox(height: 10.0),
@@ -433,7 +433,7 @@ void _showLogoutConfirmationDialog(BuildContext context) {
                               style: ElevatedButton.styleFrom(
                                 elevation: 0,
                                 backgroundColor:
-                                Color(0xff27BDBE), // Filled button color
+                                Color(0xff3EA4D2), // Filled button color
                                 foregroundColor: Colors.white, // Text color
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 20, vertical: 10),
@@ -462,9 +462,9 @@ void _showLogoutConfirmationDialog(BuildContext context) {
                               },
                               style: OutlinedButton.styleFrom(
                                 foregroundColor:
-                                Color(0xff27BDBE), // Text color
+                                Color(0xff3EA4D2), // Text color
                                 side: BorderSide(
-                                    color: Color(0xff27BDBE)), // Border color
+                                    color: Color(0xff3EA4D2)), // Border color
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 20, vertical: 10),
                               ),
