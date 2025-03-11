@@ -1,4 +1,29 @@
 class ProfileDetailsModel {
+  User? user;
+  HealthFeedback? healthFeedback;
+
+  ProfileDetailsModel({this.user, this.healthFeedback});
+
+  ProfileDetailsModel.fromJson(Map<String, dynamic> json) {
+    user = json['user'] != null ? new User.fromJson(json['user']) : null;
+    healthFeedback = json['health_feedback'] != null
+        ? new HealthFeedback.fromJson(json['health_feedback'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.user != null) {
+      data['user'] = this.user!.toJson();
+    }
+    if (this.healthFeedback != null) {
+      data['health_feedback'] = this.healthFeedback!.toJson();
+    }
+    return data;
+  }
+}
+
+class User {
   int? id;
   String? name;
   String? email;
@@ -6,7 +31,7 @@ class ProfileDetailsModel {
   int? phone;
   int? sos1;
   int? sos2;
-  int? sos3;
+  Null? sos3;
   int? userType;
   Null? userProfile;
   String? fcmToken;
@@ -17,7 +42,7 @@ class ProfileDetailsModel {
   Null? codeexp;
   int? codestatus;
 
-  ProfileDetailsModel(
+  User(
       {this.id,
         this.name,
         this.email,
@@ -36,7 +61,7 @@ class ProfileDetailsModel {
         this.codeexp,
         this.codestatus});
 
-  ProfileDetailsModel.fromJson(Map<String, dynamic> json) {
+  User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     email = json['email'];
@@ -75,6 +100,22 @@ class ProfileDetailsModel {
     data['code'] = this.code;
     data['codeexp'] = this.codeexp;
     data['codestatus'] = this.codestatus;
+    return data;
+  }
+}
+
+class HealthFeedback {
+  bool? status;
+
+  HealthFeedback({this.status});
+
+  HealthFeedback.fromJson(Map<String, dynamic> json) {
+    status = json['status'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['status'] = this.status;
     return data;
   }
 }

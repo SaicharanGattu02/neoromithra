@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:neuromithra/Model/QuoteModel.dart';
 import '../Model/AddAddressModel.dart';
 import '../Model/AddressListModel.dart';
 import '../Model/BehaviouralTrackingModel.dart';
 import '../Model/BookApointmentModel.dart';
 import '../Model/BookingHistoryModel.dart';
+import '../Model/FeedbackHelathModel.dart';
 import '../Model/LoginModel.dart';
 import '../Model/PreviousBookingModel.dart';
 import '../Model/ProfileDetailsModel.dart';
@@ -49,8 +51,6 @@ class Userapi {
     }
   }
 
-
-
   static Future<BookApointmentModel?> NewApointment(
       String fname,
       String pnum,
@@ -71,14 +71,13 @@ class Userapi {
           'age': age,
           'appointment_type': appointment_type,
           'Date_of_appointment': Date_of_appointment,
-          'time_of_appointment':time_of_appointment,
+          'time_of_appointment': time_of_appointment,
           'location': location,
           'page_source': page_source
         });
         print("Apointment data: $body");
 
-        final url = Uri.parse(
-            "${host}/api/for_new_bookappointments");
+        final url = Uri.parse("${host}/api/for_new_bookappointments");
         final headers = await getheader();
         final response = await http.post(
           url,
@@ -97,7 +96,6 @@ class Userapi {
     }
   }
 
-
   static Future<BookApointmentModel?> ExistApointment(
       String fname,
       String pnum,
@@ -109,8 +107,7 @@ class Userapi {
       String page_source,
       String time_of_appointment,
       String user_id,
-      String patient_id
-      ) async {
+      String patient_id) async {
     if (await CheckHeaderValidity()) {
       try {
         final body = jsonEncode({
@@ -120,15 +117,14 @@ class Userapi {
           'age': age,
           'appointment_type': appointment_type,
           'Date_of_appointment': Date_of_appointment,
-          'time_of_appointment':time_of_appointment,
+          'time_of_appointment': time_of_appointment,
           'location': location,
           'page_source': page_source,
           'patient_id': patient_id
         });
         print("Apointment data: $body");
 
-        final url = Uri.parse(
-            "${host}/api/for_exesting_bookappointments");
+        final url = Uri.parse("${host}/api/for_exesting_bookappointments");
         final headers = await getheader();
         final response = await http.post(
           url,
@@ -148,7 +144,7 @@ class Userapi {
   }
 
   static Future<RegisterModel?> PostRegister(String name, String mail,
-      String password, String phone, String fcm_token,String SOSNumber) async {
+      String password, String phone, String fcm_token, String SOSNumber) async {
     try {
       Map<String, String> data = {
         "name": name,
@@ -227,8 +223,8 @@ class Userapi {
     }
   }
 
-  static Future<Map<String, dynamic>?> postProfileDetails(
-      String name, String email, String phone, String sos1, String sos2, String sos3) async {
+  static Future<Map<String, dynamic>?> postProfileDetails(String name,
+      String email, String phone, String sos1, String sos2, String sos3) async {
     try {
       Map<String, String> data = {
         "name": name,
@@ -249,23 +245,31 @@ class Userapi {
         body: data,
       );
 
-      if (response.statusCode == 200) { // Success response
+      if (response.statusCode == 200) {
+        // Success response
         final jsonResponse = jsonDecode(response.body);
         print("postProfileDetails Status: $jsonResponse");
         return {"message": jsonResponse["message"]}; // Success message
-      } else if (response.statusCode == 401) { // Unauthorized response
+      } else if (response.statusCode == 401) {
+        // Unauthorized response
         final jsonResponse = jsonDecode(response.body);
         print("postProfileDetails Status: $jsonResponse");
         return {"error": jsonResponse["error"]}; // Unauthorized error message
-      } else if (response.statusCode == 400) { // Handle Bad Request (validation error)
+      } else if (response.statusCode == 400) {
+        // Handle Bad Request (validation error)
         final jsonResponse = jsonDecode(response.body);
         print("postProfileDetails Error: $jsonResponse");
 
         // Check if errors field exists in the response
         if (jsonResponse.containsKey("errors")) {
-          return {"error": jsonResponse["errors"]}; // Return validation errors in map
+          return {
+            "error": jsonResponse["errors"]
+          }; // Return validation errors in map
         } else {
-          return {"error": "Bad request with status 400, no specific error details available."};
+          return {
+            "error":
+                "Bad request with status 400, no specific error details available."
+          };
         }
       } else {
         // Handle other non-200, non-400, non-401 status codes
@@ -277,8 +281,6 @@ class Userapi {
       return {"error": e.toString()}; // Catch any other errors
     }
   }
-
-
 
   static Future<ProfileDetailsModel?> getprofiledetails(String user_id) async {
     if (await CheckHeaderValidity()) {
@@ -465,16 +467,15 @@ class Userapi {
   }
 
   static Future<AddAddressModel?> AddAddressApi(String Flat_no, String street,
-      String area, String landmark, String pincode, int type_of_address
-      ) async {
+      String area, String landmark, String pincode, int type_of_address) async {
     if (await CheckHeaderValidity()) {
       try {
         // Prepare the data
         Map<String, dynamic> data = {
-          "Flat_no":Flat_no,
+          "Flat_no": Flat_no,
           "street": street,
-          "area":area,
-          "landmark":landmark,
+          "area": area,
+          "landmark": landmark,
           "pincode": pincode,
           "type_of_address": type_of_address,
         };
@@ -509,18 +510,22 @@ class Userapi {
     }
   }
 
-
-  static Future<AddAddressModel?>EditAddressApi(String Flat_no, String street,
-      String area, String landmark, String pincode, int type_of_address,String address_id
-      ) async {
+  static Future<AddAddressModel?> EditAddressApi(
+      String Flat_no,
+      String street,
+      String area,
+      String landmark,
+      String pincode,
+      int type_of_address,
+      String address_id) async {
     if (await CheckHeaderValidity()) {
       try {
         // Prepare the data
         Map<String, dynamic> data = {
-          "Flat_no":Flat_no,
+          "Flat_no": Flat_no,
           "street": street,
-          "area":area,
-          "landmark":landmark,
+          "area": area,
+          "landmark": landmark,
           "pincode": pincode,
           "type_of_address": type_of_address,
         };
@@ -529,7 +534,7 @@ class Userapi {
         final url = Uri.parse("$host/api/update_user_address/${address_id}");
         print(url);
         final headers =
-        await getheader(); // Assuming this fetches headers with Authorization
+            await getheader(); // Assuming this fetches headers with Authorization
         // Send the POST request
         final response = await http.post(
           url,
@@ -555,6 +560,7 @@ class Userapi {
       return null;
     }
   }
+
   static Future<AddressListModel?> getaddresslist() async {
     if (await CheckHeaderValidity()) {
       try {
@@ -601,11 +607,12 @@ class Userapi {
     }
   }
 
-
-  static Future<PreviousBookingModel?> getpreviousbookings(String pagesource) async {
+  static Future<PreviousBookingModel?> getpreviousbookings(
+      String pagesource) async {
     if (await CheckHeaderValidity()) {
       try {
-        final url = Uri.parse("${host}/api/check_previous_bookings/${pagesource}");
+        final url =
+            Uri.parse("${host}/api/check_previous_bookings/${pagesource}");
         final headers = await getheader1();
         final response = await http.get(url, headers: headers);
         if (response != null) {
@@ -625,11 +632,12 @@ class Userapi {
     }
   }
 
-  static Future<BehaviouralTrackingModel?> getbehaviourallist(String id,String page_source) async {
+  static Future<BehaviouralTrackingModel?> getbehaviourallist(
+      String id, String page_source) async {
     if (await CheckHeaderValidity()) {
       try {
-        final url = Uri.parse("${host}/api/get_therapy_traking/${id}/${page_source}");
-        // final url = Uri.parse("${host}/api/get_therapy_traking/${id}");
+        final url =
+            Uri.parse("${host}/api/get_therapy_traking/${id}/${page_source}");
         print("URL :${url}");
         final headers = await getheader1();
         final response = await http.get(url, headers: headers);
@@ -646,6 +654,47 @@ class Userapi {
         return null;
       }
     } else {
+      return null;
+    }
+  }
+
+  static Future<QuoteModel?> getquotes() async {
+    try {
+      final url = Uri.parse("${host}/api/random-quote");
+      print("URL :${url}");
+      final headers = await getheader1();
+      final response = await http.get(url, headers: headers);
+      if (response != null) {
+        final jsonResponse = jsonDecode(response.body);
+        print("getquotes response:${response.body}");
+        return QuoteModel.fromJson(jsonResponse);
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print("Error occurred: $e");
+      return null;
+    }
+  }
+
+  static Future<FeedbackHelathModel?> posthelathFeedback(String msg) async {
+    Map<String, String> data = {"message": msg};
+    try {
+      final url = Uri.parse("${host}/api/feedback-health");
+      print("URL :${url}");
+      final headers = await getheader1();
+      final response = await http.post(url, headers: headers, body: data);
+      if (response != null) {
+        final jsonResponse = jsonDecode(response.body);
+        print("posthelathFeedback response:${response.body}");
+        return FeedbackHelathModel.fromJson(jsonResponse);
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print("Error occurred: $e");
       return null;
     }
   }

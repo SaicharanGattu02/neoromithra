@@ -9,8 +9,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:neuromithra/MainDashBoard.dart';
-import 'package:neuromithra/Register.dart';
 import 'package:neuromithra/SplashScreen.dart';
 import 'package:neuromithra/services/Preferances.dart';
 
@@ -149,7 +147,7 @@ Future<void> main() async {
     print("Errrrrrrrrrr:${details.exceptionAsString()}");
     // Optionally report the error to a remote server
   };
-
+// Motion.instance.setUpdateInterval(60.fps);
   runApp( MyApp());
 }
 
@@ -187,6 +185,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
         providers: StateInjector.blocProviders,
         child: MaterialApp(
+
           builder: (context, child) {
             return MediaQuery(
               data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
@@ -238,7 +237,7 @@ class MyApp extends StatelessWidget {
                 .copyWith(background: Colors.white),
           ),
 
-        home:Register()
+        home:Splash()
       ),
     );
   }

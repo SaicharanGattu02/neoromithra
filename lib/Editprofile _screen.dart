@@ -97,10 +97,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void _submitForm(context) {
     if (_formKey.currentState!.validate()) {
       setState(() {
-        isLoading=true;
+        isLoading = true;
       });
       _updateProfileDetails(context);
-
     } else {
       setState(() {
         isLoading = false;
@@ -225,7 +224,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         CustomSnackBar.show(context, '${result["message"]}');
         print("Success: ${result["message"]}");
         // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Dashboard()));
-
       } else if (result != null && result.containsKey("error")) {
         CustomSnackBar.show(context, '${result["error"]}');
         print("Error: ${result["error"]}");
@@ -234,22 +232,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     });
   }
 
-  ProfileDetailsModel user_data = ProfileDetailsModel();
   Future<void> GetProfileDetails() async {
     String user_id = await PreferenceService().getString('user_id') ?? "";
     final Response = await Userapi.getprofiledetails(user_id);
     if (Response != null) {
       setState(() {
-        user_data = Response;
-        _nameController.text=user_data.name??'';
-        _emailController.text=user_data.email??'';
-        _mobileController.text=user_data.phone.toString();
-        _sos1Controller.text=user_data.sos1.toString();
-        _sos2Controller.text=user_data.sos2.toString();
-        _sos3Controller.text=user_data.sos3.toString();
+        _nameController.text = Response.user?.name ?? '';
+        _emailController.text = Response.user?.email ?? '';
+        _mobileController.text = Response.user?.phone.toString() ?? '';
+        _sos1Controller.text = Response.user?.sos1.toString() ?? '';
+        _sos2Controller.text = Response.user?.sos2.toString() ?? '';
+        _sos3Controller.text = Response.user?.sos3.toString() ?? '';
         is_loading = false;
       });
-    }else{
+    } else {
       is_loading = false;
     }
   }
@@ -260,201 +256,213 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       appBar: AppBar(
         title: const Text('Profile Details'),
       ),
-      body:
-          (is_loading)?Center(
-            child: CircularProgressIndicator(
-              color: Colors.blue,
-            ),
-          ):
-          SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            // Stack(
-            //   children: [
-            //     CircleAvatar(
-            //       radius: 60,
-            //       backgroundColor: const Color(0xff80C4E9),
-            //       backgroundImage: _image != null
-            //           ? FileImage(_image!)
-            //           : (profile_image.isNotEmpty
-            //           ? NetworkImage(profile_image)
-            //           : null) as ImageProvider?,
-            //       child: (_image == null && profile_image.isEmpty)
-            //           ? Text(
-            //         name.isNotEmpty
-            //             ? name[0].toUpperCase()
-            //             : "",
-            //         style: const TextStyle(
-            //             fontSize: 50, color: Color(0xffFFF6E9)),
-            //       )
-            //           : null,
-            //     ),
-            //     Positioned(
-            //       bottom: 0,
-            //       right: 0,
-            //       child: GestureDetector(
-            //         onTap: _pickImage,
-            //         child: CircleAvatar(
-            //           radius: 18,
-            //           backgroundColor: Colors.grey,
-            //           child: image_uploading
-            //               ? CircularProgressIndicator(
-            //             strokeWidth: 2,
-            //             valueColor:
-            //             AlwaysStoppedAnimation<Color>(Colors.white),
-            //           )
-            //               : const Icon(
-            //             Icons.edit,
-            //             color: Colors.white,
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //   ],
-            // ),
-            // const SizedBox(height: 30),
-            Form(
-              key: _formKey,
+      body: (is_loading)
+          ? Center(
+              child: CircularProgressIndicator(
+                color: Colors.blue,
+              ),
+            )
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
               child: Column(
-                children: <Widget>[
-                  TextFormField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      labelText: 'Name',
-                      labelStyle: TextStyle(
-                          fontSize: 15,
-                          fontFamily: "Inter",
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black),
-                      floatingLabelBehavior: FloatingLabelBehavior.auto,
-                      border: OutlineInputBorder(), // Add border
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey, width: 1.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                      ),
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  // Stack(
+                  //   children: [
+                  //     CircleAvatar(
+                  //       radius: 60,
+                  //       backgroundColor: const Color(0xff80C4E9),
+                  //       backgroundImage: _image != null
+                  //           ? FileImage(_image!)
+                  //           : (profile_image.isNotEmpty
+                  //           ? NetworkImage(profile_image)
+                  //           : null) as ImageProvider?,
+                  //       child: (_image == null && profile_image.isEmpty)
+                  //           ? Text(
+                  //         name.isNotEmpty
+                  //             ? name[0].toUpperCase()
+                  //             : "",
+                  //         style: const TextStyle(
+                  //             fontSize: 50, color: Color(0xffFFF6E9)),
+                  //       )
+                  //           : null,
+                  //     ),
+                  //     Positioned(
+                  //       bottom: 0,
+                  //       right: 0,
+                  //       child: GestureDetector(
+                  //         onTap: _pickImage,
+                  //         child: CircleAvatar(
+                  //           radius: 18,
+                  //           backgroundColor: Colors.grey,
+                  //           child: image_uploading
+                  //               ? CircularProgressIndicator(
+                  //             strokeWidth: 2,
+                  //             valueColor:
+                  //             AlwaysStoppedAnimation<Color>(Colors.white),
+                  //           )
+                  //               : const Icon(
+                  //             Icons.edit,
+                  //             color: Colors.white,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // const SizedBox(height: 30),
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
+                          controller: _nameController,
+                          decoration: InputDecoration(
+                            labelText: 'Name',
+                            labelStyle: TextStyle(
+                                fontSize: 15,
+                                fontFamily: "Inter",
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black),
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
+                            border: OutlineInputBorder(), // Add border
+                            enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey, width: 1.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.blue, width: 2.0),
+                            ),
+                          ),
+                          validator: _validateName,
+                        ),
+                        SizedBox(height: 16),
+                        TextFormField(
+                          controller: _emailController,
+                          decoration: InputDecoration(
+                            labelText: 'Email',
+                            labelStyle: TextStyle(
+                                fontSize: 15,
+                                fontFamily: "Inter",
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black),
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
+                            border: OutlineInputBorder(), // Add border
+                            enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey, width: 1.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.blue, width: 2.0),
+                            ),
+                          ),
+                          validator: _validateEmail,
+                        ),
+                        SizedBox(height: 16), // Space between fields
+                        TextFormField(
+                          controller: _mobileController,
+                          decoration: InputDecoration(
+                            labelText: 'Mobile Number',
+                            labelStyle: TextStyle(
+                                fontSize: 15,
+                                fontFamily: "Inter",
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black),
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
+                            border: OutlineInputBorder(), // Add border
+                            enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey, width: 1.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.blue, width: 2.0),
+                            ),
+                          ),
+                          keyboardType: TextInputType.phone,
+                          validator: _validateMobile,
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: _sos1Controller,
+                          decoration: InputDecoration(
+                            labelText: 'SOS Mobile Number 1',
+                            labelStyle: TextStyle(
+                                fontSize: 15,
+                                fontFamily: "Inter",
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black),
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
+                            border: OutlineInputBorder(), // Add border
+                            enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey, width: 1.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.blue, width: 2.0),
+                            ),
+                          ),
+                          keyboardType: TextInputType.phone,
+                          validator: _validateMobileSos1,
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: _sos2Controller,
+                          decoration: InputDecoration(
+                            labelText: 'SOS Mobile Number 2',
+                            labelStyle: TextStyle(
+                                fontSize: 15,
+                                fontFamily: "Inter",
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black),
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
+                            border: OutlineInputBorder(), // Add border
+                            enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey, width: 1.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.blue, width: 2.0),
+                            ),
+                          ),
+                          keyboardType: TextInputType.phone,
+                          // validator: _validateMobileSos2,
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: _sos3Controller,
+                          decoration: InputDecoration(
+                            labelText: 'SOS Mobile Number 3',
+                            labelStyle: TextStyle(
+                                fontSize: 15,
+                                fontFamily: "Inter",
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black),
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
+                            border: OutlineInputBorder(), // Add border
+                            enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey, width: 1.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.blue, width: 2.0),
+                            ),
+                          ),
+                          keyboardType: TextInputType.phone,
+                          // validator: _validateMobileSos3,
+                        ),
+                        SizedBox(height: 20),
+                      ],
                     ),
-                    validator: _validateName,
                   ),
-                  SizedBox(height: 16),
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      labelStyle: TextStyle(
-                          fontSize: 15,
-                          fontFamily: "Inter",
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black),
-                      floatingLabelBehavior: FloatingLabelBehavior.auto,
-                      border: OutlineInputBorder(), // Add border
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey, width: 1.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                      ),
-                    ),
-                    validator: _validateEmail,
-                  ),
-                  SizedBox(height: 16), // Space between fields
-                  TextFormField(
-                    controller: _mobileController,
-                    decoration: InputDecoration(
-                      labelText: 'Mobile Number',
-                      labelStyle: TextStyle(
-                          fontSize: 15,
-                          fontFamily: "Inter",
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black),
-                      floatingLabelBehavior: FloatingLabelBehavior.auto,
-                      border: OutlineInputBorder(), // Add border
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey, width: 1.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                      ),
-                    ),
-                    keyboardType: TextInputType.phone,
-                    validator: _validateMobile,
-                  ),
-                  SizedBox(height: 20),
-                  TextFormField(
-                    controller: _sos1Controller,
-                    decoration: InputDecoration(
-                      labelText: 'SOS Mobile Number 1',
-                      labelStyle: TextStyle(
-                          fontSize: 15,
-                          fontFamily: "Inter",
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black),
-                      floatingLabelBehavior: FloatingLabelBehavior.auto,
-                      border: OutlineInputBorder(), // Add border
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey, width: 1.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                      ),
-                    ),
-                    keyboardType: TextInputType.phone,
-                    validator: _validateMobileSos1,
-                  ),
-                  SizedBox(height: 20),
-                  TextFormField(
-                    controller: _sos2Controller,
-                    decoration: InputDecoration(
-                      labelText: 'SOS Mobile Number 2',
-                      labelStyle: TextStyle(
-                          fontSize: 15,
-                          fontFamily: "Inter",
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black),
-                      floatingLabelBehavior: FloatingLabelBehavior.auto,
-                      border: OutlineInputBorder(), // Add border
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey, width: 1.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                      ),
-                    ),
-                    keyboardType: TextInputType.phone,
-                    // validator: _validateMobileSos2,
-                  ),
-                  SizedBox(height: 20),
-                  TextFormField(
-                    controller: _sos3Controller,
-                    decoration: InputDecoration(
-                      labelText: 'SOS Mobile Number 3',
-                      labelStyle: TextStyle(
-                          fontSize: 15,
-                          fontFamily: "Inter",
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black),
-                      floatingLabelBehavior: FloatingLabelBehavior.auto,
-                      border: OutlineInputBorder(), // Add border
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey, width: 1.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                      ),
-                    ),
-                    keyboardType: TextInputType.phone,
-                    // validator: _validateMobileSos3,
-                  ),
-                  SizedBox(height: 20),
                 ],
               ),
             ),
-          ],
-        ),
-      ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: GestureDetector(

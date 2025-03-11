@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:neuromithra/Dashboard.dart';
 import 'package:neuromithra/LogIn.dart';
+import 'package:neuromithra/MainDashBoard.dart';
 import 'package:neuromithra/Register.dart';
 import 'package:neuromithra/services/Preferances.dart';
 
@@ -36,7 +37,7 @@ class _SplashState extends State<Splash> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => userId.isNotEmpty ? Dashboard() : OnBoardScreen(),
+          builder: (_) => userId.isNotEmpty ? MainDashBoard() : OnBoardScreen(),
         ),
       );
     });

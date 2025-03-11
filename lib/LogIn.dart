@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neuromithra/Dashboard.dart';
+import 'package:neuromithra/MainDashBoard.dart';
 import 'package:neuromithra/Register.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
@@ -58,7 +59,7 @@ class _LogInState extends State<LogIn> {
             loginResponse["expires_in"].toString() ?? "");
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => Dashboard()),
+          MaterialPageRoute(builder: (context) => MainDashBoard()),
         );
       } else if (loginResponse.containsKey("error")) {
         // Handle unauthorized or error response
