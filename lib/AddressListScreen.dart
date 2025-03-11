@@ -34,11 +34,22 @@ class _AddressListScreenState extends State<AddressListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Address List ',
-        onBackButtonPressed: () {
-          Navigator.pop(context);
-        },
+      appBar: AppBar(
+        title: Text( 'Address List',
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: "Inter",
+                color: Color(0xff3EA4D2),
+                fontSize: 18)),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        leading: IconButton.filled(
+          icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
+          onPressed: () => Navigator.pop(context),
+          style: IconButton.styleFrom(
+            backgroundColor: Color(0xFFECFAFA), // Filled color
+          ),
+        ),
       ),
       body: (is_loading)?Center(child: CircularProgressIndicator(color: Colors.blue,)):
       Padding(

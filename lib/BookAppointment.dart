@@ -52,12 +52,23 @@ class _BookappointmentState extends State<Bookappointment> {
     var w = MediaQuery.of(context).size.width;
     var h = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Previous Booking History',
-        onBackButtonPressed: () {
-          Navigator.pop(context);
-        },
-      ),
+        appBar: AppBar(
+          title: Text('Previous Booking History',
+              style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontFamily: "Inter",
+                  color: Color(0xff3EA4D2),
+                  fontSize: 18)),
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          leading: IconButton.filled(
+            icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
+            onPressed: () => Navigator.pop(context),
+            style: IconButton.styleFrom(
+              backgroundColor: Color(0xFFECFAFA), // Filled color
+            ),
+          ),
+        ),
       body:(is_loading)? Center(
         child: CircularProgressIndicator(
           color: Colors.blue,

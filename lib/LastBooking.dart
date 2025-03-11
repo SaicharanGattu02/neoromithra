@@ -213,11 +213,22 @@ class _LastBookingState extends State<LastBooking> {
     //   // Add more bookings here...
     // ];
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Booking History',
-        onBackButtonPressed: () {
-          Navigator.pop(context);
-        },
+      appBar: AppBar(
+        title: Text( 'Booking History',
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: "Inter",
+                color: Color(0xff3EA4D2),
+                fontSize: 18)),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        leading: IconButton.filled(
+          icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
+          onPressed: () => Navigator.pop(context),
+          style: IconButton.styleFrom(
+            backgroundColor: Color(0xFFECFAFA), // Filled color
+          ),
+        ),
       ),
       body: (is_loading)
           ? Center(

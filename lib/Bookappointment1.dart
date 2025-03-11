@@ -326,23 +326,21 @@ class _Bookappointment1State extends State<Bookappointment1> {
 
     return Scaffold(
       appBar: AppBar(
+        title: Text(  "Booking Appointment",
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: "Inter",
+                color: Color(0xff3EA4D2),
+                fontSize: 18)),
+        centerTitle: true,
         backgroundColor: Colors.white,
-        shadowColor: Colors.white,
-        title: Row(
-          children: [
-            Text(
-              "Booking Appointment",
-              style: TextStyle(
-                color: Colors.black,
-                fontFamily: 'Poppins',
-                fontSize: 22,
-                fontWeight: FontWeight.w500,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+        leading: IconButton.filled(
+          icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
+          onPressed: () => Navigator.pop(context),
+          style: IconButton.styleFrom(
+            backgroundColor: Color(0xFFECFAFA), // Filled color
+          ),
         ),
-        leadingWidth: 25,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24),
