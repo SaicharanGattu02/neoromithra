@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:neuromithra/services/userapi.dart';
 
 import 'CustomAppBar.dart';
-import 'Model/AddressListModel.dart';
+import '../Model/AddressListModel.dart';
 
 class AddAddressScreen extends StatefulWidget {
   final String type; // Type parameter to determine mode

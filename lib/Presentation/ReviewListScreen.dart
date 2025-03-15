@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:neuromithra/utils/ReviewCard.dart';
 
-import 'Model/ReviewListModel.dart';
+import '../Model/ReviewListModel.dart';
 
 class ReviewListScreen extends StatefulWidget {
   final pageSource;

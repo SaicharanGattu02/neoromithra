@@ -1,20 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 
-import 'TherapyScreens/ABA_TherapyScreen.dart';
-import 'TherapyScreens/ArtTherapyScreen.dart';
-import 'TherapyScreens/BehavioralTherapyScreen.dart';
-import 'TherapyScreens/CBT_Screen.dart';
-import 'TherapyScreens/DevelopmentalTherapyScreen.dart';
-import 'TherapyScreens/FeedingTherapyScreen.dart';
-import 'TherapyScreens/MusicTherapyScreen.dart';
-import 'TherapyScreens/OccupationalTherapyScreen.dart';
-import 'TherapyScreens/PhysicalTherapyScreen.dart';
-import 'TherapyScreens/PlayTherapyScreen.dart';
-import 'TherapyScreens/SensoryIntegrationTherapyScreen.dart';
-import 'TherapyScreens/SocialSkillsTrainingScreen.dart';
-import 'TherapyScreens/SpeechTheraphyScreen.dart';
-import 'TherapyScreens/DetailsScreen.dart';
+import 'package:flutter/material.dart';
+import '../TherapyScreens/DetailsScreen.dart';
 
 class TherapiesListScreen extends StatelessWidget {
   final List<Map<String, dynamic>> therapies = [

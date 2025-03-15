@@ -2,11 +2,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
-import 'package:neuromithra/AddRating.dart';
+import 'package:neuromithra/Presentation/AddRating.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'Bookappointment1.dart';
 import 'CustomAppBar.dart';
-import 'Model/PreviousBookingModel.dart';
+import '../Model/PreviousBookingModel.dart';
 
 
 class Bookappointment extends StatefulWidget {

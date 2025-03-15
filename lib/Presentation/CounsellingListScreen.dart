@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-import 'CounsellingScreens/BehavioralCounsellingScreen.dart';
-import 'CounsellingScreens/CareerCounsellingScreen.dart';
-import 'CounsellingScreens/CrisisCounsellingScreen.dart';
-import 'CounsellingScreens/EducationalCounsellingScreen.dart';
-import 'CounsellingScreens/FamilyCounsellingScreen.dart';
-import 'CounsellingScreens/GeneralStressManagementCounsellingScreen.dart';
-import 'CounsellingScreens/GriefCounsellingScreen.dart';
-import 'CounsellingScreens/GroupCounsellingScreen.dart';
-import 'CounsellingScreens/IndividualCounsellingForChildrenScreen.dart';
-import 'CounsellingScreens/MentalHealthCounsellingScreen.dart';
-import 'CounsellingScreens/ParentChildRelationshipCounsellingScreen.dart';
-import 'CounsellingScreens/ParentCounsellingForAutismScreen.dart';
-import 'CounsellingScreens/RelationshipCounsellingScreen.dart';
-import 'CounsellingScreens/SiblingCounsellingScreen.dart';
-import 'TherapyScreens/DetailsScreen.dart';
+import '../CounsellingScreens/BehavioralCounsellingScreen.dart';
+import '../CounsellingScreens/CareerCounsellingScreen.dart';
+import '../CounsellingScreens/CrisisCounsellingScreen.dart';
+import '../CounsellingScreens/EducationalCounsellingScreen.dart';
+import '../CounsellingScreens/FamilyCounsellingScreen.dart';
+import '../CounsellingScreens/GeneralStressManagementCounsellingScreen.dart';
+import '../CounsellingScreens/GriefCounsellingScreen.dart';
+import '../CounsellingScreens/GroupCounsellingScreen.dart';
+import '../CounsellingScreens/IndividualCounsellingForChildrenScreen.dart';
+import '../CounsellingScreens/MentalHealthCounsellingScreen.dart';
+import '../CounsellingScreens/ParentChildRelationshipCounsellingScreen.dart';
+import '../CounsellingScreens/ParentCounsellingForAutismScreen.dart';
+import '../CounsellingScreens/RelationshipCounsellingScreen.dart';
+import '../CounsellingScreens/SiblingCounsellingScreen.dart';
+import '../TherapyScreens/DetailsScreen.dart';
 
 class CounsellingListScreen extends StatelessWidget {
   // final List<Map<String, String>> counsellings = [

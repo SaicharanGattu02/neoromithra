@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:neuromithra/BookAppointment.dart';
+import 'package:neuromithra/Presentation/BookAppointment.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../Model/ReviewListModel.dart';
-import '../ReviewListScreen.dart';
+import '../Presentation/ReviewListScreen.dart';
 import '../services/userapi.dart';
 import '../utils/ReviewCard.dart';
 

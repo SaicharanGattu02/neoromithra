@@ -4,7 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:neuromithra/services/userapi.dart';
 
 import 'CustomAppBar.dart';
-import 'Model/BehaviouralTrackingModel.dart';
+import '../Model/BehaviouralTrackingModel.dart';
 
 class BehavioralTrackingReport extends StatefulWidget {
   final int id;

@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'package:neuromithra/Dashboard.dart';
+import 'package:neuromithra/Presentation/Dashboard.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'AddRating.dart';
 import 'AddressListScreen.dart';
 import 'CustomAppBar.dart';
 import 'FirstLetterCaps.dart';
-import 'Model/AddressListModel.dart';
-import 'Model/BookingHistoryModel.dart';
+import '../Model/AddressListModel.dart';
+import '../Model/BookingHistoryModel.dart';
+
+import '../TherapyScreens/BookedApointmentsuccessfully.dart';
 import 'ShakeWidget.dart';
-import 'TherapyScreens/BookedApointmentsuccessfully.dart';
 
 class Bookappointment1 extends StatefulWidget {
   final String pagesource;

@@ -4,14 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:lottie/lottie.dart';
-import 'package:neuromithra/AddRating.dart';
+import 'package:neuromithra/Presentation/AddRating.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'BehavioralTrackingReport.dart';
 import 'CustomAppBar.dart';
-import 'Model/BookingHistoryModel.dart';
+import '../Model/BookingHistoryModel.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 

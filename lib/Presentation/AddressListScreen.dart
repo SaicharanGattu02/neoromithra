@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:neuromithra/AddAddressScreen.dart';
+import 'package:neuromithra/Presentation/AddAddressScreen.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'CustomAppBar.dart';
-import 'Model/AddressListModel.dart';
+import '../Model/AddressListModel.dart';
 
 class AddressListScreen extends StatefulWidget {
   @override

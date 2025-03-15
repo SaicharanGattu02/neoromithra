@@ -6,12 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:neuromithra/HomeScreen.dart';
-import 'package:neuromithra/profile_screen.dart';
+import 'package:neuromithra/Presentation/HomeScreen.dart';
+import 'package:neuromithra/Presentation/profile_screen.dart';
 
 import 'CounsellingListScreen.dart';
-import 'Logic/Location/location_cubit.dart';
-import 'Logic/Location/location_state.dart';
+import '../Logic/Location/location_cubit.dart';
+import '../Logic/Location/location_state.dart';
+
 import 'TherapiesListScreen.dart';
 
 

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'CustomAppBar.dart';
+
 class Detailscreen extends StatefulWidget {
   const Detailscreen({super.key});
 

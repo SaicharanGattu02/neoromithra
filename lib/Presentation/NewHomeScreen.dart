@@ -1,15 +1,15 @@
 import 'package:bounce/bounce.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:neuromithra/TherapiesListScreen.dart';
+
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/other_services.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:neuromithra/utils/CustomSnackBar.dart';
 import 'package:neuromithra/utils/Shimmers.dart';
 
-import 'Model/ProfileDetailsModel.dart';
-import 'TherapyScreens/DetailsScreen.dart';
+import '../Model/ProfileDetailsModel.dart';
+import '../TherapyScreens/DetailsScreen.dart';
 
 class NewHomeScreen extends StatefulWidget {
   const NewHomeScreen({super.key});
@@ -39,6 +39,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     await Future.wait([
       getProfileDetails(),
       getQuotes(),
+
     ]);
 
     setState(() {

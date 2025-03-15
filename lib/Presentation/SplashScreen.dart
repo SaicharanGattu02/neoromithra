@@ -1,14 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:neuromithra/Dashboard.dart';
-import 'package:neuromithra/LogIn.dart';
-import 'package:neuromithra/MainDashBoard.dart';
-import 'package:neuromithra/Register.dart';
-import 'package:neuromithra/services/Preferances.dart';
 
-import 'BookAppointment.dart';
-import 'HomeScreen.dart';
+import 'package:neuromithra/Presentation/MainDashBoard.dart';
+import 'package:neuromithra/services/Preferances.dart';
+import 'LogIn.dart';
 import 'OnBoardScreen.dart';
 
 
@@ -31,14 +27,14 @@ class _SplashState extends State<Splash> {
 
   Future<void> _initialize() async {
     await _fetchDetails();
-    // Navigate only if the widget is still mounted
+
     if (!mounted) return;
 
     Future.delayed(Duration(seconds: 2), () {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => Status == ''? OnBoardScreen():userId.isNotEmpty ?MainDashBoard() : LogIn(),
+          builder: (_) => Status.isEmpty? OnBoardScreen():userId.isNotEmpty ?MainDashBoard() : LogIn(),
         ),
       );
     });
@@ -58,7 +54,7 @@ class _SplashState extends State<Splash> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Ensures consistent background color
+      backgroundColor: Colors.white,
       body: Center(
         child: Image.asset(
           "assets/neuromitralogo.png",

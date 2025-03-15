@@ -3,8 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:neuromithra/Dashboard.dart';
-import 'package:neuromithra/profile_screen.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'dart:async';
@@ -14,7 +12,6 @@ import 'package:path/path.dart';
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
 
-import 'Model/ProfileDetailsModel.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({

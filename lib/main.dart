@@ -9,10 +9,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:neuromithra/SplashScreen.dart';
+import 'package:neuromithra/Presentation/SelectingTypes/Selecting_types.dart';
+
 import 'package:neuromithra/services/Preferances.dart';
 
-import 'StateInjector.dart';
+import 'Presentation/SplashScreen.dart';
+import 'Presentation/StateInjector.dart';
+
 
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
@@ -176,7 +179,7 @@ void showNotification(RemoteNotification notification,
     notification.title,
     notification.body,
     platformChannelSpecifics,
-    payload: jsonEncode(data), // Convert payload data to String
+    payload: jsonEncode(data),
   );
 }
 class MyApp extends StatelessWidget {
@@ -237,7 +240,7 @@ class MyApp extends StatelessWidget {
                 .copyWith(background: Colors.white),
           ),
 
-        home:Splash()
+        home:SelectingTypes()
       ),
     );
   }

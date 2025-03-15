@@ -4,12 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:neuromithra/Logic/Location/location_cubit.dart';
 import 'package:neuromithra/Logic/Location/location_state.dart';
-import 'package:neuromithra/NewHomeScreen.dart';
-import 'package:neuromithra/profile_screen.dart';
+import 'package:neuromithra/Presentation/NewHomeScreen.dart';
+import 'package:neuromithra/Presentation/profile_screen.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'CounsellingListScreen.dart';
 import 'TherapiesListScreen.dart';
+
 
 class MainDashBoard extends StatefulWidget {
   const MainDashBoard({super.key});
@@ -88,40 +89,36 @@ class _MainDashBoardState extends State<MainDashBoard> {
             physics: const NeverScrollableScrollPhysics(),
           ),
           floatingActionButton: BlocBuilder<LocationCubit, LocationState>(
-            builder: (context, state) {
-              if (state is LocationLoaded) {
-                return FloatingActionButton(
-                  onPressed: () {
-                    setState(() {
-                      _makeSOSCall(state.locationName);
-                      print("loction:${state.locationName}");
-                    });
-                  },
-                  child: makingSOSCall
-                      ? Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: CircularProgressIndicator(
+              builder: (context, state) {
+            String loc = '';
+            if (state is LocationLoaded) {
+              loc = state.locationName;
+            }
+            return FloatingActionButton(
+              onPressed: () {
+                setState(() {
+                  _makeSOSCall(loc);
+                  print("loction:${loc}");
+                });
+              },
+              child: makingSOSCall
+                  ? Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: CircularProgressIndicator(
                         strokeWidth: 0.5,
-                                          ),
-                      )
-                      : Lottie.asset(
-                          'assets/animations/sos.json',
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.contain,
-                        ),
-                  backgroundColor: Colors.white,
-                  shape: CircleBorder(),
-                  elevation: 4.0,
-                );
-              }
-              return Container(
-                color: Colors.white,
-                width: 60,
-                height: 60,
-              );
-            },
-          ),
+                      ),
+                    )
+                  : Lottie.asset(
+                      'assets/animations/sos.json',
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.contain,
+                    ),
+              backgroundColor: Colors.white,
+              shape: CircleBorder(),
+              elevation: 4.0,
+            );
+          }),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
           bottomNavigationBar: BottomAppBar(

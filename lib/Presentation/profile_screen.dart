@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:neuromithra/Aboutus.dart';
-import 'package:neuromithra/AddAddressScreen.dart';
-import 'package:neuromithra/CancellationPolicyScreen.dart';
-import 'package:neuromithra/PrivacyPolicyScreen.dart';
-import 'package:neuromithra/ReturnRefundPolicyScreen.dart';
+import 'package:neuromithra/Presentation/Aboutus.dart';
+import 'package:neuromithra/Presentation/AddAddressScreen.dart';
+import 'package:neuromithra/Presentation/CancellationPolicyScreen.dart';
+
+import 'package:neuromithra/Presentation/ReturnRefundPolicyScreen.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'AddRating.dart';
 import 'AddressListScreen.dart';
+
 import 'Editprofile _screen.dart';
 import 'GovtSupportinfo.dart';
 import 'LastBooking.dart';
 import 'LogIn.dart';
-import 'Model/ProfileDetailsModel.dart'; // Import the Edit Profile Screen
+import '../Model/ProfileDetailsModel.dart';
+import 'PrivacyPolicyScreen.dart'; // Import the Edit Profile Screen
 
 class ProfileScreen extends StatefulWidget {
   @override

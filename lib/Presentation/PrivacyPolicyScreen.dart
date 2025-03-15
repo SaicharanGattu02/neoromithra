@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'CustomAppBar.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
   @override

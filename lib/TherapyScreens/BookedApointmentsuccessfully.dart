@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:lottie/lottie.dart';
-import 'package:neuromithra/MainDashBoard.dart';
+import 'package:neuromithra/Presentation/MainDashBoard.dart';
 
-import '../Dashboard.dart';
+import '../Presentation/Dashboard.dart';
 
 class ApointmentSuccess extends StatefulWidget {
   const ApointmentSuccess({super.key});
