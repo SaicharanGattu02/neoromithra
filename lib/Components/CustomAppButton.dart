@@ -53,7 +53,7 @@ class CustomAppButton extends StatelessWidget implements PreferredSizeWidget {
             color: color??Colors.white,
             fontSize:(15),
             fontWeight: FontWeight.w700,
-            fontFamily: 'pjs',
+            fontFamily: 'Epi',
           ),
         ),
       ),

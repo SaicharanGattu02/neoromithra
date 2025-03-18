@@ -34,7 +34,7 @@ class _SplashState extends State<Splash> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => Status.isEmpty? OnBoardScreen():userId.isNotEmpty ?MainDashBoard() : LogIn(),
+          builder: (_) => Status.isEmpty? OnBoardScreen():userId.isNotEmpty ? MainDashBoard() : LogIn(),
         ),
       );
     });

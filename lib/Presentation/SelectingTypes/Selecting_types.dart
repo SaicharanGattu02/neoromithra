@@ -19,11 +19,10 @@ class _SelectingTypesState extends State<SelectingTypes> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 40),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 50),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Section with logo and tagline
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -54,7 +53,7 @@ class _SelectingTypesState extends State<SelectingTypes> {
                           style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 16,
-                            fontWeight: FontWeight.w300,
+                            fontWeight: FontWeight.w400,
                             color: Colors.black54,
                           ),
                           maxLines: 2,
@@ -66,18 +65,36 @@ class _SelectingTypesState extends State<SelectingTypes> {
               ],
             ),
             SizedBox(height: 24),
-
-            // HTML Text Content
-            HtmlWidget(
-              '''“From children with developmental delays to adults seeking mental wellness, we’re here for you.<br><br>
-  “We believe in empowering Neurodiverse Minds & Mental Wellness for All.”<br><br>
-  A large, visually appealing banner image or video showcasing both children and adults receiving support.''',
-              textStyle: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 16,
-                color: Colors.black87,
-                fontWeight: FontWeight.w400,
-                height: 1.6,
+            Center(
+              child: Text('“From children with developmental delays to adults seeking mental wellness, we’re here for you."',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: "Epi"
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Center(
+              child: Text('“We believe in empowering Neurodiverse Minds & Mental Wellness for All.”',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: "Epi"
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Center(
+              child: Text('A large, visually appealing banner image or video showcasing both children and adults receiving support.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: "Epi"
+                ),
               ),
             ),
             SizedBox(height: 32),

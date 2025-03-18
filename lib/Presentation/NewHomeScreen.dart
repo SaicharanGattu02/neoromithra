@@ -1,6 +1,8 @@
 import 'package:bounce/bounce.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/other_services.dart';
@@ -8,6 +10,8 @@ import 'package:neuromithra/services/userapi.dart';
 import 'package:neuromithra/utils/CustomSnackBar.dart';
 import 'package:neuromithra/utils/Shimmers.dart';
 
+import '../Logic/Location/location_cubit.dart';
+import '../Logic/Location/location_state.dart';
 import '../Model/ProfileDetailsModel.dart';
 import '../TherapyScreens/DetailsScreen.dart';
 
@@ -39,14 +43,12 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     await Future.wait([
       getProfileDetails(),
       getQuotes(),
-
     ]);
 
     setState(() {
       isLoading = false;
     });
   }
-
 
   String quote = '';
   Future<void> getQuotes() async {
@@ -104,7 +106,8 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     },
     {
       'image': 'assets/Therephy/occupational_theraphy.jpeg',
-      'subtitle':"Helping Individuals Achieve Independence and Improve Daily Functioning.",
+      'subtitle':
+          "Helping Individuals Achieve Independence and Improve Daily Functioning.",
       'text': 'Occupational Therapy',
       'description':
           'Occupational Therapy focuses on helping children perform daily activities and tasks that are essential for their growth and development. This therapy addresses a range of skills, including fine motor skills, sensory processing, self-care tasks, and hand-eye coordination, to support overall functional independence and participation in daily life.',
@@ -127,7 +130,8 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     {
       'image': 'assets/Therephy/physical_theraphy.jpeg',
       'text': "Restoring Mobility and Improving Quality of Life.",
-      'subtitle': "Empowering Movement and Enhancing Well-being for a Fuller Life.",
+      'subtitle':
+          "Empowering Movement and Enhancing Well-being for a Fuller Life.",
       'description':
           'Physical Therapy is a therapeutic approach focused on enhancing physical function, strength, and mobility through various techniques and exercises. This therapy aims to address and treat musculoskeletal, neurological, and developmental issues that impact an individual’s ability to perform daily activities and enjoy a fulfilling life.',
       'keyAreas': [
@@ -175,7 +179,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     {
       'image': 'assets/Counciling/behavioral_counciling.jpeg',
       'text': "Promoting Positive Change and Emotional Well-being.",
-      'subtitle':"Fostering Growth, Resilience, and Mental Wellness.",
+      'subtitle': "Fostering Growth, Resilience, and Mental Wellness.",
       'heading1': 'Behavioral Counseling Services at NeuroMitra',
       'description1':
           'At NeuroMitra, we are committed to helping individuals understand and modify behaviors that may be affecting their lives. Our Behavioral Counseling Services are designed to support clients in identifying negative behavior patterns, developing positive coping strategies, and achieving lasting change.',
@@ -199,7 +203,8 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     {
       'image': 'assets/Counciling/grief_counsiling.jpeg',
       'text': 'Grief Counselling',
-      'subtitle': "Supporting Healing and Emotional Recovery Through Compassionate Guidance.",
+      'subtitle':
+          "Supporting Healing and Emotional Recovery Through Compassionate Guidance.",
       'heading1': '"Supporting Healing and Helping You Navigate Loss."',
       'description1':
           'At NeuroMitra, we understand that grief is a deeply personal and often overwhelming experience. Our Grief Counseling Services are here to provide compassionate support and guidance as you navigate the difficult journey of loss.',
@@ -221,6 +226,84 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     }
   ];
 
+  void _showSOSConfirmationDialog(BuildContext context, loc) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevents accidental dismissal
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Row(
+            children: [
+              Text(
+                "Confirm SOS Call",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          content: Text(
+            "Are you sure you want to make an SOS call? This action cannot be undone.",
+            style: TextStyle(
+              fontSize: 15,
+              fontFamily: "Epi",
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("No",
+                  style: TextStyle(
+                    color: Colors.grey[700],
+                    fontFamily: "Epi",
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15,
+                  )),
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pop(context);
+                _makeSOSCall(loc);
+              },
+              icon: Icon(Icons.call, color: Colors.white),
+              label: Text(
+                "Yes",
+                style: TextStyle(
+                    fontFamily: "Epi",
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15,
+                    color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _makeSOSCall(loc) async {
+    try {
+      var res = await Userapi.makeSOSCallApi(loc);
+      setState(() {
+        if (res != null && res.isNotEmpty) {
+        } else {
+          print('No message received from the API');
+        }
+      });
+    } catch (e) {
+      debugPrint("${e.toString()}");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     int hour = DateTime.now().hour;
@@ -239,8 +322,8 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     return isLoading
         ? _shimmers(context)
         : Scaffold(
-            appBar: AppBar(automaticallyImplyLeading: false,
-
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
               title: Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Row(
@@ -278,10 +361,27 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                 ),
               ),
               actions: [
-                // Padding(
-                //   padding: EdgeInsets.only(right: 20),
-                //   child: Icon(Icons.notifications_active_sharp),
-                // )
+                BlocBuilder<LocationCubit, LocationState>(
+                    builder: (context, state) {
+                  String loc = '';
+                  if (state is LocationLoaded) {
+                    loc = state.locationName;
+                  }
+                  return InkResponse(
+                    onTap: () {
+                      _showSOSConfirmationDialog(context, loc);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Lottie.asset(
+                        'assets/animations/sos.json',
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  );
+                }),
               ],
             ),
             body: SingleChildScrollView(
@@ -482,50 +582,45 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                       items: therapies.map((item) {
                         return InkResponse(
                             onTap: () {
-                              Navigator.of(context)
-                                  .push(PageRouteBuilder(
-                                pageBuilder: (context,
-                                    animation,
-                                    secondaryAnimation) {
+                              Navigator.of(context).push(PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) {
                                   return DetailsScreen(
-                                    assetImage: item['image'] ?? 'assets/default_image.png',  // Fallback for image
-                                    title: item['text'] ?? 'No Title',  // Fallback for text
-                                    descHeading1: "",  // You can add your own heading here
-                                    description1: item['description'] ?? 'No Description',  // Fallback for description
-                                    descHeading2: "",  // Fallback for heading
-                                    description2: "",  // Fallback for description
-                                    keyAreas: List<String>.from(item['keyAreas'] ?? []),  // Fallback for keyAreas
-                                    benefits: List<String>.from(item['benefits'] ?? []),  // Fallback for benefits
+                                    assetImage: item['image'] ??
+                                        'assets/default_image.png', // Fallback for image
+                                    title: item['text'] ??
+                                        'No Title', // Fallback for text
+                                    descHeading1:
+                                        "", // You can add your own heading here
+                                    description1: item['description'] ??
+                                        'No Description', // Fallback for description
+                                    descHeading2: "", // Fallback for heading
+                                    description2:
+                                        "", // Fallback for description
+                                    keyAreas: List<String>.from(
+                                        item['keyAreas'] ??
+                                            []), // Fallback for keyAreas
+                                    benefits: List<String>.from(
+                                        item['benefits'] ??
+                                            []), // Fallback for benefits
                                   );
                                 },
-                                transitionsBuilder:
-                                    (context,
-                                    animation,
-                                    secondaryAnimation,
-                                    child) {
-                                  const begin =
-                                  Offset(1.0, 0.0);
+                                transitionsBuilder: (context, animation,
+                                    secondaryAnimation, child) {
+                                  const begin = Offset(1.0, 0.0);
                                   const end = Offset.zero;
-                                  const curve =
-                                      Curves.easeInOut;
-                                  var tween = Tween(
-                                      begin: begin,
-                                      end: end)
-                                      .chain(CurveTween(
-                                      curve: curve));
-                                  var offsetAnimation =
-                                  animation
-                                      .drive(tween);
+                                  const curve = Curves.easeInOut;
+                                  var tween = Tween(begin: begin, end: end)
+                                      .chain(CurveTween(curve: curve));
+                                  var offsetAnimation = animation.drive(tween);
                                   return SlideTransition(
-                                      position:
-                                      offsetAnimation,
-                                      child: child);
+                                      position: offsetAnimation, child: child);
                                 },
                               ));
-
                             },
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 8),
                               child: Stack(
                                 children: [
                                   Image.asset(
@@ -534,10 +629,12 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                     fit: BoxFit.fill,
                                   ),
                                   Container(
-                                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                                    margin: EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 20),
                                     width: w * 0.5,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           item['text'] ?? 'No Title',
@@ -553,7 +650,8 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                           textAlign: TextAlign.start,
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
-                                          item['subtitle'] ?? 'No Subtitle',  // Fallback for subtitle
+                                          item['subtitle'] ??
+                                              'No Subtitle', // Fallback for subtitle
                                           style: TextStyle(
                                               color: Color(0xffDEDEDE),
                                               fontWeight: FontWeight.w500,
@@ -589,7 +687,6 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                             ));
                       }).toList(),
                     ),
-
                     Text(
                       'Counselling',
                       style: TextStyle(
@@ -622,14 +719,24 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                 pageBuilder:
                                     (context, animation, secondaryAnimation) {
                                   return DetailsScreen(
-                                    assetImage: item['image'] ?? 'assets/default_image.png',  // Fallback for image
-                                    title: item['text'] ?? 'No Title',  // Fallback for text
-                                    descHeading1: item['heading1'] ?? 'No Heading',  // Fallback for heading
-                                    description1: item['description1'] ?? 'No Description',  // Fallback for description
-                                    descHeading2: item['heading2'] ?? 'No Heading',  // Fallback for heading
-                                    description2: item['description2'] ?? 'No Description',  // Fallback for description
-                                    keyAreas: List<String>.from(item['keyAreas'] ?? []),  // Handle null with empty list
-                                    benefits: List<String>.from(item['benefits'] ?? []),  // Handle null with empty list
+                                    assetImage: item['image'] ??
+                                        'assets/default_image.png', // Fallback for image
+                                    title: item['text'] ??
+                                        'No Title', // Fallback for text
+                                    descHeading1: item['heading1'] ??
+                                        'No Heading', // Fallback for heading
+                                    description1: item['description1'] ??
+                                        'No Description', // Fallback for description
+                                    descHeading2: item['heading2'] ??
+                                        'No Heading', // Fallback for heading
+                                    description2: item['description2'] ??
+                                        'No Description', // Fallback for description
+                                    keyAreas: List<String>.from(
+                                        item['keyAreas'] ??
+                                            []), // Handle null with empty list
+                                    benefits: List<String>.from(
+                                        item['benefits'] ??
+                                            []), // Handle null with empty list
                                   );
                                 },
                                 transitionsBuilder: (context, animation,
@@ -661,7 +768,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                     width: w * 0.55,
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           item['text'] ?? 'No Title',
@@ -746,9 +853,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
               ],
             ),
           ),
-          actions: [
-
-          ],
+          actions: [],
         ),
         SingleChildScrollView(
           child: Padding(

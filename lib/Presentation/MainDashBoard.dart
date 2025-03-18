@@ -37,26 +37,6 @@ class _MainDashBoardState extends State<MainDashBoard> {
     CounsellingListScreen(),
     ProfileScreen()
   ];
-  bool makingSOSCall = false;
-  void _makeSOSCall(loc) async {
-    setState(() {
-      makingSOSCall = true;
-    });
-    try {
-      var res = await Userapi.makeSOSCallApi(loc);
-      setState(() {
-        if (res != null && res.isNotEmpty) {
-          makingSOSCall = false;
-        } else {
-          print('No message received from the API');
-          makingSOSCall = false;
-        }
-      });
-    } catch (e) {
-      debugPrint("${e.toString()}");
-    }
-  }
-
   @override
   void initState() {
     context.read<LocationCubit>().checkLocationPermission();
@@ -88,53 +68,52 @@ class _MainDashBoardState extends State<MainDashBoard> {
             children: screen,
             physics: const NeverScrollableScrollPhysics(),
           ),
-          floatingActionButton: BlocBuilder<LocationCubit, LocationState>(
-              builder: (context, state) {
-            String loc = '';
-            if (state is LocationLoaded) {
-              loc = state.locationName;
-            }
-            return FloatingActionButton(
-              onPressed: () {
-                setState(() {
-                  _makeSOSCall(loc);
-                  print("loction:${loc}");
-                });
-              },
-              child: makingSOSCall
-                  ? Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: CircularProgressIndicator(
-                        strokeWidth: 0.5,
-                      ),
-                    )
-                  : Lottie.asset(
-                      'assets/animations/sos.json',
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.contain,
-                    ),
-              backgroundColor: Colors.white,
-              shape: CircleBorder(),
-              elevation: 4.0,
-            );
-          }),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
+          // floatingActionButton: BlocBuilder<LocationCubit, LocationState>(
+          //     builder: (context, state) {
+          //   String loc = '';
+          //   if (state is LocationLoaded) {
+          //     loc = state.locationName;
+          //   }
+          //   return FloatingActionButton(
+          //     onPressed: () {
+          //       setState(() {
+          //         _makeSOSCall(loc);
+          //         print("loction:${loc}");
+          //       });
+          //     },
+          //     child: makingSOSCall
+          //         ? Padding(
+          //             padding: const EdgeInsets.all(15.0),
+          //             child: CircularProgressIndicator(
+          //               strokeWidth: 0.5,
+          //             ),
+          //           )
+          //         : Lottie.asset(
+          //             'assets/animations/sos.json',
+          //             width: 60,
+          //             height: 60,
+          //             fit: BoxFit.contain,
+          //           ),
+          //     backgroundColor: Colors.white,
+          //     shape: CircleBorder(),
+          //     elevation: 4.0,
+          //   );
+          // }),
+          // floatingActionButtonLocation:
+          //     FloatingActionButtonLocation.centerDocked,
           bottomNavigationBar: BottomAppBar(
             surfaceTintColor: Colors.blue,
-            shape: CircularNotchedRectangle(),
-            notchMargin: 8.0,
+            // shape: CircularNotchedRectangle(),
+            // notchMargin: 8.0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                // Home and Therapies icons
-                _buildIconButton('assets/filedhome.png', 0),
-                _buildIconButton('assets/Physical Therapy.png', 1),
-                SizedBox(width: 48), // Empty space for Floating Action Button
-                // Counselling and Profile icons
+                _buildIconButton('assets/Home.png', 0),
+                _buildIconButton('assets/therapy.png', 1),
                 _buildIconButton('assets/consultation.png', 2),
-                _buildIconButton('assets/profile-filled.png', 3),
+                _buildIconButton('assets/UserCircle.png', 3),
+                _buildIconButton('assets/Info.png', 4),
+                _buildIconButton('assets/guide.png', 5),
               ],
             ),
           ),
@@ -206,15 +185,14 @@ class _MainDashBoardState extends State<MainDashBoard> {
 
   Widget _buildIconButton(String iconPath, int index) {
     bool isSelected = _selectedIndex == index;
-
     return IconButton(
       icon: Image.asset(
         iconPath,
-        width: 25,
-        height: 25,
+        width: 30,
+        height: 30,
         color: isSelected
             ? Colors.black
-            : Colors.black.withOpacity(0.5), // Selected vs Unselected color
+            : Colors.grey, // Selected vs Unselected color
       ),
       onPressed: () {
         onItemTapped(index);

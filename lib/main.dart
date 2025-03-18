@@ -13,6 +13,7 @@ import 'package:neuromithra/Presentation/SelectingTypes/Selecting_types.dart';
 
 import 'package:neuromithra/services/Preferances.dart';
 
+import 'Presentation/MainDashBoard.dart';
 import 'Presentation/SplashScreen.dart';
 import 'Presentation/StateInjector.dart';
 
@@ -240,7 +241,7 @@ class MyApp extends StatelessWidget {
                 .copyWith(background: Colors.white),
           ),
 
-        home:SelectingTypes()
+        home: MainDashBoard()
       ),
     );
   }
