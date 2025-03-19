@@ -43,7 +43,6 @@ class _LogInState extends State<LogIn> {
 
     String fcmToken = await PreferenceService().getString("fbstoken") ?? "";
     final loginResponse = await Userapi.postLogin(email, pwd, fcmToken);
-
     if (loginResponse != null) {
       if (loginResponse.containsKey("access_token")) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -84,8 +83,6 @@ class _LogInState extends State<LogIn> {
         ));
       }
     } else {
-      // Login request failed
-      print("Login failed.");
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
           "Login request failed. Please try again.",
@@ -95,7 +92,6 @@ class _LogInState extends State<LogIn> {
         backgroundColor: Color(0xFF32657B),
       ));
     }
-
     setState(() {
       _loading = false;
     });

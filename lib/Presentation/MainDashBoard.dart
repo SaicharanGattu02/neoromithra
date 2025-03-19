@@ -9,6 +9,8 @@ import 'package:neuromithra/Presentation/profile_screen.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'CounsellingListScreen.dart';
+import 'SelectingTypes/GuideScreen.dart';
+import 'SelectingTypes/Selecting_types.dart';
 import 'TherapiesListScreen.dart';
 
 
@@ -35,8 +37,11 @@ class _MainDashBoardState extends State<MainDashBoard> {
     NewHomeScreen(),
     TherapiesListScreen(),
     CounsellingListScreen(),
-    ProfileScreen()
+    ProfileScreen(),
+    SelectingTypes(),
+    Guidescreen()
   ];
+
   @override
   void initState() {
     context.read<LocationCubit>().checkLocationPermission();

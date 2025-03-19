@@ -166,6 +166,8 @@ class Userapi {
       if (response != null) {
         final jsonResponse = jsonDecode(response.body);
         print("PostRegister Status:${response.body}");
+
+
         return RegisterModel.fromJson(jsonResponse);
       } else {
         print("Request failed with status: ${response.statusCode}");
@@ -213,9 +215,12 @@ class Userapi {
           "error": jsonResponse["error"],
           "status": jsonResponse["status"],
         };
-      } else {
-        print("Request failed with status: ${response.statusCode}");
-        return null;
+      } else if(response.statusCode == 403) {
+        final jsonResponse = jsonDecode(response.body);
+        print("Unauthorized: ${jsonResponse['error']}");
+        return {
+          "error": jsonResponse["error"],
+        };
       }
     } catch (e) {
       print("Error occurred: $e");

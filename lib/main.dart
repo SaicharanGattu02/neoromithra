@@ -241,7 +241,7 @@ class MyApp extends StatelessWidget {
                 .copyWith(background: Colors.white),
           ),
 
-        home: MainDashBoard()
+        home: Splash()
       ),
     );
   }
