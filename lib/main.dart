@@ -9,6 +9,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:neuromithra/Assesment/ChildAssessment.dart';
 import 'package:neuromithra/Presentation/SelectingTypes/Selecting_types.dart';
 
 import 'package:neuromithra/services/Preferances.dart';
@@ -241,7 +242,7 @@ class MyApp extends StatelessWidget {
                 .copyWith(background: Colors.white),
           ),
 
-        home: Splash()
+        home: ChildAssessment()
       ),
     );
   }
