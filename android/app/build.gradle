@@ -60,6 +60,15 @@ android {
         multiDexEnabled true
     }
 
+//    signingConfigs {
+//        release {
+//            keyAlias 'upload'
+//            keyPassword 'neuromithra'
+//            storeFile file('C:/Users/Chara/studioProjects/neoromithra/android/app/neuromita-keystore.jks')
+//            storePassword 'neuromithra'
+//        }
+//    }
+
 
     signingConfigs {
         release {
@@ -76,7 +85,6 @@ android {
             signingConfig signingConfigs.release
         }
     }
-
 
 
 }

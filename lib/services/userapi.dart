@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:neuromithra/Model/QuoteModel.dart';
 import '../Model/AddAddressModel.dart';
 import '../Model/AddressListModel.dart';
+import '../Model/AssessmentQuestion.dart';
 import '../Model/BehaviouralTrackingModel.dart';
 import '../Model/BookApointmentModel.dart';
 import '../Model/BookingHistoryModel.dart';
@@ -19,7 +20,34 @@ import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
 
 class Userapi {
-  static String host = "https://admin.neuromitra.com";
+  // static String host = "https://admin.neuromitra.com";
+  static String host = "http://192.168.0.61:8080";
+
+  static Future<Map<String, List<AssessmentQuestion>>> fetchQuestions() async {
+    try {
+      final headers = await getheader3();
+      final response = await http.get(
+        Uri.parse("${host}/api/list_of_questions"),
+        headers: headers, // Authorization header
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        // Parse API response into model
+        Map<String, List<AssessmentQuestion>> parsedData = {};
+        data['data'].forEach((key, value) {
+          parsedData[key] = List<AssessmentQuestion>.from(
+            value.map((q) => AssessmentQuestion.fromJson(q)),
+          );
+        });
+        return parsedData;
+      } else {
+        throw Exception("Failed to load questions");
+      }
+    } catch (e) {
+      print("Error fetching questions: $e");
+      return {}; // Return empty map in case of error
+    }
+  }
 
   static Future<String?> makeSOSCallApi(String loc) async {
     try {
@@ -79,11 +107,7 @@ class Userapi {
 
         final url = Uri.parse("${host}/api/for_new_bookappointments");
         final headers = await getheader();
-        final response = await http.post(
-          url,
-          headers: headers,
-          body: body,
-        );
+        final response = await http.post(url, headers: headers, body: body);
         final jsonResponse = jsonDecode(response.body);
         print("Apointment Status:${response.body}");
         return BookApointmentModel.fromJson(jsonResponse);
@@ -123,7 +147,6 @@ class Userapi {
           'patient_id': patient_id
         });
         print("Apointment data: $body");
-
         final url = Uri.parse("${host}/api/for_exesting_bookappointments");
         final headers = await getheader();
         final response = await http.post(
@@ -166,8 +189,6 @@ class Userapi {
       if (response != null) {
         final jsonResponse = jsonDecode(response.body);
         print("PostRegister Status:${response.body}");
-
-
         return RegisterModel.fromJson(jsonResponse);
       } else {
         print("Request failed with status: ${response.statusCode}");
@@ -215,7 +236,7 @@ class Userapi {
           "error": jsonResponse["error"],
           "status": jsonResponse["status"],
         };
-      } else if(response.statusCode == 403) {
+      } else if (response.statusCode == 403) {
         final jsonResponse = jsonDecode(response.body);
         print("Unauthorized: ${jsonResponse['error']}");
         return {

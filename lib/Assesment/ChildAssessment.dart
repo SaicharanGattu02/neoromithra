@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:neuromithra/Components/CustomAppButton.dart';
 
+import '../Model/AssessmentQuestion.dart';
+import '../services/userapi.dart';
+
 class ChildAssessment extends StatefulWidget {
   const ChildAssessment({super.key});
 
@@ -22,112 +25,184 @@ class _ChildAssessmentState extends State<ChildAssessment> {
   String cognitiveAnswer = 'Yes';
   String emotionalAnswer = 'Yes';
 
+  bool isLoading = true;
+  Map<int, String> selectedAnswers = {};
+  Map<String, List<AssessmentQuestion>> parsedData = {};
+
+  @override
+  void initState() {
+    super.initState();
+    fetchQuestions();
+  }
+
+  // Fetch questions from UserApi
+  Future<void> fetchQuestions() async {
+    parsedData = await Userapi.fetchQuestions();
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Child Development Assessment'),
+        title: const Text(
+          'Child Development Assessment',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontFamily: "Inter",
+            color: Color(0xff3EA4D2),
+            fontSize: 18,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Color(0xff3EA4D2)),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Title & Description
-            Text(
-              'Our simple guide\nGet started today by taking our simple guide. It’s quick, easy, and provides actionable insights into your child’s development.',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Take our simple guide Now',
+            // Introduction Section
+            const Text(
+              'Start with Our Simple Guide',
+              textAlign: TextAlign.center,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 10),
+            const Text(
+              'Get started today by taking our simple guide. It’s quick, easy, and provides actionable insights into your child’s development.',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Take Our Simple Guide Now',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 10),
+            const Text(
               'Purpose ',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
-            SizedBox(height: 8),
-            Text(
-              'To help parents check their child’s developmental milestones and identify early signs of conditions like Autism Spectrum Disorder (ASD), Attention-Deficit/Hyperactivity Disorde (ADHD), Dyslexia, and other developmental delays. General Information Parent Input',
+            const SizedBox(height: 8),
+            const Text(
+              'To help parents check their child’s developmental milestones and identify early signs of conditions like Autism Spectrum Disorder (ASD), ADHD, Dyslexia, and other developmental delays.',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
+
+            // Form Section
             Form(
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildInputField('Child\'s Name', _childNameController),
-                  _buildInputField('Age', _childAgeController),
-                  _buildInputField('Gender', _childGenderController),
-                  _buildInputField(
-                      'Date of Assessment', _assessmentDateController),
+                  _buildInputField("Child's Name", _childNameController),
+                  _buildInputField("Age", _childAgeController),
+                  _buildInputField("Gender", _childGenderController),
+                  _buildInputField("Date of Assessment", _assessmentDateController),
                 ],
               ),
             ),
 
-            _buildSectionTitle('A. Communication Skills'),
-            _buildRadioGroup(
-                'Does your child respond to their name when called?', (value) {
-              setState(() {
-                communicationAnswer = value;
-              });
-            }),
+            const SizedBox(height: 20),
 
-            _buildRadioGroup(
-                'Does your child use gestures (e.g., pointing, waving) to communicate needs?',
-                (value) {
-              setState(() {
-                communicationAnswer = value;
-              });
-            }),
+            // Questions Section
+            isLoading
+                ? const Center(child: CircularProgressIndicator()) // Show loader
+                : parsedData.isEmpty
+                ? const Center(child: Text("No questions available"))
+                : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: parsedData.entries.map<Widget>((entry) {
+                String sectionName = entry.key;
+                List<AssessmentQuestion> questions = entry.value;
 
-            _buildRadioGroup(
-                'Does your child form sentences appropriate for their age?',
-                (value) {
-              setState(() {
-                communicationAnswer = value;
-              });
-            }),
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Section Title
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Text(
+                        sectionName,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff3EA4D2),
+                        ),
+                      ),
+                    ),
+                    // Questions List
+                    ...questions.map((question) {
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        elevation: 3,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                question.question,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              // Radio Button Options
+                              Column(
+                                children: ["Yes", "No", "Sometimes"]
+                                    .map(
+                                      (answer) => RadioListTile(
+                                        visualDensity: VisualDensity.compact,
+                                    title: Text(answer),
+                                    value: answer,
+                                    groupValue:
+                                    selectedAnswers[question.id],
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selectedAnswers[question.id] =
+                                        value!;
+                                      });
+                                    },
+                                    activeColor: const Color(0xff3EA4D2),
+                                  ),
+                                )
+                                    .toList(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ],
+                );
+              }).toList(),
+            ),
 
-            // Social Skills Section
-            _buildSectionTitle('B. Social Skills'),
-            _buildRadioGroup(
-                'Does your child make eye contact during interactions?',
-                (value) {
-              setState(() {
-                socialAnswer = value;
-              });
-            }),
-
-            _buildRadioGroup(
-                'Does your child play or interact with other children?',
-                (value) {
-              setState(() {
-                socialAnswer = value;
-              });
-            }),
-
-            CustomAppButton(text: 'Submit', onPlusTap: (){
-              if (_formKey.currentState!.validate()) {
-                        print('Form Submitted');
-                      }
-            })
+            const SizedBox(height: 20),
 
             // Submit Button
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(vertical: 20.0),
-            //   child: ElevatedButton(
-            //     onPressed: () {
-            //       if (_formKey.currentState!.validate()) {
-            //         print('Form Submitted');
-            //       }
-            //     },
-            //     child: Text('Submit Assessment'),
-            //   ),
-            // ),
+            CustomAppButton(
+              text: 'Submit',
+              onPlusTap: () {
+                if (_formKey.currentState!.validate()) {
+                  print('Form Submitted');
+                  print('Selected Answers: $selectedAnswers');
+                }
+              },
+            ),
           ],
         ),
       ),
