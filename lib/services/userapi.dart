@@ -23,7 +23,33 @@ class Userapi {
   // static String host = "https://admin.neuromitra.com";
   static String host = "http://192.168.0.61:8080";
 
-  static Future<Map<String, dynamic>> submitAnswers(Map<String, dynamic> data) async {
+  static Future<Map<String, List<AssessmentQuestion>>> fetchAdultQuestions() async {
+    try {
+      final headers = await getheader3();
+      final response = await http.get(
+        Uri.parse("${host}/api/list_of_questions_for_adults"),
+        headers: headers, // Authorization header
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        // Parse API response into model
+        Map<String, List<AssessmentQuestion>> parsedData = {};
+        data['data'].forEach((key, value) {
+          parsedData[key] = List<AssessmentQuestion>.from(
+            value.map((q) => AssessmentQuestion.fromJson(q)),
+          );
+        });
+        return parsedData;
+      } else {
+        throw Exception("Failed to load questions");
+      }
+    } catch (e) {
+      print("Error fetching questions: $e");
+      return {}; // Return empty map in case of error
+    }
+  }
+
+  static Future<Map<String, dynamic>> submitChildrenAnswers(Map<String, dynamic> data,role) async {
     try {
       final headers = await getheader3();
 
@@ -37,6 +63,7 @@ class Userapi {
 
       // Convert JSON to String and send it as a form field
       request.fields['data'] = jsonEncode(data);
+      request.fields['role'] = role;
 
       // Send request
       var response = await request.send();
@@ -58,7 +85,7 @@ class Userapi {
   }
 
 
-  static Future<Map<String, List<AssessmentQuestion>>> fetchQuestions() async {
+  static Future<Map<String, List<AssessmentQuestion>>> fetchChildrenQuestions() async {
     try {
       final headers = await getheader3();
       final response = await http.get(

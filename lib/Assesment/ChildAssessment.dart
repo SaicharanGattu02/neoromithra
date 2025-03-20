@@ -6,6 +6,7 @@ import 'package:neuromithra/Presentation/MainDashBoard.dart';
 
 import '../Model/AssessmentQuestion.dart';
 import '../services/userapi.dart';
+import 'ResultScreen.dart';
 
 class ChildAssessment extends StatefulWidget {
   const ChildAssessment({super.key});
@@ -36,7 +37,7 @@ class _ChildAssessmentState extends State<ChildAssessment> {
 
   // Fetch questions from UserApi
   Future<void> fetchQuestions() async {
-    parsedData = await Userapi.fetchQuestions();
+    parsedData = await Userapi.fetchChildrenQuestions();
     setState(() {
       isLoading = false;
     });
@@ -47,21 +48,26 @@ class _ChildAssessmentState extends State<ChildAssessment> {
       isSaving = true;
     });
 
-    var res = await Userapi.submitAnswers(data);
+    var res = await Userapi.submitChildrenAnswers(data, "0"); // Change role dynamically
+
     setState(() {
       isSaving = false;
     });
+
     if (res["status"] == true) {
-      // Success
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Submitted successfully!"),
-          backgroundColor: Colors.green,
+      String role = res["role"].toString();
+      String resultString = res["result"];
+      Map<String, dynamic> resultData = jsonDecode(resultString); // Convert to Map
+
+      // Navigate to result screen with role-based results
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Resultscreen(resultData: resultData, role: role),
         ),
       );
-      Navigator.push(context, MaterialPageRoute(builder: (context)=> MainDashBoard()));
     } else {
-      // Failure
+      // Failure message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(res["message"] ?? "Failed to submit answers!"),
@@ -245,6 +251,7 @@ class _ChildAssessmentState extends State<ChildAssessment> {
                       "gender": _childGenderController.text,
                       "assessment_date": _assessmentDateController.text
                     },
+                    "role":"0",
                     "answers": parsedData.map((section, questions) {
                       return MapEntry(
                         section,
