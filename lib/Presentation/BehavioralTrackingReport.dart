@@ -42,11 +42,22 @@ class _BehavioralTrackingReportState extends State<BehavioralTrackingReport> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBar(
-          title: 'Behavioral Tracking Report',
-          onBackButtonPressed: () {
-            Navigator.pop(context);
-          },
+        appBar:  AppBar(
+          title: const Text(
+            'Behavioral Tracking Report',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontFamily: "Inter",
+              color: Color(0xff3EA4D2),
+              fontSize: 18,
+            ),
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Color(0xff3EA4D2)),
+            onPressed: () => Navigator.pop(context),
+          ),
         ),
         body: (is_loading)?Center(
           child: CircularProgressIndicator(),

@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:neuromithra/Components/CustomAppButton.dart';
 import 'package:neuromithra/Presentation/MainDashBoard.dart';
 
@@ -26,6 +28,7 @@ class _ChildAssessmentState extends State<ChildAssessment> {
 
   bool isLoading = true;
   bool isSaving = false;
+  String? _selectedGender;
   Map<int, String> selectedAnswers = {};
   Map<String, List<AssessmentQuestion>> parsedData = {};
 
@@ -76,8 +79,6 @@ class _ChildAssessmentState extends State<ChildAssessment> {
       );
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -131,17 +132,15 @@ class _ChildAssessmentState extends State<ChildAssessment> {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400,fontFamily: "Poppins"),
             ),
             const SizedBox(height: 16),
-
-            // Form Section
             Form(
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildInputField("Child's Name", _childNameController),
-                  _buildInputField("Age", _childAgeController),
-                  _buildInputField("Gender", _childGenderController),
-                  _buildInputField("Date of Assessment", _assessmentDateController),
+                  _buildInputField("Child's Name", _childNameController, TextInputType.text),
+                  _buildInputField("Age", _childAgeController, TextInputType.number),
+                  _buildGenderDropdown(),
+                  _buildDatePickerField("Date of Assessment", _assessmentDateController),
                 ],
               ),
             ),
@@ -248,7 +247,7 @@ class _ChildAssessmentState extends State<ChildAssessment> {
                     "child_info": {
                       "name": _childNameController.text,
                       "age": _childAgeController.text,
-                      "gender": _childGenderController.text,
+                      "gender": _selectedGender,
                       "assessment_date": _assessmentDateController.text
                     },
                     "role":"0",
@@ -278,23 +277,90 @@ class _ChildAssessmentState extends State<ChildAssessment> {
     );
   }
 
-  Widget _buildInputField(String label, TextEditingController controller) {
+  /// Builds a text input field with validation
+  Widget _buildInputField(String label, TextEditingController controller, TextInputType inputType) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: TextFormField(
         controller: controller,
+        keyboardType: inputType,
+        inputFormatters: label == "Age" ? [FilteringTextInputFormatter.digitsOnly] : [],
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: TextStyle(
-              fontFamily: "Poppins"
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8)
-          ),
+          labelStyle: TextStyle(fontFamily: "Poppins"),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Please enter $label';
+          }
+          if (label == "Age") {
+            final age = int.tryParse(value);
+            if (age == null || age <= 0 || age > 100) {
+              return "Enter a valid age (1-100)";
+            }
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  /// Builds a gender dropdown field
+  Widget _buildGenderDropdown() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: DropdownButtonFormField<String>(
+        decoration: InputDecoration(
+          labelText: "Gender",
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+        value: _selectedGender,
+        items: ["Male", "Female"].map((gender) {
+          return DropdownMenuItem(
+            value: gender,
+            child: Text(gender),
+          );
+        }).toList(),
+        onChanged: (value) {
+          setState(() {
+            _selectedGender = value;
+          });
+        },
+        validator: (value) => value == null ? "Please select a gender" : null,
+      ),
+    );
+  }
+
+  /// Builds a date picker field
+  Widget _buildDatePickerField(String label, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: TextFormField(
+        controller: controller,
+        readOnly: true,
+        decoration: InputDecoration(
+          labelText: label,
+          suffixIcon: Icon(Icons.calendar_today),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+        onTap: () async {
+          DateTime? pickedDate = await showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime.now(),
+            lastDate: DateTime(2100),
+          );
+
+          if (pickedDate != null) {
+            setState(() {
+              controller.text = DateFormat("yyyy-MM-dd").format(pickedDate);
+            });
+          }
+        },
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please select a date';
           }
           return null;
         },

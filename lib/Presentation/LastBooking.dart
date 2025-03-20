@@ -30,69 +30,6 @@ class _LastBookingState extends State<LastBooking> {
     super.initState();
   }
 
-  // Future<void> downloadInvoice(String url) async {
-  //   try {
-  //     print("Checking storage permission...");
-  //     var status = await Permission.mediaLibrary.status;
-  //
-  //     if (!status.isGranted) {
-  //       print("Storage permission not granted. Requesting...");
-  //       await Permission.mediaLibrary.request();
-  //     }
-  //     status = await Permission.mediaLibrary.status;
-  //     if (status.isGranted) {
-  //       print("Storage permission granted.");
-  //       Directory dir =
-  //           Directory('/storage/emulated/0/Download/'); // for Android
-  //       if (!await dir.exists()) {
-  //         print(
-  //             "Download directory does not exist. Using external storage directory.");
-  //         dir = await getExternalStorageDirectory() ?? Directory.systemTemp;
-  //       } else {
-  //         print("Download directory exists: ${dir.path}");
-  //       }
-  //       String generateFileName(String originalName) {
-  //         // Extract file extension
-  //         String extension = originalName.split('.').last;
-  //         // Generate unique identifier
-  //         String uniqueId = DateTime.now().millisecondsSinceEpoch.toString();
-  //         // Return unique filename
-  //         String fileName = "Prescription_$uniqueId.$extension";
-  //         print("Generated filename: $fileName");
-  //         return fileName;
-  //       }
-  //
-  //       // Start downloading the file
-  //       print("Starting download from: $url");
-  //       FileDownloader.downloadFile(
-  //         url: url.toString().trim(),
-  //         name: generateFileName("Order_invoice.pdf"),
-  //         notificationType: NotificationType.all,
-  //         downloadDestination: DownloadDestinations.publicDownloads,
-  //         onDownloadRequestIdReceived: (downloadId) {
-  //           print('Download request ID received: $downloadId');
-  //         },
-  //         onProgress: (fileName, progress) {
-  //           print('Downloading $fileName: $progress%');
-  //         },
-  //         onDownloadError: (String error) {
-  //           print('DOWNLOAD ERROR: $error');
-  //         },
-  //         onDownloadCompleted: (path) {
-  //           print('Download completed! File saved at: $path');
-  //           setState(() {
-  //             // Update UI if necessary
-  //           });
-  //         },
-  //       );
-  //     } else {
-  //       print("Storage permission denied.");
-  //     }
-  //   } catch (e, s) {
-  //     print('Exception caught: $e');
-  //     print('Stack trace: $s');
-  //   }
-  // }
   Future<void> downloadInvoice(String url) async {
     try {
       print("Checking storage permission...");

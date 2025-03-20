@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:neuromithra/services/userapi.dart';
 
-import 'CustomAppBar.dart';
-import '../Model/AddressListModel.dart';
+import '../utils/Color_Constants.dart';
 
 class AddAddressScreen extends StatefulWidget {
   final String type; // Type parameter to determine mode
@@ -72,25 +71,6 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     }
   }
 
-  //
-  // void _toggleSameAddress(bool? value) {
-  //   setState(() {
-  //     _isSameAddress = value ?? false;
-  //     if (_isSameAddress) {
-  //       _hNoControllerPermanent.text = _hNoControllerCurrent.text;
-  //       _streetControllerPermanent.text = _streetControllerCurrent.text;
-  //       _areaControllerPermanent.text = _areaControllerCurrent.text;
-  //       _landmarkControllerPermanent.text = _landmarkControllerCurrent.text;
-  //       _pincodeControllerPermanent.text = _pincodeControllerCurrent.text;
-  //     } else {
-  //       _hNoControllerPermanent.clear();
-  //       _streetControllerPermanent.clear();
-  //       _areaControllerPermanent.clear();
-  //       _landmarkControllerPermanent.clear();
-  //       _pincodeControllerPermanent.clear();
-  //     }
-  //   });
-  // }
 
   Future<void> addAddress() async {
     var typeOfAddress = isCurrentChecked ? 0 : 1;
@@ -220,6 +200,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                       children: [
                         Checkbox(
                           value: isCurrentChecked,
+                          activeColor: primary,
                           onChanged: (bool? value) {
                             setState(() {
                               isCurrentChecked = true;
@@ -235,6 +216,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                       children: [
                         Checkbox(
                           value: isPermanentChecked,
+                          activeColor: primary,
                           onChanged: (bool? value) {
                             setState(() {
                               isPermanentChecked = true;
@@ -275,67 +257,20 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
+                      backgroundColor:primary,
                       padding: EdgeInsets.symmetric(vertical: 16.0),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        borderRadius: BorderRadius.circular(8.0),
                       ),
                     ),
                     child: (current_Loading)
                         ? CircularProgressIndicator(color: Colors.white)
-                        : Text('Submit', style: TextStyle(fontSize: 16, color: Colors.white, fontFamily: "Inter")),
+                        : Text('Submit', style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600, color: Colors.white, fontFamily: "Poppins")),
                   ),
                 ],
 
                 SizedBox(height: 25),
 
-                // CheckboxListTile(
-                //   title: Text("Permanent address is same as current address"),
-                //   value: _isSameAddress,
-                //   onChanged: (v){
-                //     if(_hNoControllerCurrent.text!="" && _streetControllerCurrent.text!=""&& _areaControllerCurrent.text!=""
-                //         && _landmarkControllerCurrent.text!="" && _pincodeControllerCurrent.text!=""){
-                //       _toggleSameAddress(v);
-                //     }else{
-                //       ScaffoldMessenger.of(context).showSnackBar(
-                //         SnackBar(
-                //           content: Text(
-                //             "Please fill current address fields!",
-                //             style: TextStyle(
-                //               fontFamily: "Inter",
-                //               fontSize: 16,
-                //               fontWeight: FontWeight.w500,
-                //               color: Colors.white,
-                //             ),
-                //           ),
-                //           duration: Duration(seconds: 1),
-                //           backgroundColor: Colors.blue,
-                //         ),
-                //       );
-                //     }
-                //   },
-                //
-                // ),
-                // SizedBox(height: 20),
-                // // Option to add Permanent Address
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: [
-                //     Text("Add Permanent Address", style: TextStyle(fontSize: 16)),
-                //     Switch(
-                //       value: _addPermanentAddress,
-                //       onChanged: (value) {
-                //         setState(() {
-                //           _addPermanentAddress = value;
-                //           if(_addPermanentAddress){
-                //             _clearFields();
-                //             _isSameAddress=false;
-                //           }
-                //         });
-                //       },
-                //     ),
-                //   ],
-                // ),
                 if (isPermanentChecked) ...[
                   Text("Permanent Address", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: "Inter")),
                   SizedBox(height: 16),

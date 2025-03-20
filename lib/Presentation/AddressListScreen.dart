@@ -88,12 +88,12 @@ class _AddressListScreenState extends State<AddressListScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                  elevation: 4,
+                  elevation: 2,
                 ),
                 icon: Icon(Icons.add, color: Colors.white),
                 label: Text(
                   'Add Address',
-                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600,fontFamily: "Poppins"),
                 ),
               ),
             ),
@@ -112,7 +112,7 @@ class _AddressListScreenState extends State<AddressListScreen> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      elevation: 3,
+                      elevation: 2,
                       child: Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Column(

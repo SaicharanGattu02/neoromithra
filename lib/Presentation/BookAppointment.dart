@@ -53,7 +53,7 @@ class _BookappointmentState extends State<Bookappointment> {
     var h = MediaQuery.of(context).size.height;
     return Scaffold(
         appBar: AppBar(
-          title: Text('Previous Booking History',
+          title: Text('Booking History',
               style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontFamily: "Inter",

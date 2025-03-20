@@ -6,6 +6,7 @@ import 'package:neuromithra/Presentation/CancellationPolicyScreen.dart';
 import 'package:neuromithra/Presentation/ReturnRefundPolicyScreen.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
+import '../Components/Shimmers.dart';
 import 'AddRating.dart';
 import 'AddressListScreen.dart';
 
@@ -50,11 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         leadingWidth: 0,
       ),
       body: (is_loading)
-          ? Center(
-              child: CircularProgressIndicator(
-                color: Colors.blue,
-              ),
-            )
+          ? _buildShimmerEffect()
           :Padding(
         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
         child: Column(
@@ -314,6 +311,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
       )
     );
   }
+
+  Widget _buildShimmerEffect() {
+    return Padding(
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              shimmerCircle(70,context),
+              SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  shimmerText(120, 16,context),
+                  SizedBox(height: 5),
+                  shimmerText(140, 12,context),
+                ],
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+          shimmerContainer(MediaQuery.of(context).size.width, 80,context),
+          SizedBox(height: 15),
+          shimmerContainer(MediaQuery.of(context).size.width, 80,context),
+          SizedBox(height: 15),
+          shimmerContainer(MediaQuery.of(context).size.width, 80,context),
+          SizedBox(height: 15),
+          shimmerContainer(MediaQuery.of(context).size.width, 80,context),
+          SizedBox(height: 15),
+          shimmerContainer(MediaQuery.of(context).size.width, 80,context),
+        ],
+      ),
+    );
+  }
+
 
   Widget _buildLogoutTile(BuildContext context) {
     return Card(
