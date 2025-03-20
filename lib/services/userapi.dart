@@ -23,6 +23,41 @@ class Userapi {
   // static String host = "https://admin.neuromitra.com";
   static String host = "http://192.168.0.61:8080";
 
+  static Future<Map<String, dynamic>> submitAnswers(Map<String, dynamic> data) async {
+    try {
+      final headers = await getheader3();
+
+      var request = http.MultipartRequest(
+          'POST',
+          Uri.parse("${host}/api/save_assement")
+      );
+
+      // Add Authorization Header
+      request.headers.addAll(headers);
+
+      // Convert JSON to String and send it as a form field
+      request.fields['data'] = jsonEncode(data);
+
+      // Send request
+      var response = await request.send();
+
+      // Convert response to a readable format
+      final responseBody = await response.stream.bytesToString();
+      final responseData = jsonDecode(responseBody);
+
+      if (response.statusCode == 200) {
+        print("Success: ${responseData["message"]}");
+        return responseData;
+      } else {
+        throw Exception("Submission failed: ${responseData["message"]}");
+      }
+    } catch (e) {
+      print("Error submitting answers: $e");
+      return {"status": false, "message": "Error submitting answers"};
+    }
+  }
+
+
   static Future<Map<String, List<AssessmentQuestion>>> fetchQuestions() async {
     try {
       final headers = await getheader3();

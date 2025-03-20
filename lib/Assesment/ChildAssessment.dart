@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:neuromithra/Components/CustomAppButton.dart';
+import 'package:neuromithra/Presentation/MainDashBoard.dart';
 
 import '../Model/AssessmentQuestion.dart';
 import '../services/userapi.dart';
@@ -19,13 +22,9 @@ class _ChildAssessmentState extends State<ChildAssessment> {
   TextEditingController _childGenderController = TextEditingController();
   TextEditingController _assessmentDateController = TextEditingController();
 
-  String communicationAnswer = 'Yes';
-  String socialAnswer = 'Yes';
-  String motorAnswer = 'Yes';
-  String cognitiveAnswer = 'Yes';
-  String emotionalAnswer = 'Yes';
 
   bool isLoading = true;
+  bool isSaving = false;
   Map<int, String> selectedAnswers = {};
   Map<String, List<AssessmentQuestion>> parsedData = {};
 
@@ -42,6 +41,36 @@ class _ChildAssessmentState extends State<ChildAssessment> {
       isLoading = false;
     });
   }
+
+  Future<void> submitAnswersApi(Map<String, dynamic> data) async {
+    setState(() {
+      isSaving = true;
+    });
+
+    var res = await Userapi.submitAnswers(data);
+    setState(() {
+      isSaving = false;
+    });
+    if (res["status"] == true) {
+      // Success
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Submitted successfully!"),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.push(context, MaterialPageRoute(builder: (context)=> MainDashBoard()));
+    } else {
+      // Failure
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(res["message"] ?? "Failed to submit answers!"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
 
 
   @override
@@ -73,27 +102,27 @@ class _ChildAssessmentState extends State<ChildAssessment> {
             const Text(
               'Start with Our Simple Guide',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600,fontFamily: "Poppins"),
             ),
             const SizedBox(height: 10),
             const Text(
               'Get started today by taking our simple guide. It’s quick, easy, and provides actionable insights into your child’s development.',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400,fontFamily: "Poppins"),
             ),
             const SizedBox(height: 20),
             const Text(
               'Take Our Simple Guide Now',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600,fontFamily: "Poppins"),
             ),
             const SizedBox(height: 10),
             const Text(
               'Purpose ',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600,fontFamily: "Poppins"),
             ),
             const SizedBox(height: 8),
             const Text(
               'To help parents check their child’s developmental milestones and identify early signs of conditions like Autism Spectrum Disorder (ASD), ADHD, Dyslexia, and other developmental delays.',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400,fontFamily: "Poppins"),
             ),
             const SizedBox(height: 16),
 
@@ -112,7 +141,6 @@ class _ChildAssessmentState extends State<ChildAssessment> {
             ),
 
             const SizedBox(height: 20),
-
             // Questions Section
             isLoading
                 ? const Center(child: CircularProgressIndicator()) // Show loader
@@ -123,7 +151,6 @@ class _ChildAssessmentState extends State<ChildAssessment> {
               children: parsedData.entries.map<Widget>((entry) {
                 String sectionName = entry.key;
                 List<AssessmentQuestion> questions = entry.value;
-
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -134,7 +161,8 @@ class _ChildAssessmentState extends State<ChildAssessment> {
                         sectionName,
                         style: const TextStyle(
                           fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: "Poppins",
                           color: Color(0xff3EA4D2),
                         ),
                       ),
@@ -156,6 +184,7 @@ class _ChildAssessmentState extends State<ChildAssessment> {
                                 question.question,
                                 style: const TextStyle(
                                   fontSize: 16,
+                                  fontFamily: "Poppins",
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -166,7 +195,9 @@ class _ChildAssessmentState extends State<ChildAssessment> {
                                     .map(
                                       (answer) => RadioListTile(
                                         visualDensity: VisualDensity.compact,
-                                    title: Text(answer),
+                                    title: Text(answer,style: TextStyle(
+                                        fontFamily: "Poppins"
+                                    ),),
                                     value: answer,
                                     groupValue:
                                     selectedAnswers[question.id],
@@ -190,19 +221,50 @@ class _ChildAssessmentState extends State<ChildAssessment> {
                 );
               }).toList(),
             ),
-
             const SizedBox(height: 20),
-
             // Submit Button
             CustomAppButton(
               text: 'Submit',
-              onPlusTap: () {
+              isLoading: isSaving,
+              onPlusTap: isSaving ? null: () {
                 if (_formKey.currentState!.validate()) {
-                  print('Form Submitted');
-                  print('Selected Answers: $selectedAnswers');
+                  // Ensure all answers are provided
+                  bool allAnswered = selectedAnswers.values.every((answer) => answer.isNotEmpty);
+
+                  if (!allAnswered) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Please answer all questions before submitting!"))
+                    );
+                    return;
+                  }
+                  // Prepare final JSON data for submission
+                  Map<String, dynamic> submissionData = {
+                    "child_info": {
+                      "name": _childNameController.text,
+                      "age": _childAgeController.text,
+                      "gender": _childGenderController.text,
+                      "assessment_date": _assessmentDateController.text
+                    },
+                    "answers": parsedData.map((section, questions) {
+                      return MapEntry(
+                        section,
+                        questions.map((question) {
+                          return {
+                            "id": question.id,
+                            "section_name": question.sectionName,
+                            "question": question.question,
+                            "answer": selectedAnswers[question.id] ?? ""
+                          };
+                        }).toList(),
+                      );
+                    })
+                  };
+                  print("Final Submission JSON: ${jsonEncode(submissionData)}");
+                  submitAnswersApi(submissionData);
                 }
               },
             ),
+
           ],
         ),
       ),
@@ -216,7 +278,12 @@ class _ChildAssessmentState extends State<ChildAssessment> {
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(),
+          labelStyle: TextStyle(
+              fontFamily: "Poppins"
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8)
+          ),
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -224,48 +291,6 @@ class _ChildAssessmentState extends State<ChildAssessment> {
           }
           return null;
         },
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Text(
-        title,
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-
-  Widget _buildRadioGroup(String question, Function(String) onChanged) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(question),
-        Row(
-          children: [
-            _buildRadioOption('Yes', onChanged),
-            _buildRadioOption('Sometimes', onChanged),
-            _buildRadioOption('No', onChanged),
-          ],
-        ),
-        SizedBox(height: 12),
-      ],
-    );
-  }
-
-  Widget _buildRadioOption(String value, Function(String) onChanged) {
-    return Expanded(
-      child: Row(
-        children: [
-          Radio<String>(
-            value: value,
-            groupValue: communicationAnswer,
-            onChanged: (value) => onChanged(value!),
-          ),
-          Text(value),
-        ],
       ),
     );
   }

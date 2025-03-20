@@ -27,7 +27,7 @@ class _ExploreChildrenState extends State<ExploreChildren> {
                 Text(
                   textAlign: TextAlign.center,
                   'Are You Ready to Redefine Support for Neurodiverse Minds?',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700,color: Color(0xff3EA4D2)),
                 ),
                 SizedBox(height: 20),
 
