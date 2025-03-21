@@ -20,8 +20,8 @@ import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
 
 class Userapi {
-  // static String host = "https://admin.neuromitra.com";
-  static String host = "http://192.168.0.61:8080";
+  static String host = "https://admin.neuromitra.com";
+  // static String host = "http://192.168.0.61:8080";
 
   static Future<Map<String, List<AssessmentQuestion>>> fetchAdultQuestions() async {
     try {

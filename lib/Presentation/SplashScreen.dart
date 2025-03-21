@@ -56,11 +56,13 @@ class _SplashState extends State<Splash> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        child: Image.asset(
-          "assets/applogo.jpeg",
-          width: 200,
-          height: 200,
-          fit: BoxFit.contain,
+        child: ClipOval(
+          child: Image.asset(
+            "assets/applogo.jpeg",
+            width: 200,
+            height: 200,
+            fit: BoxFit.cover, // Ensures the image fills the circular area
+          ),
         ),
       ),
     );
