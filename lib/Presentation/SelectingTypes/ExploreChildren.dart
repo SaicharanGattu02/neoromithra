@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:neuromithra/Presentation/MainDashBoard.dart';
 
 import '../../Components/CustomAppButton.dart';
 
@@ -14,6 +15,23 @@ class _ExploreChildrenState extends State<ExploreChildren> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text( 'Support for Children',
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: "Inter",
+                color: Color(0xff3EA4D2),
+                fontSize: 18)),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        leading: IconButton.filled(
+          icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
+          onPressed: () => Navigator.pop(context),
+          style: IconButton.styleFrom(
+            backgroundColor: Color(0xFFECFAFA), // Filled color
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -187,7 +205,7 @@ class _ExploreChildrenState extends State<ExploreChildren> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ExploreChildren()));
+                            builder: (context) => MainDashBoard()));
                   },
                 ),
                 SizedBox(height: 10),

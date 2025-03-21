@@ -38,7 +38,6 @@ class _MainDashBoardState extends State<MainDashBoard> {
     TherapiesListScreen(),
     CounsellingListScreen(),
     ProfileScreen(),
-    SelectingTypes(),
     Guidescreen()
   ];
 
@@ -113,12 +112,12 @@ class _MainDashBoardState extends State<MainDashBoard> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                _buildIconButton('assets/Home.png', 0),
-                _buildIconButton('assets/therapy.png', 1),
-                _buildIconButton('assets/consultation.png', 2),
-                _buildIconButton('assets/UserCircle.png', 3),
-                _buildIconButton('assets/Info.png', 4),
-                _buildIconButton('assets/guide.png', 5),
+                _buildIconButton('assets/Home.png', "Home", 0),
+                _buildIconButton('assets/therapy.png', "Therapies", 1),
+                _buildIconButton('assets/consultation.png', "Counselling", 2),
+                _buildIconButton('assets/UserCircle.png', "Profile", 3),
+                // _buildIconButton('assets/Info.png', "Info", 4),
+                _buildIconButton('assets/guide.png', "Guide", 5),
               ],
             ),
           ),
@@ -188,20 +187,34 @@ class _MainDashBoardState extends State<MainDashBoard> {
     );
   }
 
-  Widget _buildIconButton(String iconPath, int index) {
+  Widget _buildIconButton(String iconPath, String label, int index) {
     bool isSelected = _selectedIndex == index;
-    return IconButton(
-      icon: Image.asset(
-        iconPath,
-        width: 30,
-        height: 30,
-        color: isSelected
-            ? Colors.black
-            : Colors.grey, // Selected vs Unselected color
-      ),
-      onPressed: () {
-        onItemTapped(index);
-      },
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          visualDensity: VisualDensity.compact,
+          icon: Image.asset(
+            iconPath,
+            width: 25,
+            height: 25,
+            color: isSelected ? Colors.black : Colors.grey, // Selected vs Unselected color
+          ),
+          onPressed: () {
+            onItemTapped(index);
+          },
+        ),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w500,
+            fontFamily: "Poppins",
+            color: isSelected ? Colors.black : Colors.grey, // Match icon color
+          ),
+        ),
+      ],
     );
   }
+
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../Components/CustomAppButton.dart';
+import '../MainDashBoard.dart';
 
 class ExploreAdults extends StatefulWidget {
   const ExploreAdults({super.key});
@@ -13,6 +14,23 @@ class _ExploreAdultsState extends State<ExploreAdults> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text( 'Support for Adults',
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: "Inter",
+                color: Color(0xff3EA4D2),
+                fontSize: 18)),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        leading: IconButton.filled(
+          icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
+          onPressed: () => Navigator.pop(context),
+          style: IconButton.styleFrom(
+            backgroundColor: Color(0xFFECFAFA), // Filled color
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 20),
@@ -207,6 +225,10 @@ class _ExploreAdultsState extends State<ExploreAdults> {
                 CustomAppButton(
                   text: 'View our therapy services',
                   onPlusTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MainDashBoard()));
                   },
                 ),
               ],

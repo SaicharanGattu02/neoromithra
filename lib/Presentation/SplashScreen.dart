@@ -57,7 +57,7 @@ class _SplashState extends State<Splash> {
       backgroundColor: Colors.white,
       body: Center(
         child: Image.asset(
-          "assets/neuromitralogo.png",
+          "assets/applogo.jpeg",
           width: 200,
           height: 200,
           fit: BoxFit.contain,

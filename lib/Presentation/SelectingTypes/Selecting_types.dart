@@ -18,21 +18,39 @@ class _SelectingTypesState extends State<SelectingTypes> {
     final h = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text( 'About NeuroMitra',
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: "Inter",
+                color: Color(0xff3EA4D2),
+                fontSize: 18)),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        leading: IconButton.filled(
+          icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
+          onPressed: () => Navigator.pop(context),
+          style: IconButton.styleFrom(
+            backgroundColor: Color(0xFFECFAFA), // Filled color
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 50),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Logo image with proper scaling
-                Image.asset(
-                  'assets/neuromitralogo.png',
-                  scale: 6,
-                  fit: BoxFit.contain,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(
+                    'assets/applogo.jpeg',
+                   scale: 10,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                // Text tagline
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 16.0),
