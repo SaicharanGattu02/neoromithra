@@ -21,11 +21,13 @@ class _ExploreAdultsState extends State<ExploreAdults> {
       throw 'Could not launch $launchUri';
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Support for Adults',
+        title: Text(
+            'Support for Adults',
             style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: "Inter",
@@ -251,6 +253,7 @@ class _ExploreAdultsState extends State<ExploreAdults> {
                     _launchCall("8885320115");
                   },
                 ),
+                SizedBox(height: 30),
               ],
             ),
           ),
