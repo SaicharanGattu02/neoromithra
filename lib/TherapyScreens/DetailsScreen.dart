@@ -102,6 +102,16 @@ class _TherapyDetailsScreenState extends State<DetailsScreen> {
                   fit: BoxFit.cover,
                 ),
                 SizedBox(height: 10,),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0),
+                  child: Text("Price : ₹800 /-",
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: Color(0xff3EA4D2),
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "Inter"),
+                  ),
+                ),
                 if(widget.descHeading1!="")...[
                   Padding(
                     padding: const EdgeInsets.only(left: 20.0, right: 20),
@@ -206,7 +216,7 @@ class _TherapyDetailsScreenState extends State<DetailsScreen> {
             SizedBox(width: 10), // Add spacing between buttons
             _bottomButton("Book Now", Color(0xff0933A1), () {
               Navigator.of(context)
-                  .push(PageRouteBuilder(
+                  .pushReplacement(PageRouteBuilder(
                 pageBuilder: (context,
                     animation,
                     secondaryAnimation) {

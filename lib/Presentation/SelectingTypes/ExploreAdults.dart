@@ -225,20 +225,13 @@ class _ExploreAdultsState extends State<ExploreAdults> {
                     "4. Accessible Anytime, Anywhere: Connect with counselors and access resources through the app whenever needed.",
                     style: TextStyle(fontSize: 16)),
                 SizedBox(height: 20),
-                Center(
-                  child: Text(
-                    "An image of a person holding a smartphone with the NeuroMitra app interface displayed, surrounded by calming blue light.",
-                    style: TextStyle(fontSize: 18),
-                  ),
+                SizedBox(
+                  width: double.infinity,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.asset("assets/banner1.png",fit: BoxFit.contain,)),
                 ),
-                SizedBox(height: 20),
-                SizedBox(height: 10),
-                Text(
-                  textAlign: TextAlign.center,
-                  '"Your Mental Health Matters—Take the First Step Today!"',
-                  style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700),
-                ),
-                SizedBox(height: 10),
+                SizedBox(height: 30),
                 CustomAppButton(
                   text: 'View our Counselling services',
                   onPlusTap: () {

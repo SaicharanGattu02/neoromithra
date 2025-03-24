@@ -131,11 +131,22 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Forgot Password',
-        onBackButtonPressed: () {
-          Navigator.pop(context);
-        },
+      appBar: AppBar(
+        title: Text("Forgot Password",
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: "Inter",
+                color: Color(0xff3EA4D2),
+                fontSize: 18)),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        leading: IconButton.filled(
+          icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
+          onPressed: () => Navigator.pop(context),
+          style: IconButton.styleFrom(
+            backgroundColor: Color(0xFFECFAFA), // Filled color
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -218,36 +229,40 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 //   },
                 // ),
                 SizedBox(height: 20.0),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                  ),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      if (sendResetCode) {
-                      } else {
-                        setState(() {
-                          sendResetCode = true;
-                        });
-                        _sendResetCode();
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xff3EA4D2),
+                      foregroundColor: Color(0xff3EA4D2),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        if (sendResetCode) {
+                        } else {
+                          setState(() {
+                            sendResetCode = true;
+                          });
+                          _sendResetCode();
+                        }
                       }
-                    }
-                  },
-                  child: sendResetCode
-                      ? CircularProgressIndicator(
-                          color: Colors.white,
-                        )
-                      : Text(
-                          'Send Reset Code',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: "Inter",
-                            fontSize: 15,
-                          ),
-                        ),
+                    },
+                    child: sendResetCode
+                        ? CircularProgressIndicator(
+                      color: Colors.white,
+                    )
+                        : Text(
+                      'Send Reset Code',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: "Inter",
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
                 ),
               ] else ...[
-                // Code and Password Fields
                 TextFormField(
                   controller: _codeController,
                   decoration: InputDecoration(
@@ -406,33 +421,38 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   },
                 ),
                 SizedBox(height: 20.0),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                  ),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      if (resetPassword) {
-                      } else {
-                        setState(() {
-                          resetPassword = true;
-                        });
-                        _resetPassword();
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xff3EA4D2),
+                        foregroundColor: Color(0xff3EA4D2),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        if (resetPassword) {
+                        } else {
+                          setState(() {
+                            resetPassword = true;
+                          });
+                          _resetPassword();
+                        }
                       }
-                    }
-                  },
-                  child: resetPassword
-                      ? CircularProgressIndicator(
-                          color: Colors.white,
-                        )
-                      : Text(
-                          'Reset Password',
-                          style: TextStyle(
+                    },
+                    child: resetPassword
+                        ? CircularProgressIndicator(
                             color: Colors.white,
-                            fontFamily: "Inter",
-                            fontSize: 15,
+                          )
+                        : Text(
+                            'Reset Password',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "Inter",
+                              fontSize: 15,
+                            ),
                           ),
-                        ),
+                  ),
                 ),
               ],
             ],

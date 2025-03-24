@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:phonepe_payment_sdk/phonepe_payment_sdk.dart';
 
@@ -9,27 +8,27 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  final String environment = "SANDBOX";
-  final String appId = "YOUR_APP_ID";
-  final String merchantId = "YOUR_MERCHANT_ID";
-  final String saltKey = "YOUR_SALT_KEY";
-  final String saltIndex = "YOUR_SALT_INDEX";
+  final String environment = "PRODUCTION"; // Change to "SANDBOX" for testing
+  final String appId = "M2263C04721G1"; // Merchant ID
+  final String merchantId = "M2263C04721G1";
+  final String saltKey = "a52dde56-568b-4243-8ae1-7065b1169b39";
+  final String saltIndex = "1";
+  final String callbackUrl = "http://192.168.0.61:8080/phonepe/callback";
+  final String baseUrl = "https://api.phonepe.com/apis/hermes/pg/v1"; // Production Base URL
 
   @override
   void initState() {
     super.initState();
-    PhonePePaymentSdk.init(environment,appId,merchantId,true);
+    PhonePePaymentSdk.init(environment, appId, merchantId, true);
   }
-
   Future<void> initiateTransaction() async {
     try {
       String transactionId = "TXN_${DateTime.now().millisecondsSinceEpoch}";
-      int amount = 10000;
-      String callbackUrl = "https://yourserver.com/callback";
+      int amount = 10000; // Amount in paise (100.00 INR)
 
       Map<String, dynamic> payload = {
         "merchantTransactionId": transactionId,
-        "merchantId": "YOUR_MERCHANT_ID",
+        "merchantId": merchantId,
         "amount": amount,
         "callbackUrl": callbackUrl,
         "mobileNumber": "9876543210",
@@ -40,28 +39,37 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
       String payloadString = jsonEncode(payload); // Convert Map to JSON String
 
+
       Map<dynamic, dynamic>? response = await PhonePePaymentSdk.startTransaction(
-        payloadString, // Pass the JSON string instead of Map
-        "YOUR_SALT_KEY",
-        "YOUR_SALT_INDEX",
-        "SANDBOX", // Change to "PRODUCTION" for live
+        payloadString, // JSON String instead of Map
+        saltKey,
+        saltIndex,
+        environment,
       );
 
       if (response != null) {
-        String? status = response["status"]; // Extract status from response
+        String? status = response["status"]; // Extract payment status
         if (status == "SUCCESS") {
-          print("Payment Success: $response");
-          // Handle success logic (e.g., update UI, store transaction details)
+          print("✅ Payment Success: $response");
+          _showSnackBar("Payment Successful!");
         } else {
-          print("Payment Failed: $response");
-          // Handle failure (e.g., show error message)
+          print("❌ Payment Failed: $response");
+          _showSnackBar("Payment Failed!");
         }
       } else {
-        print("Payment response is null");
+        print("⚠️ Payment response is null");
+        _showSnackBar("Payment response is null");
       }
     } catch (e) {
-      print("Error: $e");
+      print("🚨 Error: $e");
+      _showSnackBar("Error: $e");
     }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), duration: Duration(seconds: 2)),
+    );
   }
 
   @override

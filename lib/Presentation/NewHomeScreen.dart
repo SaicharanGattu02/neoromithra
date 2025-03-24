@@ -15,6 +15,7 @@ import '../Logic/Location/location_cubit.dart';
 import '../Logic/Location/location_state.dart';
 import '../Model/ProfileDetailsModel.dart';
 import '../TherapyScreens/DetailsScreen.dart';
+import 'PaymentScreen.dart';
 
 class NewHomeScreen extends StatefulWidget {
   const NewHomeScreen({super.key});
@@ -311,6 +312,30 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
       await launch(url);
     } else {
       throw "Could not launch $url";
+    }
+  }
+
+  void payment() async {
+    try {
+      var res = await Userapi.makePayment();
+
+      if (res != null && res['success'] == true) {
+        String paymentUrl = res['payment_url'];
+        _launchURL(paymentUrl);
+      } else {
+        debugPrint("Payment failed: ${res?['message'] ?? 'Unknown error'}");
+      }
+    } catch (e) {
+      debugPrint("Error: ${e.toString()}");
+    }
+  }
+
+  void _launchURL(String url) async {
+    Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      debugPrint('Could not launch $url');
     }
   }
 
@@ -839,6 +864,8 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
               elevation: 2, // Adds shadow
               onPressed: () {
                 launchWhatsApp();
+                // // payment();
+                // Navigator.push(context, MaterialPageRoute(builder: (context)=> PaymentScreen()));
               },
               backgroundColor: Colors.blue,
               child: Image.asset("assets/whatsapp.png"),

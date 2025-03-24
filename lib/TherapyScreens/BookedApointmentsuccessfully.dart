@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:neuromithra/Presentation/MainDashBoard.dart';
 
 import '../Presentation/Dashboard.dart';
+import '../Presentation/LastBooking.dart';
 
 class ApointmentSuccess extends StatefulWidget {
   const ApointmentSuccess({super.key});
@@ -52,7 +53,7 @@ class _ApointmentSuccessState extends State<ApointmentSuccess> {
     // Navigate to Dashboard after a delay
     SchedulerBinding.instance.addPostFrameCallback((_) {
       Future.delayed(Duration(seconds: 2), () {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => MainDashBoard(initialIndex: 0,)));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LastBooking()));
       });
     });
   }

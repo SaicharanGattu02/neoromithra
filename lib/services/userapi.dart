@@ -23,6 +23,29 @@ class Userapi {
   static String host = "https://admin.neuromitra.com";
   // static String host = "http://192.168.0.61:8080";
 
+  static Future<Map<String, dynamic>?> makePayment() async {
+    var url = Uri.parse('http://192.168.0.61:8080/api/phonepe/pay');
+
+    var request = http.MultipartRequest('POST', url)
+      ..headers.addAll({
+        'Cookie': 'XSRF-TOKEN=your_xsrf_token_here; neuromitra_session=your_session_token_here'
+      })
+      ..fields['amount'] = '1';
+
+    try {
+      var response = await request.send();
+      var responseData = await response.stream.bytesToString();
+
+      if (response.statusCode == 200) {
+        return jsonDecode(responseData); // Returning API response as a Map
+      } else {
+        return {'success': false, 'message': 'Request failed with status ${response.statusCode}'};
+      }
+    } catch (e) {
+      return {'success': false, 'message': e.toString()};
+    }
+  }
+
   static Future<Map<String, List<AssessmentQuestion>>> fetchAdultQuestions() async {
     try {
       final headers = await getheader3();

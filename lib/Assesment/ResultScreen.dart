@@ -17,7 +17,6 @@ class Resultscreen extends StatefulWidget {
 
 class _ResultscreenState extends State<Resultscreen> {
   int viewIndex=0;
-
   Future<void> _launchCall(String phoneNumber) async {
     final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
     if (await canLaunchUrl(launchUri)) {
@@ -30,7 +29,7 @@ class _ResultscreenState extends State<Resultscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:AppBar(
+      appBar: AppBar(
         title: const Text(
           'Result',
           style: TextStyle(

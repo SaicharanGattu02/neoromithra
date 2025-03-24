@@ -157,7 +157,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
     if (data != null) {
       setState(() {
         if (data.status == true) {
-          Navigator.push(context,
+          Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => ApointmentSuccess()));
         }
       });

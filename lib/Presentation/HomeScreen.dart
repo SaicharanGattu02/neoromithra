@@ -293,6 +293,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+
   Widget build(BuildContext context) {
     String nameInitial =
         (name.trim().isNotEmpty) ? name.trim()[0].toUpperCase() : "";

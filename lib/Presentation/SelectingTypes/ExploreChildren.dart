@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:neuromithra/Presentation/MainDashBoard.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../Components/CustomAppButton.dart';
 
 class ExploreChildren extends StatefulWidget {
@@ -204,12 +203,13 @@ class _ExploreChildrenState extends State<ExploreChildren> {
                       child: Image.asset("assets/image6.webp",fit: BoxFit.cover,)),
                 ),
                 SizedBox(height: 10),
-                Text(
-                  textAlign: TextAlign.center,
-                  '"Your Mental Health Matters—Take the First Step Today!"',
-                  style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700),
+                SizedBox(
+                  width: double.infinity,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.asset("assets/banner1.png",fit: BoxFit.contain,)),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 30),
                 CustomAppButton(
                   text: 'View our therapy services',
                   onPlusTap: () {

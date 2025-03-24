@@ -40,6 +40,8 @@ class AboutUsScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8), // Optional: round corners
               ),
             ),
+            SizedBox(height: 10,),
+            _buildSectionTitle('NEUROMITRA EVOMENTIS PRIVATE LIMITED'),
             _buildText(
               'At NeuroMitra, we specialize in providing a comprehensive range of therapy services aimed at nurturing and enhancing the well-being of individuals across all ages. Our dedicated team of highly qualified therapists is committed to creating a supportive environment where every client can thrive.',
             ),
@@ -114,7 +116,9 @@ class AboutUsScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Text(
         title,
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            fontSize: 18, fontWeight: FontWeight.bold,fontFamily: "Inter"),
       ),
     );
   }

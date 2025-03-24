@@ -19,7 +19,7 @@ class _GuidescreenState extends State<Guidescreen> {
     return Scaffold(
       appBar:  AppBar(
         title: const Text(
-          'Simple Giude',
+          'Simple Guide',
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontFamily: "Inter",

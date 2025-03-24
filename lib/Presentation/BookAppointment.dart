@@ -77,7 +77,7 @@ class _BookappointmentState extends State<Bookappointment> {
       (patients.length==0)?
       InkResponse(
         onTap: () {
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => Bookappointment1(pagesource: widget.pagesource,patientID: "",patient_name: "",p_age: "",),

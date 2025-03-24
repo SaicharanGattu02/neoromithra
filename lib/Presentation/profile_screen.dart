@@ -4,6 +4,8 @@ import 'package:neuromithra/Presentation/AddAddressScreen.dart';
 import 'package:neuromithra/Presentation/CancellationPolicyScreen.dart';
 
 import 'package:neuromithra/Presentation/ReturnRefundPolicyScreen.dart';
+import 'package:neuromithra/RefundPolicyScreen.dart';
+import 'package:neuromithra/TermsAndConditionsScreen.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import '../Components/Shimmers.dart';
@@ -53,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: (is_loading)
           ? _buildShimmerEffect()
           :Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         child: Column(
           children: <Widget>[
             Row(
@@ -143,6 +145,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           animation,
                           secondaryAnimation) {
                         return LastBooking();
+                      },
+                      transitionsBuilder:
+                          (context,
+                          animation,
+                          secondaryAnimation,
+                          child) {
+                        const begin =
+                        Offset(1.0, 0.0);
+                        const end = Offset.zero;
+                        const curve =
+                            Curves.easeInOut;
+                        var tween = Tween(
+                            begin: begin,
+                            end: end)
+                            .chain(CurveTween(
+                            curve: curve));
+                        var offsetAnimation =
+                        animation
+                            .drive(tween);
+                        return SlideTransition(
+                            position:
+                            offsetAnimation,
+                            child: child);
+                      },
+                    ));
+                  }),
+                  _buildOptionTile(Icons.location_on_outlined, 'Address List', () {
+                    Navigator.of(context)
+                        .push(PageRouteBuilder(
+                      pageBuilder: (context,
+                          animation,
+                          secondaryAnimation) {
+                        return AddressListScreen();
                       },
                       transitionsBuilder:
                           (context,
@@ -268,13 +303,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                     ));
                   }),
-                  _buildOptionTile(Icons.location_on_outlined, 'Address List', () {
+                  _buildOptionTile(Icons.policy_outlined, 'Terms and Conditions', () {
                     Navigator.of(context)
                         .push(PageRouteBuilder(
                       pageBuilder: (context,
                           animation,
                           secondaryAnimation) {
-                        return AddressListScreen();
+                        return TermsAndConditionsScreen();
+                      },
+                      transitionsBuilder:
+                          (context,
+                          animation,
+                          secondaryAnimation,
+                          child) {
+                        const begin =
+                        Offset(1.0, 0.0);
+                        const end = Offset.zero;
+                        const curve =
+                            Curves.easeInOut;
+                        var tween = Tween(
+                            begin: begin,
+                            end: end)
+                            .chain(CurveTween(
+                            curve: curve));
+                        var offsetAnimation =
+                        animation
+                            .drive(tween);
+                        return SlideTransition(
+                            position:
+                            offsetAnimation,
+                            child: child);
+                      },
+                    ));
+                  }),
+                  _buildOptionTile(Icons.assignment_return_outlined, 'Refund Policy', () {
+                    Navigator.of(context)
+                        .push(PageRouteBuilder(
+                      pageBuilder: (context,
+                          animation,
+                          secondaryAnimation) {
+                        return RefundPolicyScreen();
                       },
                       transitionsBuilder:
                           (context,
@@ -361,7 +429,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         title: Text(
           "Log out",
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.red),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.red,fontFamily: "Inter"),
         ),
         onTap: () {
           _showLogoutConfirmationDialog(context);
@@ -374,7 +442,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildOptionTile(IconData icon, String title, VoidCallback onTap) {
     return Card(
       elevation: 3,
-      margin: EdgeInsets.symmetric(vertical: 6),
+      margin: EdgeInsets.symmetric(vertical: 6,horizontal: 5),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: ListTile(
         leading: CircleAvatar(
@@ -383,7 +451,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         title: Text(
           title,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500,fontFamily: "Inter"),
         ),
         trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
         onTap: onTap,
