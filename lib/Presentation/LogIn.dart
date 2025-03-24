@@ -59,7 +59,7 @@ class _LogInState extends State<LogIn> {
             (DateTime.now().millisecondsSinceEpoch ~/ 1000 + loginResponse["expires_in"]).toString());
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => MainDashBoard()),
+          MaterialPageRoute(builder: (context) => MainDashBoard(initialIndex: 0,)),
         );
       } else if (loginResponse.containsKey("error")) {
         // Handle unauthorized or error response

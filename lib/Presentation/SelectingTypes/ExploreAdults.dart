@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../Components/CustomAppButton.dart';
 import '../MainDashBoard.dart';
@@ -11,11 +12,20 @@ class ExploreAdults extends StatefulWidget {
 }
 
 class _ExploreAdultsState extends State<ExploreAdults> {
+
+  Future<void> _launchCall(String phoneNumber) async {
+    final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
+    if (await canLaunchUrl(launchUri)) {
+      await launchUrl(launchUri);
+    } else {
+      throw 'Could not launch $launchUri';
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text( 'Support for Adults',
+        title: Text('Support for Adults',
             style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: "Inter",
@@ -33,7 +43,7 @@ class _ExploreAdultsState extends State<ExploreAdults> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,7 +57,7 @@ class _ExploreAdultsState extends State<ExploreAdults> {
                   ),
                 ),
                 SizedBox(height: 20),
-        
+
                 Center(
                   child: Text(
                     textAlign: TextAlign.center,
@@ -62,12 +72,13 @@ class _ExploreAdultsState extends State<ExploreAdults> {
                   style: TextStyle(fontSize: 16),
                 ),
                 SizedBox(height: 15),
-                Text(
-                  textAlign: TextAlign.center,
-                  "Image of a A serene, calm setting like a person meditating under a tree, symbolizing emotional balance and mental peace.",
-                  style: TextStyle(fontSize: 16),
+                SizedBox(
+                  height: 280,
+                  width: double.infinity,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.asset("assets/image1.webp",fit: BoxFit.cover,)),
                 ),
-        
                 SizedBox(height: 20),
                 Center(
                   child: Text(
@@ -77,11 +88,15 @@ class _ExploreAdultsState extends State<ExploreAdults> {
                   ),
                 ),
                 SizedBox(height: 20),
-                Text("An image of A therapist and an adult in a comforting session with warm lighting and supportive body language.",
-                  style: TextStyle(fontSize: 16),
+                SizedBox(
+                  height: 280,
+                  width: double.infinity,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.asset("assets/image2.webp",fit: BoxFit.cover,)),
                 ),
                 SizedBox(height: 20),
-        
+
                 Text(
                   "Our expert-led counseling services are tailored to address common mental health conditions in adults, such as stress, emotional imbalance, and trauma. We also offer support for adults struggling with a range of mental health conditions, including:",
                   style: TextStyle(fontSize: 16),
@@ -124,7 +139,7 @@ class _ExploreAdultsState extends State<ExploreAdults> {
                     "• Obsessive-Compulsive Disorder (OCD): Break free from repetitive thoughts and behaviors with evidence-based strategies.",
                     style: TextStyle(fontSize: 16)),
                 SizedBox(height: 20),
-        
+
                 Center(
                   child: Text(
                     textAlign: TextAlign.center,
@@ -133,9 +148,12 @@ class _ExploreAdultsState extends State<ExploreAdults> {
                   ),
                 ),
                 SizedBox(height: 20),
-                Text(
-                  "An image of a dark-to-light transition showing emotional recovery.",
-                  style: TextStyle(fontSize: 18),
+                SizedBox(
+                  height: 200,
+                  width: double.infinity,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.asset("assets/image3.webp",fit: BoxFit.cover,)),
                 ),
                 SizedBox(height: 20),
                 // Counseling Services Bullet Points
@@ -152,7 +170,7 @@ class _ExploreAdultsState extends State<ExploreAdults> {
                     "• Trauma Recovery: For those recovering from past trauma, our counselors use evidence-based practices like CBT (Cognitive Behavioral Therapy) to rebuild emotional well-being.",
                     style: TextStyle(fontSize: 16)),
                 SizedBox(height: 20),
-        
+
                 // Additional Features Heading
                 Center(
                   child: Text(
@@ -162,16 +180,15 @@ class _ExploreAdultsState extends State<ExploreAdults> {
                   ),
                 ),
                 SizedBox(height: 20),
-        
-        
-                Center(
-                  child: Text(
-                    "An image of a person sitting with headphones on, looking peaceful, with floating icons for mindfulness, learning, and resilience.",
-                    style: TextStyle(fontSize: 18),
-                  ),
+                SizedBox(
+                  height: 250,
+                  width: double.infinity,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                      child: Image.asset("assets/image4.webp",fit: BoxFit.cover,)),
                 ),
                 SizedBox(height: 20),
-        
+
                 // Additional Features Bullet Points
                 Text(
                     "1. Personalized Support Plans: Each user receives a tailored plan based on their unique challenges and goals.",
@@ -181,7 +198,7 @@ class _ExploreAdultsState extends State<ExploreAdults> {
                     "2. Self-Paced Learning Modules: Access courses on stress management, emotional resilience, and mindfulness practices.",
                     style: TextStyle(fontSize: 16)),
                 SizedBox(height: 20),
-        
+
                 // Why Choose NeuroMitra Heading
                 Center(
                   child: Text(
@@ -191,7 +208,7 @@ class _ExploreAdultsState extends State<ExploreAdults> {
                   ),
                 ),
                 SizedBox(height: 20),
-        
+
                 Text(
                     "1. Expert Counseling Services: Certified professionals with experience in addressing a wide range of mental health issues.",
                     style: TextStyle(fontSize: 16)),
@@ -223,12 +240,22 @@ class _ExploreAdultsState extends State<ExploreAdults> {
                 ),
                 SizedBox(height: 10),
                 CustomAppButton(
-                  text: 'View our therapy services',
+                  text: 'View our Counselling services',
                   onPlusTap: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => MainDashBoard()));
+                            builder: (context) => MainDashBoard(initialIndex: 2,)));
+                  },
+                ),
+
+                SizedBox(height: 10),
+                CustomAppButton(
+                  textcolor: Colors.white,
+                  text: 'Schedule A Session',
+                  color: Colors.green,
+                  onPlusTap: () {
+                    _launchCall("8885320115");
                   },
                 ),
               ],

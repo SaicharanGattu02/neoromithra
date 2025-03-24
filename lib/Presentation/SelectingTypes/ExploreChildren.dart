@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:neuromithra/Presentation/MainDashBoard.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../Components/CustomAppButton.dart';
 
@@ -12,6 +13,14 @@ class ExploreChildren extends StatefulWidget {
 }
 
 class _ExploreChildrenState extends State<ExploreChildren> {
+  Future<void> _launchCall(String phoneNumber) async {
+    final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
+    if (await canLaunchUrl(launchUri)) {
+      await launchUrl(launchUri);
+    } else {
+      throw 'Could not launch $launchUri';
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -154,10 +163,9 @@ class _ExploreChildrenState extends State<ExploreChildren> {
                   style: TextStyle(fontSize: 16),
                 ),
                 SizedBox(height: 10),
-                Text(
-                  "• An iMAGE showing various signs of neurodiversity, like a brain puzzle, child writing, or blocks with letters",
-                  style: TextStyle(fontSize: 16),
-                ),
+                ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.asset("assets/image5.webp",fit: BoxFit.cover,)),
 
                 SizedBox(height: 20),
                 // Centered Title for "How NeuroMitra Can Help"
@@ -188,9 +196,12 @@ class _ExploreChildrenState extends State<ExploreChildren> {
                   style: TextStyle(fontSize: 16),
                 ),
                 SizedBox(height: 20),
-                Text(
-                  "An image where parents and therapists working together to create a supportive environment for a child.",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                SizedBox(
+                  height: 280,
+                  width: double.infinity,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.asset("assets/image6.webp",fit: BoxFit.cover,)),
                 ),
                 SizedBox(height: 10),
                 Text(
@@ -205,10 +216,18 @@ class _ExploreChildrenState extends State<ExploreChildren> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => MainDashBoard()));
+                            builder: (context) => MainDashBoard(initialIndex: 1,)));
                   },
                 ),
                 SizedBox(height: 10),
+                CustomAppButton(
+                  textcolor: Colors.white,
+                  text: 'Schedule A Session',
+                  color: Colors.green,
+                  onPlusTap: () {
+                    _launchCall("8885320115");
+                  },
+                ),
               ],
             ),
           ),

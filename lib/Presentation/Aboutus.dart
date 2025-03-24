@@ -29,11 +29,6 @@ class AboutUsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSectionTitle('About NeuroMitra'),
-            _buildText(
-              'At NeuroMitra, we specialize in providing a comprehensive range of therapy services aimed at nurturing and enhancing the well-being of individuals across all ages. Our dedicated team of highly qualified therapists is committed to creating a supportive environment where every client can thrive.\n\n'
-                  'At NeuroMitra, we believe in a personalized approach to therapy, recognizing each individual’s unique needs and strengths. Our holistic treatment plans are designed to empower clients and their families, fostering independence and a sense of achievement.',
-            ),
-            SizedBox(height: 20,),
             Container(
               width: double.infinity, // Set desired width for the image container
               height: 200, // Set desired height for the image container
@@ -45,6 +40,11 @@ class AboutUsScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8), // Optional: round corners
               ),
             ),
+            _buildText(
+              'At NeuroMitra, we specialize in providing a comprehensive range of therapy services aimed at nurturing and enhancing the well-being of individuals across all ages. Our dedicated team of highly qualified therapists is committed to creating a supportive environment where every client can thrive.',
+            ),
+            SizedBox(height: 20,),
+            _buildText("At NeuroMitra, we believe in a personalized approach to therapy, recognizing each individual’s unique needs and strengths. Our holistic treatment plans are designed to empower clients and their families, fostering independence and a sense of achievement."),
             SizedBox(height: 20,),
             Container(
               width: double.infinity, // Set desired width for the image container
@@ -65,21 +65,39 @@ class AboutUsScreen extends StatelessWidget {
             SizedBox(height: 20,),
             Container(
               width: double.infinity, // Set desired width for the image container
-              height: 360, // Set desired height for the image container
+              height: 350, // Set desired height for the image container
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/1.jpg'), // Replace with your image URL
+                  image: AssetImage('assets/profile3.jpeg'), // Replace with your image URL
                   fit: BoxFit.cover, // Cover the container with the image
                 ),
                 borderRadius: BorderRadius.circular(8), // Optional: round corners
               ),
             ),
-            _buildTeamMember('Arshiya', 'Co-Founder of NeuroMitra',
-                'Arshiya, the Co-Founder of NeuroMitra, is a B.Tech graduate and experienced event manager who brings a unique combination of technical expertise and organizational skills to the organization.\n\n'
-                    'With a deep passion for supporting children diagnosed with autism, ADHD, and other psychological disorders, Arshiya has dedicated her career to making a positive impact in their lives. Her technological background enables her to contribute innovative solutions to NeuroMitra’s offerings, while her event management experience ensures that workshops, therapy sessions, and support events are both engaging and effective.\n\n'
-                    'At the core of Arshiya’s work at NeuroMitra is her commitment to creating a nurturing and supportive environment for children and their families. She is actively involved in developing programs that focus on skill development, school admission support, and emotional well-being, ensuring that each child receives the individualized care they need to flourish. Through NeuroMitra, Arshiya strives to provide holistic support that empowers children and their parents, leaving a lasting, positive impact on their lives.'
+            SizedBox(height: 20,),
+            Container(
+              width: double.infinity, // Set desired width for the image container
+              height: 350, // Set desired height for the image container
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/profile1.jpeg'), // Replace with your image URL
+                  fit: BoxFit.contain, // Cover the container with the image
+                ),
+                borderRadius: BorderRadius.circular(8), // Optional: round corners
+              ),
             ),
-
+            SizedBox(height: 20,),
+            Container(
+              width: double.infinity, // Set desired width for the image container
+              height: 400, // Set desired height for the image container
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/profile2.jpeg'), // Replace with your image URL
+                  fit: BoxFit.cover, // Cover the container with the image
+                ),
+                borderRadius: BorderRadius.circular(8), // Optional: round corners
+              ),
+            ),
             _buildSectionTitle('Why Choose NeuroMitra?'),
             _buildBulletPoint('Expertise: Our team consists of qualified and experienced professionals committed to your child’s success.'),
             _buildBulletPoint('Personalized Care: We tailor our services to meet the specific needs of each child and family.'),

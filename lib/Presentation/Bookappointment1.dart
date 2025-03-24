@@ -519,13 +519,6 @@ class _Bookappointment1State extends State<Bookappointment1> {
             ] else ...[
               SizedBox(height: 15),
             ],
-            Text(
-              "Note: Do Payement at the clinic",
-              style: TextStyle(
-                  fontFamily: "Inter",
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400),
-            ),
             const SizedBox(height: 20),
             Center(
               child: SizedBox(

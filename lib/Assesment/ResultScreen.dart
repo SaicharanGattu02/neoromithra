@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../Components/CustomAppButton.dart';
+import '../Presentation/MainDashBoard.dart';
 
 class Resultscreen extends StatefulWidget {
   final Map<String, dynamic> resultData;
@@ -15,6 +17,16 @@ class Resultscreen extends StatefulWidget {
 
 class _ResultscreenState extends State<Resultscreen> {
   int viewIndex=0;
+
+  Future<void> _launchCall(String phoneNumber) async {
+    final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
+    if (await canLaunchUrl(launchUri)) {
+      await launchUrl(launchUri);
+    } else {
+      throw 'Could not launch $launchUri';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,6 +167,25 @@ class _ResultscreenState extends State<Resultscreen> {
                     ],
                   ),
                 ),
+                SizedBox(height: 20,),
+                CustomAppButton(
+                  text: 'View our Counselling services',
+                  onPlusTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MainDashBoard(initialIndex: 2,)));
+                  },
+                ),
+                SizedBox(height: 10),
+                CustomAppButton(
+                  textcolor: Colors.white,
+                  text: 'Schedule A Session',
+                  color: Colors.green,
+                  onPlusTap: () {
+                    _launchCall("8885320115");
+                  },
+                ),
               ]else...[
                 SizedBox(
                   height: 450, // Adjust height as needed
@@ -192,6 +223,25 @@ class _ResultscreenState extends State<Resultscreen> {
                       ),
                     ],
                   ),
+                ),
+                SizedBox(height: 20,),
+                CustomAppButton(
+                  text: 'View our Therapy services',
+                  onPlusTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MainDashBoard(initialIndex: 1,)));
+                  },
+                ),
+                SizedBox(height: 10),
+                CustomAppButton(
+                  textcolor: Colors.white,
+                  text: 'Schedule A Session',
+                  color: Colors.green,
+                  onPlusTap: () {
+                    _launchCall("8885320115");
+                  },
                 ),
               ]
             ]

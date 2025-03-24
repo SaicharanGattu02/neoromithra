@@ -7,6 +7,7 @@ import '../utils/Color_Constants.dart';
 class CustomAppButton extends StatelessWidget implements PreferredSizeWidget {
   final String text;
   final Color? color;
+  final Color? textcolor;
   final double? width;
   final double? height;
   final VoidCallback? onPlusTap;
@@ -17,6 +18,7 @@ class CustomAppButton extends StatelessWidget implements PreferredSizeWidget {
     required this.text,
     required this.onPlusTap,
     this.color,
+    this.textcolor,
     this.height,
     this.width,
     this.isLoading = false, // Default to false
@@ -50,7 +52,7 @@ class CustomAppButton extends StatelessWidget implements PreferredSizeWidget {
             : Text(
           text,
           style: TextStyle(
-            color: color??Colors.white,
+            color: textcolor??Colors.white,
             fontSize:(15),
             fontWeight: FontWeight.w700,
             fontFamily: 'Epi',

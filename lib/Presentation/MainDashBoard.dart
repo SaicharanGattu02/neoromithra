@@ -15,15 +15,17 @@ import 'TherapiesListScreen.dart';
 
 
 class MainDashBoard extends StatefulWidget {
-  const MainDashBoard({super.key});
+  final int initialIndex; // Add this
+  const MainDashBoard({super.key, this.initialIndex = 0}); // Default to Home
 
   @override
   State<MainDashBoard> createState() => _MainDashBoardState();
 }
 
+
 class _MainDashBoardState extends State<MainDashBoard> {
-  int _selectedIndex = 0; // Default index for the selected screen
-  PageController pageController = PageController();
+  late int _selectedIndex;
+  late PageController pageController;
 
   // Method to handle tap on bottom navigation bar items
   void onItemTapped(int selectedItems) {
@@ -43,6 +45,8 @@ class _MainDashBoardState extends State<MainDashBoard> {
 
   @override
   void initState() {
+    _selectedIndex = widget.initialIndex; // Use the passed index
+    pageController = PageController(initialPage: widget.initialIndex); // Initialize controller
     context.read<LocationCubit>().checkLocationPermission();
     super.initState();
   }

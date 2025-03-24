@@ -69,6 +69,7 @@ dependencies:
   overlay_support: ^2.1.0
   flutter_widget_from_html: ^0.16.0
   lucide_icons: ^0.257.0
+  phonepe_payment_sdk: ^2.0.3
 
 
 

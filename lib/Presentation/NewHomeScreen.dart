@@ -9,6 +9,7 @@ import 'package:neuromithra/services/other_services.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:neuromithra/utils/CustomSnackBar.dart';
 import 'package:neuromithra/utils/Shimmers.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../Logic/Location/location_cubit.dart';
 import '../Logic/Location/location_state.dart';
@@ -301,6 +302,15 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
       });
     } catch (e) {
       debugPrint("${e.toString()}");
+    }
+  }
+
+  void launchWhatsApp() async {
+    String url = "https://wa.me/+91 8885320115}"; // WhatsApp API URL
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw "Could not launch $url";
     }
   }
 
@@ -823,6 +833,15 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                   ],
                 ),
               ),
+            ),
+            floatingActionButton: FloatingActionButton(
+              shape: CircleBorder(),
+              elevation: 2, // Adds shadow
+              onPressed: () {
+                launchWhatsApp();
+              },
+              backgroundColor: Colors.blue,
+              child: Image.asset("assets/whatsapp.png"),
             ),
           );
   }

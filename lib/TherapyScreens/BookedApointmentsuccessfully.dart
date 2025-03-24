@@ -52,7 +52,7 @@ class _ApointmentSuccessState extends State<ApointmentSuccess> {
     // Navigate to Dashboard after a delay
     SchedulerBinding.instance.addPostFrameCallback((_) {
       Future.delayed(Duration(seconds: 2), () {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => MainDashBoard()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => MainDashBoard(initialIndex: 0,)));
       });
     });
   }

@@ -45,9 +45,9 @@ class TherapiesListScreen extends StatelessWidget {
     },
     {
       'image': 'assets/Therephy/physical_theraphy.jpeg',
-      'text': 'Physical Therapy',
+      'text': 'Physio Therapy',
       'description':
-      'Physical Therapy is a therapeutic approach focused on enhancing physical function, strength, and mobility through various techniques and exercises. This therapy aims to address and treat musculoskeletal, neurological, and developmental issues that impact an individual’s ability to perform daily activities and enjoy a fulfilling life.',
+      'Physio Therapy is a therapeutic approach focused on enhancing physical function, strength, and mobility through various techniques and exercises. This therapy aims to address and treat musculoskeletal, neurological, and developmental issues that impact an individual’s ability to perform daily activities and enjoy a fulfilling life.',
       'keyAreas': [
         'Improved Mobility: Enhances range of motion and movement abilities, allowing for greater independence in daily activities.',
         'Increased Strength: Builds muscle strength and endurance to support overall physical health and functionality.',
