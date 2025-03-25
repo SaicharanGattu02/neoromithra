@@ -37,10 +37,8 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     setState(() {
       isLoading = true;
     });
-
     // Ensure token validity before making API requests
     await CheckHeaderValidity(); // Ensures token is valid or refreshed
-
     // Proceed with API calls regardless of token validity check
     await Future.wait([
       getProfileDetails(),

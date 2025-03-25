@@ -111,7 +111,9 @@ class PrivacyPolicyScreen extends StatelessWidget {
             Text(
               'If you have any questions or concerns about this Privacy Policy or our privacy practices, please contact us at:\n\n'
                   'Email: neuromitra@gmail.com\n'
-                  'Phone: +91 8885320115',
+                  'Phone: +91 8885320115 \n'
+                  'Address: NEUROMITRA EVOMENTIS PRIVATE LIMITED \n H NO- 3-229, PLOT 3/57, SUBHASH CHANDRABOSE NAGAR, Miyapur, Tirumalagiri, Hyderabad- 500049, Telangana'
+              ,
               style: TextStyle(fontSize: 16),
             ),
           ],

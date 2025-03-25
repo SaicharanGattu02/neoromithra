@@ -62,7 +62,6 @@ Future<bool> CheckHeaderValidity() async {
           if (response.accessToken!="")
             {
               PreferenceService().saveString("token", response.accessToken??""),
-              // Store actual expiry timestamp
               PreferenceService().saveString("access_expiry_timestamp",
                   (DateTime.now().millisecondsSinceEpoch ~/ 1000 + response.expiresIn!).toString()),
               status = true,
