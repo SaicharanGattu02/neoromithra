@@ -1,27 +1,29 @@
 import 'dart:async';
+import 'dart:convert' show base64Encode, jsonEncode, utf8;
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
-import 'package:neuromithra/Presentation/Dashboard.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
-import 'AddRating.dart';
+import 'package:phonepe_payment_sdk/phonepe_payment_sdk.dart';
 import 'AddressListScreen.dart';
-import 'CustomAppBar.dart';
-import 'FirstLetterCaps.dart';
 import '../Model/AddressListModel.dart';
-import '../Model/BookingHistoryModel.dart';
-
 import '../TherapyScreens/BookedApointmentsuccessfully.dart';
 import 'ShakeWidget.dart';
+import 'package:crypto/crypto.dart';
 
 class Bookappointment1 extends StatefulWidget {
   final String pagesource;
   final String patientID;
   final String patient_name;
   final String p_age;
-  const Bookappointment1({super.key, required this.pagesource,required this.patientID,required this.patient_name,required this.p_age});
+  const Bookappointment1(
+      {super.key,
+      required this.pagesource,
+      required this.patientID,
+      required this.patient_name,
+      required this.p_age});
 
   @override
   State<Bookappointment1> createState() => _Bookappointment1State();
@@ -44,19 +46,27 @@ class _Bookappointment1State extends State<Bookappointment1> {
   String? appointment;
   String? appointmenttype;
   bool isUpdate = false;
-  bool _isConnected = true;
-  int address_id=0;
+  int address_id = 0;
+
+
+
+  final String environment = "PRODUCTION"; // Change to "SANDBOX" for testing
+  final String appId = "M22VFKF2FH2O5"; // Merchant ID
+  final String merchantId = "M22VFKF2FH2O5";
+  final String saltKey = "bf44dc82-e132-45b3-9f00-d952d6b92453";
+  final int saltIndex = 1;
+  final String callbackUrl = "";
+  final String apiEndPoint = "/pg/v1/pay";
 
   @override
   void initState() {
     GetAddressList();
+    PhonePePaymentSdk.init(environment, appId, merchantId, true);
     super.initState();
     setState(() {
-      _fullNameController.text=widget.patient_name;
-      _ageController.text=widget.p_age;
+      _fullNameController.text = widget.patient_name;
+      _ageController.text = widget.p_age;
     });
-    print("ID :${widget.patientID}");
-
     _fullNameController.addListener(() {
       setState(() {
         _validateFullName = "";
@@ -104,6 +114,55 @@ class _Bookappointment1State extends State<Bookappointment1> {
     });
   }
 
+  Future<void> initiateTransaction(int amount) async {
+    try {
+      String transactionId = "TXN${DateTime.now().millisecondsSinceEpoch}";
+      Map<String, dynamic> payload = {
+        "merchantTransactionId": transactionId,
+        "merchantId": merchantId,
+        "amount": amount * 100, // Convert to paisa
+        "callbackUrl": callbackUrl,
+        "mobileNumber": "9876543210",
+        "paymentInstrument": {"type": "PAY_PAGE"}
+      };
+
+      log(payload.toString());
+      String payloadEncoded = base64Encode(utf8.encode(jsonEncode(payload)));
+      var byteCodes = utf8.encode(payloadEncoded + apiEndPoint + saltKey);
+      String checksum = "${sha256.convert(byteCodes)}###$saltIndex";
+
+      Map<dynamic, dynamic>? response = await PhonePePaymentSdk.startTransaction(
+        payloadEncoded,
+        callbackUrl,
+        checksum,
+        environment,
+      );
+
+      if (response != null) {
+        String? status = response["status"];
+        if (status == "SUCCESS") {
+          log("✅ Payment Success: $response");
+          _showSnackBar("Payment Successful!");
+        } else {
+          log("❌ Payment Failed: $response");
+          _showSnackBar("Payment Failed!");
+        }
+      } else {
+        log("⚠️ Payment response is null");
+        _showSnackBar("Payment response is null");
+      }
+    } catch (e) {
+      log("🚨 Error: $e");
+      _showSnackBar("Error: $e");
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), duration: Duration(seconds: 2)),
+    );
+  }
+
   List<Address> addresses = [];
   Future<void> GetAddressList() async {
     final response = await Userapi.getaddresslist();
@@ -116,22 +175,6 @@ class _Bookappointment1State extends State<Bookappointment1> {
   }
 
   int? selectedAddressIndex;
-
-  // Future<void> _initConnectivity() async {
-  //   try {
-  //     var connectivityResult = await (Connectivity().checkConnectivity());
-  //     _updateConnectionStatus(connectivityResult);
-  //   } on PlatformException catch (e) {
-  //     print("Couldn't check connectivity status: $e");
-  //   }
-  // }
-  //
-  // // Update connectivity status
-  // void _updateConnectionStatus(ConnectivityResult result) {
-  //   setState(() {
-  //     _isConnected = result != ConnectivityResult.none;
-  //   });
-  // }
 
   Future<void> NewBookAppointment() async {
     String user_id = await PreferenceService().getString('user_id') ?? "";
@@ -166,7 +209,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
     }
   }
 
-  Future<void>ExistBookAppointment() async {
+  Future<void> ExistBookAppointment() async {
     String user_id = await PreferenceService().getString('user_id') ?? "";
     String fullname = _fullNameController.text.trim();
     String phone = _phoneNumberController.text.trim();
@@ -187,8 +230,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
         widget.pagesource,
         timeOfAppointment,
         user_id,
-        widget.patientID.toString()
-    );
+        widget.patientID.toString());
     if (data != null) {
       setState(() {
         if (data.status == true) {
@@ -243,9 +285,9 @@ class _Bookappointment1State extends State<Bookappointment1> {
           _validateLocation.isEmpty;
 
       if (_isLoading) {
-        if(widget.patientID!=""){
+        if (widget.patientID != "") {
           ExistBookAppointment();
-        }else{
+        } else {
           NewBookAppointment();
         }
       }
@@ -327,7 +369,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(  "Booking Appointment",
+        title: Text("Booking Appointment",
             style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: "Inter",
@@ -477,7 +519,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                           setState(() {
                             // Update the selected index
                             selectedAddressIndex = value == true ? index : null;
-                            address_id = addresses[index].id??0;
+                            address_id = addresses[index].id ?? 0;
                             print("Address id:${address_id}");
                             _validateLocation = "";
                           });
@@ -532,13 +574,15 @@ class _Bookappointment1State extends State<Bookappointment1> {
                     } else {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => AddressListScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => AddressListScreen()),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
                             "Please first add address.",
-                            style: TextStyle(color: Colors.white, fontFamily: "Inter"),
+                            style: TextStyle(
+                                color: Colors.white, fontFamily: "Inter"),
                           ),
                           duration: Duration(seconds: 1),
                           backgroundColor: Color(0xFF32657B),
@@ -556,22 +600,22 @@ class _Bookappointment1State extends State<Bookappointment1> {
                   ),
                   child: _isLoading
                       ? SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 3,
-                    ),
-                  )
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 3,
+                          ),
+                        )
                       : Text(
-                    "Book Appointment",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Epi',
-                    ),
-                  ),
+                          "Book Appointment",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Epi',
+                          ),
+                        ),
                 ),
               ),
             ),

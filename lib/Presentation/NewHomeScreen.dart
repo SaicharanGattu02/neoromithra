@@ -860,9 +860,9 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
               shape: CircleBorder(),
               elevation: 2, // Adds shadow
               onPressed: () {
-                // launchWhatsApp();
+                launchWhatsApp();
                 // // payment();
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> PaymentScreen()));
+                // Navigator.push(context, MaterialPageRoute(builder: (context)=> PaymentScreen()));
               },
               backgroundColor: Colors.blue,
               child: Image.asset("assets/whatsapp.png"),

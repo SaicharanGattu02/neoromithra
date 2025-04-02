@@ -12,9 +12,6 @@ class PaymentScreen extends StatefulWidget {
 
 class _PaymentScreenState extends State<PaymentScreen> {
   final String environment = "PRODUCTION"; // Change to "SANDBOX" for testing
-  // final String appId = "M2263C04721G1"; // Merchant ID
-  // final String merchantId = "M2263C04721G1";
-  // final String saltKey = "a52dde56-568b-4243-8ae1-7065b1169b39";
   final String appId = "M22VFKF2FH2O5"; // Merchant ID
   final String merchantId = "M22VFKF2FH2O5";
   final String saltKey = "bf44dc82-e132-45b3-9f00-d952d6b92453";
@@ -30,7 +27,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   Future<void> initiateTransaction(int amount) async {
     try {
-      String transactionId = "TXN_${DateTime.now().millisecondsSinceEpoch}";
+      String transactionId = "TXN${DateTime.now().millisecondsSinceEpoch}";
       Map<String, dynamic> payload = {
         "merchantTransactionId": transactionId,
         "merchantId": merchantId,
