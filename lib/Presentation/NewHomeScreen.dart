@@ -79,6 +79,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     if (Response != null) {
       setState(() {
         user_data = Response.user ?? User();
+        PreferenceService().saveString("user_mobile", user_data.phone.toString()??"");
         status = Response.healthFeedback?.status ?? false;
       });
     }
@@ -313,20 +314,20 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     }
   }
 
-  void payment() async {
-    try {
-      var res = await Userapi.makePayment();
-
-      if (res != null && res['success'] == true) {
-        String paymentUrl = res['payment_url'];
-        _launchURL(paymentUrl);
-      } else {
-        debugPrint("Payment failed: ${res?['message'] ?? 'Unknown error'}");
-      }
-    } catch (e) {
-      debugPrint("Error: ${e.toString()}");
-    }
-  }
+  // void payment() async {
+  //   try {
+  //     var res = await Userapi.makePayment();
+  //
+  //     if (res != null && res['success'] == true) {
+  //       String paymentUrl = res['payment_url'];
+  //       _launchURL(paymentUrl);
+  //     } else {
+  //       debugPrint("Payment failed: ${res?['message'] ?? 'Unknown error'}");
+  //     }
+  //   } catch (e) {
+  //     debugPrint("Error: ${e.toString()}");
+  //   }
+  // }
 
   void _launchURL(String url) async {
     Uri uri = Uri.parse(url);

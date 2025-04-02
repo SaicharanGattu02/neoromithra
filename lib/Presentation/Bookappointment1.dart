@@ -10,6 +10,7 @@ import 'package:phonepe_payment_sdk/phonepe_payment_sdk.dart';
 import 'AddressListScreen.dart';
 import '../Model/AddressListModel.dart';
 import '../TherapyScreens/BookedApointmentsuccessfully.dart';
+import 'PaymentStatusScreen.dart';
 import 'ShakeWidget.dart';
 import 'package:crypto/crypto.dart';
 
@@ -48,20 +49,22 @@ class _Bookappointment1State extends State<Bookappointment1> {
   bool isUpdate = false;
   int address_id = 0;
 
-
-
-  final String environment = "PRODUCTION"; // Change to "SANDBOX" for testing
-  final String appId = "M22VFKF2FH2O5"; // Merchant ID
-  final String merchantId = "M22VFKF2FH2O5";
-  final String saltKey = "bf44dc82-e132-45b3-9f00-d952d6b92453";
-  final int saltIndex = 1;
+  // final String environment = "PRODUCTION";
+  String environment = "PRODUCTION"; // Change to "SANDBOX" for testing
+  String appId = ""; // Merchant ID
+  String merchantId = "";
+  String saltKey = "";
+  int saltIndex = 1;
   final String callbackUrl = "";
   final String apiEndPoint = "/pg/v1/pay";
+  String transactionId = "TXN${DateTime.now().millisecondsSinceEpoch}";
+  String Orderamount= "";
+  String user_id="";
 
   @override
   void initState() {
     GetAddressList();
-    PhonePePaymentSdk.init(environment, appId, merchantId, true);
+    getPhonepeDetailsApi();
     super.initState();
     setState(() {
       _fullNameController.text = widget.patient_name;
@@ -116,20 +119,29 @@ class _Bookappointment1State extends State<Bookappointment1> {
 
   Future<void> initiateTransaction(int amount) async {
     try {
-      String transactionId = "TXN${DateTime.now().millisecondsSinceEpoch}";
+      String user_mobile = await PreferenceService().getString('user_mobile') ?? "";
+      setState(() {
+        transactionId = "TXN${DateTime.now().millisecondsSinceEpoch}";
+        Orderamount = amount.toString();
+      });
+
       Map<String, dynamic> payload = {
         "merchantTransactionId": transactionId,
         "merchantId": merchantId,
-        "amount": amount * 100, // Convert to paisa
+        "amount": amount * 100,
         "callbackUrl": callbackUrl,
-        "mobileNumber": "9876543210",
+        "mobileNumber": "${user_mobile}",
         "paymentInstrument": {"type": "PAY_PAGE"}
       };
 
       log(payload.toString());
+
       String payloadEncoded = base64Encode(utf8.encode(jsonEncode(payload)));
       var byteCodes = utf8.encode(payloadEncoded + apiEndPoint + saltKey);
       String checksum = "${sha256.convert(byteCodes)}###$saltIndex";
+
+      // Get user_id before calling API
+      String user_id = await PreferenceService().getString('user_id') ?? "";
 
       Map<dynamic, dynamic>? response = await PhonePePaymentSdk.startTransaction(
         payloadEncoded,
@@ -139,38 +151,69 @@ class _Bookappointment1State extends State<Bookappointment1> {
       );
 
       if (response != null) {
+        log("Payment response: $response");
         String? status = response["status"];
-        if (status == "SUCCESS") {
-          log("✅ Payment Success: $response");
-          _showSnackBar("Payment Successful!");
-        } else {
-          log("❌ Payment Failed: $response");
-          _showSnackBar("Payment Failed!");
-        }
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PaymentStatusScreen(
+              response: response,
+              transactionId: transactionId,
+              amount: Orderamount,
+              isExistingPatient: widget.patientID.isNotEmpty,
+              userId: user_id,
+              fullName: _fullNameController.text.trim(),
+              phoneNumber: _phoneNumberController.text.trim(),
+              appointment: _appointmentController.text.trim(),
+              age: _ageController.text.trim(),
+              appointmentType: _appointmentTypeController.text.trim(),
+              date: _dateOfAppointmentController.text.trim(),
+              timeOfAppointment: _timeOfAppointmentController.text.trim(),
+              addressId: address_id.toString(),
+              pageSource: widget.pagesource,
+              patientId: widget.patientID,
+              onSuccess: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => ApointmentSuccess()),
+                );
+              },
+            ),
+          ),
+        );
       } else {
         log("⚠️ Payment response is null");
-        _showSnackBar("Payment response is null");
       }
     } catch (e) {
       log("🚨 Error: $e");
-      _showSnackBar("Error: $e");
     }
   }
 
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), duration: Duration(seconds: 2)),
-    );
-  }
 
   List<Address> addresses = [];
   Future<void> GetAddressList() async {
+    user_id = await PreferenceService().getString('user_id') ?? "";
     final response = await Userapi.getaddresslist();
     setState(() {
       if (response?.status == true) {
         addresses = response?.address ?? [];
         print(addresses);
       } else {}
+    });
+  }
+
+  Future<void>getPhonepeDetailsApi() async {
+    final response = await Userapi.getPhonepeDetails();
+    setState(() {
+      if (response?.status == true) {
+        environment = response?.data?[0].env??"";
+        appId = response?.data?[0].appId??"";
+        merchantId = response?.data?[0].merchantId??"";
+        saltKey = response?.data?[0].saltKey??"";
+        saltIndex = response?.data?[0].saltIndex??0;
+        PhonePePaymentSdk.init(environment, appId, merchantId, true);
+      }
     });
   }
 
@@ -185,7 +228,10 @@ class _Bookappointment1State extends State<Bookappointment1> {
     String appointmentType = _appointmentTypeController.text.trim();
     String date = _dateOfAppointmentController.text.trim();
     String timeOfAppointment = _timeOfAppointmentController.text.trim();
-
+    Map<String,dynamic> order_data = {
+      "amount":"${Orderamount}",
+      "transactionID":"$transactionId"
+    };
     final data = await Userapi.NewApointment(
         fullname,
         phone,
@@ -196,7 +242,8 @@ class _Bookappointment1State extends State<Bookappointment1> {
         address_id.toString(),
         widget.pagesource,
         timeOfAppointment,
-        user_id);
+        user_id,
+        order_data);
     if (data != null) {
       setState(() {
         if (data.status == true) {
@@ -218,7 +265,10 @@ class _Bookappointment1State extends State<Bookappointment1> {
     String appointmentType = _appointmentTypeController.text.trim();
     String date = _dateOfAppointmentController.text.trim();
     String timeOfAppointment = _timeOfAppointmentController.text.trim();
-
+    Map<String,dynamic> order_data = {
+      "amount":"${Orderamount}",
+      "transactionID":"$transactionId"
+    };
     final data = await Userapi.ExistApointment(
         fullname,
         phone,
@@ -230,7 +280,9 @@ class _Bookappointment1State extends State<Bookappointment1> {
         widget.pagesource,
         timeOfAppointment,
         user_id,
-        widget.patientID.toString());
+        widget.patientID.toString(),
+        order_data
+    );
     if (data != null) {
       setState(() {
         if (data.status == true) {
@@ -285,11 +337,12 @@ class _Bookappointment1State extends State<Bookappointment1> {
           _validateLocation.isEmpty;
 
       if (_isLoading) {
-        if (widget.patientID != "") {
-          ExistBookAppointment();
-        } else {
-          NewBookAppointment();
-        }
+        initiateTransaction(1);
+        // if (widget.patientID != "") {
+        //   ExistBookAppointment();
+        // } else {
+        //   NewBookAppointment();
+        // }
       }
     });
   }
@@ -568,9 +621,9 @@ class _Bookappointment1State extends State<Bookappointment1> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (addresses.isNotEmpty) {
-                      if (!_isLoading) {
+                      // if (!_isLoading) {
                         _validateFields();
-                      }
+                      // }
                     } else {
                       Navigator.pushReplacement(
                         context,
@@ -598,16 +651,18 @@ class _Bookappointment1State extends State<Bookappointment1> {
                     ),
                     elevation: 5, // Adds a slight shadow for better UI
                   ),
-                  child: _isLoading
-                      ? SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 3,
-                          ),
-                        )
-                      : Text(
+                  child:
+                  // _isLoading
+                  //     ? SizedBox(
+                  //         width: 24,
+                  //         height: 24,
+                  //         child: CircularProgressIndicator(
+                  //           color: Colors.white,
+                  //           strokeWidth: 3,
+                  //         ),
+                  //       )
+                  //     :
+                  Text(
                           "Book Appointment",
                           style: TextStyle(
                             color: Colors.white,

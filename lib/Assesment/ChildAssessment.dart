@@ -61,7 +61,6 @@ class _ChildAssessmentState extends State<ChildAssessment> {
       String role = res["role"].toString();
       String resultString = res["result"];
       Map<String, dynamic> resultData = jsonDecode(resultString); // Convert to Map
-
       // Navigate to result screen with role-based results
       Navigator.pushReplacement(
         context,
