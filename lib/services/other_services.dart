@@ -7,16 +7,23 @@ import '../Model/LoginModel.dart';
 import '../utils/constants.dart';
 import 'Preferances.dart';
 
-getheader() async {
+Future<Map<String, String>> getheader() async {
   final sessionid = await PreferenceService().getString("token");
-  print(sessionid);
-  String Token = "Bearer ${sessionid}";
-  Map<String, String> a = {
-    authorization: Token.toString(),
-    'Content-Type': 'application/json'
+
+  if (sessionid == null || sessionid.isEmpty) {
+    print("Error: No token found.");
+    return {}; // Return an empty map to prevent invalid headers
+  }
+
+  print("Session ID: $sessionid");
+  String token = "Bearer $sessionid";
+
+  return {
+    'Authorization': token, // Fixed key name
+    'Content-Type': 'application/json',
   };
-  return a;
 }
+
 
 getheader2() async {
   final sessionid = await PreferenceService().getString("token");

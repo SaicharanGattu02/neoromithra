@@ -228,9 +228,13 @@ class _Bookappointment1State extends State<Bookappointment1> {
     String appointmentType = _appointmentTypeController.text.trim();
     String date = _dateOfAppointmentController.text.trim();
     String timeOfAppointment = _timeOfAppointmentController.text.trim();
+    // Map<String,dynamic> order_data = {
+    //   "amount":"${Orderamount}",
+    //   "transactionID":"$transactionId"
+    // };
     Map<String,dynamic> order_data = {
-      "amount":"${Orderamount}",
-      "transactionID":"$transactionId"
+      "amount":"1",
+      "transactionID":"XYZKJUHGKIJNKLJNOIJ"
     };
     final data = await Userapi.NewApointment(
         fullname,
@@ -265,9 +269,13 @@ class _Bookappointment1State extends State<Bookappointment1> {
     String appointmentType = _appointmentTypeController.text.trim();
     String date = _dateOfAppointmentController.text.trim();
     String timeOfAppointment = _timeOfAppointmentController.text.trim();
+    // Map<String,dynamic> order_data = {
+    //   "amount":"${Orderamount}",
+    //   "transactionID":"$transactionId"
+    // };
     Map<String,dynamic> order_data = {
-      "amount":"${Orderamount}",
-      "transactionID":"$transactionId"
+      "amount":"1",
+      "transactionID":"XYZKJUHGKIJNKLJNOIJ"
     };
     final data = await Userapi.ExistApointment(
         fullname,

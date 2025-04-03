@@ -66,7 +66,8 @@ class Userapi {
   //   }
   // }
 
-  static Future<Map<String, List<AssessmentQuestion>>> fetchAdultQuestions() async {
+  static Future<Map<String, List<AssessmentQuestion>>>
+      fetchAdultQuestions() async {
     try {
       final headers = await getheader3();
       final response = await http.get(
@@ -92,14 +93,13 @@ class Userapi {
     }
   }
 
-  static Future<Map<String, dynamic>> submitChildrenAnswers(Map<String, dynamic> data,role) async {
+  static Future<Map<String, dynamic>> submitChildrenAnswers(
+      Map<String, dynamic> data, role) async {
     try {
       final headers = await getheader3();
 
-      var request = http.MultipartRequest(
-          'POST',
-          Uri.parse("${host}/api/save_assement")
-      );
+      var request =
+          http.MultipartRequest('POST', Uri.parse("${host}/api/save_assement"));
 
       // Add Authorization Header
       request.headers.addAll(headers);
@@ -127,8 +127,8 @@ class Userapi {
     }
   }
 
-
-  static Future<Map<String, List<AssessmentQuestion>>> fetchChildrenQuestions() async {
+  static Future<Map<String, List<AssessmentQuestion>>>
+      fetchChildrenQuestions() async {
     try {
       final headers = await getheader3();
       final response = await http.get(
@@ -195,37 +195,44 @@ class Userapi {
       String page_source,
       String time_of_appointment,
       String user_id,
-      Map<String,dynamic> order_data
+      Map<String, dynamic> order_data
       ) async {
-    if (await CheckHeaderValidity()) {
-      try {
-        final body = jsonEncode({
-          'Full_Name': fname,
-          'phone_Number': pnum,
-          'appointment': appointment,
-          'age': age,
-          'appointment_type': appointment_type,
-          'Date_of_appointment': Date_of_appointment,
-          'time_of_appointment': time_of_appointment,
-          'location': location,
-          'page_source': page_source,
-          'order_data': order_data,
-        });
-        print("Apointment data: $body");
+    try {
+      final url = Uri.parse("${host}/api/for_new_bookappointments");
+      final headers = await getheader();
+      var request = http.MultipartRequest('POST', url)
+        ..headers.addAll(headers)
+        ..fields['Full_Name'] = 'Shaiik Asif'
+        ..fields['phone_Number'] = '9440161007'
+        ..fields['appointment'] = 'Self'
+        ..fields['age'] = '35'
+        ..fields['appointment_type'] = '0'
+        ..fields['Date_of_appointment'] = '2025/04/03'
+        ..fields['location'] = '58'
+        ..fields['page_source'] = 'Speech Therapy'
+        ..fields['time_of_appointment'] = '14:20'
+        ..fields['payment_json'] = jsonEncode(order_data);
 
-        final url = Uri.parse("${host}/api/for_new_bookappointments");
-        final headers = await getheader();
-        final response = await http.post(url, headers: headers, body: body);
-        final jsonResponse = jsonDecode(response.body);
-        print("Apointment Status:${response.body}");
-        return BookApointmentModel.fromJson(jsonResponse);
-      } catch (e) {
-        print("Error occurred: $e");
+      var response = await request.send();
+      String responseBody = await response.stream.bytesToString();
+      if (response.statusCode == 200) {
+        try {
+          final jsonResponse = jsonDecode(responseBody);
+          print("✅ Appointment Response: $jsonResponse");
+          return BookApointmentModel.fromJson(jsonResponse);
+        } catch (e) {
+          print("⚠️ JSON Parsing Error: $e");
+          return null;
+        }
+      } else {
+        print("❌ Failed to book appointment: ${response.statusCode}");
+        print("Response: $responseBody");
         return null;
       }
-    } else {
-      return null;
+    } catch (e) {
+      print('Error: $e');
     }
+    return null;
   }
 
   static Future<BookApointmentModel?> ExistApointment(
@@ -240,41 +247,44 @@ class Userapi {
       String time_of_appointment,
       String user_id,
       String patient_id,
-      Map<String,dynamic> order_data
-      ) async {
-    if (await CheckHeaderValidity()) {
-      try {
-        final body = jsonEncode({
-          'Full_Name': fname,
-          'phone_Number': pnum,
-          'appointment': appointment,
-          'age': age,
-          'appointment_type': appointment_type,
-          'Date_of_appointment': Date_of_appointment,
-          'time_of_appointment': time_of_appointment,
-          'location': location,
-          'page_source': page_source,
-          'patient_id': patient_id,
-          'order_data': order_data
-        });
-        print("Apointment data: $body");
-        final url = Uri.parse("${host}/api/for_exesting_bookappointments");
-        final headers = await getheader();
-        final response = await http.post(
-          url,
-          headers: headers,
-          body: body,
-        );
-        final jsonResponse = jsonDecode(response.body);
-        print("Apointment Status:${response.body}");
-        return BookApointmentModel.fromJson(jsonResponse);
-      } catch (e) {
-        print("Error occurred: $e");
+      Map<String, dynamic> order_data) async {
+    try {
+      final url = Uri.parse("${host}/api/for_exesting_bookappointments");
+      final headers = await getheader();
+      var request = http.MultipartRequest('POST', url)
+        ..headers.addAll(headers)
+        ..fields['Full_Name'] = fname
+        ..fields['phone_Number'] = pnum
+        ..fields['appointment'] = appointment
+        ..fields['age'] = age
+        ..fields['appointment_type'] = appointment_type
+        ..fields['Date_of_appointment'] = Date_of_appointment
+        ..fields['location'] = location
+        ..fields['page_source'] = page_source
+        ..fields['time_of_appointment'] = time_of_appointment
+        ..fields['patient_id'] = patient_id
+        ..fields['payment_json'] = jsonEncode(order_data);
+
+      var response = await request.send();
+      String responseBody = await response.stream.bytesToString();
+      if (response.statusCode == 200) {
+        try {
+          final jsonResponse = jsonDecode(responseBody);
+          print("✅ Existing Appointment Response: $jsonResponse");
+          return BookApointmentModel.fromJson(jsonResponse);
+        } catch (e) {
+          print("⚠️ JSON Parsing Error: $e");
+          return null;
+        }
+      } else {
+        print("❌ Failed to book existing appointment: ${response.statusCode}");
+        print("Response: $responseBody");
         return null;
       }
-    } else {
-      return null;
+    } catch (e) {
+      print('Error: $e');
     }
+    return null;
   }
 
   static Future<RegisterModel?> PostRegister(String name, String mail,
