@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lottie/lottie.dart';
 import 'package:neuromithra/Logic/Location/location_cubit.dart';
 import 'package:neuromithra/Logic/Location/location_state.dart';
 import 'package:neuromithra/Presentation/NewHomeScreen.dart';
 import 'package:neuromithra/Presentation/profile_screen.dart';
-import 'package:neuromithra/services/userapi.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'CounsellingListScreen.dart';
 import 'SelectingTypes/GuideScreen.dart';
-import 'SelectingTypes/Selecting_types.dart';
 import 'TherapiesListScreen.dart';
 
 

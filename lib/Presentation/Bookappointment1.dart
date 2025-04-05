@@ -345,12 +345,40 @@ class _Bookappointment1State extends State<Bookappointment1> {
           _validateLocation.isEmpty;
 
       if (_isLoading) {
-        initiateTransaction(1);
+        initiateTransaction(800);
         // if (widget.patientID != "") {
         //   ExistBookAppointment();
         // } else {
         //   NewBookAppointment();
         // }
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => PaymentStatusScreen(
+        //       response: {},
+        //       transactionId: transactionId,
+        //       amount: Orderamount,
+        //       isExistingPatient: widget.patientID.isNotEmpty,
+        //       userId: user_id,
+        //       fullName: _fullNameController.text.trim(),
+        //       phoneNumber: _phoneNumberController.text.trim(),
+        //       appointment: _appointmentController.text.trim(),
+        //       age: _ageController.text.trim(),
+        //       appointmentType: _appointmentTypeController.text.trim(),
+        //       date: _dateOfAppointmentController.text.trim(),
+        //       timeOfAppointment: _timeOfAppointmentController.text.trim(),
+        //       addressId: address_id.toString(),
+        //       pageSource: widget.pagesource,
+        //       patientId: widget.patientID,
+        //       onSuccess: () {
+        //         Navigator.pushReplacement(
+        //           context,
+        //           MaterialPageRoute(builder: (context) => ApointmentSuccess()),
+        //         );
+        //       },
+        //     ),
+        //   ),
+        // );
       }
     });
   }

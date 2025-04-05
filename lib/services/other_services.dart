@@ -24,7 +24,6 @@ Future<Map<String, String>> getheader() async {
   };
 }
 
-
 getheader2() async {
   final sessionid = await PreferenceService().getString("token");
   print(sessionid);
@@ -55,28 +54,37 @@ getheader1() async {
 }
 
 Future<bool> CheckHeaderValidity() async {
-  String timestamp = (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(); // Convert to seconds
+  String timestamp = (DateTime.now().millisecondsSinceEpoch ~/ 1000)
+      .toString(); // Convert to seconds
   LoginModel response = LoginModel();
   final token = await PreferenceService().getString("token");
-  final validityTimestamp = await PreferenceService().getString("access_expiry_timestamp");
+  final validityTimestamp =
+      await PreferenceService().getString("access_expiry_timestamp");
   var status = true;
 
-  if (validityTimestamp == null || int.parse(validityTimestamp) <= int.parse(timestamp)) {
+  if (validityTimestamp == null ||
+      int.parse(validityTimestamp) <= int.parse(timestamp)) {
     await Userapi.UpdateRefreshToken().then((data) => {
-      if (data != null)
-        {
-          response = data,
-          if (response.accessToken!="")
+          if (data != null)
             {
-              PreferenceService().saveString("token", response.accessToken??""),
-              PreferenceService().saveString("access_expiry_timestamp",
-                  (DateTime.now().millisecondsSinceEpoch ~/ 1000 + response.expiresIn!).toString()),
-              status = true,
-            } else {
-            status = false,
-          }
-        }
-    });
+              response = data,
+              if (response.accessToken != "")
+                {
+                  PreferenceService()
+                      .saveString("token", response.accessToken ?? ""),
+                  PreferenceService().saveString(
+                      "access_expiry_timestamp",
+                      (DateTime.now().millisecondsSinceEpoch ~/ 1000 +
+                              response.expiresIn!)
+                          .toString()),
+                  status = true,
+                }
+              else
+                {
+                  status = false,
+                }
+            }
+        });
   } else {
     status = true;
   }

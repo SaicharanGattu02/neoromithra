@@ -195,22 +195,21 @@ class Userapi {
       String page_source,
       String time_of_appointment,
       String user_id,
-      Map<String, dynamic> order_data
-      ) async {
+      Map<String, dynamic> order_data) async {
     try {
       final url = Uri.parse("${host}/api/for_new_bookappointments");
       final headers = await getheader();
       var request = http.MultipartRequest('POST', url)
         ..headers.addAll(headers)
-        ..fields['Full_Name'] = 'Shaiik Asif'
-        ..fields['phone_Number'] = '9440161007'
-        ..fields['appointment'] = 'Self'
-        ..fields['age'] = '35'
-        ..fields['appointment_type'] = '0'
-        ..fields['Date_of_appointment'] = '2025/04/03'
-        ..fields['location'] = '58'
-        ..fields['page_source'] = 'Speech Therapy'
-        ..fields['time_of_appointment'] = '14:20'
+        ..fields['Full_Name'] = fname
+        ..fields['phone_Number'] = pnum
+        ..fields['appointment'] = appointment
+        ..fields['age'] = age
+        ..fields['appointment_type'] = appointment_type
+        ..fields['Date_of_appointment'] = Date_of_appointment
+        ..fields['location'] = location
+        ..fields['page_source'] = page_source
+        ..fields['time_of_appointment'] = time_of_appointment
         ..fields['payment_json'] = jsonEncode(order_data);
 
       var response = await request.send();
