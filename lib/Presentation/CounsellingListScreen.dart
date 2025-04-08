@@ -17,37 +17,6 @@ import '../CounsellingScreens/SiblingCounsellingScreen.dart';
 import '../TherapyScreens/DetailsScreen.dart';
 
 class CounsellingListScreen extends StatelessWidget {
-  // final List<Map<String, String>> counsellings = [
-  //   {'image': 'assets/Counciling/relationship_counsiling.jpeg',
-  //     'text': 'Relationship Counselling'},
-  //   {'image': 'assets/Counciling/behavioral_counciling.jpeg',
-  //     'text': 'Behavioral Counselling'},
-  //   {'image': 'assets/Counciling/grief_counsiling.jpeg',
-  //     'text': 'Grief Counselling'},
-  //   {'image': 'assets/Counciling/group_counsiling.jpeg',
-  //     'text': 'Group Counselling'},
-  //   {'image':'assets/Counciling/crisis_counsiling.jpeg',
-  //     'text': 'Crisis Counselling'},
-  //   {'image': 'assets/Counciling/carreer_counsling.jpeg',
-  //     'text': 'Career Counselling for parents'},
-  //   {'image': 'assets/Counciling/sibiling_counciling.jpeg',
-  //     'text': 'Sibling Counselling'},
-  //   {'image': 'assets/Counciling/educationol_counsiling.jpeg',
-  //     'text': 'Educational Counselling'},
-  //   {'image':'assets/Counciling/parent_children_relationship.jpeg',
-  //     'text': 'Parent-Child Relationship'},
-  //   {'image': 'assets/Counciling/individual_counsilng_children.jpeg',
-  //     'text': 'Individual Counselling for children'},
-  //   {'image':'assets/Counciling/family_counsiling.jpeg',
-  //     'text': 'Family Counselling'},
-  //   {'image': 'assets/Counciling/mental_health_counsiling.jpeg',
-  //     'text': 'Mental Health Counselling'},
-  //   {'image': 'assets/Counciling/generalstress_councsiling.jpeg',
-  //     'text': 'General stress management'},
-  //   {'image': 'assets/Counciling/autism_Counsiling.png',
-  //     'text': 'Parent Counselling for Autism'},
-  // ];
-
 
   final List<Map<String, dynamic>> counsellings = [
     {

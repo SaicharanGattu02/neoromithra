@@ -130,11 +130,10 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     },
     {
       'image': 'assets/Therephy/physical_theraphy.jpeg',
-      'text': "Restoring Mobility and Improving Quality of Life.",
-      'subtitle':
-          "Empowering Movement and Enhancing Well-being for a Fuller Life.",
+      'text': 'Physio Therapy',
+      'subtitle':'Restoring Strength, Mobility, and Confidence Through Expert Physio Therapy.',
       'description':
-          'Physical Therapy is a therapeutic approach focused on enhancing physical function, strength, and mobility through various techniques and exercises. This therapy aims to address and treat musculoskeletal, neurological, and developmental issues that impact an individual’s ability to perform daily activities and enjoy a fulfilling life.',
+      'Physio Therapy is a therapeutic approach focused on enhancing physical function, strength, and mobility through various techniques and exercises. This therapy aims to address and treat musculoskeletal, neurological, and developmental issues that impact an individual’s ability to perform daily activities and enjoy a fulfilling life.',
       'keyAreas': [
         'Improved Mobility: Enhances range of motion and movement abilities, allowing for greater independence in daily activities.',
         'Increased Strength: Builds muscle strength and endurance to support overall physical health and functionality.',
@@ -179,14 +178,14 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     },
     {
       'image': 'assets/Counciling/behavioral_counciling.jpeg',
-      'text': "Promoting Positive Change and Emotional Well-being.",
-      'subtitle': "Fostering Growth, Resilience, and Mental Wellness.",
+      'text': 'Behavioral Counselling',
+      'subtitle':'Empowering Positive Change Through Personalized Behavioral Counselling',
       'heading1': 'Behavioral Counseling Services at NeuroMitra',
       'description1':
-          'At NeuroMitra, we are committed to helping individuals understand and modify behaviors that may be affecting their lives. Our Behavioral Counseling Services are designed to support clients in identifying negative behavior patterns, developing positive coping strategies, and achieving lasting change.',
+      'At NeuroMitra, we are committed to helping individuals understand and modify behaviors that may be affecting their lives. Our Behavioral Counseling Services are designed to support clients in identifying negative behavior patterns, developing positive coping strategies, and achieving lasting change.',
       'heading2': 'What is Behavioral Counseling?',
       'description2':
-          'Behavioral Counseling focuses on understanding the connection between thoughts, feelings, and behaviors. It involves working with a trained counselor to identify unhelpful behaviors, understand their underlying causes, and develop strategies to replace them with more positive actions. This type of counseling is particularly effective for individuals dealing with issues such as anxiety, depression, stress, anger management, and behavioral disorders.',
+      'Behavioral Counseling focuses on understanding the connection between thoughts, feelings, and behaviors. It involves working with a trained counselor to identify unhelpful behaviors, understand their underlying causes, and develop strategies to replace them with more positive actions. This type of counseling is particularly effective for individuals dealing with issues such as anxiety, depression, stress, anger management, and behavioral disorders.',
       'keyAreas': [
         'Personalized Treatment Plans: We tailor our counseling sessions to address the specific behaviors and challenges you’re facing, ensuring that you receive targeted and effective support.',
         'Evidence-Based Techniques: Our counselors use proven therapeutic approaches, such as Cognitive Behavioral Therapy (CBT), to help you develop healthier behaviors and thought patterns.',
