@@ -29,7 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   User user_data= User();
   Future<void> GetProfileDetails() async {
     String user_id = await PreferenceService().getString('user_id') ?? "";
-    final Response = await Userapi.getprofiledetails(user_id);
+    final Response = await Userapi.getProfileDetails(user_id);
     if (Response != null) {
       setState(() {
         user_data = Response.user??User();

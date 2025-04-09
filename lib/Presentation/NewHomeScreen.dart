@@ -37,14 +37,10 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     setState(() {
       isLoading = true;
     });
-    // Ensure token validity before making API requests
-    await CheckHeaderValidity(); // Ensures token is valid or refreshed
-    // Proceed with API calls regardless of token validity check
     await Future.wait([
       getProfileDetails(),
       getQuotes(),
     ]);
-
     setState(() {
       isLoading = false;
     });
@@ -52,7 +48,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
 
   String quote = '';
   Future<void> getQuotes() async {
-    final res = await Userapi.getquotes();
+    final res = await Userapi.getQuotes();
     if (res?.quote != null) {
       setState(() {
         quote = res?.quote ?? '';
@@ -61,7 +57,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
   }
 
   Future<void> postHealthFeedBack(String msg) async {
-    final res = await Userapi.posthelathFeedback(msg);
+    final res = await Userapi.postHealthFeedback(msg);
     if (res?.status == true) {
       getProfileDetails();
       CustomSnackBar.show(context, res?.message ?? "Submitted Successfully");
@@ -75,7 +71,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
   bool status = false;
   Future<void> getProfileDetails() async {
     String user_id = await PreferenceService().getString('user_id') ?? "";
-    final Response = await Userapi.getprofiledetails(user_id);
+    final Response = await Userapi.getProfileDetails(user_id);
     if (Response != null) {
       setState(() {
         user_data = Response.user ?? User();

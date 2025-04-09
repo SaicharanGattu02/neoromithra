@@ -7,8 +7,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:neuromithra/services/Preferances.dart';
+import 'package:neuromithra/services/userapi.dart';
+import 'package:neuromithra/state_injector.dart';
+import 'Presentation/LogIn.dart';
 import 'Presentation/SplashScreen.dart';
 
 
@@ -24,6 +28,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterL
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
+  Userapi.setupInterceptors(navigatorKey);
   WidgetsFlutterBinding.ensureInitialized();
   Platform.isAndroid
       ? await Firebase.initializeApp(
@@ -175,53 +180,60 @@ void showNotification(RemoteNotification notification,
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        builder: (context, child) {
-          return MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-            child: child ?? Container(),
-          );
-        },
-        debugShowCheckedModeBanner: false,
-        title: 'NeuroMitra',
-        theme: ThemeData(
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          scaffoldBackgroundColor: Colors.white,
-          dialogBackgroundColor: Colors.white,
-          cardColor: Colors.white,
-          searchBarTheme: const SearchBarThemeData(),
-          tabBarTheme: const TabBarTheme(),
-          dialogTheme: const DialogTheme(
-            shadowColor: Colors.white,
-            surfaceTintColor: Colors.white,
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                  Radius.circular(5.0)), // Set the border radius of the dialog
+    return MultiBlocProvider(
+      providers: StateInjector.blocProviders,
+      child: MaterialApp(
+          builder: (context, child) {
+            return MediaQuery(
+              data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+              child: child ?? Container(),
+            );
+          },
+          debugShowCheckedModeBanner: false,
+          title: 'NeuroMitra',
+          theme: ThemeData(
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            scaffoldBackgroundColor: Colors.white,
+            dialogBackgroundColor: Colors.white,
+            cardColor: Colors.white,
+            searchBarTheme: const SearchBarThemeData(),
+            tabBarTheme: const TabBarTheme(),
+            dialogTheme: const DialogTheme(
+              shadowColor: Colors.white,
+              surfaceTintColor: Colors.white,
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                    Radius.circular(5.0)), // Set the border radius of the dialog
+              ),
             ),
+            buttonTheme: const ButtonThemeData(),
+            popupMenuTheme: const PopupMenuThemeData(
+                color: Colors.white, shadowColor: Colors.white),
+            appBarTheme: const AppBarTheme(
+              surfaceTintColor: Colors.white,
+            ),
+            cardTheme: const CardTheme(
+              shadowColor: Colors.white,
+              surfaceTintColor: Colors.white,
+              color: Colors.white,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: ButtonStyle(),
+            ),
+            bottomSheetTheme: const BottomSheetThemeData(
+                surfaceTintColor: Colors.white, backgroundColor: Colors.white),
+            colorScheme: const ColorScheme.light(background: Colors.white)
+                .copyWith(background: Colors.white),
           ),
-          buttonTheme: const ButtonThemeData(),
-          popupMenuTheme: const PopupMenuThemeData(
-              color: Colors.white, shadowColor: Colors.white),
-          appBarTheme: const AppBarTheme(
-            surfaceTintColor: Colors.white,
-          ),
-          cardTheme: const CardTheme(
-            shadowColor: Colors.white,
-            surfaceTintColor: Colors.white,
-            color: Colors.white,
-          ),
-          textButtonTheme: TextButtonThemeData(
-            style: ButtonStyle(),
-          ),
-          bottomSheetTheme: const BottomSheetThemeData(
-              surfaceTintColor: Colors.white, backgroundColor: Colors.white),
-          colorScheme: const ColorScheme.light(background: Colors.white)
-              .copyWith(background: Colors.white),
-        ),
-        home: Splash());
+        routes: {
+          '/signin': (context) => LogIn(),
+        },
+        home: Splash(),
+      ),
+    );
   }
 }

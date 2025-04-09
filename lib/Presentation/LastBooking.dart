@@ -98,7 +98,7 @@ class _LastBookingState extends State<LastBooking> {
 
   List<BookingHistory> bookingHistory = [];
   Future<void> GetBookingHistory() async {
-    final Response = await Userapi.getbookinghistory();
+    final Response = await Userapi.getBookingHistory();
     if (Response != null) {
       setState(() {
         if (Response.status == true) {

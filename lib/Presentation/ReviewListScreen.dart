@@ -22,7 +22,7 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
   }
   List<Review> reviews=[];
   Future<void> GetReviewsList() async {
-    final response = await Userapi.getreviewlist(widget.pageSource);
+    final response = await Userapi.getReviewList(widget.pageSource);
     if (response != null) {
       setState(() {
         reviews=response.review??[];

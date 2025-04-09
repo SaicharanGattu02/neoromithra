@@ -49,7 +49,7 @@ class _TherapyDetailsScreenState extends State<DetailsScreen> {
 
   List<Review> reviews = [];
   Future<void> GetReviewsList() async {
-    final response = await Userapi.getreviewlist(widget.title);
+    final response = await Userapi.getReviewList(widget.title);
     if (response != null) {
       setState(() {
         reviews = response.review ?? [];

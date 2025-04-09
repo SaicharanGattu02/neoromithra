@@ -52,7 +52,7 @@ class _RegisterState extends State<Register> {
     String? fcm_token = await FirebaseMessaging.instance.getToken();
 
     if (fcm_token != null && fcm_token.isNotEmpty) {
-      final registerResponse = await Userapi.PostRegister(
+      final registerResponse = await Userapi.postRegister(
         name,
         email,
         pwd,

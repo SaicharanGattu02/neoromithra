@@ -26,7 +26,7 @@ class _BehavioralTrackingReportState extends State<BehavioralTrackingReport> {
   bool is_loading = true;
   List<Details> details = [];
   Future<void> GetBehaviouraltrackingreport() async {
-    final Response = await Userapi.getbehaviourallist(widget.id.toString(),widget.page_source);
+    final Response = await Userapi.getBehaviouralList(widget.id.toString(),widget.page_source);
     if (Response != null) {
       setState(() {
         if (Response.status == true) {

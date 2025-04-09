@@ -35,7 +35,7 @@ class _AddProductRatingState extends State<AddProductRating> {
   }
 
   Future<void> SubmitReview() async {
-    final data = await Userapi.SubmitReviewApi(
+    final data = await Userapi.submitReviewApi(
         widget.app_id.toString(), widget.page_source, rating.toString(), _reviewController.text);
     if (data != "") {
       setState(() {
