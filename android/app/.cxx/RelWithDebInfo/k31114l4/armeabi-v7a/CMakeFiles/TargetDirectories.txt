@@ -1,0 +1,2 @@
+C:/Users/muluk/AndroidStudioProjects/neoromithra/android/app/.cxx/RelWithDebInfo/k31114l4/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/muluk/AndroidStudioProjects/neoromithra/android/app/.cxx/RelWithDebInfo/k31114l4/armeabi-v7a/CMakeFiles/rebuild_cache.dir
