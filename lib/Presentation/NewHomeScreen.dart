@@ -14,7 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../Logic/Location/location_cubit.dart';
 import '../Logic/Location/location_state.dart';
 import '../Model/ProfileDetailsModel.dart';
-import '../TherapyScreens/DetailsScreen.dart';
+import 'DetailsScreen.dart';
 import 'PaymentScreen.dart';
 
 class NewHomeScreen extends StatefulWidget {

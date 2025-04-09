@@ -7,44 +7,33 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:neuromithra/Assesment/ChildAssessment.dart';
-import 'package:neuromithra/Presentation/SelectingTypes/Selecting_types.dart';
-
 import 'package:neuromithra/services/Preferances.dart';
-
-import 'Presentation/MainDashBoard.dart';
 import 'Presentation/SplashScreen.dart';
-import 'Presentation/StateInjector.dart';
-
 
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    'high_importance_channel', // id
-    'High Importance Notifications', // title
+    'high_importance_channel',
+    'High Importance Notifications',
     description:
-    'This channel is used for important notifications.', // description
+        'This channel is used for important notifications.',
     importance: Importance.high,
     playSound: true);
 
-// flutter local notification
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
-
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Platform.isAndroid
       ? await Firebase.initializeApp(
-    options: FirebaseOptions(
-      apiKey: "AIzaSyAJ_g_TtIFpj8FMAs1EpcE2mudfOFvtFK4",
-      appId: "1:814004941342:android:fe8d8e1b907f639c72b40f",
-      messagingSenderId: "814004941342",
-      projectId: "neuromithra",
-    ),
-  )
+          options: FirebaseOptions(
+            apiKey: "AIzaSyAJ_g_TtIFpj8FMAs1EpcE2mudfOFvtFK4",
+            appId: "1:814004941342:android:fe8d8e1b907f639c72b40f",
+            messagingSenderId: "814004941342",
+            projectId: "neuromithra",
+          ),
+        )
       : await Firebase.initializeApp();
 
   FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
@@ -64,7 +53,6 @@ Future<void> main() async {
   // Async exceptions
   PlatformDispatcher.instance.onError = (error, stack) {
     if (fatalError) {
-      // If you want to record a "fatal" exception
       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
       // ignore: dead_code
     } else {
@@ -111,7 +99,7 @@ Future<void> main() async {
 
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
   const InitializationSettings initializationSettings = InitializationSettings(
@@ -121,8 +109,7 @@ Future<void> main() async {
   flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
     onDidReceiveNotificationResponse:
-        (NotificationResponse notificationResponse) async {
-    },
+        (NotificationResponse notificationResponse) async {},
   );
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -153,7 +140,7 @@ Future<void> main() async {
     // Optionally report the error to a remote server
   };
 // Motion.instance.setUpdateInterval(60.fps);
-  runApp( MyApp());
+  runApp(MyApp());
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -165,7 +152,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void showNotification(RemoteNotification notification,
     AndroidNotification android, Map<String, dynamic> data) async {
   AndroidNotificationDetails androidPlatformChannelSpecifics =
-  AndroidNotificationDetails(
+      AndroidNotificationDetails(
     'your_channel_id', // Your channel ID
     'your_channel_name', // Your channel name
     importance: Importance.max,
@@ -174,7 +161,7 @@ void showNotification(RemoteNotification notification,
     icon: '@mipmap/ic_launcher',
   );
   NotificationDetails platformChannelSpecifics =
-  NotificationDetails(android: androidPlatformChannelSpecifics);
+      NotificationDetails(android: androidPlatformChannelSpecifics);
 
   await flutterLocalNotificationsPlugin.show(
     notification.hashCode,
@@ -184,65 +171,57 @@ void showNotification(RemoteNotification notification,
     payload: jsonEncode(data),
   );
 }
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: StateInjector.blocProviders,
-        child: MaterialApp(
-
-          builder: (context, child) {
-            return MediaQuery(
-              data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-              child: child ?? Container(),
-            );
-          },
-
+    return MaterialApp(
+        builder: (context, child) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            child: child ?? Container(),
+          );
+        },
         debugShowCheckedModeBanner: false,
         title: 'NeuroMitra',
-          theme: ThemeData(
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            scaffoldBackgroundColor: Colors.white,
-            dialogBackgroundColor: Colors.white,
-            cardColor: Colors.white,
-            searchBarTheme: const SearchBarThemeData(),
-            tabBarTheme: const TabBarTheme(),
-            dialogTheme: const DialogTheme(
-              shadowColor: Colors.white,
-              surfaceTintColor: Colors.white,
-              backgroundColor: Colors.white, 
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                    Radius.circular(5.0)), // Set the border radius of the dialog
-              ),
+        theme: ThemeData(
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          scaffoldBackgroundColor: Colors.white,
+          dialogBackgroundColor: Colors.white,
+          cardColor: Colors.white,
+          searchBarTheme: const SearchBarThemeData(),
+          tabBarTheme: const TabBarTheme(),
+          dialogTheme: const DialogTheme(
+            shadowColor: Colors.white,
+            surfaceTintColor: Colors.white,
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                  Radius.circular(5.0)), // Set the border radius of the dialog
             ),
-            buttonTheme: const ButtonThemeData(),
-            popupMenuTheme: const PopupMenuThemeData(
-                color: Colors.white, shadowColor: Colors.white),
-            appBarTheme: const AppBarTheme(
-              surfaceTintColor: Colors.white,
-            ),
-            cardTheme: const CardTheme(
-              shadowColor: Colors.white,
-              surfaceTintColor: Colors.white,
-              color: Colors.white,
-            ),
-
-            textButtonTheme: TextButtonThemeData(
-              style: ButtonStyle(
-                // overlayColor: MaterialStateProperty.all(Colors.white),
-              ),
-            ),
-            bottomSheetTheme: const BottomSheetThemeData(
-                surfaceTintColor: Colors.white, backgroundColor: Colors.white),
-            colorScheme: const ColorScheme.light(background: Colors.white)
-                .copyWith(background: Colors.white),
           ),
-        home: Splash()
-      ),
-    );
+          buttonTheme: const ButtonThemeData(),
+          popupMenuTheme: const PopupMenuThemeData(
+              color: Colors.white, shadowColor: Colors.white),
+          appBarTheme: const AppBarTheme(
+            surfaceTintColor: Colors.white,
+          ),
+          cardTheme: const CardTheme(
+            shadowColor: Colors.white,
+            surfaceTintColor: Colors.white,
+            color: Colors.white,
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: ButtonStyle(),
+          ),
+          bottomSheetTheme: const BottomSheetThemeData(
+              surfaceTintColor: Colors.white, backgroundColor: Colors.white),
+          colorScheme: const ColorScheme.light(background: Colors.white)
+              .copyWith(background: Colors.white),
+        ),
+        home: Splash());
   }
 }

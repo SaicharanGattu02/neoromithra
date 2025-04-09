@@ -9,7 +9,7 @@ import 'package:neuromithra/services/userapi.dart';
 import 'package:phonepe_payment_sdk/phonepe_payment_sdk.dart';
 import 'AddressListScreen.dart';
 import '../Model/AddressListModel.dart';
-import '../TherapyScreens/BookedApointmentsuccessfully.dart';
+import 'BookedApointmentsuccessfully.dart';
 import 'PaymentStatusScreen.dart';
 import 'ShakeWidget.dart';
 import 'package:crypto/crypto.dart';
