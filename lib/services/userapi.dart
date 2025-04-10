@@ -848,7 +848,6 @@ import 'package:http_parser/http_parser.dart';
 // }
 import 'package:dio/dio.dart';
 
-
 class Userapi {
   static final Dio _dio = Dio(
     BaseOptions(
@@ -937,68 +936,40 @@ class Userapi {
   // }
 
   static void setupInterceptors(GlobalKey<NavigatorState> navigatorKey) {
-    _dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) async {
-        bool isTokenExpired = await AuthService.isTokenExpired();
-        if (isTokenExpired) {
-          // Clear tokens and navigate to login if token expired
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.clear();
-          navigatorKey.currentState?.pushNamedAndRemoveUntil('/signin', (route) => false);
-          return; // Prevent request from going forward
-        }
-        final accessToken = await AuthService.getAccessToken();
-        if (accessToken != null) {
-          options.headers["Authorization"] = "Bearer $accessToken";
-        }
-
-        return handler.next(options);
-      },
-
-      onResponse: (response, handler) {
-        return handler.next(response);
-      },
-
-      onError: (DioException e, handler) async {
-        if (e.response != null) {
-          switch (e.response?.statusCode) {
-            case 400:
-              print("Bad Request: ${e.response?.data}");
-              break;
-            case 401:
-              print("Unauthorized: Navigating to SignIn");
-
-              // Clear tokens and navigate to login
-              final prefs = await SharedPreferences.getInstance();
-              await prefs.clear();
-
-              navigatorKey.currentState?.pushNamedAndRemoveUntil('/signin', (route) => false);
-              return; // Do not retry or call handler.next()
-            case 403:
-              print("Forbidden: ${e.response?.data}");
-              break;
-            case 404:
-              print("Not Found: ${e.response?.data}");
-              break;
-            case 500:
-              print("Server Error: ${e.response?.data}");
-              break;
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final accessToken = await AuthService.getAccessToken();
+          if (accessToken != null) {
+            options.headers["Authorization"] = "Bearer $accessToken";
           }
-        } else {
-          if (e.type == DioExceptionType.connectionTimeout ||
-              e.type == DioExceptionType.sendTimeout ||
-              e.type == DioExceptionType.receiveTimeout) {
-            print("Timeout Error: ${e.message}");
-          } else if (e.error is SocketException) {
-            print("No Internet Connection: ${e.error}");
+          return handler.next(options);
+        },
+        onResponse: (response, handler) {
+          return handler.next(response);
+        },
+        onError: (DioException e, handler) async {
+          if (e.response != null) {
+            switch (e.response?.statusCode) {
+              case 401:
+                print("Unauthorized: Navigating to SignIn");
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.clear();
+                Future.microtask(() {
+                  navigatorKey.currentState?.pushNamedAndRemoveUntil('/signin', (route) => false);
+                });
+                return;
+              default:
+                print("Error ${e.response?.statusCode}: ${e.response?.data}");
+            }
           } else {
-            print("Unexpected Error: ${e.message}");
+            print("Network Error: ${e.message}");
           }
-        }
 
-        return handler.next(e);
-      },
-    ));
+          return handler.next(e);
+        },
+      ),
+    );
   }
 
 
