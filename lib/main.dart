@@ -20,170 +20,170 @@ import 'Presentation/StateInjector.dart';
 
 
 
-const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    'high_importance_channel', // id
-    'High Importance Notifications', // title
-    description:
-    'This channel is used for important notifications.', // description
-    importance: Importance.high,
-    playSound: true);
+// const AndroidNotificationChannel channel = AndroidNotificationChannel(
+//     'high_importance_channel', // id
+//     'High Importance Notifications', // title
+//     description:
+//     'This channel is used for important notifications.', // description
+//     importance: Importance.high,
+//     playSound: true);
 
-// flutter local notification
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+// // flutter local notification
+// final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+// FlutterLocalNotificationsPlugin();
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+// final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Platform.isAndroid
-      ? await Firebase.initializeApp(
-    options: FirebaseOptions(
-      apiKey: "AIzaSyAJ_g_TtIFpj8FMAs1EpcE2mudfOFvtFK4",
-      appId: "1:814004941342:android:fe8d8e1b907f639c72b40f",
-      messagingSenderId: "814004941342",
-      projectId: "neuromithra",
-    ),
-  )
-      : await Firebase.initializeApp();
+  // Platform.isAndroid
+  //     ? await Firebase.initializeApp(
+  //   options: FirebaseOptions(
+  //     apiKey: "AIzaSyAJ_g_TtIFpj8FMAs1EpcE2mudfOFvtFK4",
+  //     appId: "1:814004941342:android:fe8d8e1b907f639c72b40f",
+  //     messagingSenderId: "814004941342",
+  //     projectId: "neuromithra",
+  //   ),
+  // )
+  //     : await Firebase.initializeApp();
 
-  FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
+  // FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
 
-  const fatalError = true;
-  // Non-async exceptions
-  FlutterError.onError = (errorDetails) {
-    if (fatalError) {
-      // If you want to record a "fatal" exception
-      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-      // ignore: dead_code
-    } else {
-      // If you want to record a "non-fatal" exception
-      FirebaseCrashlytics.instance.recordFlutterError(errorDetails);
-    }
-  };
-  // Async exceptions
-  PlatformDispatcher.instance.onError = (error, stack) {
-    if (fatalError) {
-      // If you want to record a "fatal" exception
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-      // ignore: dead_code
-    } else {
-      // If you want to record a "non-fatal" exception
-      FirebaseCrashlytics.instance.recordError(error, stack);
-    }
-    return true;
-  };
+  // const fatalError = true;
+  // // Non-async exceptions
+  // FlutterError.onError = (errorDetails) {
+  //   if (fatalError) {
+  //     // If you want to record a "fatal" exception
+  //     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+  //     // ignore: dead_code
+  //   } else {
+  //     // If you want to record a "non-fatal" exception
+  //     FirebaseCrashlytics.instance.recordFlutterError(errorDetails);
+  //   }
+  // };
+  // // Async exceptions
+  // PlatformDispatcher.instance.onError = (error, stack) {
+  //   if (fatalError) {
+  //     // If you want to record a "fatal" exception
+  //     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+  //     // ignore: dead_code
+  //   } else {
+  //     // If you want to record a "non-fatal" exception
+  //     FirebaseCrashlytics.instance.recordError(error, stack);
+  //   }
+  //   return true;
+  // };
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  if (Platform.isAndroid) {
-    FirebaseMessaging.instance.getToken().then((value) {
-      String? token = value;
-      print("Androidfbstoken:{$token}");
-      PreferenceService().saveString("fbstoken", token!);
-      // toast(BuildContext , token);
-    });
-  } else {
-    FirebaseMessaging.instance.getToken().then((value) {
-      String? token = value;
-      print("IOSfbstoken:{$token}");
-      PreferenceService().saveString("fbstoken", token!);
-      // toast(BuildContext , token);
-    });
-  }
+  // if (Platform.isAndroid) {
+  //   FirebaseMessaging.instance.getToken().then((value) {
+  //     String? token = value;
+  //     print("Androidfbstoken:{$token}");
+  //     PreferenceService().saveString("fbstoken", token!);
+  //     // toast(BuildContext , token);
+  //   });
+  // } else {
+  //   FirebaseMessaging.instance.getToken().then((value) {
+  //     String? token = value;
+  //     print("IOSfbstoken:{$token}");
+  //     PreferenceService().saveString("fbstoken", token!);
+  //     // toast(BuildContext , token);
+  //   });
+  // }
 
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
+  // FirebaseMessaging messaging = FirebaseMessaging.instance;
+  // NotificationSettings settings = await messaging.requestPermission(
+  //   alert: true,
+  //   announcement: false,
+  //   badge: true,
+  //   carPlay: false,
+  //   criticalAlert: false,
+  //   provisional: false,
+  //   sound: true,
+  // );
 
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
+  // await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+  //   alert: true,
+  //   badge: true,
+  //   sound: true,
+  // );
 
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
+  // await flutterLocalNotificationsPlugin
+  //     .resolvePlatformSpecificImplementation<
+  //     AndroidFlutterLocalNotificationsPlugin>()
+  //     ?.createNotificationChannel(channel);
 
-  const InitializationSettings initializationSettings = InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-      iOS: DarwinInitializationSettings());
+  // const InitializationSettings initializationSettings = InitializationSettings(
+  //     android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+  //     iOS: DarwinInitializationSettings());
 
-  flutterLocalNotificationsPlugin.initialize(
-    initializationSettings,
-    onDidReceiveNotificationResponse:
-        (NotificationResponse notificationResponse) async {
-    },
-  );
+  // flutterLocalNotificationsPlugin.initialize(
+  //   initializationSettings,
+  //   onDidReceiveNotificationResponse:
+  //       (NotificationResponse notificationResponse) async {
+  //   },
+  // );
 
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    RemoteNotification? notification = message.notification;
-    AndroidNotification? android = message.notification?.android;
-    if (notification != null && android != null) {
-      // print('A new message received: ${notification.title}');
-      // print('RemoteMessage data: ${message.data.toString()}');
-      showNotification(notification, android, message.data);
-    }
-  });
+  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //   RemoteNotification? notification = message.notification;
+  //   AndroidNotification? android = message.notification?.android;
+  //   if (notification != null && android != null) {
+  //     // print('A new message received: ${notification.title}');
+  //     // print('RemoteMessage data: ${message.data.toString()}');
+  //     showNotification(notification, android, message.data);
+  //   }
+  // });
 
-  // Also handle any interaction when the app is in the background via a
-  // Stream listener
-  FirebaseMessaging.onMessageOpenedApp.listen((message) {
-    // _handleMessage(message);
-    // print("onMessageOpenedApp:${message.data['type']}");
-  });
+  // // Also handle any interaction when the app is in the background via a
+  // // Stream listener
+  // FirebaseMessaging.onMessageOpenedApp.listen((message) {
+  //   // _handleMessage(message);
+  //   // print("onMessageOpenedApp:${message.data['type']}");
+  // });
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  // debugInvertOversizedImages = true;
-  FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // // debugInvertOversizedImages = true;
+  // FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
-  FlutterError.onError = (FlutterErrorDetails details) {
-    // Log the error details to a logging service or print them
-    print("Errrrrrrrrrr:${details.exceptionAsString()}");
-    // Optionally report the error to a remote server
-  };
+  // FlutterError.onError = (FlutterErrorDetails details) {
+  //   // Log the error details to a logging service or print them
+  //   print("Errrrrrrrrrr:${details.exceptionAsString()}");
+  //   // Optionally report the error to a remote server
+  // };
 // Motion.instance.setUpdateInterval(60.fps);
   runApp( MyApp());
 }
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  // print('A Background message just showed up :  ${message.data}');
-}
+// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   await Firebase.initializeApp();
+//   // print('A Background message just showed up :  ${message.data}');
+// }
 
-// Function to display local notifications
-void showNotification(RemoteNotification notification,
-    AndroidNotification android, Map<String, dynamic> data) async {
-  AndroidNotificationDetails androidPlatformChannelSpecifics =
-  AndroidNotificationDetails(
-    'your_channel_id', // Your channel ID
-    'your_channel_name', // Your channel name
-    importance: Importance.max,
-    priority: Priority.high,
-    playSound: true,
-    icon: '@mipmap/ic_launcher',
-  );
-  NotificationDetails platformChannelSpecifics =
-  NotificationDetails(android: androidPlatformChannelSpecifics);
+// // Function to display local notifications
+// void showNotification(RemoteNotification notification,
+//     AndroidNotification android, Map<String, dynamic> data) async {
+//   AndroidNotificationDetails androidPlatformChannelSpecifics =
+//   AndroidNotificationDetails(
+//     'your_channel_id', // Your channel ID
+//     'your_channel_name', // Your channel name
+//     importance: Importance.max,
+//     priority: Priority.high,
+//     playSound: true,
+//     icon: '@mipmap/ic_launcher',
+//   );
+//   NotificationDetails platformChannelSpecifics =
+//   NotificationDetails(android: androidPlatformChannelSpecifics);
 
-  await flutterLocalNotificationsPlugin.show(
-    notification.hashCode,
-    notification.title,
-    notification.body,
-    platformChannelSpecifics,
-    payload: jsonEncode(data),
-  );
-}
+//   await flutterLocalNotificationsPlugin.show(
+//     notification.hashCode,
+//     notification.title,
+//     notification.body,
+//     platformChannelSpecifics,
+//     payload: jsonEncode(data),
+//   );
+// }
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

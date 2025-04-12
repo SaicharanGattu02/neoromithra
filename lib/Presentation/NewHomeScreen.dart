@@ -304,14 +304,41 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     }
   }
 
+  // void launchWhatsApp() async {
+  //   String url = "https://wa.me/+91 8885320115}"; // WhatsApp API URL
+  //   if (await canLaunch(url)) {
+  //     await launch(url);
+  //   } else {
+  //     throw "Could not launch $url";
+  //   }
+  // }
+
   void launchWhatsApp() async {
-    String url = "https://wa.me/+91 8885320115}"; // WhatsApp API URL
-    if (await canLaunch(url)) {
-      await launch(url);
+  String phoneNumber = '+918885320115'; // WhatsApp number
+  String message = 'Hello!'; // Default message
+  
+  // For Android and iOS, we'll use the WhatsApp scheme to open the app directly.
+  String androidUrl = "whatsapp://send?phone=$phoneNumber&text=$message";
+  String iosUrl = "https://wa.me/$phoneNumber?text=$message";
+  
+  // Check if we are on Android or iOS to launch the appropriate URL scheme
+  if (Theme.of(context).platform == TargetPlatform.iOS) {
+    if (await canLaunch(iosUrl)) {
+      await launch(iosUrl);
     } else {
-      throw "Could not launch $url";
+      throw "Could not launch WhatsApp on iOS.";
     }
+  } else if (Theme.of(context).platform == TargetPlatform.android) {
+    if (await canLaunch(androidUrl)) {
+      await launch(androidUrl);
+    } else {
+      throw "Could not launch WhatsApp on Android.";
+    }
+  } else {
+    throw "Platform not supported.";
   }
+}
+
 
   // void payment() async {
   //   try {
