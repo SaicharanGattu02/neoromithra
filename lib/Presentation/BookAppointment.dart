@@ -26,7 +26,7 @@ class _BookappointmentState extends State<Bookappointment> {
   }
   List<Patients> patients=[];
   Future<void> GetPreviousBookingHistory() async {
-    final Response = await Userapi.getpreviousbookings(widget.pagesource);
+    final Response = await Userapi.getPreviousBookings(widget.pagesource);
     if (Response != null) {
       setState(() {
         if(Response.status==true){
@@ -40,7 +40,7 @@ class _BookappointmentState extends State<Bookappointment> {
   }
 
   Future<void> downloadscript() async {
-    final Response = await Userapi.downloadscriptapi();
+    final Response = await Userapi.downloadScriptApi();
     if (Response != null) {
       setState(() {
       });
@@ -131,7 +131,7 @@ class _BookappointmentState extends State<Bookappointment> {
             mainAxisSpacing: 10,
           ),
           shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
+          physics: AlwaysScrollableScrollPhysics(),
           itemCount: patients.isEmpty ? 1 : patients.length + 1, // Ensure at least one item
           itemBuilder: (BuildContext context, int index) {
             if (index == 0) {

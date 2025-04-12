@@ -1,20 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../CounsellingScreens/BehavioralCounsellingScreen.dart';
-import '../CounsellingScreens/CareerCounsellingScreen.dart';
-import '../CounsellingScreens/CrisisCounsellingScreen.dart';
-import '../CounsellingScreens/EducationalCounsellingScreen.dart';
-import '../CounsellingScreens/FamilyCounsellingScreen.dart';
-import '../CounsellingScreens/GeneralStressManagementCounsellingScreen.dart';
-import '../CounsellingScreens/GriefCounsellingScreen.dart';
-import '../CounsellingScreens/GroupCounsellingScreen.dart';
-import '../CounsellingScreens/IndividualCounsellingForChildrenScreen.dart';
-import '../CounsellingScreens/MentalHealthCounsellingScreen.dart';
-import '../CounsellingScreens/ParentChildRelationshipCounsellingScreen.dart';
-import '../CounsellingScreens/ParentCounsellingForAutismScreen.dart';
-import '../CounsellingScreens/RelationshipCounsellingScreen.dart';
-import '../CounsellingScreens/SiblingCounsellingScreen.dart';
-import '../TherapyScreens/DetailsScreen.dart';
+import 'DetailsScreen.dart';
 
 class CounsellingListScreen extends StatelessWidget {
 
@@ -333,65 +318,6 @@ class CounsellingListScreen extends StatelessWidget {
     },
 
   ];
-
-
-  void _onCounsellingTap(BuildContext context, String text) {
-    Widget screen;
-    switch (text) {
-      case 'Relationship Counselling':
-        screen = RelationshipCounsellingScreen();
-        break;
-      case 'Behavioral Counselling':
-        screen = BehavioralCounsellingScreen();
-        break;
-      case 'Grief Counselling':
-        screen = GriefCounsellingScreen();
-        break;
-      case 'Group Counselling':
-        screen = GroupCounsellingScreen();
-        break;
-      case 'Crisis Counselling':
-        screen = CrisisCounsellingScreen();
-        break;
-      case 'Career Counselling for parents':
-        screen = CareerCounsellingScreen();
-        break;
-      case 'Sibling Counselling':
-        screen = SiblingCounsellingScreen();
-        break;
-      case 'Educational Counselling':
-        screen = EducationalCounsellingScreen();
-        break;
-      case 'Parent-Child Relationship':
-        screen = ParentChildRelationshipCounsellingScreen();
-        break;
-      case 'Individual Counselling for children':
-        screen = IndividualCounsellingForChildrenScreen();
-        break;
-      case 'Family Counselling':
-        screen = FamilyCounsellingScreen();
-        break;
-      case 'Mental Health Counselling':
-        screen = MentalHealthCounsellingScreen();
-        break;
-      case 'General stress management':
-        screen = GeneralStressManagementCounsellingScreen();
-        break;
-      case 'Parent Counselling for Autism':
-        screen = ParentCounsellingForAutismScreen();
-        break;
-      default:
-      // Handle unknown text
-        screen = Scaffold(
-          appBar: AppBar(title: Text('Unknown')),
-          body: Center(child: Text('No details available')),
-        );
-    }
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => screen),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {

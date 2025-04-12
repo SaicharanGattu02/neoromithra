@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:neuromithra/Presentation/Aboutus.dart';
-import 'package:neuromithra/Presentation/AddAddressScreen.dart';
-import 'package:neuromithra/Presentation/CancellationPolicyScreen.dart';
-
-import 'package:neuromithra/Presentation/ReturnRefundPolicyScreen.dart';
-import 'package:neuromithra/RefundPolicyScreen.dart';
-import 'package:neuromithra/TermsAndConditionsScreen.dart';
+import 'package:neuromithra/Presentation/RefundPolicyScreen.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import '../Components/Shimmers.dart';
-import 'AddRating.dart';
 import 'AddressListScreen.dart';
-
 import 'Editprofile _screen.dart';
 import 'GovtSupportinfo.dart';
 import 'LastBooking.dart';
 import 'LogIn.dart';
 import '../Model/ProfileDetailsModel.dart';
-import 'PrivacyPolicyScreen.dart'; // Import the Edit Profile Screen
+import 'PrivacyPolicyScreen.dart';
+import 'TermsAndConditionsScreen.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -35,7 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   User user_data= User();
   Future<void> GetProfileDetails() async {
     String user_id = await PreferenceService().getString('user_id') ?? "";
-    final Response = await Userapi.getprofiledetails(user_id);
+    final Response = await Userapi.getProfileDetails(user_id);
     if (Response != null) {
       setState(() {
         user_data = Response.user??User();

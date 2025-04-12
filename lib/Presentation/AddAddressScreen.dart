@@ -90,7 +90,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
       pincode = _pincodeControllerPermanent.text;
     }
 
-    final data = await Userapi.AddAddressApi(
+    final data = await Userapi.addAddressApi(
       houseNo,
       street,
       area,
@@ -126,7 +126,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
       pincode = _pincodeControllerPermanent.text;
     }
 
-    final data = await Userapi.EditAddressApi(
+    final data = await Userapi.editAddressApi(
       houseNo,
       street,
       area,

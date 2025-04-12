@@ -19,7 +19,7 @@ class _AddressListScreenState extends State<AddressListScreen> {
   }
   List<Address> addresses=[];
   Future<void> GetAddressList() async {
-    final response = await Userapi.getaddresslist();
+    final response = await Userapi.getAddressList();
     setState(() {
       if (response?.status==true) {
         is_loading=false;

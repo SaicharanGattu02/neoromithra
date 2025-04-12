@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import '../TherapyScreens/DetailsScreen.dart';
+import 'DetailsScreen.dart';
 
 class TherapiesListScreen extends StatelessWidget {
   final List<Map<String, dynamic>> therapies = [
