@@ -45,5 +45,12 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- Added purpose strings for microphone and location access -->
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Neuromithra requires microphone access to enable voice-based features for user interaction.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Neuromithra uses your location to provide personalized features and improve your experience based on your current location.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Neuromithra uses your location to provide personalized features and improve your experience based on your current location.</string>
 </dict>
 </plist>

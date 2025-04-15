@@ -269,14 +269,14 @@ class Userapi {
       if (response.statusCode == 200) {
         try {
           final jsonResponse = jsonDecode(responseBody);
-          print("✅ Existing Appointment Response: $jsonResponse");
+          print("Existing Appointment Response: $jsonResponse");
           return BookApointmentModel.fromJson(jsonResponse);
         } catch (e) {
-          print("⚠️ JSON Parsing Error: $e");
+          print(" JSON Parsing Error: $e");
           return null;
         }
       } else {
-        print("❌ Failed to book existing appointment: ${response.statusCode}");
+        print("Failed to book existing appointment: ${response.statusCode}");
         print("Response: $responseBody");
         return null;
       }
