@@ -208,46 +208,48 @@ class _TherapyDetailsScreenState extends State<DetailsScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 5),
-        child: Row(
-          children: [
-            _bottomButton("Call Us", Color(0xff0094FE), () => _launchCall("8885320115")),
-            SizedBox(width: 10), // Add spacing between buttons
-            _bottomButton("Book Now", Color(0xff0933A1), () {
-              Navigator.of(context)
-                  .pushReplacement(PageRouteBuilder(
-                pageBuilder: (context,
-                    animation,
-                    secondaryAnimation) {
-                  return Bookappointment(pagesource: widget.title);
-                },
-                transitionsBuilder:
-                    (context,
-                    animation,
-                    secondaryAnimation,
-                    child) {
-                  const begin =
-                  Offset(1.0, 0.0);
-                  const end = Offset.zero;
-                  const curve =
-                      Curves.easeInOut;
-                  var tween = Tween(
-                      begin: begin,
-                      end: end)
-                      .chain(CurveTween(
-                      curve: curve));
-                  var offsetAnimation =
-                  animation
-                      .drive(tween);
-                  return SlideTransition(
-                      position:
-                      offsetAnimation,
-                      child: child);
-                },
-              ));
-            }),
-          ],
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 5),
+          child: Row(
+            children: [
+              _bottomButton("Call Us", Color(0xff0094FE), () => _launchCall("8885320115")),
+              SizedBox(width: 10), // Add spacing between buttons
+              _bottomButton("Book Now", Color(0xff0933A1), () {
+                Navigator.of(context)
+                    .pushReplacement(PageRouteBuilder(
+                  pageBuilder: (context,
+                      animation,
+                      secondaryAnimation) {
+                    return Bookappointment(pagesource: widget.title);
+                  },
+                  transitionsBuilder:
+                      (context,
+                      animation,
+                      secondaryAnimation,
+                      child) {
+                    const begin =
+                    Offset(1.0, 0.0);
+                    const end = Offset.zero;
+                    const curve =
+                        Curves.easeInOut;
+                    var tween = Tween(
+                        begin: begin,
+                        end: end)
+                        .chain(CurveTween(
+                        curve: curve));
+                    var offsetAnimation =
+                    animation
+                        .drive(tween);
+                    return SlideTransition(
+                        position:
+                        offsetAnimation,
+                        child: child);
+                  },
+                ));
+              }),
+            ],
+          ),
         ),
       ),
     );

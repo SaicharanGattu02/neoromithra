@@ -1,7 +1,5 @@
-# Uncomment this line to define a global platform for your project
 platform :ios, '14.0'
 
-# CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
 project 'Runner', {
@@ -23,16 +21,16 @@ def flutter_root
   raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try deleting Generated.xcconfig, then run flutter pub get"
 end
 
-
 require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
 
 flutter_ios_podfile_setup
 
 target 'Runner' do
-  use_frameworks!
+  use_frameworks! :linkage => :static  # ✅ Use static frameworks to fix the xcframework issue
   use_modular_headers!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+
   target 'RunnerTests' do
     inherit! :search_paths
   end
@@ -44,20 +42,10 @@ post_install do |installer|
     target.build_configurations.each do |config|
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
         '$(inherited)',
-        ## dart: PermissionGroup.camera
         'PERMISSION_CAMERA=1',
-        ## dart: PermissionGroup.photos
         'PERMISSION_PHOTOS=1',
-
-        ## The 'PERMISSION_LOCATION' macro enables the locationWhenInUse and locationAlways permission. If
-        ## the application only requires locationWhenInUse, only specify the PERMISSION_LOCATION_WHENINUSE
-        ## macro.
-        ##
-        ## dart: [PermissionGroup.location, PermissionGroup.locationAlways, PermissionGroup.locationWhenInUse]
         'PERMISSION_LOCATION=1',
         'PERMISSION_LOCATION_WHENINUSE=0',
-
-        ## dart: PermissionGroup.notification
         'PERMISSION_NOTIFICATIONS=1',
       ]
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'

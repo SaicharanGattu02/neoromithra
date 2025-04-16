@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "814004941342",
-    "project_id": "neuromithra",
-    "storage_bucket": "neuromithra.appspot.com"
+    "project_number": "923226666155",
+    "project_id": "neuromitra-89fe6",
+    "storage_bucket": "neuromitra-89fe6.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:814004941342:android:fe8d8e1b907f639c72b40f",
+        "mobilesdk_app_id": "1:923226666155:android:7a75d32281c14efc54b3ee",
         "android_client_info": {
           "package_name": "com.pixl.neuromithra"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAJ_g_TtIFpj8FMAs1EpcE2mudfOFvtFK4"
+          "current_key": "AIzaSyDQUhQuxYaNCVzYtZE6fXciJWQKVIIJY9E"
         }
       ],
       "services": {

@@ -30,16 +30,28 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {
   Userapi.setupInterceptors(navigatorKey);
   WidgetsFlutterBinding.ensureInitialized();
-  Platform.isAndroid
-      ? await Firebase.initializeApp(
-          options: FirebaseOptions(
-            apiKey: "AIzaSyAJ_g_TtIFpj8FMAs1EpcE2mudfOFvtFK4",
-            appId: "1:814004941342:android:fe8d8e1b907f639c72b40f",
-            messagingSenderId: "814004941342",
-            projectId: "neuromithra",
-          ),
-        )
-      : await Firebase.initializeApp();
+  if (Platform.isAndroid) {
+    // Initialize Firebase with options for Android
+    await Firebase.initializeApp(
+      options: FirebaseOptions(
+        apiKey: "AIzaSyDQUhQuxYaNCVzYtZE6fXciJWQKVIIJY9E", // Use your actual API key
+        appId: "1:923226666155:android:7a75d32281c14efc54b3ee", // Use your actual app ID
+        messagingSenderId: "923226666155", // Use your actual messagingSenderId
+        projectId: "neuromitra-89fe6", // Use your actual project ID
+      ),
+    );
+  } else if (Platform.isIOS) {
+    // Initialize Firebase with options for iOS
+    await Firebase.initializeApp(
+      options: FirebaseOptions(
+        apiKey: "AIzaSyBrSB6ofAosF2tMvq1eJsqEOPBLkgYGHJw", // Use your actual API key
+        appId: "1:923226666155:ios:963b75492cf422c554b3ee", // Use your actual iOS app ID
+        messagingSenderId: "923226666155", // Use your actual messagingSenderId
+        projectId: "neuromitra-89fe6", // Use your actual project ID
+        iosBundleId: "com.neuromitra.in", // Replace with your actual iOS bundle ID
+      ),
+    );
+  }
 
   FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
 
@@ -69,21 +81,16 @@ Future<void> main() async {
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  if (Platform.isAndroid) {
-    FirebaseMessaging.instance.getToken().then((value) {
-      String? token = value;
-      print("Androidfbstoken:{$token}");
-      PreferenceService().saveString("fbstoken", token!);
-      // toast(BuildContext , token);
-    });
-  } else {
-    FirebaseMessaging.instance.getToken().then((value) {
-      String? token = value;
-      print("IOSfbstoken:{$token}");
-      PreferenceService().saveString("fbstoken", token!);
-      // toast(BuildContext , token);
-    });
+// iOS specific: get APNs token
+  if (Platform.isIOS) {
+    final apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+    print("APNs Token: $apnsToken");
   }
+
+  // Get FCM token
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  print("FCM Token: $fcmToken");
+  PreferenceService().saveString("fbstoken", fcmToken!);
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   NotificationSettings settings = await messaging.requestPermission(
