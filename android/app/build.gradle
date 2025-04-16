@@ -69,7 +69,6 @@ android {
         }
     }
 
-
 //    signingConfigs {
 //        release {
 //            keyAlias keystoreProperties['keyAlias']

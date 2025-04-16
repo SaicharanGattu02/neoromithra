@@ -158,7 +158,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   // Method to upload image to the server
   Future<void> _uploadImage(File image) async {
-    final response = await Userapi.UploadImage(image);
+    final response = await Userapi.uploadImage(image);
     if (response != null) {
       setState(() {});
     }
@@ -231,7 +231,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Future<void> GetProfileDetails() async {
     String user_id = await PreferenceService().getString('user_id') ?? "";
-    final Response = await Userapi.getprofiledetails(user_id);
+    final Response = await Userapi.getProfileDetails(user_id);
     if (Response != null) {
       setState(() {
         _nameController.text = Response.user?.name ?? '';

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:neuromithra/Presentation/Dashboard.dart';
 import 'package:neuromithra/Presentation/MainDashBoard.dart';
 import 'package:neuromithra/Presentation/Register.dart';
+import 'package:neuromithra/services/AuthService.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'ForgotPasswordScreen.dart';
@@ -55,11 +56,22 @@ class _LogInState extends State<LogIn> {
         ));
         PreferenceService()
             .saveString("token", loginResponse["access_token"] ?? "");
-        PreferenceService().saveString("access_expiry_timestamp",
-            (DateTime.now().millisecondsSinceEpoch ~/ 1000 + loginResponse["expires_in"]).toString());
+        PreferenceService().saveString(
+            "access_expiry_timestamp",
+            (DateTime.now().millisecondsSinceEpoch ~/ 1000 +
+                    loginResponse["expires_in"])
+                .toString());
+        AuthService.saveTokens(
+          loginResponse["access_token"],
+          loginResponse["access_token"],
+          (DateTime.now().millisecondsSinceEpoch ~/ 1000 + int.parse(loginResponse["expires_in"].toString())),
+        );
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => MainDashBoard(initialIndex: 0,)),
+          MaterialPageRoute(
+              builder: (context) => MainDashBoard(
+                    initialIndex: 0,
+                  )),
         );
       } else if (loginResponse.containsKey("error")) {
         // Handle unauthorized or error response
@@ -354,7 +366,8 @@ class _LogInState extends State<LogIn> {
                               children: [
                                 TextSpan(
                                   text: 'Sign Up.',
-                                  style: TextStyle(decoration: TextDecoration.underline,
+                                  style: TextStyle(
+                                    decoration: TextDecoration.underline,
                                     decorationColor: Color(0xff4949C9),
                                     color: Color(0xff4949C9),
                                     fontWeight: FontWeight.w400,
@@ -363,7 +376,8 @@ class _LogInState extends State<LogIn> {
                                     ..onTap = () {
                                       Navigator.push(
                                         context,
-                                        MaterialPageRoute(builder: (context) => Register()),
+                                        MaterialPageRoute(
+                                            builder: (context) => Register()),
                                       );
                                     },
                                 ),
@@ -383,8 +397,10 @@ class _LogInState extends State<LogIn> {
                             },
                             child: Text(
                               'Forgot Password',
-                              style: TextStyle(decoration: TextDecoration.underline,
-                                decorationColor: Color(0xff4949C9).withOpacity(0.5),
+                              style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                decorationColor:
+                                    Color(0xff4949C9).withOpacity(0.5),
                                 color: Color(0xff4949C9),
                                 fontWeight: FontWeight.w400,
                                 fontSize: 16,

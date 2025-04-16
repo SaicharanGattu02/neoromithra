@@ -131,11 +131,15 @@ class _MainDashBoardState extends State<MainDashBoard> {
       context: context,
       isDismissible: false,
       enableDrag: false,
+      isScrollControlled: true, // Allows the bottom sheet to adjust to content size
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
       builder: (BuildContext bottomSheetContext) {
         return BlocConsumer<LocationCubit, LocationState>(
           listener: (context, state) {
             if (state is LocationLoaded) {
-              print('loadided');
+              print('Location Loaded');
               Navigator.pop(bottomSheetContext);
             }
           },
@@ -143,41 +147,103 @@ class _MainDashBoardState extends State<MainDashBoard> {
             bool isLoading = state is LocationLoading;
             return WillPopScope(
               onWillPop: () async => !isLoading,
-              child: Container(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
+              child: SafeArea(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height * 0.5, // Limit height
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.all(20.0),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(16.0)),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.gps_fixed_sharp, size: 18),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Location Permission is Off',
-                          style: TextStyle(fontWeight: FontWeight.w400),
+                        // Header with Icon and Title
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor.withOpacity(0.1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.gps_fixed_sharp,
+                                size: 24,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                'Enable Location Services',
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        Spacer(),
-                        ElevatedButton(
-                          onPressed: isLoading
-                              ? null
-                              : () async {
-                                  // Request location permission when user taps the 'GRANT' button
-                                  context
-                                      .read<LocationCubit>()
-                                      .requestLocationPermission();
+                        const SizedBox(height: 16),
+                        // Description
+                        Text(
+                          'Granting location permission ensures accurate address detection and a seamless service experience.',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Colors.grey[600],
+                            height: 1.4,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        // Action Buttons
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            if (!isLoading)
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(bottomSheetContext);
                                 },
-                          child: isLoading
-                              ? CircularProgressIndicator(strokeWidth: 2)
-                              : const Text('GRANT'),
+                                child: const Text(
+                                  'CANCEL',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              ),
+                            const SizedBox(width: 8),
+                            ElevatedButton(
+                              onPressed: isLoading
+                                  ? null
+                                  : () {
+                                context.read<LocationCubit>().requestLocationPermission();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                              ),
+                              child: isLoading
+                                  ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                ),
+                              )
+                                  : const Text(
+                                'GRANT',
+                                style: TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Granting location permission will ensure accurate address and hassle-free service.',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             );

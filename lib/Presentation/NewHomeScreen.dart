@@ -14,7 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../Logic/Location/location_cubit.dart';
 import '../Logic/Location/location_state.dart';
 import '../Model/ProfileDetailsModel.dart';
-import '../TherapyScreens/DetailsScreen.dart';
+import 'DetailsScreen.dart';
 import 'PaymentScreen.dart';
 
 class NewHomeScreen extends StatefulWidget {
@@ -37,14 +37,10 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     setState(() {
       isLoading = true;
     });
-    // Ensure token validity before making API requests
-    await CheckHeaderValidity(); // Ensures token is valid or refreshed
-    // Proceed with API calls regardless of token validity check
     await Future.wait([
       getProfileDetails(),
       getQuotes(),
     ]);
-
     setState(() {
       isLoading = false;
     });
@@ -52,7 +48,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
 
   String quote = '';
   Future<void> getQuotes() async {
-    final res = await Userapi.getquotes();
+    final res = await Userapi.getQuotes();
     if (res?.quote != null) {
       setState(() {
         quote = res?.quote ?? '';
@@ -61,7 +57,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
   }
 
   Future<void> postHealthFeedBack(String msg) async {
-    final res = await Userapi.posthelathFeedback(msg);
+    final res = await Userapi.postHealthFeedback(msg);
     if (res?.status == true) {
       getProfileDetails();
       CustomSnackBar.show(context, res?.message ?? "Submitted Successfully");
@@ -75,7 +71,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
   bool status = false;
   Future<void> getProfileDetails() async {
     String user_id = await PreferenceService().getString('user_id') ?? "";
-    final Response = await Userapi.getprofiledetails(user_id);
+    final Response = await Userapi.getProfileDetails(user_id);
     if (Response != null) {
       setState(() {
         user_data = Response.user ?? User();
@@ -304,14 +300,41 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     }
   }
 
+  // void launchWhatsApp() async {
+  //   String url = "https://wa.me/+91 8885320115}"; // WhatsApp API URL
+  //   if (await canLaunch(url)) {
+  //     await launch(url);
+  //   } else {
+  //     throw "Could not launch $url";
+  //   }
+  // }
+
   void launchWhatsApp() async {
-    String url = "https://wa.me/+91 8885320115}"; // WhatsApp API URL
-    if (await canLaunch(url)) {
-      await launch(url);
+  String phoneNumber = '+918885320115'; // WhatsApp number
+  String message = 'Hello!'; // Default message
+  
+  // For Android and iOS, we'll use the WhatsApp scheme to open the app directly.
+  String androidUrl = "whatsapp://send?phone=$phoneNumber&text=$message";
+  String iosUrl = "https://wa.me/$phoneNumber?text=$message";
+  
+  // Check if we are on Android or iOS to launch the appropriate URL scheme
+  if (Theme.of(context).platform == TargetPlatform.iOS) {
+    if (await canLaunch(iosUrl)) {
+      await launch(iosUrl);
     } else {
-      throw "Could not launch $url";
+      throw "Could not launch WhatsApp on iOS.";
     }
+  } else if (Theme.of(context).platform == TargetPlatform.android) {
+    if (await canLaunch(androidUrl)) {
+      await launch(androidUrl);
+    } else {
+      throw "Could not launch WhatsApp on Android.";
+    }
+  } else {
+    throw "Platform not supported.";
   }
+}
+
 
   // void payment() async {
   //   try {

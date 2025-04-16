@@ -9,7 +9,7 @@ import 'package:neuromithra/services/userapi.dart';
 import 'package:phonepe_payment_sdk/phonepe_payment_sdk.dart';
 import 'AddressListScreen.dart';
 import '../Model/AddressListModel.dart';
-import '../TherapyScreens/BookedApointmentsuccessfully.dart';
+import 'BookedApointmentsuccessfully.dart';
 import 'PaymentStatusScreen.dart';
 import 'ShakeWidget.dart';
 import 'package:crypto/crypto.dart';
@@ -194,7 +194,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
   List<Address> addresses = [];
   Future<void> GetAddressList() async {
     user_id = await PreferenceService().getString('user_id') ?? "";
-    final response = await Userapi.getaddresslist();
+    final response = await Userapi.getAddressList();
     setState(() {
       if (response?.status == true) {
         addresses = response?.address ?? [];
@@ -236,7 +236,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
       "amount":"1",
       "transactionID":"XYZKJUHGKIJNKLJNOIJ"
     };
-    final data = await Userapi.NewApointment(
+    final data = await Userapi.newApointment(
         fullname,
         phone,
         appointment,
@@ -277,7 +277,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
       "amount":"1",
       "transactionID":"XYZKJUHGKIJNKLJNOIJ"
     };
-    final data = await Userapi.ExistApointment(
+    final data = await Userapi.existApointment(
         fullname,
         phone,
         appointment,

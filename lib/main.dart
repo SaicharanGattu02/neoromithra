@@ -9,42 +9,49 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:neuromithra/Assesment/ChildAssessment.dart';
-import 'package:neuromithra/Presentation/SelectingTypes/Selecting_types.dart';
-
 import 'package:neuromithra/services/Preferances.dart';
-
-import 'Presentation/MainDashBoard.dart';
+import 'package:neuromithra/services/userapi.dart';
+import 'package:neuromithra/state_injector.dart';
+import 'Presentation/LogIn.dart';
 import 'Presentation/SplashScreen.dart';
-import 'Presentation/StateInjector.dart';
-
 
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    'high_importance_channel', // id
-    'High Importance Notifications', // title
+    'high_importance_channel',
+    'High Importance Notifications',
     description:
-    'This channel is used for important notifications.', // description
+        'This channel is used for important notifications.',
     importance: Importance.high,
     playSound: true);
 
-// flutter local notification
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
+  Userapi.setupInterceptors(navigatorKey);
   WidgetsFlutterBinding.ensureInitialized();
-  Platform.isAndroid
-      ? await Firebase.initializeApp(
-    options: FirebaseOptions(
-      apiKey: "AIzaSyAJ_g_TtIFpj8FMAs1EpcE2mudfOFvtFK4",
-      appId: "1:814004941342:android:fe8d8e1b907f639c72b40f",
-      messagingSenderId: "814004941342",
-      projectId: "neuromithra",
-    ),
-  )
-      : await Firebase.initializeApp();
+  if (Platform.isAndroid) {
+    // Initialize Firebase with options for Android
+    await Firebase.initializeApp(
+      options: FirebaseOptions(
+        apiKey: "AIzaSyDQUhQuxYaNCVzYtZE6fXciJWQKVIIJY9E", // Use your actual API key
+        appId: "1:923226666155:android:7a75d32281c14efc54b3ee", // Use your actual app ID
+        messagingSenderId: "923226666155", // Use your actual messagingSenderId
+        projectId: "neuromitra-89fe6", // Use your actual project ID
+      ),
+    );
+  } else if (Platform.isIOS) {
+    // Initialize Firebase with options for iOS
+    await Firebase.initializeApp(
+      options: FirebaseOptions(
+        apiKey: "AIzaSyBrSB6ofAosF2tMvq1eJsqEOPBLkgYGHJw", // Use your actual API key
+        appId: "1:923226666155:ios:963b75492cf422c554b3ee", // Use your actual iOS app ID
+        messagingSenderId: "923226666155", // Use your actual messagingSenderId
+        projectId: "neuromitra-89fe6", // Use your actual project ID
+        iosBundleId: "com.neuromitra.in", // Replace with your actual iOS bundle ID
+      ),
+    );
+  }
 
   FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
 
@@ -63,7 +70,6 @@ Future<void> main() async {
   // Async exceptions
   PlatformDispatcher.instance.onError = (error, stack) {
     if (fatalError) {
-      // If you want to record a "fatal" exception
       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
       // ignore: dead_code
     } else {
@@ -75,21 +81,16 @@ Future<void> main() async {
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  if (Platform.isAndroid) {
-    FirebaseMessaging.instance.getToken().then((value) {
-      String? token = value;
-      print("Androidfbstoken:{$token}");
-      PreferenceService().saveString("fbstoken", token!);
-      // toast(BuildContext , token);
-    });
-  } else {
-    FirebaseMessaging.instance.getToken().then((value) {
-      String? token = value;
-      print("IOSfbstoken:{$token}");
-      PreferenceService().saveString("fbstoken", token!);
-      // toast(BuildContext , token);
-    });
+// iOS specific: get APNs token
+  if (Platform.isIOS) {
+    final apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+    print("APNs Token: $apnsToken");
   }
+
+  // Get FCM token
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  print("FCM Token: $fcmToken");
+  PreferenceService().saveString("fbstoken", fcmToken!);
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   NotificationSettings settings = await messaging.requestPermission(
@@ -110,7 +111,7 @@ Future<void> main() async {
 
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
   const InitializationSettings initializationSettings = InitializationSettings(
@@ -120,8 +121,7 @@ Future<void> main() async {
   flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
     onDidReceiveNotificationResponse:
-        (NotificationResponse notificationResponse) async {
-    },
+        (NotificationResponse notificationResponse) async {},
   );
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -152,7 +152,7 @@ Future<void> main() async {
     // Optionally report the error to a remote server
   };
 // Motion.instance.setUpdateInterval(60.fps);
-  runApp( MyApp());
+  runApp(MyApp(navigatorKey: navigatorKey));
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -164,7 +164,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void showNotification(RemoteNotification notification,
     AndroidNotification android, Map<String, dynamic> data) async {
   AndroidNotificationDetails androidPlatformChannelSpecifics =
-  AndroidNotificationDetails(
+      AndroidNotificationDetails(
     'your_channel_id', // Your channel ID
     'your_channel_name', // Your channel name
     importance: Importance.max,
@@ -173,7 +173,7 @@ void showNotification(RemoteNotification notification,
     icon: '@mipmap/ic_launcher',
   );
   NotificationDetails platformChannelSpecifics =
-  NotificationDetails(android: androidPlatformChannelSpecifics);
+      NotificationDetails(android: androidPlatformChannelSpecifics);
 
   await flutterLocalNotificationsPlugin.show(
     notification.hashCode,
@@ -183,64 +183,70 @@ void showNotification(RemoteNotification notification,
     payload: jsonEncode(data),
   );
 }
+
 class MyApp extends StatelessWidget {
+  final GlobalKey<NavigatorState> navigatorKey;
+
+  const MyApp({super.key, required this.navigatorKey});
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: StateInjector.blocProviders,
-        child: MaterialApp(
-
-          builder: (context, child) {
-            return MediaQuery(
-              data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-              child: child ?? Container(),
-            );
-          },
-
+      providers: StateInjector.blocProviders,
+      child: MaterialApp(
+        navigatorKey: navigatorKey, // ✅ Key part for navigation via interceptors
+        builder: (context, child) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            child: child ?? Container(),
+          );
+        },
         debugShowCheckedModeBanner: false,
         title: 'NeuroMitra',
-          theme: ThemeData(
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            scaffoldBackgroundColor: Colors.white,
-            dialogBackgroundColor: Colors.white,
-            cardColor: Colors.white,
-            searchBarTheme: const SearchBarThemeData(),
-            tabBarTheme: const TabBarTheme(),
-            dialogTheme: const DialogTheme(
-              shadowColor: Colors.white,
-              surfaceTintColor: Colors.white,
-              backgroundColor: Colors.white, 
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                    Radius.circular(5.0)), // Set the border radius of the dialog
-              ),
+        theme: ThemeData(
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          scaffoldBackgroundColor: Colors.white,
+          dialogBackgroundColor: Colors.white,
+          cardColor: Colors.white,
+          searchBarTheme: const SearchBarThemeData(),
+          tabBarTheme: const TabBarTheme(),
+          dialogTheme: const DialogTheme(
+            shadowColor: Colors.white,
+            surfaceTintColor: Colors.white,
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(5.0)),
             ),
-            buttonTheme: const ButtonThemeData(),
-            popupMenuTheme: const PopupMenuThemeData(
-                color: Colors.white, shadowColor: Colors.white),
-            appBarTheme: const AppBarTheme(
-              surfaceTintColor: Colors.white,
-            ),
-            cardTheme: const CardTheme(
-              shadowColor: Colors.white,
-              surfaceTintColor: Colors.white,
-              color: Colors.white,
-            ),
-
-            textButtonTheme: TextButtonThemeData(
-              style: ButtonStyle(
-                // overlayColor: MaterialStateProperty.all(Colors.white),
-              ),
-            ),
-            bottomSheetTheme: const BottomSheetThemeData(
-                surfaceTintColor: Colors.white, backgroundColor: Colors.white),
-            colorScheme: const ColorScheme.light(background: Colors.white)
-                .copyWith(background: Colors.white),
           ),
-        home: Splash()
+          buttonTheme: const ButtonThemeData(),
+          popupMenuTheme: const PopupMenuThemeData(
+            color: Colors.white,
+            shadowColor: Colors.white,
+          ),
+          appBarTheme: const AppBarTheme(
+            surfaceTintColor: Colors.white,
+          ),
+          cardTheme: const CardTheme(
+            shadowColor: Colors.white,
+            surfaceTintColor: Colors.white,
+            color: Colors.white,
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: ButtonStyle(),
+          ),
+          bottomSheetTheme: const BottomSheetThemeData(
+            surfaceTintColor: Colors.white,
+            backgroundColor: Colors.white,
+          ),
+          colorScheme: const ColorScheme.light(background: Colors.white),
+        ),
+        routes: {
+          '/signin': (context) => LogIn(),
+        },
+        home: Splash(),
       ),
     );
   }

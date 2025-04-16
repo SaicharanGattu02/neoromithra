@@ -89,7 +89,7 @@ class _PaymentStatusScreenState extends State<PaymentStatusScreen> {
   }
 
   Future<bool> NewBookAppointment(Map<String, dynamic> orderData) async {
-    final data = await Userapi.NewApointment(
+    final data = await Userapi.newApointment(
         widget.fullName,
         widget.phoneNumber,
         widget.appointment,
@@ -105,7 +105,7 @@ class _PaymentStatusScreenState extends State<PaymentStatusScreen> {
   }
 
   Future<bool> ExistBookAppointment(Map<String, dynamic> orderData) async {
-    final data = await Userapi.ExistApointment(
+    final data = await Userapi.existApointment(
         widget.fullName,
         widget.phoneNumber,
         widget.appointment,
