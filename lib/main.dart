@@ -2,9 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,93 +13,63 @@ import 'package:neuromithra/state_injector.dart';
 import 'Presentation/LogIn.dart';
 import 'Presentation/SplashScreen.dart';
 
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'high_importance_channel',
     'High Importance Notifications',
     description:
-        'This channel is used for important notifications.',
+    'This channel is used for important notifications.',
     importance: Importance.high,
     playSound: true);
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
-  Userapi.setupInterceptors(navigatorKey);
   WidgetsFlutterBinding.ensureInitialized();
-  if (Platform.isAndroid) {
-    // Initialize Firebase with options for Android
-    await Firebase.initializeApp(
-      options: FirebaseOptions(
-        apiKey: "AIzaSyDQUhQuxYaNCVzYtZE6fXciJWQKVIIJY9E", // Use your actual API key
-        appId: "1:923226666155:android:7a75d32281c14efc54b3ee", // Use your actual app ID
-        messagingSenderId: "923226666155", // Use your actual messagingSenderId
-        projectId: "neuromitra-89fe6", // Use your actual project ID
-      ),
-    );
-  } else if (Platform.isIOS) {
-    // Initialize Firebase with options for iOS
-    await Firebase.initializeApp(
-      options: FirebaseOptions(
-        apiKey: "AIzaSyBrSB6ofAosF2tMvq1eJsqEOPBLkgYGHJw", // Use your actual API key
-        appId: "1:923226666155:ios:963b75492cf422c554b3ee", // Use your actual iOS app ID
-        messagingSenderId: "923226666155", // Use your actual messagingSenderId
-        projectId: "neuromitra-89fe6", // Use your actual project ID
-        iosBundleId: "com.neuromitra.in", // Replace with your actual iOS bundle ID
-      ),
-    );
-  }
 
-  FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
+  Userapi.setupInterceptors(navigatorKey);
 
-  const fatalError = true;
-  // Non-async exceptions
-  FlutterError.onError = (errorDetails) {
-    if (fatalError) {
-      // If you want to record a "fatal" exception
-      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-      // ignore: dead_code
-    } else {
-      // If you want to record a "non-fatal" exception
-      FirebaseCrashlytics.instance.recordFlutterError(errorDetails);
-    }
-  };
-  // Async exceptions
-  PlatformDispatcher.instance.onError = (error, stack) {
-    if (fatalError) {
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-      // ignore: dead_code
-    } else {
-      // If you want to record a "non-fatal" exception
-      FirebaseCrashlytics.instance.recordError(error, stack);
-    }
-    return true;
-  };
+  await Firebase.initializeApp(
+    options: Platform.isIOS
+        ? const FirebaseOptions(
+      apiKey: "AIzaSyBrSB6ofAosF2tMvq1eJsqEOPBLkgYGHJw",
+      appId: "1:923226666155:ios:963b75492cf422c554b3ee",
+      messagingSenderId: "923226666155",
+      projectId: "neuromitra-89fe6",
+      iosBundleId: "com.neuromitra.in",
+    )
+        : const FirebaseOptions(
+      apiKey: "AIzaSyDQUhQuxYaNCVzYtZE6fXciJWQKVIIJY9E",
+      appId: "1:923226666155:android:7a75d32281c14efc54b3ee",
+      messagingSenderId: "923226666155",
+      projectId: "neuromitra-89fe6",
+    ),
+  );
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-// iOS specific: get APNs token
+  // Request permissions (iOS)
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+
+  // Get the APNs token (iOS)
   if (Platform.isIOS) {
-    final apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+    String? apnsToken = await messaging.getAPNSToken();
     print("APNs Token: $apnsToken");
   }
 
-  // Get FCM token
-  final fcmToken = await FirebaseMessaging.instance.getToken();
+  // Get the FCM token
+  String? fcmToken = await messaging.getToken();
   print("FCM Token: $fcmToken");
-  PreferenceService().saveString("fbstoken", fcmToken!);
-
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
+  if (fcmToken != null) {
+    PreferenceService().saveString("fbstoken", fcmToken);
+  }
 
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,
@@ -109,51 +77,48 @@ Future<void> main() async {
     sound: true,
   );
 
+  // Create notification channel (Android)
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
+      AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
+  const DarwinInitializationSettings iosInitSettings = DarwinInitializationSettings(
+    requestAlertPermission: true,
+    requestBadgePermission: true,
+    requestSoundPermission: true,
+  );
+
   const InitializationSettings initializationSettings = InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-      iOS: DarwinInitializationSettings());
+    android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+    iOS: iosInitSettings,
+  );
 
   flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
-    onDidReceiveNotificationResponse:
-        (NotificationResponse notificationResponse) async {},
+    onDidReceiveNotificationResponse: (NotificationResponse response) async {
+      // Handle notification tapped logic
+    },
   );
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     RemoteNotification? notification = message.notification;
     AndroidNotification? android = message.notification?.android;
+
     if (notification != null && android != null) {
-      // print('A new message received: ${notification.title}');
-      // print('RemoteMessage data: ${message.data.toString()}');
       showNotification(notification, android, message.data);
     }
   });
 
-  // Also handle any interaction when the app is in the background via a
-  // Stream listener
-  FirebaseMessaging.onMessageOpenedApp.listen((message) {
-    // _handleMessage(message);
-    // print("onMessageOpenedApp:${message.data['type']}");
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    // Handle notification opened when app was in background
   });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  // debugInvertOversizedImages = true;
-  FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
-  FlutterError.onError = (FlutterErrorDetails details) {
-    // Log the error details to a logging service or print them
-    print("Errrrrrrrrrr:${details.exceptionAsString()}");
-    // Optionally report the error to a remote server
-  };
-// Motion.instance.setUpdateInterval(60.fps);
   runApp(MyApp(navigatorKey: navigatorKey));
 }
+
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();

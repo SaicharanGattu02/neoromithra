@@ -10,12 +10,13 @@ import UserNotifications
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    
+
     // Configure Firebase
-    //  FirebaseApp.configure()
+     FirebaseApp.configure()
+
     // Register Flutter plugins
     GeneratedPluginRegistrant.register(with: self)
-    
+
     // Request permission for push notifications (if required)
     UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
       if granted {
