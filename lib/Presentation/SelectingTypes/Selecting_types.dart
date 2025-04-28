@@ -19,7 +19,7 @@ class _SelectingTypesState extends State<SelectingTypes> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text( 'About NeuroMitra',
+        title: Text('About NeuroMitra',
             style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: "Inter",
@@ -47,7 +47,7 @@ class _SelectingTypesState extends State<SelectingTypes> {
                   borderRadius: BorderRadius.circular(12),
                   child: Image.asset(
                     'assets/applogo.jpeg',
-                   scale: 12,
+                    scale: 12,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -84,24 +84,24 @@ class _SelectingTypesState extends State<SelectingTypes> {
             ),
             SizedBox(height: 14),
             Center(
-              child: Text('“From children with developmental delays to adults seeking mental wellness, we’re here for you."',
+              child: Text(
+                '“From children with developmental delays to adults seeking mental wellness, we’re here for you."',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
-                    fontFamily: "Epi"
-                ),
+                    fontFamily: "Epi"),
               ),
             ),
             SizedBox(height: 10),
             Center(
-              child: Text('“We believe in empowering Neurodiverse Minds & Mental Wellness for All.”',
+              child: Text(
+                '“We believe in empowering Neurodiverse Minds & Mental Wellness for All.”',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
-                    fontFamily: "Epi"
-                ),
+                    fontFamily: "Epi"),
               ),
             ),
             SizedBox(height: 20),
@@ -110,7 +110,10 @@ class _SelectingTypesState extends State<SelectingTypes> {
               width: double.infinity,
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.asset("assets/banner.webp",fit: BoxFit.cover,)),
+                  child: Image.asset(
+                    "assets/banner.webp",
+                    fit: BoxFit.cover,
+                  )),
             ),
             SizedBox(height: 32),
 
