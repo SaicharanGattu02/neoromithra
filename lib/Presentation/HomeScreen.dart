@@ -165,89 +165,89 @@ class _HomeScreenState extends State<HomeScreen> {
               width: 200,
               height: 50,
             ),
-            SizedBox(
-              width: 100,
-              height: 40,
-              child:BlocConsumer<LocationCubit, LocationState>(
-                listener: (context, state) {
-                  if (state is LocationPermissionDenied) {
-                    showLocationBottomSheet(context);
-                  }
-                },
-                builder: (context, state) {
-                  // Trigger permission check when the widget is built (optional)
-                  // You can move this to initState or elsewhere if needed
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    context.read<LocationCubit>().checkLocationPermission();
-                  });
-
-                  if (state is LocationLoaded) {
-                    return ElevatedButton.icon(
-                      onPressed: makingSOSCall
-                          ? null
-                          : () {
-                        // Make SOS call with the loaded location
-                        _makeSOSCall(state.locationName);
-                        print("location:${state.locationName}");
-                      },
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        backgroundColor: Colors.blue, // Keep background blue during loading
-                        foregroundColor: Colors.blue,
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      icon: makingSOSCall
-                          ? SizedBox.shrink() // No icon when loading
-                          : Icon(Icons.phone, color: Colors.white), // Phone icon
-                      label: Center(
-                        child: makingSOSCall
-                            ? SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                              color: Colors.white), // Limit the size of the loader
-                        )
-                            : Text(
-                          "SOS Call",
-                          style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: "Inter"),
-                        ),
-                      ),
-                    );
-                  } else if (state is LocationLoading) {
-                    // Show a loading indicator while fetching location
-                    return ElevatedButton.icon(
-                      onPressed: null, // Disable button while loading
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.blue,
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      icon: SizedBox.shrink(),
-                      label: Center(
-                        child: SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(color: Colors.white),
-                        ),
-                      ),
-                    );
-                  }
-                  // Return a disabled button or empty container if no valid state
-                  return Container();
-                },
-              ),
-            ),
+            // SizedBox(
+            //   width: 100,
+            //   height: 40,
+            //   child:BlocConsumer<LocationCubit, LocationState>(
+            //     listener: (context, state) {
+            //       if (state is LocationPermissionDenied) {
+            //         showLocationBottomSheet(context);
+            //       }
+            //     },
+            //     builder: (context, state) {
+            //       // Trigger permission check when the widget is built (optional)
+            //       // You can move this to initState or elsewhere if needed
+            //       WidgetsBinding.instance.addPostFrameCallback((_) {
+            //         context.read<LocationCubit>().checkLocationPermission();
+            //       });
+            //
+            //       if (state is LocationLoaded) {
+            //         return ElevatedButton.icon(
+            //           onPressed: makingSOSCall
+            //               ? null
+            //               : () {
+            //             // Make SOS call with the loaded location
+            //             _makeSOSCall(state.locationName);
+            //             print("location:${state.locationName}");
+            //           },
+            //           style: ElevatedButton.styleFrom(
+            //             elevation: 0,
+            //             backgroundColor: Colors.blue, // Keep background blue during loading
+            //             foregroundColor: Colors.blue,
+            //             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            //             shape: RoundedRectangleBorder(
+            //               borderRadius: BorderRadius.circular(10),
+            //             ),
+            //           ),
+            //           icon: makingSOSCall
+            //               ? SizedBox.shrink() // No icon when loading
+            //               : Icon(Icons.phone, color: Colors.white), // Phone icon
+            //           label: Center(
+            //             child: makingSOSCall
+            //                 ? SizedBox(
+            //               height: 20,
+            //               width: 20,
+            //               child: CircularProgressIndicator(
+            //                   color: Colors.white), // Limit the size of the loader
+            //             )
+            //                 : Text(
+            //               "SOS Call",
+            //               style: TextStyle(
+            //                   fontSize: 13,
+            //                   color: Colors.white,
+            //                   fontWeight: FontWeight.w500,
+            //                   fontFamily: "Inter"),
+            //             ),
+            //           ),
+            //         );
+            //       } else if (state is LocationLoading) {
+            //         // Show a loading indicator while fetching location
+            //         return ElevatedButton.icon(
+            //           onPressed: null, // Disable button while loading
+            //           style: ElevatedButton.styleFrom(
+            //             elevation: 0,
+            //             backgroundColor: Colors.blue,
+            //             foregroundColor: Colors.blue,
+            //             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            //             shape: RoundedRectangleBorder(
+            //               borderRadius: BorderRadius.circular(10),
+            //             ),
+            //           ),
+            //           icon: SizedBox.shrink(),
+            //           label: Center(
+            //             child: SizedBox(
+            //               height: 20,
+            //               width: 20,
+            //               child: CircularProgressIndicator(color: Colors.white),
+            //             ),
+            //           ),
+            //         );
+            //       }
+            //       // Return a disabled button or empty container if no valid state
+            //       return Container();
+            //     },
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -398,131 +398,131 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void showLocationBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isDismissible: false,
-      enableDrag: false,
-      isScrollControlled: true, // Allows the bottom sheet to adjust to content size
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
-      ),
-      builder: (BuildContext bottomSheetContext) {
-        return BlocConsumer<LocationCubit, LocationState>(
-          listener: (context, state) {
-            if (state is LocationLoaded) {
-              print('Location Loaded');
-              Navigator.pop(bottomSheetContext);
-            }
-          },
-          builder: (context, state) {
-            bool isLoading = state is LocationLoading;
-            return WillPopScope(
-              onWillPop: () async => !isLoading,
-              child: SafeArea(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 0.5, // Limit height
-                  ),
-                  child: Container(
-                    padding: const EdgeInsets.all(20.0),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(16.0)),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Header with Icon and Title
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8.0),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor.withOpacity(0.1),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                Icons.gps_fixed_sharp,
-                                size: 24,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                'Enable Location Services',
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        // Description
-                        Text(
-                          'Granting location permission ensures accurate address detection and a seamless service experience.',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.grey[600],
-                            height: 1.4,
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        // Action Buttons
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            if (!isLoading)
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(bottomSheetContext);
-                                },
-                                child: const Text(
-                                  'CANCEL',
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                              ),
-                            const SizedBox(width: 8),
-                            ElevatedButton(
-                              onPressed: isLoading
-                                  ? null
-                                  : () {
-                                context.read<LocationCubit>().requestLocationPermission();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                              ),
-                              child: isLoading
-                                  ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                ),
-                              )
-                                  : const Text(
-                                'GRANT',
-                                style: TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
+  // void showLocationBottomSheet(BuildContext context) {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     isDismissible: false,
+  //     enableDrag: false,
+  //     isScrollControlled: true, // Allows the bottom sheet to adjust to content size
+  //     shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+  //     ),
+  //     builder: (BuildContext bottomSheetContext) {
+  //       return BlocConsumer<LocationCubit, LocationState>(
+  //         listener: (context, state) {
+  //           if (state is LocationLoaded) {
+  //             print('Location Loaded');
+  //             Navigator.pop(bottomSheetContext);
+  //           }
+  //         },
+  //         builder: (context, state) {
+  //           bool isLoading = state is LocationLoading;
+  //           return WillPopScope(
+  //             onWillPop: () async => !isLoading,
+  //             child: SafeArea(
+  //               child: ConstrainedBox(
+  //                 constraints: BoxConstraints(
+  //                   maxHeight: MediaQuery.of(context).size.height * 0.5, // Limit height
+  //                 ),
+  //                 child: Container(
+  //                   padding: const EdgeInsets.all(20.0),
+  //                   decoration: BoxDecoration(
+  //                     color: Theme.of(context).scaffoldBackgroundColor,
+  //                     borderRadius: const BorderRadius.vertical(top: Radius.circular(16.0)),
+  //                   ),
+  //                   child: Column(
+  //                     mainAxisSize: MainAxisSize.min,
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       // Header with Icon and Title
+  //                       Row(
+  //                         children: [
+  //                           Container(
+  //                             padding: const EdgeInsets.all(8.0),
+  //                             decoration: BoxDecoration(
+  //                               color: Theme.of(context).primaryColor.withOpacity(0.1),
+  //                               shape: BoxShape.circle,
+  //                             ),
+  //                             child: Icon(
+  //                               Icons.gps_fixed_sharp,
+  //                               size: 24,
+  //                               color: Theme.of(context).primaryColor,
+  //                             ),
+  //                           ),
+  //                           const SizedBox(width: 12),
+  //                           Expanded(
+  //                             child: Text(
+  //                               'Enable Location Services',
+  //                               style: Theme.of(context).textTheme.titleMedium?.copyWith(
+  //                                 fontWeight: FontWeight.w600,
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                       const SizedBox(height: 16),
+  //                       // Description
+  //                       Text(
+  //                         'Granting location permission ensures accurate address detection and a seamless service experience.',
+  //                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+  //                           color: Colors.grey[600],
+  //                           height: 1.4,
+  //                         ),
+  //                       ),
+  //                       const SizedBox(height: 24),
+  //                       // Action Buttons
+  //                       Row(
+  //                         mainAxisAlignment: MainAxisAlignment.end,
+  //                         children: [
+  //                           if (!isLoading)
+  //                             TextButton(
+  //                               onPressed: () {
+  //                                 Navigator.pop(bottomSheetContext);
+  //                               },
+  //                               child: const Text(
+  //                                 'CANCEL',
+  //                                 style: TextStyle(color: Colors.grey),
+  //                               ),
+  //                             ),
+  //                           const SizedBox(width: 8),
+  //                           ElevatedButton(
+  //                             onPressed: isLoading
+  //                                 ? null
+  //                                 : () {
+  //                               context.read<LocationCubit>().requestLocationPermission();
+  //                             },
+  //                             style: ElevatedButton.styleFrom(
+  //                               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+  //                               shape: RoundedRectangleBorder(
+  //                                 borderRadius: BorderRadius.circular(8.0),
+  //                               ),
+  //                             ),
+  //                             child: isLoading
+  //                                 ? const SizedBox(
+  //                               width: 20,
+  //                               height: 20,
+  //                               child: CircularProgressIndicator(
+  //                                 strokeWidth: 2,
+  //                                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+  //                               ),
+  //                             )
+  //                                 : const Text(
+  //                               'GRANT',
+  //                               style: TextStyle(fontWeight: FontWeight.w600),
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
 }

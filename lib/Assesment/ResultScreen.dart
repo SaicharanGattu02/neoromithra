@@ -61,7 +61,7 @@ class _ResultscreenState extends State<Resultscreen> {
               ),
               SizedBox(height: 10),
               Text(
-                "Assessment Submitted Successfully!",
+                "Thank you! Your responses have been sent to the therapist. They will review them and contact you to schedule your session.",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: "Poppins",
@@ -70,14 +70,14 @@ class _ResultscreenState extends State<Resultscreen> {
                 ),
               ),
               SizedBox(height: 30),
-              CustomAppButton(
-                text: 'View Score',
-                onPlusTap: () {
-                  setState(() {
-                    viewIndex=1;
-                  });
-                },
-              ),
+              // CustomAppButton(
+              //   text: 'View Score',
+              //   onPlusTap: () {
+              //     setState(() {
+              //       viewIndex=1;
+              //     });
+              //   },
+              // ),
             ]else...[
               Text(
                 "Scoring and Reflection:",

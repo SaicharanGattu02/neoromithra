@@ -84,7 +84,7 @@ class _ChildAssessmentState extends State<ChildAssessment> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Child Development Assessment',
+          'Child Intake Form',
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontFamily: "Inter",
@@ -269,7 +269,7 @@ class _ChildAssessmentState extends State<ChildAssessment> {
                 }
               },
             ),
-
+            const SizedBox(height: 20),
           ],
         ),
       ),
