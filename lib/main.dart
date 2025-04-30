@@ -8,22 +8,23 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:neuromithra/router.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:neuromithra/state_injector.dart';
+import 'package:provider/provider.dart';
 import 'Presentation/LogIn.dart';
 import 'Presentation/SplashScreen.dart';
-
+import 'Providers/SignInProviders.dart';
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    'high_importance_channel',
-    'High Importance Notifications',
-    description:
-        'This channel is used for important notifications.',
+    'high_importance_channel', 'High Importance Notifications',
+    description: 'This channel is used for important notifications.',
     importance: Importance.high,
     playSound: true);
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
@@ -144,7 +145,10 @@ Future<void> main() async {
     // Optionally report the error to a remote server
   };
 // Motion.instance.setUpdateInterval(60.fps);
-  runApp(MyApp(navigatorKey: navigatorKey));
+  runApp(
+      MultiProvider(providers:[
+        ChangeNotifierProvider(create: (_) => SignInProviders()),
+      ],child: MyApp()));
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -177,16 +181,13 @@ void showNotification(RemoteNotification notification,
 }
 
 class MyApp extends StatelessWidget {
-  final GlobalKey<NavigatorState> navigatorKey;
-
-  const MyApp({super.key, required this.navigatorKey});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: StateInjector.blocProviders,
-      child: MaterialApp(
-        navigatorKey: navigatorKey, // ✅ Key part for navigation via interceptors
+      child: MaterialApp.router(
         builder: (context, child) {
           return MediaQuery(
             data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
@@ -234,11 +235,7 @@ class MyApp extends StatelessWidget {
             backgroundColor: Colors.white,
           ),
           colorScheme: const ColorScheme.light(background: Colors.white),
-        ),
-        routes: {
-          '/signin': (context) => LogIn(),
-        },
-        home: Splash(),
+        ),routerConfig: goRouter,
       ),
     );
   }

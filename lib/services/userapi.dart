@@ -956,7 +956,8 @@ class Userapi {
                 final prefs = await SharedPreferences.getInstance();
                 await prefs.clear();
                 Future.microtask(() {
-                  navigatorKey.currentState?.pushNamedAndRemoveUntil('/signin', (route) => false);
+                  navigatorKey.currentState
+                      ?.pushNamedAndRemoveUntil('/signin', (route) => false);
                 });
                 return;
               default:
@@ -972,7 +973,6 @@ class Userapi {
     );
   }
 
-
   static Future<bool> _refreshToken() async {
     try {
       final newToken = await AuthService.refreshToken();
@@ -987,7 +987,8 @@ class Userapi {
   }
 
   // Existing methods
-  static Future<Response> get(String path, {Map<String, dynamic>? queryParameters}) async {
+  static Future<Response> get(String path,
+      {Map<String, dynamic>? queryParameters}) async {
     try {
       print("called get method");
       return await _dio.get(path, queryParameters: queryParameters);
@@ -1046,7 +1047,8 @@ class Userapi {
     }
   }
 
-  static Future<Map<String, List<AssessmentQuestion>>> fetchAdultQuestions() async {
+  static Future<Map<String, List<AssessmentQuestion>>>
+      fetchAdultQuestions() async {
     try {
       final response = await _dio.get("/api/list_of_questions_for_adults");
       if (response.statusCode == 200) {
@@ -1087,7 +1089,8 @@ class Userapi {
     }
   }
 
-  static Future<Map<String, List<AssessmentQuestion>>> fetchChildrenQuestions() async {
+  static Future<Map<String, List<AssessmentQuestion>>>
+      fetchChildrenQuestions() async {
     try {
       final response = await _dio.get("/api/list_of_questions");
       if (response.statusCode == 200) {
@@ -1156,7 +1159,7 @@ class Userapi {
         'payment_json': jsonEncode(orderData),
       });
       final response =
-      await _dio.post("/api/for_new_bookappointments", data: formData);
+          await _dio.post("/api/for_new_bookappointments", data: formData);
       if (response.statusCode == 200) {
         print("✅ Appointment Response: ${response.data}");
         return BookApointmentModel.fromJson(response.data);
@@ -1199,7 +1202,7 @@ class Userapi {
         'payment_json': jsonEncode(orderData),
       });
       final response =
-      await _dio.post("/api/for_exesting_bookappointments", data: formData);
+          await _dio.post("/api/for_exesting_bookappointments", data: formData);
       if (response.statusCode == 200) {
         print("✅ Existing Appointment Response: ${response.data}");
         return BookApointmentModel.fromJson(response.data);
@@ -1241,17 +1244,9 @@ class Userapi {
     }
   }
 
-  static Future<Map<String, dynamic>?> postLogin(
-      String mail, String password, String deviceToken) async {
+  static Future<Map<String, dynamic>?> postLogin(data) async {
     try {
-      final response = await _dio.post(
-        "/api/user/userlogin",
-        data: {
-          "email": mail,
-          "password": password,
-          "fcm_token": deviceToken,
-        },
-      );
+      final response = await _dio.post("/api/user/userlogin", data: data);
       if (response.statusCode == 200) {
         print("PostLogin Status: ${response.data}");
         return {
@@ -1421,7 +1416,7 @@ class Userapi {
         ),
       });
       final response =
-      await _dio.post("/api/update_profile_image", data: formData);
+          await _dio.post("/api/update_profile_image", data: formData);
       if (response.statusCode == 200) {
         // Assuming response matches LoginModel structure
         return LoginModel.fromJson(response.data);
@@ -1530,7 +1525,7 @@ class Userapi {
       String pageSource) async {
     try {
       final response =
-      await _dio.get("/api/check_previous_bookings/$pageSource");
+          await _dio.get("/api/check_previous_bookings/$pageSource");
       if (response.statusCode == 200) {
         print("getpreviousbookings response: ${response.data}");
         return PreviousBookingModel.fromJson(response.data);
@@ -1548,7 +1543,7 @@ class Userapi {
       String id, String pageSource) async {
     try {
       final response =
-      await _dio.get("/api/get_therapy_traking/$id/$pageSource");
+          await _dio.get("/api/get_therapy_traking/$id/$pageSource");
       if (response.statusCode == 200) {
         print("getbehaviourallist response: ${response.data}");
         return BehaviouralTrackingModel.fromJson(response.data);

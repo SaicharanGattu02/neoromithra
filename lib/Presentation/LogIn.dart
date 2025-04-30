@@ -2,17 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:neuromithra/Presentation/Dashboard.dart';
 import 'package:neuromithra/Presentation/MainDashBoard.dart';
 import 'package:neuromithra/Presentation/Register.dart';
+import 'package:neuromithra/Providers/SignInProviders.dart';
 import 'package:neuromithra/services/AuthService.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
+import 'package:provider/provider.dart';
 import 'ForgotPasswordScreen.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({super.key});
-
   @override
   State<LogIn> createState() => _LogInState();
 }
@@ -23,8 +25,6 @@ class _LogInState extends State<LogIn> {
   final FocusNode _focusNodeEmail = FocusNode();
   final FocusNode _focusNodePassword = FocusNode();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  bool _loading = false;
   bool _isPasswordVisible = false;
 
   @override
@@ -34,79 +34,14 @@ class _LogInState extends State<LogIn> {
     super.dispose();
   }
 
-  Future<void> logIn() async {
-    String email = _emailController.text;
-    String pwd = _passwordController.text;
-
-    setState(() {
-      _loading = true;
-    });
-
+  Future<void> login() async {
     String fcmToken = await PreferenceService().getString("fbstoken") ?? "";
-    final loginResponse = await Userapi.postLogin(email, pwd, fcmToken);
-    if (loginResponse != null) {
-      if (loginResponse.containsKey("access_token")) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-            "You are logged in successfully",
-            style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
-          ),
-          duration: Duration(seconds: 1),
-          backgroundColor: Color(0xFF32657B),
-        ));
-        PreferenceService()
-            .saveString("token", loginResponse["access_token"] ?? "");
-        PreferenceService().saveString(
-            "access_expiry_timestamp",
-            (DateTime.now().millisecondsSinceEpoch ~/ 1000 +
-                    loginResponse["expires_in"])
-                .toString());
-        AuthService.saveTokens(
-          loginResponse["access_token"],
-          loginResponse["access_token"],
-          (DateTime.now().millisecondsSinceEpoch ~/ 1000 + int.parse(loginResponse["expires_in"].toString())),
-        );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => MainDashBoard(
-                    initialIndex: 0,
-                  )),
-        );
-      } else if (loginResponse.containsKey("error")) {
-        // Handle unauthorized or error response
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-            loginResponse["error"],
-            style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
-          ),
-          duration: Duration(seconds: 1),
-          backgroundColor: Color(0xFF32657B),
-        ));
-      } else {
-        // Handle other unexpected responses
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-            "An unexpected error occurred. Please try again.",
-            style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
-          ),
-          duration: Duration(seconds: 1),
-          backgroundColor: Color(0xFF32657B),
-        ));
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-          "Login request failed. Please try again.",
-          style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
-        ),
-        duration: Duration(seconds: 1),
-        backgroundColor: Color(0xFF32657B),
-      ));
-    }
-    setState(() {
-      _loading = false;
-    });
+    final Map<String, dynamic> data = {
+      "email": _emailController.text,
+      "password": _passwordController.text,
+      "fcm_token": fcmToken,
+    };
+    Provider.of<SignInProviders>(context, listen: false).logIn(context, data);
   }
 
   @override
@@ -307,48 +242,52 @@ class _LogInState extends State<LogIn> {
                       InkWell(
                         onTap: () {
                           if (_formKey.currentState?.validate() ?? false) {
-                            logIn();
+                            login();
                           }
                         },
-                        child: Container(
-                          width: width,
-                          height: 56,
-                          decoration: BoxDecoration(
-                            color: Color(0xff3EA4D2),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Center(
-                            child: _loading
-                                ? CircularProgressIndicator(
-                                    color: Color(0xFFFFFFFF),
-                                  )
-                                : Row(
-                                    mainAxisSize: MainAxisSize
-                                        .min, // To keep the row centered
-                                    children: [
-                                      Center(
-                                        child: Text(
-                                          "Sign In",
-                                          style: TextStyle(
-                                            color: Color(0xFFFFFFFF),
-                                            fontFamily: "Inter",
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 16,
+                        child: Consumer<SignInProviders>(
+                          builder: (context, signIn, child) {
+                            return Container(
+                              width: width,
+                              height: 56,
+                              decoration: BoxDecoration(
+                                color: Color(0xff3EA4D2),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Center(
+                                child: signIn.isLoading
+                                    ? CircularProgressIndicator(
+                                        color: Color(0xFFFFFFFF),
+                                      )
+                                    : Row(
+                                        mainAxisSize: MainAxisSize
+                                            .min, // To keep the row centered
+                                        children: [
+                                          Center(
+                                            child: Text(
+                                              "Sign In",
+                                              style: TextStyle(
+                                                color: Color(0xFFFFFFFF),
+                                                fontFamily: "Inter",
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 16,
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                          SizedBox(
+                                              width:
+                                                  28), // Space between text and icon
+                                          Icon(
+                                            Icons
+                                                .arrow_forward, // Your preferred suffix icon
+                                            color: Colors.white,
+                                            size: 18,
+                                          ),
+                                        ],
                                       ),
-                                      SizedBox(
-                                          width:
-                                              28), // Space between text and icon
-                                      Icon(
-                                        Icons
-                                            .arrow_forward, // Your preferred suffix icon
-                                        color: Colors.white,
-                                        size: 18,
-                                      ),
-                                    ],
-                                  ),
-                          ),
+                              ),
+                            );
+                          },
                         ),
                       ),
                       SizedBox(
@@ -374,11 +313,7 @@ class _LogInState extends State<LogIn> {
                                   ),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => Register()),
-                                      );
+                                      context.push('/register');
                                     },
                                 ),
                               ],
@@ -389,11 +324,7 @@ class _LogInState extends State<LogIn> {
                       Center(
                         child: TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          ForgotPasswordScreen()));
+                              context.push('/forgot_password');
                             },
                             child: Text(
                               'Forgot Password',
