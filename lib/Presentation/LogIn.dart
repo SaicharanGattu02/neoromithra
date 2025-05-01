@@ -3,15 +3,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:neuromithra/Presentation/Dashboard.dart';
-import 'package:neuromithra/Presentation/MainDashBoard.dart';
-import 'package:neuromithra/Presentation/Register.dart';
 import 'package:neuromithra/Providers/SignInProviders.dart';
-import 'package:neuromithra/services/AuthService.dart';
 import 'package:neuromithra/services/Preferances.dart';
-import 'package:neuromithra/services/userapi.dart';
 import 'package:provider/provider.dart';
-import 'ForgotPasswordScreen.dart';
+import '../utils/Color_Constants.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({super.key});
@@ -65,6 +60,42 @@ class _LogInState extends State<LogIn> {
             children: [
               SizedBox(
                 height: 50,
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: SizedBox(
+                  width: 90,
+                  height: 30,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      right: 10,
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        context.pushReplacement('/main_dashBoard?initialIndex=${0}');
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: primary, // Button background color
+                          foregroundColor: primary, // Text color
+                          elevation: 0, // Shadow elevation
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          overlayColor: Colors.transparent,
+                          shadowColor: Colors.transparent),
+                      child: Text(
+                        'Skip',
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontFamily: "lexend"),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
               ),
               Center(
                 child: Image.asset(
