@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:neuromithra/Presentation/BookAppointment.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -82,7 +83,7 @@ class _TherapyDetailsScreenState extends State<DetailsScreen> {
         backgroundColor: Colors.white,
         leading: IconButton.filled(
           icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
           style: IconButton.styleFrom(
             backgroundColor: Color(0xFFECFAFA), // Filled color
           ),

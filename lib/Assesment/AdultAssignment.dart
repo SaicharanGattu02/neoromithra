@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../Components/CustomAppButton.dart';
 import '../Model/AssessmentQuestion.dart';
@@ -51,13 +52,8 @@ class _AdultassignmentState extends State<Adultassignment> {
       String resultString = res["result"];
       Map<String, dynamic> resultData = jsonDecode(resultString); // Convert to Map
 
-      // Navigate to result screen with role-based results
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Resultscreen(resultData: resultData, role: role),
-        ),
-      );
+      context.pushReplacement('/result_screen?resultData=${resultData}&role=${role}');
+
     } else {
       // Failure message
       ScaffoldMessenger.of(context).showSnackBar(
@@ -86,7 +82,7 @@ class _AdultassignmentState extends State<Adultassignment> {
         backgroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xff3EA4D2)),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
         ),
       ),
       body: SingleChildScrollView(

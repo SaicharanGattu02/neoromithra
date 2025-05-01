@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:neuromithra/services/Preferances.dart';
 
 import 'LogIn.dart';
@@ -86,10 +87,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (_) => LogIn()),
-                        );
+                        context.push('/login');
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF3EA4D2), // Button background

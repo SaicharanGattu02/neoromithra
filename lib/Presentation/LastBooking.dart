@@ -8,7 +8,9 @@ import 'package:neuromithra/Presentation/AddRating.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
+import '../Providers/BookingHistoryProviders.dart';
 import 'BehavioralTrackingReport.dart';
 import 'CustomAppBar.dart';
 import '../Model/BookingHistoryModel.dart';
@@ -26,7 +28,8 @@ class _LastBookingState extends State<LastBooking> {
   bool is_loading = true;
   @override
   void initState() {
-    GetBookingHistory();
+    Provider.of<BookingHistoryProviders>(context, listen: false)
+        .GetBookingHistory();
     super.initState();
   }
 
@@ -43,7 +46,7 @@ class _LastBookingState extends State<LastBooking> {
       if (status.isGranted) {
         print("Storage permission granted.");
         Directory dir =
-        Directory('/storage/emulated/0/Download/'); // for Android
+            Directory('/storage/emulated/0/Download/'); // for Android
         if (!await dir.exists()) {
           print(
               "Download directory does not exist. Using external storage directory.");
@@ -95,22 +98,6 @@ class _LastBookingState extends State<LastBooking> {
     }
   }
 
-
-  List<BookingHistory> bookingHistory = [];
-  Future<void> GetBookingHistory() async {
-    final Response = await Userapi.getBookingHistory();
-    if (Response != null) {
-      setState(() {
-        if (Response.status == true) {
-          is_loading = false;
-          bookingHistory = Response.bookingHistory ?? [];
-        } else {
-          is_loading = false;
-        }
-      });
-    }
-  }
-
   // Future<void> downloadFile(String url) async {
   //   final sessionid = await PreferenceService().getString("token");
   //   final headers = {
@@ -151,7 +138,7 @@ class _LastBookingState extends State<LastBooking> {
     // ];
     return Scaffold(
       appBar: AppBar(
-        title: Text( 'Booking History',
+        title: Text('Booking History',
             style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: "Inter",
@@ -167,225 +154,259 @@ class _LastBookingState extends State<LastBooking> {
           ),
         ),
       ),
-      body: (is_loading)
-          ? Center(
-              child: CircularProgressIndicator(
-                color: Colors.blue,
-              ),
-            )
-          : (bookingHistory.length == 0)
+      body: Consumer<BookingHistoryProviders>(
+        builder: (context, bookingHistoryProvider, child) {
+          return bookingHistoryProvider.isLoading
               ? Center(
-                  child: Lottie.asset(
-                    'assets/animations/nodata1.json',
-                    height: 360,
-                    width: 360,
+                  child: CircularProgressIndicator(
+                    color: Colors.blue,
                   ),
                 )
-              : SingleChildScrollView(
-                child: Column(
+              : (bookingHistoryProvider.bookingHistory.length == 0)
+                  ? Center(
+                      child: Lottie.asset(
+                        'assets/animations/nodata1.json',
+                        height: 360,
+                        width: 360,
+                      ),
+                    )
+                  : SingleChildScrollView(
+                      child: Column(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 15),
                             child: ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(), // Disable internal scrolling
-                itemCount: bookingHistory.length,
-                itemBuilder: (BuildContext context, int index) {
-                  var booking = bookingHistory[index];
-                  return Container(
-                    width: w,
-                    padding: EdgeInsets.all(20),
-                    margin: EdgeInsets.symmetric(vertical: 5),
-                    decoration: BoxDecoration(
-                      color: Color(0x4DA0F2F0),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start, // Align children to start
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween, // Space between items
-                          children: [
-                            Text(
-                              "Order No-${booking.id}",
-                              style: TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: Color(0x4DA0F2A3),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                (booking.appointmentType == 0) ? "Online" : "Offline",
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 10.0,
-                                  color: Color(0xff0DC613),
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                              decoration: BoxDecoration(
-                                color: Color(0x80A0F2F0),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                "${booking.appointment}",
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 14,
-                                  color: Color(0xff088A87),
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "${booking.fullName}",
-                          maxLines: 1,
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 15.0, color: Color(0xff088A87),
-                            fontWeight: FontWeight.w500,
-                            overflow: TextOverflow.ellipsis
-                          ),
-                        ),
-                        Text(
-                          "${booking.pageSource}",
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Icon(Icons.calendar_month, size: 16),
-                            SizedBox(width: 8),
-                            Text(
-                              "${booking.dateOfAppointment}",
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 12.0,
-                                color: Color(0xff000000),
-                              ),
-                            ),
-                            Spacer(),
-                            Icon(Icons.access_time, size: 16),
-                            SizedBox(width: 8),
-                            Text(
-                              "${booking.timeOfAppointment}",
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 12.0,
-                                color: Color(0xff000000),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        if (booking.filePath!=null) ...[
-                          InkResponse(
-                            onTap: () {
-                              downloadInvoice("https://admin.neuromitra.com/api/downloadfile/${booking.id}");
-                            },
-                            child: Row(
-                              children: [
-                                Icon(Icons.download_outlined, color: Color(0xff088A87)),
-                                SizedBox(width: 5),
-                                Text(
-                                  "Download Prescription",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: "Inter",
-                                    fontSize: 15,
-                                    color: Color(0xff088A87),
+                              shrinkWrap: true,
+                              physics:
+                                  NeverScrollableScrollPhysics(), // Disable internal scrolling
+                              itemCount: bookingHistoryProvider.bookingHistory.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                var booking =  bookingHistoryProvider.bookingHistory[index];
+                                return Container(
+                                  width: w,
+                                  padding: EdgeInsets.all(20),
+                                  margin: EdgeInsets.symmetric(vertical: 5),
+                                  decoration: BoxDecoration(
+                                    color: Color(0x4DA0F2F0),
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                        Divider(thickness: 0.5),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween, // Space between actions
-                          children: [
-                            InkResponse(
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => BehavioralTrackingReport(id: booking.pid??0,page_source:booking.pageSource??"",),));
-                                 // Navigator.push(context, MaterialPageRoute(builder: (context) => BehavioralTrackingReport(id: booking.id??0,page_source:booking.pageSource??"",),));
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start, // Align children to start
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .spaceBetween, // Space between items
+                                        children: [
+                                          Text(
+                                            "Order No-${booking.id}",
+                                            style: TextStyle(
+                                              fontFamily: 'Inter',
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 15, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: Color(0x4DA0F2A3),
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            child: Text(
+                                              (booking.appointmentType == 0)
+                                                  ? "Online"
+                                                  : "Offline",
+                                              style: TextStyle(
+                                                fontFamily: 'Inter',
+                                                fontSize: 10.0,
+                                                color: Color(0xff0DC613),
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10, vertical: 3),
+                                            decoration: BoxDecoration(
+                                              color: Color(0x80A0F2F0),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: Text(
+                                              "${booking.appointment}",
+                                              style: TextStyle(
+                                                fontFamily: 'Inter',
+                                                fontSize: 14,
+                                                color: Color(0xff088A87),
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        "${booking.fullName}",
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                            fontFamily: 'Inter',
+                                            fontSize: 15.0,
+                                            color: Color(0xff088A87),
+                                            fontWeight: FontWeight.w500,
+                                            overflow: TextOverflow.ellipsis),
+                                      ),
+                                      Text(
+                                        "${booking.pageSource}",
+                                        style: TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Row(
+                                        children: [
+                                          Icon(Icons.calendar_month, size: 16),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            "${booking.dateOfAppointment}",
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 12.0,
+                                              color: Color(0xff000000),
+                                            ),
+                                          ),
+                                          Spacer(),
+                                          Icon(Icons.access_time, size: 16),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            "${booking.timeOfAppointment}",
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 12.0,
+                                              color: Color(0xff000000),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 10),
+                                      if (booking.filePath != null) ...[
+                                        InkResponse(
+                                          onTap: () {
+                                            downloadInvoice(
+                                                "https://admin.neuromitra.com/api/downloadfile/${booking.id}");
+                                          },
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.download_outlined,
+                                                  color: Color(0xff088A87)),
+                                              SizedBox(width: 5),
+                                              Text(
+                                                "Download Prescription",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontFamily: "Inter",
+                                                  fontSize: 15,
+                                                  color: Color(0xff088A87),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                      Divider(thickness: 0.5),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .spaceBetween, // Space between actions
+                                        children: [
+                                          InkResponse(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        BehavioralTrackingReport(
+                                                      id: booking.pid ?? 0,
+                                                      page_source:
+                                                          booking.pageSource ??
+                                                              "",
+                                                    ),
+                                                  ));
+                                              // Navigator.push(context, MaterialPageRoute(builder: (context) => BehavioralTrackingReport(id: booking.id??0,page_source:booking.pageSource??"",),));
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.list_alt_outlined,
+                                                    color: Color(0xff088A87)),
+                                                SizedBox(width: 5),
+                                                Text(
+                                                  "View Behavioural Track",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontFamily: "Inter",
+                                                    fontSize: 15,
+                                                    color: Color(0xff088A87),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          if (booking.ratingStatus != 1 &&
+                                              booking.filePath !=
+                                                  null) // Show only if not rated
+                                            InkResponse(
+                                              onTap: () async {
+                                                var res = await Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        AddProductRating(
+                                                      app_id: booking.id,
+                                                      page_source:
+                                                          booking.pageSource,
+                                                    ),
+                                                  ),
+                                                );
+                                                if (res == true) {
+                                                  setState(() {
+                                                    is_loading = true;
+                                                    bookingHistoryProvider.GetBookingHistory();
+                                                  });
+                                                }
+                                              },
+                                              child: Row(
+                                                children: [
+                                                  Icon(Icons.star,
+                                                      color: Colors.yellow),
+                                                  SizedBox(width: 5),
+                                                  Text(
+                                                    "Rate us",
+                                                    style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontFamily: "Inter",
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                );
                               },
-                              child: Row(
-                                children: [
-                                  Icon(Icons.list_alt_outlined, color: Color(0xff088A87)),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    "View Behavioural Track",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontFamily: "Inter",
-                                      fontSize: 15,
-                                      color: Color(0xff088A87),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            if (booking.ratingStatus != 1 && booking.filePath!=null) // Show only if not rated
-                              InkResponse(
-                                onTap: () async {
-                                  var res = await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => AddProductRating(
-                                        app_id: booking.id,
-                                        page_source: booking.pageSource,
-                                      ),
-                                    ),
-                                  );
-                                  if (res == true) {
-                                    setState(() {
-                                      is_loading = true;
-                                      GetBookingHistory();
-                                    });
-                                  }
-                                },
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.star, color: Colors.yellow),
-                                    SizedBox(width: 5),
-                                    Text(
-                                      "Rate us",
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: "Inter",
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                },
                             ),
                           ),
                         ],
                       ),
-              ),
+                    );
+        },
+      ),
     );
   }
 }

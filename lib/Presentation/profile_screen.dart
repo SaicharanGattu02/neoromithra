@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:neuromithra/Presentation/Aboutus.dart';
 import 'package:neuromithra/Presentation/RefundPolicyScreen.dart';
+import 'package:neuromithra/Providers/HomeProviders.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
+import 'package:provider/provider.dart';
 import '../Components/Shimmers.dart';
 import 'AddressListScreen.dart';
 import 'Editprofile _screen.dart';
@@ -22,356 +25,257 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool is_loading = true;
   @override
   void initState() {
-    GetProfileDetails();
+    Provider.of<HomeProviders>(context, listen: false).getProfileDetails();
     super.initState();
   }
-
-  User user_data= User();
-  Future<void> GetProfileDetails() async {
-    String user_id = await PreferenceService().getString('user_id') ?? "";
-    final Response = await Userapi.getProfileDetails(user_id);
-    if (Response != null) {
-      setState(() {
-        user_data = Response.user??User();
-        is_loading = false;
-      });
-    }
-  }
+  //
+  // User user_data= User();
+  // Future<void> GetProfileDetails() async {
+  //   String user_id = await PreferenceService().getString('user_id') ?? "";
+  //   final Response = await Userapi.getProfileDetails(user_id);
+  //   if (Response != null) {
+  //     setState(() {
+  //       user_data = Response.user??User();
+  //       is_loading = false;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Profile Screen'),
-        leading: Container(),
-        leadingWidth: 0,
-      ),
-      body: (is_loading)
-          ? _buildShimmerEffect()
-          :Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-        child: Column(
-          children: <Widget>[
-            Row(
-              children: [
-                Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 8,
-                            spreadRadius: 2,
+        appBar: AppBar(
+          title: Text('Profile Screen'),
+          leading: Container(),
+          leadingWidth: 0,
+        ),
+        body:
+            Consumer<HomeProviders>(builder: (context, profileDetails, child) {
+          return profileDetails.isLoading
+              ? _buildShimmerEffect()
+              : Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        children: [
+                          Stack(
+                            alignment: Alignment.bottomRight,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 8,
+                                      spreadRadius: 2,
+                                    ),
+                                  ],
+                                ),
+                                child: CircleAvatar(
+                                  radius: 35,
+                                  backgroundColor: Colors.blue.shade700,
+                                  child: Text(
+                                    '${profileDetails.userData.name != null && profileDetails.userData.name!.isNotEmpty ? '${profileDetails.userData.name![0].toUpperCase()}' : ''}',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 26,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                right: 2,
+                                bottom: 2,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                EditProfileScreen()));
+                                  },
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.white,
+                                    radius: 14,
+                                    child: Icon(
+                                      Icons.edit,
+                                      color: Colors.blue,
+                                      size: 16,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
+                          SizedBox(width: 15),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                profileDetails.userData.name != null &&
+                                        profileDetails.userData.name!.isNotEmpty
+                                    ? '${profileDetails.userData.name![0].toUpperCase()}${profileDetails.userData.name!.substring(1)}'
+                                    : 'Unknown',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              Text(
+                                profileDetails.userData.email ?? "",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Spacer(),
                         ],
                       ),
-                      child: CircleAvatar(
-                        radius: 35,
-                        backgroundColor: Colors.blue.shade700,
-                        child: Text(
-                          (user_data.name!.isNotEmpty)
-                              ? user_data.name![0].toUpperCase()
-                              : '',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      SizedBox(height: 20),
+                      Expanded(
+                        child: ListView(
+                          children: [
+                            _buildOptionTile(Icons.history, 'Booking History',
+                                () {
+                              context.push('/last_booking');
+                            }),
+                            _buildOptionTile(
+                                Icons.location_on_outlined, 'Address List', () {
+                              Navigator.of(context).push(PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) {
+                                  return AddressListScreen();
+                                },
+                                transitionsBuilder: (context, animation,
+                                    secondaryAnimation, child) {
+                                  const begin = Offset(1.0, 0.0);
+                                  const end = Offset.zero;
+                                  const curve = Curves.easeInOut;
+                                  var tween = Tween(begin: begin, end: end)
+                                      .chain(CurveTween(curve: curve));
+                                  var offsetAnimation = animation.drive(tween);
+                                  return SlideTransition(
+                                      position: offsetAnimation, child: child);
+                                },
+                              ));
+                            }),
+                            _buildOptionTile(
+                                Icons.support, 'Govt Support Information', () {
+                              Navigator.of(context).push(PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) {
+                                  return SupportProgramsScreen();
+                                },
+                                transitionsBuilder: (context, animation,
+                                    secondaryAnimation, child) {
+                                  const begin = Offset(1.0, 0.0);
+                                  const end = Offset.zero;
+                                  const curve = Curves.easeInOut;
+                                  var tween = Tween(begin: begin, end: end)
+                                      .chain(CurveTween(curve: curve));
+                                  var offsetAnimation = animation.drive(tween);
+                                  return SlideTransition(
+                                      position: offsetAnimation, child: child);
+                                },
+                              ));
+                            }),
+                            _buildOptionTile(Icons.info_outline, 'About Us',
+                                () {
+                              Navigator.of(context).push(PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) {
+                                  return AboutUsScreen();
+                                },
+                                transitionsBuilder: (context, animation,
+                                    secondaryAnimation, child) {
+                                  const begin = Offset(1.0, 0.0);
+                                  const end = Offset.zero;
+                                  const curve = Curves.easeInOut;
+                                  var tween = Tween(begin: begin, end: end)
+                                      .chain(CurveTween(curve: curve));
+                                  var offsetAnimation = animation.drive(tween);
+                                  return SlideTransition(
+                                      position: offsetAnimation, child: child);
+                                },
+                              ));
+                            }),
+                            _buildOptionTile(
+                                Icons.privacy_tip_outlined, 'Privacy Policy',
+                                () {
+                              Navigator.of(context).push(PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) {
+                                  return PrivacyPolicyScreen();
+                                },
+                                transitionsBuilder: (context, animation,
+                                    secondaryAnimation, child) {
+                                  const begin = Offset(1.0, 0.0);
+                                  const end = Offset.zero;
+                                  const curve = Curves.easeInOut;
+                                  var tween = Tween(begin: begin, end: end)
+                                      .chain(CurveTween(curve: curve));
+                                  var offsetAnimation = animation.drive(tween);
+                                  return SlideTransition(
+                                      position: offsetAnimation, child: child);
+                                },
+                              ));
+                            }),
+                            _buildOptionTile(
+                                Icons.policy_outlined, 'Terms and Conditions',
+                                () {
+                              Navigator.of(context).push(PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) {
+                                  return TermsAndConditionsScreen();
+                                },
+                                transitionsBuilder: (context, animation,
+                                    secondaryAnimation, child) {
+                                  const begin = Offset(1.0, 0.0);
+                                  const end = Offset.zero;
+                                  const curve = Curves.easeInOut;
+                                  var tween = Tween(begin: begin, end: end)
+                                      .chain(CurveTween(curve: curve));
+                                  var offsetAnimation = animation.drive(tween);
+                                  return SlideTransition(
+                                      position: offsetAnimation, child: child);
+                                },
+                              ));
+                            }),
+                            _buildOptionTile(Icons.assignment_return_outlined,
+                                'Refund Policy', () {
+                              Navigator.of(context).push(PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) {
+                                  return RefundPolicyScreen();
+                                },
+                                transitionsBuilder: (context, animation,
+                                    secondaryAnimation, child) {
+                                  const begin = Offset(1.0, 0.0);
+                                  const end = Offset.zero;
+                                  const curve = Curves.easeInOut;
+                                  var tween = Tween(begin: begin, end: end)
+                                      .chain(CurveTween(curve: curve));
+                                  var offsetAnimation = animation.drive(tween);
+                                  return SlideTransition(
+                                      position: offsetAnimation, child: child);
+                                },
+                              ));
+                            }),
+                            SizedBox(height: 10),
+                            _buildLogoutTile(context),
+                          ],
                         ),
                       ),
-                    ),
-                    Positioned(
-                      right: 2,
-                      bottom: 2,
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => EditProfileScreen()));
-                        },
-                        child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          radius: 14,
-                          child: Icon(
-                            Icons.edit,
-                            color: Colors.blue,
-                            size: 16,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(width: 15),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      user_data.name??"",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    Text(
-                      user_data.email??"",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                  ],
-                ),
-                Spacer(),
-              ],
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: ListView(
-                children: [
-                  _buildOptionTile(Icons.history, 'Booking History', () {
-                    Navigator.of(context)
-                        .push(PageRouteBuilder(
-                      pageBuilder: (context,
-                          animation,
-                          secondaryAnimation) {
-                        return LastBooking();
-                      },
-                      transitionsBuilder:
-                          (context,
-                          animation,
-                          secondaryAnimation,
-                          child) {
-                        const begin =
-                        Offset(1.0, 0.0);
-                        const end = Offset.zero;
-                        const curve =
-                            Curves.easeInOut;
-                        var tween = Tween(
-                            begin: begin,
-                            end: end)
-                            .chain(CurveTween(
-                            curve: curve));
-                        var offsetAnimation =
-                        animation
-                            .drive(tween);
-                        return SlideTransition(
-                            position:
-                            offsetAnimation,
-                            child: child);
-                      },
-                    ));
-                  }),
-                  _buildOptionTile(Icons.location_on_outlined, 'Address List', () {
-                    Navigator.of(context)
-                        .push(PageRouteBuilder(
-                      pageBuilder: (context,
-                          animation,
-                          secondaryAnimation) {
-                        return AddressListScreen();
-                      },
-                      transitionsBuilder:
-                          (context,
-                          animation,
-                          secondaryAnimation,
-                          child) {
-                        const begin =
-                        Offset(1.0, 0.0);
-                        const end = Offset.zero;
-                        const curve =
-                            Curves.easeInOut;
-                        var tween = Tween(
-                            begin: begin,
-                            end: end)
-                            .chain(CurveTween(
-                            curve: curve));
-                        var offsetAnimation =
-                        animation
-                            .drive(tween);
-                        return SlideTransition(
-                            position:
-                            offsetAnimation,
-                            child: child);
-                      },
-                    ));
-                  }),
-                  _buildOptionTile(Icons.support, 'Govt Support Information', () {
-                    Navigator.of(context)
-                        .push(PageRouteBuilder(
-                      pageBuilder: (context,
-                          animation,
-                          secondaryAnimation) {
-                        return SupportProgramsScreen();
-                      },
-                      transitionsBuilder:
-                          (context,
-                          animation,
-                          secondaryAnimation,
-                          child) {
-                        const begin =
-                        Offset(1.0, 0.0);
-                        const end = Offset.zero;
-                        const curve =
-                            Curves.easeInOut;
-                        var tween = Tween(
-                            begin: begin,
-                            end: end)
-                            .chain(CurveTween(
-                            curve: curve));
-                        var offsetAnimation =
-                        animation
-                            .drive(tween);
-                        return SlideTransition(
-                            position:
-                            offsetAnimation,
-                            child: child);
-                      },
-                    ));
-                  }),
-                  _buildOptionTile(Icons.info_outline, 'About Us', () {
-                    Navigator.of(context)
-                        .push(PageRouteBuilder(
-                      pageBuilder: (context,
-                          animation,
-                          secondaryAnimation) {
-                        return AboutUsScreen();
-                      },
-                      transitionsBuilder:
-                          (context,
-                          animation,
-                          secondaryAnimation,
-                          child) {
-                        const begin =
-                        Offset(1.0, 0.0);
-                        const end = Offset.zero;
-                        const curve =
-                            Curves.easeInOut;
-                        var tween = Tween(
-                            begin: begin,
-                            end: end)
-                            .chain(CurveTween(
-                            curve: curve));
-                        var offsetAnimation =
-                        animation
-                            .drive(tween);
-                        return SlideTransition(
-                            position:
-                            offsetAnimation,
-                            child: child);
-                      },
-                    ));
-                  }),
-                  _buildOptionTile(Icons.privacy_tip_outlined, 'Privacy Policy', () {
-                    Navigator.of(context)
-                        .push(PageRouteBuilder(
-                      pageBuilder: (context,
-                          animation,
-                          secondaryAnimation) {
-                        return PrivacyPolicyScreen();
-                      },
-                      transitionsBuilder:
-                          (context,
-                          animation,
-                          secondaryAnimation,
-                          child) {
-                        const begin =
-                        Offset(1.0, 0.0);
-                        const end = Offset.zero;
-                        const curve =
-                            Curves.easeInOut;
-                        var tween = Tween(
-                            begin: begin,
-                            end: end)
-                            .chain(CurveTween(
-                            curve: curve));
-                        var offsetAnimation =
-                        animation
-                            .drive(tween);
-                        return SlideTransition(
-                            position:
-                            offsetAnimation,
-                            child: child);
-                      },
-                    ));
-                  }),
-                  _buildOptionTile(Icons.policy_outlined, 'Terms and Conditions', () {
-                    Navigator.of(context)
-                        .push(PageRouteBuilder(
-                      pageBuilder: (context,
-                          animation,
-                          secondaryAnimation) {
-                        return TermsAndConditionsScreen();
-                      },
-                      transitionsBuilder:
-                          (context,
-                          animation,
-                          secondaryAnimation,
-                          child) {
-                        const begin =
-                        Offset(1.0, 0.0);
-                        const end = Offset.zero;
-                        const curve =
-                            Curves.easeInOut;
-                        var tween = Tween(
-                            begin: begin,
-                            end: end)
-                            .chain(CurveTween(
-                            curve: curve));
-                        var offsetAnimation =
-                        animation
-                            .drive(tween);
-                        return SlideTransition(
-                            position:
-                            offsetAnimation,
-                            child: child);
-                      },
-                    ));
-                  }),
-                  _buildOptionTile(Icons.assignment_return_outlined, 'Refund Policy', () {
-                    Navigator.of(context)
-                        .push(PageRouteBuilder(
-                      pageBuilder: (context,
-                          animation,
-                          secondaryAnimation) {
-                        return RefundPolicyScreen();
-                      },
-                      transitionsBuilder:
-                          (context,
-                          animation,
-                          secondaryAnimation,
-                          child) {
-                        const begin =
-                        Offset(1.0, 0.0);
-                        const end = Offset.zero;
-                        const curve =
-                            Curves.easeInOut;
-                        var tween = Tween(
-                            begin: begin,
-                            end: end)
-                            .chain(CurveTween(
-                            curve: curve));
-                        var offsetAnimation =
-                        animation
-                            .drive(tween);
-                        return SlideTransition(
-                            position:
-                            offsetAnimation,
-                            child: child);
-                      },
-                    ));
-                  }),
-                  SizedBox(height: 10),
-                  _buildLogoutTile(context),
-                ],
-              ),
-            ),
-          ],
-        ),
-      )
-    );
+                    ],
+                  ),
+                );
+        }));
   }
 
   Widget _buildShimmerEffect() {
@@ -382,33 +286,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           Row(
             children: [
-              shimmerCircle(70,context),
+              shimmerCircle(70, context),
               SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  shimmerText(120, 16,context),
+                  shimmerText(120, 16, context),
                   SizedBox(height: 5),
-                  shimmerText(140, 12,context),
+                  shimmerText(140, 12, context),
                 ],
               ),
             ],
           ),
           SizedBox(height: 20),
-          shimmerContainer(MediaQuery.of(context).size.width, 80,context),
+          shimmerContainer(MediaQuery.of(context).size.width, 80, context),
           SizedBox(height: 15),
-          shimmerContainer(MediaQuery.of(context).size.width, 80,context),
+          shimmerContainer(MediaQuery.of(context).size.width, 80, context),
           SizedBox(height: 15),
-          shimmerContainer(MediaQuery.of(context).size.width, 80,context),
+          shimmerContainer(MediaQuery.of(context).size.width, 80, context),
           SizedBox(height: 15),
-          shimmerContainer(MediaQuery.of(context).size.width, 80,context),
+          shimmerContainer(MediaQuery.of(context).size.width, 80, context),
           SizedBox(height: 15),
-          shimmerContainer(MediaQuery.of(context).size.width, 80,context),
+          shimmerContainer(MediaQuery.of(context).size.width, 80, context),
         ],
       ),
     );
   }
-
 
   Widget _buildLogoutTile(BuildContext context) {
     return Card(
@@ -423,7 +326,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         title: Text(
           "Log out",
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.red,fontFamily: "Inter"),
+          style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.red,
+              fontFamily: "Inter"),
         ),
         onTap: () {
           _showLogoutConfirmationDialog(context);
@@ -433,25 +340,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-  Widget _buildOptionTile(IconData icon, String title, VoidCallback onTap) {
-    return Card(
-      elevation: 3,
-      margin: EdgeInsets.symmetric(vertical: 6,horizontal: 5),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: Colors.blue.shade50,
-          child: Icon(icon, color: Colors.blue.shade700),
-        ),
-        title: Text(
-          title,
-          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500,fontFamily: "Inter"),
-        ),
-        trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-        onTap: onTap,
+Widget _buildOptionTile(IconData icon, String title, VoidCallback onTap) {
+  return Card(
+    elevation: 3,
+    margin: EdgeInsets.symmetric(vertical: 6, horizontal: 5),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    child: ListTile(
+      leading: CircleAvatar(
+        backgroundColor: Colors.blue.shade50,
+        child: Icon(icon, color: Colors.blue.shade700),
       ),
-    );
-  }
+      title: Text(
+        title,
+        style: TextStyle(
+            fontSize: 15, fontWeight: FontWeight.w500, fontFamily: "Inter"),
+      ),
+      trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+      onTap: onTap,
+    ),
+  );
+}
 
 void _showLogoutConfirmationDialog(BuildContext context) {
   showDialog(
@@ -461,7 +369,7 @@ void _showLogoutConfirmationDialog(BuildContext context) {
         elevation: 4.0,
         insetPadding: const EdgeInsets.symmetric(horizontal: 14.0),
         shape:
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
         child: SizedBox(
           width: 300.0,
           height: 200.0,
@@ -530,7 +438,7 @@ void _showLogoutConfirmationDialog(BuildContext context) {
                               style: ElevatedButton.styleFrom(
                                 elevation: 0,
                                 backgroundColor:
-                                Color(0xff3EA4D2), // Filled button color
+                                    Color(0xff3EA4D2), // Filled button color
                                 foregroundColor: Colors.white, // Text color
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 20, vertical: 10),
@@ -554,12 +462,11 @@ void _showLogoutConfirmationDialog(BuildContext context) {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            LogIn()));
+                                        builder: (context) => LogIn()));
                               },
                               style: OutlinedButton.styleFrom(
                                 foregroundColor:
-                                Color(0xff3EA4D2), // Text color
+                                    Color(0xff3EA4D2), // Text color
                                 side: BorderSide(
                                     color: Color(0xff3EA4D2)), // Border color
                                 padding: const EdgeInsets.symmetric(
@@ -587,4 +494,3 @@ void _showLogoutConfirmationDialog(BuildContext context) {
     },
   );
 }
-

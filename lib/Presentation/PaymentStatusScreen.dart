@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../services/userapi.dart';
 
@@ -204,7 +205,7 @@ class _PaymentStatusScreenState extends State<PaymentStatusScreen> {
                 SizedBox(height: 32),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                   context.pop();
                   },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),

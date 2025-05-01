@@ -15,6 +15,9 @@ import 'package:neuromithra/state_injector.dart';
 import 'package:provider/provider.dart';
 import 'Presentation/LogIn.dart';
 import 'Presentation/SplashScreen.dart';
+import 'Providers/AddressListProviders.dart';
+import 'Providers/BookingHistoryProviders.dart';
+import 'Providers/HomeProviders.dart';
 import 'Providers/SignInProviders.dart';
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
@@ -145,10 +148,12 @@ Future<void> main() async {
     // Optionally report the error to a remote server
   };
 // Motion.instance.setUpdateInterval(60.fps);
-  runApp(
-      MultiProvider(providers:[
-        ChangeNotifierProvider(create: (_) => SignInProviders()),
-      ],child: MyApp()));
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => SignInProviders()),
+    ChangeNotifierProvider(create: (_) => HomeProviders()),
+    ChangeNotifierProvider(create: (_) => BookingHistoryProviders()),
+    ChangeNotifierProvider(create: (_) => AddressListProvider()),
+  ], child: MyApp()));
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -235,7 +240,8 @@ class MyApp extends StatelessWidget {
             backgroundColor: Colors.white,
           ),
           colorScheme: const ColorScheme.light(background: Colors.white),
-        ),routerConfig: goRouter,
+        ),
+        routerConfig: goRouter,
       ),
     );
   }

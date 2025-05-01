@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:neuromithra/services/userapi.dart';
 
 import '../utils/Color_Constants.dart';
@@ -100,10 +101,10 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     );
 
     if (data != null && data.status == true) {
-      Navigator.pop(context, true);
+     context.pop();
       _showSnackBar('Address added successfully!');
     } else {
-      Navigator.pop(context, true);
+      context.pop();
       _showSnackBar(data?.message ?? 'An error occurred. Please try again.');
     }
   }
@@ -137,10 +138,10 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     );
 
     if (data != null && data.status == true) {
-      Navigator.pop(context, true);
+      context.pop();
       _showSnackBar('Address added successfully!');
     } else {
-      Navigator.pop(context, true);
+      context.pop();
       _showSnackBar(data?.message ?? 'An error occurred. Please try again.');
     }
   }
@@ -178,7 +179,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
         backgroundColor: Colors.white,
         leading: IconButton.filled(
           icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
-          onPressed: () => Navigator.pop(context),
+          onPressed: () =>  context.pop(),
           style: IconButton.styleFrom(
             backgroundColor: Color(0xFFECFAFA), // Filled color
           ),

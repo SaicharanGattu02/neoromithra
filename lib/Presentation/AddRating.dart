@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:neuromithra/services/userapi.dart';
 
 class AddProductRating extends StatefulWidget {
@@ -41,7 +42,7 @@ class _AddProductRatingState extends State<AddProductRating> {
       setState(() {
         if(data?.status==true){
           isLoading=false;
-          Navigator.pop(context,true);
+          context.pop();
         }else{
           isLoading=false;
           ScaffoldMessenger.of(context).showSnackBar(
@@ -68,7 +69,7 @@ class _AddProductRatingState extends State<AddProductRating> {
   var buttonLoading = false;
 
   Future<bool> _onBackPressed() async {
-    Navigator.pop(context, true);
+    context.pop();
     return true;
   }
 

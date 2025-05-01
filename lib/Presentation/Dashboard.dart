@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:neuromithra/Presentation/HomeScreen.dart';
 import 'package:neuromithra/Presentation/profile_screen.dart';
 
@@ -194,7 +195,7 @@ class _DashboardState extends State<Dashboard> {
             listener: (context, state) {
           if (state is LocationLoaded) {
             print('loadided');
-            Navigator.pop(bottomSheetContext);
+            context.pop(bottomSheetContext);
           }
       },
           builder: (context, state) {

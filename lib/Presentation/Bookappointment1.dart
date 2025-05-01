@@ -3,6 +3,7 @@ import 'dart:convert' show base64Encode, jsonEncode, utf8;
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
@@ -58,8 +59,8 @@ class _Bookappointment1State extends State<Bookappointment1> {
   final String callbackUrl = "";
   final String apiEndPoint = "/pg/v1/pay";
   String transactionId = "TXN${DateTime.now().millisecondsSinceEpoch}";
-  String Orderamount= "";
-  String user_id="";
+  String Orderamount = "";
+  String user_id = "";
 
   @override
   void initState() {
@@ -119,7 +120,8 @@ class _Bookappointment1State extends State<Bookappointment1> {
 
   Future<void> initiateTransaction(int amount) async {
     try {
-      String user_mobile = await PreferenceService().getString('user_mobile') ?? "";
+      String user_mobile =
+          await PreferenceService().getString('user_mobile') ?? "";
       setState(() {
         transactionId = "TXN${DateTime.now().millisecondsSinceEpoch}";
         Orderamount = amount.toString();
@@ -143,7 +145,8 @@ class _Bookappointment1State extends State<Bookappointment1> {
       // Get user_id before calling API
       String user_id = await PreferenceService().getString('user_id') ?? "";
 
-      Map<dynamic, dynamic>? response = await PhonePePaymentSdk.startTransaction(
+      Map<dynamic, dynamic>? response =
+          await PhonePePaymentSdk.startTransaction(
         payloadEncoded,
         callbackUrl,
         checksum,
@@ -153,34 +156,32 @@ class _Bookappointment1State extends State<Bookappointment1> {
       if (response != null) {
         log("Payment response: $response");
         String? status = response["status"];
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PaymentStatusScreen(
-              response: response,
-              transactionId: transactionId,
-              amount: Orderamount,
-              isExistingPatient: widget.patientID.isNotEmpty,
-              userId: user_id,
-              fullName: _fullNameController.text.trim(),
-              phoneNumber: _phoneNumberController.text.trim(),
-              appointment: _appointmentController.text.trim(),
-              age: _ageController.text.trim(),
-              appointmentType: _appointmentTypeController.text.trim(),
-              date: _dateOfAppointmentController.text.trim(),
-              timeOfAppointment: _timeOfAppointmentController.text.trim(),
-              addressId: address_id.toString(),
-              pageSource: widget.pagesource,
-              patientId: widget.patientID,
-              onSuccess: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => ApointmentSuccess()),
-                );
-              },
-            ),
-          ),
+        context.pushReplacement(
+          Uri(
+            path: '/payment_status',
+            queryParameters: {
+              'addressId': address_id.toString(),
+              'age': _ageController.text.trim(),
+              'amount': Orderamount.toString(),
+              'appointment': _appointmentController.text.trim(),
+              'appointmentType': _appointmentTypeController.text.trim(),
+              'date': _dateOfAppointmentController.text.trim(),
+              'fullName': _fullNameController.text.trim(),
+              'pageSource': widget.pagesource,
+              'patientId': widget.patientID,
+              'phoneNumber': _phoneNumberController.text.trim(),
+              'timeOfAppointment': _timeOfAppointmentController.text.trim(),
+              'userId': user_id,
+              'transactionId': transactionId,
+            },
+          ).toString(),
+          extra: {
+            'response': response,
+            'isExistingPatient': widget.patientID.isNotEmpty,
+            'onSuccess': () {
+              context.pushReplacement('/appointment_success');
+            },
+          },
         );
       } else {
         log("⚠️ Payment response is null");
@@ -189,7 +190,6 @@ class _Bookappointment1State extends State<Bookappointment1> {
       log("🚨 Error: $e");
     }
   }
-
 
   List<Address> addresses = [];
   Future<void> GetAddressList() async {
@@ -203,15 +203,15 @@ class _Bookappointment1State extends State<Bookappointment1> {
     });
   }
 
-  Future<void>getPhonepeDetailsApi() async {
+  Future<void> getPhonepeDetailsApi() async {
     final response = await Userapi.getPhonepeDetails();
     setState(() {
       if (response?.status == true) {
-        environment = response?.data?[0].env??"";
-        appId = response?.data?[0].appId??"";
-        merchantId = response?.data?[0].merchantId??"";
-        saltKey = response?.data?[0].saltKey??"";
-        saltIndex = response?.data?[0].saltIndex??0;
+        environment = response?.data?[0].env ?? "";
+        appId = response?.data?[0].appId ?? "";
+        merchantId = response?.data?[0].merchantId ?? "";
+        saltKey = response?.data?[0].saltKey ?? "";
+        saltIndex = response?.data?[0].saltIndex ?? 0;
         PhonePePaymentSdk.init(environment, appId, merchantId, true);
       }
     });
@@ -232,9 +232,9 @@ class _Bookappointment1State extends State<Bookappointment1> {
     //   "amount":"${Orderamount}",
     //   "transactionID":"$transactionId"
     // };
-    Map<String,dynamic> order_data = {
-      "amount":"1",
-      "transactionID":"XYZKJUHGKIJNKLJNOIJ"
+    Map<String, dynamic> order_data = {
+      "amount": "1",
+      "transactionID": "XYZKJUHGKIJNKLJNOIJ"
     };
     final data = await Userapi.newApointment(
         fullname,
@@ -273,9 +273,9 @@ class _Bookappointment1State extends State<Bookappointment1> {
     //   "amount":"${Orderamount}",
     //   "transactionID":"$transactionId"
     // };
-    Map<String,dynamic> order_data = {
-      "amount":"1",
-      "transactionID":"XYZKJUHGKIJNKLJNOIJ"
+    Map<String, dynamic> order_data = {
+      "amount": "1",
+      "transactionID": "XYZKJUHGKIJNKLJNOIJ"
     };
     final data = await Userapi.existApointment(
         fullname,
@@ -289,8 +289,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
         timeOfAppointment,
         user_id,
         widget.patientID.toString(),
-        order_data
-    );
+        order_data);
     if (data != null) {
       setState(() {
         if (data.status == true) {
@@ -658,7 +657,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                   onPressed: () {
                     if (addresses.isNotEmpty) {
                       // if (!_isLoading) {
-                        _validateFields();
+                      _validateFields();
                       // }
                     } else {
                       Navigator.pushReplacement(
@@ -688,25 +687,25 @@ class _Bookappointment1State extends State<Bookappointment1> {
                     elevation: 5, // Adds a slight shadow for better UI
                   ),
                   child:
-                  // _isLoading
-                  //     ? SizedBox(
-                  //         width: 24,
-                  //         height: 24,
-                  //         child: CircularProgressIndicator(
-                  //           color: Colors.white,
-                  //           strokeWidth: 3,
-                  //         ),
-                  //       )
-                  //     :
-                  Text(
-                          "Book Appointment",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Epi',
-                          ),
-                        ),
+                      // _isLoading
+                      //     ? SizedBox(
+                      //         width: 24,
+                      //         height: 24,
+                      //         child: CircularProgressIndicator(
+                      //           color: Colors.white,
+                      //           strokeWidth: 3,
+                      //         ),
+                      //       )
+                      //     :
+                      Text(
+                    "Book Appointment",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Epi',
+                    ),
+                  ),
                 ),
               ),
             ),

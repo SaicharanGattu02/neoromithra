@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:neuromithra/Components/CustomAppButton.dart';
 import 'package:neuromithra/Presentation/MainDashBoard.dart';
@@ -60,16 +61,9 @@ class _ChildAssessmentState extends State<ChildAssessment> {
     if (res["status"] == true) {
       String role = res["role"].toString();
       String resultString = res["result"];
-      Map<String, dynamic> resultData = jsonDecode(resultString); // Convert to Map
-      // Navigate to result screen with role-based results
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Resultscreen(resultData: resultData, role: role),
-        ),
-      );
+      Map<String, dynamic> resultData = jsonDecode(resultString);
+      context.pushReplacement('/result_screen?resultData=${resultData}&role=${role}');
     } else {
-      // Failure message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(res["message"] ?? "Failed to submit answers!"),
@@ -96,7 +90,7 @@ class _ChildAssessmentState extends State<ChildAssessment> {
         backgroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xff3EA4D2)),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () =>context.pop(),
         ),
       ),
       body: SingleChildScrollView(
