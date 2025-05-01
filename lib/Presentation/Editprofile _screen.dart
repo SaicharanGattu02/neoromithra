@@ -1,28 +1,28 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
-import 'dart:async';
-import 'package:http/http.dart' as http;
 import 'package:neuromithra/utils/CustomSnackBar.dart';
-import 'package:path/path.dart';
-import 'package:mime/mime.dart';
-import 'package:http_parser/http_parser.dart';
-
+import 'package:provider/provider.dart';
+import '../Providers/HomeProviders.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({
-    Key? key,
-  }) : super(key: key);
+  const EditProfileScreen({super.key});
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<HomeProviders>(context, listen: false).getProfileDetails();
+    });
+    super.initState();
+  }
+
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -121,29 +121,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   final String userId = "20"; // Static User ID
 
-  @override
-  void initState() {
-    super.initState();
-    GetProfileDetails();
-  }
-  //
-  // ProfileDetailsModel profilePicture=ProfileDetailsModel();
-  // Future<void> GetProfileDetails() async {
-  //   String user_id = await PreferenceService().getString('user_id')??"";
-  //   final registerResponse = await Userapi.getprofiledetails(user_id);
-  //   if (registerResponse != null) {
-  //     setState(() {
-  //       isloading=false;
-  //         profilePicture=registerResponse;
-  //         _nameController.text=profilePicture?.name??"";
-  //         name=profilePicture?.name??"";
-  //         _emailController.text=profilePicture?.email??"";
-  //         _mobileController.text=profilePicture?.phone.toString()??"";
-  //         profile_image=profilePicture?.userProfile??'';
-  //     });
-  //   }
-  // }
-
   // Method to pick an image from gallery and upload it
   Future<void> _pickImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -156,51 +133,51 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     });
   }
 
-  // Method to upload image to the server
-  Future<void> _uploadImage(File image) async {
-    final response = await Userapi.uploadImage(image);
-    if (response != null) {
-      setState(() {});
-    }
-
-    final String url =
-        'https://admin.neuromitra.com/api/update_profile_image/20';
-
-    try {
-      var request = http.MultipartRequest('POST', Uri.parse(url));
-      request.headers['Authorization'] =
-          'Bearer token_here'; // Add token if required
-
-      // Attach image file
-      var mimeType = lookupMimeType(image.path);
-      var multipartFile = await http.MultipartFile.fromPath(
-        'user_profile', // Parameter name expected by the API
-        image.path,
-        contentType: mimeType != null ? MediaType.parse(mimeType) : null,
-      );
-      request.files.add(multipartFile);
-
-      // Send request
-      var response = await request.send();
-      if (response.statusCode == 200) {
-        setState(() {
-          profile_image =
-              image.path; // Use file path as mock for uploaded image URL
-        });
-        ScaffoldMessenger.of(context as BuildContext).showSnackBar(
-          SnackBar(content: Text('Image uploaded successfully!')),
-        );
-      } else {
-        print('Image upload failed with status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error uploading image: $e');
-    }
-
-    setState(() {
-      image_uploading = false;
-    });
-  }
+  // // Method to upload image to the server
+  // Future<void> _uploadImage(File image) async {
+  //   final response = await Userapi.uploadImage(image);
+  //   if (response != null) {
+  //     setState(() {});
+  //   }
+  //
+  //   final String url =
+  //       'https://admin.neuromitra.com/api/update_profile_image/20';
+  //
+  //   try {
+  //     var request = http.MultipartRequest('POST', Uri.parse(url));
+  //     request.headers['Authorization'] =
+  //         'Bearer token_here'; // Add token if required
+  //
+  //     // Attach image file
+  //     var mimeType = lookupMimeType(image.path);
+  //     var multipartFile = await http.MultipartFile.fromPath(
+  //       'user_profile', // Parameter name expected by the API
+  //       image.path,
+  //       contentType: mimeType != null ? MediaType.parse(mimeType) : null,
+  //     );
+  //     request.files.add(multipartFile);
+  //
+  //     // Send request
+  //     var response = await request.send();
+  //     if (response.statusCode == 200) {
+  //       setState(() {
+  //         profile_image =
+  //             image.path; // Use file path as mock for uploaded image URL
+  //       });
+  //       ScaffoldMessenger.of(context as BuildContext).showSnackBar(
+  //         SnackBar(content: Text('Image uploaded successfully!')),
+  //       );
+  //     } else {
+  //       print('Image upload failed with status code: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     print('Error uploading image: $e');
+  //   }
+  //
+  //   setState(() {
+  //     image_uploading = false;
+  //   });
+  // }
 
   Future<void> _updateProfileDetails(BuildContext context) async {
     setState(() {
@@ -229,23 +206,27 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     });
   }
 
-  Future<void> GetProfileDetails() async {
-    String user_id = await PreferenceService().getString('user_id') ?? "";
-    final Response = await Userapi.getProfileDetails(user_id);
-    if (Response != null) {
-      setState(() {
-        _nameController.text = Response.user?.name ?? '';
-        _emailController.text = Response.user?.email ?? '';
-        _mobileController.text = Response.user?.phone.toString() ?? '';
-        _sos1Controller.text = Response.user?.sos1.toString() ?? '';
-        _sos2Controller.text = Response.user?.sos2.toString() ?? '';
-        _sos3Controller.text = Response.user?.sos3.toString() ?? '';
-        is_loading = false;
-      });
-    } else {
-      is_loading = false;
-    }
-  }
+  // Future<void> GetProfileDetails() async {
+  //   try {
+  //     final profileProvider = Provider.of<HomeProviders>(context, listen: false).getProfileDetails();
+  //     var response = await profileProvider.userData;
+  //     print('profileData:${response}');
+  //     setState(() {
+  //       if (response != null) {
+  //         _nameController.text = response.name ?? '';
+  //         _emailController.text = response.email ?? '';
+  //         _mobileController.text = response.phone?.toString() ?? '';
+  //         _sos1Controller.text = response.sos1?.toString() ?? '';
+  //         _sos2Controller.text = response.sos2?.toString() ?? '';
+  //         _sos3Controller.text = response.sos3?.toString() ?? '';
+  //       }
+  //     });
+  //   } catch (e) {
+  //     setState(() {
+  //       is_loading = false;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -267,213 +248,229 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
         ),
       ),
-      body: (is_loading)
-          ? Center(
+      body: Consumer<HomeProviders>(
+        builder: (context, profileProvider, child) {
+          if (profileProvider.isLoading) {
+            return Center(
               child: CircularProgressIndicator(
                 color: Colors.blue,
               ),
-            )
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  // Stack(
-                  //   children: [
-                  //     CircleAvatar(
-                  //       radius: 60,
-                  //       backgroundColor: const Color(0xff80C4E9),
-                  //       backgroundImage: _image != null
-                  //           ? FileImage(_image!)
-                  //           : (profile_image.isNotEmpty
-                  //           ? NetworkImage(profile_image)
-                  //           : null) as ImageProvider?,
-                  //       child: (_image == null && profile_image.isEmpty)
-                  //           ? Text(
-                  //         name.isNotEmpty
-                  //             ? name[0].toUpperCase()
-                  //             : "",
-                  //         style: const TextStyle(
-                  //             fontSize: 50, color: Color(0xffFFF6E9)),
-                  //       )
-                  //           : null,
-                  //     ),
-                  //     Positioned(
-                  //       bottom: 0,
-                  //       right: 0,
-                  //       child: GestureDetector(
-                  //         onTap: _pickImage,
-                  //         child: CircleAvatar(
-                  //           radius: 18,
-                  //           backgroundColor: Colors.grey,
-                  //           child: image_uploading
-                  //               ? CircularProgressIndicator(
-                  //             strokeWidth: 2,
-                  //             valueColor:
-                  //             AlwaysStoppedAnimation<Color>(Colors.white),
-                  //           )
-                  //               : const Icon(
-                  //             Icons.edit,
-                  //             color: Colors.white,
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  // const SizedBox(height: 30),
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      children: <Widget>[
-                        TextFormField(
-                          controller: _nameController,
-                          decoration: InputDecoration(
-                            labelText: 'Name',
-                            labelStyle: TextStyle(
-                                fontSize: 15,
-                                fontFamily: "Inter",
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black),
-                            floatingLabelBehavior: FloatingLabelBehavior.auto,
-                            border: OutlineInputBorder(), // Add border
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.grey, width: 1.0),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.blue, width: 2.0),
-                            ),
+            );
+          }
+          _nameController.text = profileProvider.userData.name ?? '';
+          _emailController.text = profileProvider.userData.email ?? '';
+          _mobileController.text =
+              profileProvider.userData.phone?.toString() ?? '';
+          _sos1Controller.text =
+              profileProvider.userData.sos1?.toString() ?? '';
+          _sos2Controller.text =
+              profileProvider.userData.sos2?.toString() ?? '';
+          _sos3Controller.text =
+              profileProvider.userData.sos3?.toString() ?? '';
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                // Stack(
+                //   children: [
+                //     CircleAvatar(
+                //       radius: 60,
+                //       backgroundColor: const Color(0xff80C4E9),
+                //       backgroundImage: _image != null
+                //           ? FileImage(_image!)
+                //           : (profile_image.isNotEmpty
+                //           ? NetworkImage(profile_image)
+                //           : null) as ImageProvider?,
+                //       child: (_image == null && profile_image.isEmpty)
+                //           ? Text(
+                //         name.isNotEmpty
+                //             ? name[0].toUpperCase()
+                //             : "",
+                //         style: const TextStyle(
+                //             fontSize: 50, color: Color(0xffFFF6E9)),
+                //       )
+                //           : null,
+                //     ),
+                //     Positioned(
+                //       bottom: 0,
+                //       right: 0,
+                //       child: GestureDetector(
+                //         onTap: _pickImage,
+                //         child: CircleAvatar(
+                //           radius: 18,
+                //           backgroundColor: Colors.grey,
+                //           child: image_uploading
+                //               ? CircularProgressIndicator(
+                //             strokeWidth: 2,
+                //             valueColor:
+                //             AlwaysStoppedAnimation<Color>(Colors.white),
+                //           )
+                //               : const Icon(
+                //             Icons.edit,
+                //             color: Colors.white,
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                // const SizedBox(height: 30),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      TextFormField(
+                        controller: _nameController,
+                        decoration: InputDecoration(
+                          labelText: 'Name',
+                          labelStyle: TextStyle(
+                              fontSize: 15,
+                              fontFamily: "Inter",
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black),
+                          floatingLabelBehavior: FloatingLabelBehavior.auto,
+                          border: OutlineInputBorder(), // Add border
+                          enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.grey, width: 1.0),
                           ),
-                          validator: _validateName,
-                        ),
-                        SizedBox(height: 16),
-                        TextFormField(
-                          controller: _emailController,
-                          decoration: InputDecoration(
-                            labelText: 'Email',
-                            labelStyle: TextStyle(
-                                fontSize: 15,
-                                fontFamily: "Inter",
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black),
-                            floatingLabelBehavior: FloatingLabelBehavior.auto,
-                            border: OutlineInputBorder(), // Add border
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.grey, width: 1.0),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.blue, width: 2.0),
-                            ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.blue, width: 2.0),
                           ),
-                          validator: _validateEmail,
                         ),
-                        SizedBox(height: 16), // Space between fields
-                        TextFormField(
-                          controller: _mobileController,
-                          decoration: InputDecoration(
-                            labelText: 'Mobile Number',
-                            labelStyle: TextStyle(
-                                fontSize: 15,
-                                fontFamily: "Inter",
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black),
-                            floatingLabelBehavior: FloatingLabelBehavior.auto,
-                            border: OutlineInputBorder(), // Add border
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.grey, width: 1.0),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.blue, width: 2.0),
-                            ),
+                        validator: _validateName,
+                      ),
+                      SizedBox(height: 16),
+                      TextFormField(
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          labelStyle: TextStyle(
+                              fontSize: 15,
+                              fontFamily: "Inter",
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black),
+                          floatingLabelBehavior: FloatingLabelBehavior.auto,
+                          border: OutlineInputBorder(), // Add border
+                          enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.grey, width: 1.0),
                           ),
-                          keyboardType: TextInputType.phone,
-                          validator: _validateMobile,
-                        ),
-                        SizedBox(height: 20),
-                        TextFormField(
-                          controller: _sos1Controller,
-                          decoration: InputDecoration(
-                            labelText: 'SOS Mobile Number 1',
-                            labelStyle: TextStyle(
-                                fontSize: 15,
-                                fontFamily: "Inter",
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black),
-                            floatingLabelBehavior: FloatingLabelBehavior.auto,
-                            border: OutlineInputBorder(), // Add border
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.grey, width: 1.0),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.blue, width: 2.0),
-                            ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.blue, width: 2.0),
                           ),
-                          keyboardType: TextInputType.phone,
-                          validator: _validateMobileSos1,
                         ),
-                        SizedBox(height: 20),
-                        TextFormField(
-                          controller: _sos2Controller,
-                          decoration: InputDecoration(
-                            labelText: 'SOS Mobile Number 2',
-                            labelStyle: TextStyle(
-                                fontSize: 15,
-                                fontFamily: "Inter",
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black),
-                            floatingLabelBehavior: FloatingLabelBehavior.auto,
-                            border: OutlineInputBorder(), // Add border
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.grey, width: 1.0),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.blue, width: 2.0),
-                            ),
+                        validator: _validateEmail,
+                      ),
+                      SizedBox(height: 16), // Space between fields
+                      TextFormField(
+                        controller: _mobileController,
+                        decoration: InputDecoration(
+                          labelText: 'Mobile Number',
+                          labelStyle: TextStyle(
+                              fontSize: 15,
+                              fontFamily: "Inter",
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black),
+                          floatingLabelBehavior: FloatingLabelBehavior.auto,
+                          border: OutlineInputBorder(), // Add border
+                          enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.grey, width: 1.0),
                           ),
-                          keyboardType: TextInputType.phone,
-                          // validator: _validateMobileSos2,
-                        ),
-                        SizedBox(height: 20),
-                        TextFormField(
-                          controller: _sos3Controller,
-                          decoration: InputDecoration(
-                            labelText: 'SOS Mobile Number 3',
-                            labelStyle: TextStyle(
-                                fontSize: 15,
-                                fontFamily: "Inter",
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black),
-                            floatingLabelBehavior: FloatingLabelBehavior.auto,
-                            border: OutlineInputBorder(), // Add border
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.grey, width: 1.0),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.blue, width: 2.0),
-                            ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.blue, width: 2.0),
                           ),
-                          keyboardType: TextInputType.phone,
-                          // validator: _validateMobileSos3,
                         ),
-                        SizedBox(height: 20),
-                      ],
-                    ),
+                        keyboardType: TextInputType.phone,
+                        validator: _validateMobile,
+                      ),
+                      SizedBox(height: 20),
+                      TextFormField(
+                        controller: _sos1Controller,
+                        decoration: InputDecoration(
+                          labelText: 'SOS Mobile Number 1',
+                          labelStyle: TextStyle(
+                              fontSize: 15,
+                              fontFamily: "Inter",
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black),
+                          floatingLabelBehavior: FloatingLabelBehavior.auto,
+                          border: OutlineInputBorder(), // Add border
+                          enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.grey, width: 1.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.blue, width: 2.0),
+                          ),
+                        ),
+                        keyboardType: TextInputType.phone,
+                        validator: _validateMobileSos1,
+                      ),
+                      SizedBox(height: 20),
+                      TextFormField(
+                        controller: _sos2Controller,
+                        decoration: InputDecoration(
+                          labelText: 'SOS Mobile Number 2',
+                          labelStyle: TextStyle(
+                              fontSize: 15,
+                              fontFamily: "Inter",
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black),
+                          floatingLabelBehavior: FloatingLabelBehavior.auto,
+                          border: OutlineInputBorder(), // Add border
+                          enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.grey, width: 1.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.blue, width: 2.0),
+                          ),
+                        ),
+                        keyboardType: TextInputType.phone,
+                        // validator: _validateMobileSos2,
+                      ),
+                      SizedBox(height: 20),
+                      TextFormField(
+                        controller: _sos3Controller,
+                        decoration: InputDecoration(
+                          labelText: 'SOS Mobile Number 3',
+                          labelStyle: TextStyle(
+                              fontSize: 15,
+                              fontFamily: "Inter",
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black),
+                          floatingLabelBehavior: FloatingLabelBehavior.auto,
+                          border: OutlineInputBorder(), // Add border
+                          enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.grey, width: 1.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.blue, width: 2.0),
+                          ),
+                        ),
+                        keyboardType: TextInputType.phone,
+                        // validator: _validateMobileSos3,
+                      ),
+                      SizedBox(height: 20),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+          );
+        },
+      ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: ElevatedButton(
@@ -488,22 +485,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
           child: isLoading
               ? SizedBox(
-            height: 24,
-            width: 24,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-            ),
-          )
+                  height: 24,
+                  width: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                )
               : Text(
-            "Save",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontFamily: "Inter",
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+                  "Save",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontFamily: "Inter",
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
         ),
       ),
     );

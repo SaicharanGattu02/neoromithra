@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:neuromithra/Providers/AddressListProviders.dart';
 import 'package:neuromithra/services/userapi.dart';
+import 'package:provider/provider.dart';
 
 import '../utils/Color_Constants.dart';
 
@@ -35,17 +37,24 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
   bool isPermanentChecked = false;
   // Controllers for Current Address
   final TextEditingController _hNoControllerCurrent = TextEditingController();
-  final TextEditingController _streetControllerCurrent = TextEditingController();
+  final TextEditingController _streetControllerCurrent =
+      TextEditingController();
   final TextEditingController _areaControllerCurrent = TextEditingController();
-  final TextEditingController _landmarkControllerCurrent = TextEditingController();
-  final TextEditingController _pincodeControllerCurrent = TextEditingController();
+  final TextEditingController _landmarkControllerCurrent =
+      TextEditingController();
+  final TextEditingController _pincodeControllerCurrent =
+      TextEditingController();
 
   // Controllers for Permanent Address
   final TextEditingController _hNoControllerPermanent = TextEditingController();
-  final TextEditingController _streetControllerPermanent = TextEditingController();
-  final TextEditingController _areaControllerPermanent = TextEditingController();
-  final TextEditingController _landmarkControllerPermanent = TextEditingController();
-  final TextEditingController _pincodeControllerPermanent = TextEditingController();
+  final TextEditingController _streetControllerPermanent =
+      TextEditingController();
+  final TextEditingController _areaControllerPermanent =
+      TextEditingController();
+  final TextEditingController _landmarkControllerPermanent =
+      TextEditingController();
+  final TextEditingController _pincodeControllerPermanent =
+      TextEditingController();
 
   bool _isSameAddress = false;
   bool _addPermanentAddress = false; // Optional permanent address toggle
@@ -54,122 +63,79 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
   @override
   void initState() {
     super.initState();
-    if(widget.type_of_address=="0"){
-      _hNoControllerCurrent.text=widget.hno;
-      _streetControllerCurrent.text=widget.street;
-      _areaControllerCurrent.text=widget.area;
-      _landmarkControllerCurrent.text=widget.landmark;
-      _pincodeControllerCurrent.text=widget.pincode;
-        isCurrentChecked=true;
-    }else{
-      _hNoControllerPermanent.text=widget.hno;
-      _streetControllerPermanent.text=widget.street;
-      _areaControllerPermanent.text=widget.area;
-      _landmarkControllerPermanent.text=widget.landmark;
-      _pincodeControllerPermanent.text=widget.pincode;
-        isPermanentChecked=true;
-      isCurrentChecked=false;
+    if (widget.type_of_address == "0") {
+      _hNoControllerCurrent.text = widget.hno;
+      _streetControllerCurrent.text = widget.street;
+      _areaControllerCurrent.text = widget.area;
+      _landmarkControllerCurrent.text = widget.landmark;
+      _pincodeControllerCurrent.text = widget.pincode;
+      isCurrentChecked = true;
+    } else {
+      _hNoControllerPermanent.text = widget.hno;
+      _streetControllerPermanent.text = widget.street;
+      _areaControllerPermanent.text = widget.area;
+      _landmarkControllerPermanent.text = widget.landmark;
+      _pincodeControllerPermanent.text = widget.pincode;
+      isPermanentChecked = true;
+      isCurrentChecked = false;
     }
   }
 
-
   Future<void> addAddress() async {
     var typeOfAddress = isCurrentChecked ? 0 : 1;
-    String? houseNo, street, area, landmark, pincode;
-
+    Map<String, dynamic> data = {};
     if (typeOfAddress == 0) {
-      houseNo = _hNoControllerCurrent.text;
-      street = _streetControllerCurrent.text;
-      area = _areaControllerCurrent.text;
-      landmark = _landmarkControllerCurrent.text;
-      pincode = _pincodeControllerCurrent.text;
+      data = {
+        "Flat_no": _hNoControllerCurrent.text,
+        "street": _streetControllerCurrent.text,
+        "area": _areaControllerCurrent.text,
+        "landmark": _landmarkControllerCurrent.text,
+        "pincode": _pincodeControllerCurrent.text,
+        "address_type": typeOfAddress,
+      };
     } else {
-      houseNo = _hNoControllerPermanent.text;
-      street = _streetControllerPermanent.text;
-      area = _areaControllerPermanent.text;
-      landmark = _landmarkControllerPermanent.text;
-      pincode = _pincodeControllerPermanent.text;
+      data = {
+        "Flat_no": _hNoControllerCurrent.text,
+        "street": _streetControllerCurrent.text,
+        "area": _areaControllerCurrent.text,
+        "landmark": _landmarkControllerCurrent.text,
+        "pincode": _pincodeControllerCurrent.text,
+        "address_type": typeOfAddress,
+      };
     }
-
-    final data = await Userapi.addAddressApi(
-      houseNo,
-      street,
-      area,
-      landmark,
-      pincode,
-      typeOfAddress,
-    );
-
-    if (data != null && data.status == true) {
-     context.pop();
-      _showSnackBar('Address added successfully!');
-    } else {
-      context.pop();
-      _showSnackBar(data?.message ?? 'An error occurred. Please try again.');
-    }
+    Provider.of<AddressListProvider>(context,listen: false).addAddress(data);
   }
 
   Future<void> editAddress() async {
     var typeOfAddress = isCurrentChecked ? 0 : 1;
-    String? houseNo, street, area, landmark, pincode;
-
+    Map<String, dynamic> data = {};
     if (typeOfAddress == 0) {
-      houseNo = _hNoControllerCurrent.text;
-      street = _streetControllerCurrent.text;
-      area = _areaControllerCurrent.text;
-      landmark = _landmarkControllerCurrent.text;
-      pincode = _pincodeControllerCurrent.text;
+      data = {
+        "Flat_no": _hNoControllerCurrent.text,
+        "street": _streetControllerCurrent.text,
+        "area": _areaControllerCurrent.text,
+        "landmark": _landmarkControllerCurrent.text,
+        "pincode": _pincodeControllerCurrent.text,
+        "address_type": typeOfAddress,
+      };
     } else {
-      houseNo = _hNoControllerPermanent.text;
-      street = _streetControllerPermanent.text;
-      area = _areaControllerPermanent.text;
-      landmark = _landmarkControllerPermanent.text;
-      pincode = _pincodeControllerPermanent.text;
+      data = {
+        "Flat_no": _hNoControllerCurrent.text,
+        "street": _streetControllerCurrent.text,
+        "area": _areaControllerCurrent.text,
+        "landmark": _landmarkControllerCurrent.text,
+        "pincode": _pincodeControllerCurrent.text,
+        "address_type": typeOfAddress,
+      };
     }
-
-    final data = await Userapi.editAddressApi(
-      houseNo,
-      street,
-      area,
-      landmark,
-      pincode,
-      typeOfAddress,
-      widget.id
-    );
-
-    if (data != null && data.status == true) {
-      context.pop();
-      _showSnackBar('Address added successfully!');
-    } else {
-      context.pop();
-      _showSnackBar(data?.message ?? 'An error occurred. Please try again.');
-    }
+    Provider.of<AddressListProvider>(context,listen: false).EditAddress(data,widget.id);
   }
-
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-          style: TextStyle(
-            fontFamily: "Inter",
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Colors.white,
-          ),
-        ),
-        duration: Duration(seconds: 1),
-        backgroundColor: Colors.blue,
-      ),
-    );
-  }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text( (widget.type=="add")?'Add Address':"Edit Address",
+        title: Text((widget.type == "add") ? 'Add Address' : "Edit Address",
             style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: "Inter",
@@ -179,7 +145,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
         backgroundColor: Colors.white,
         leading: IconButton.filled(
           icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
-          onPressed: () =>  context.pop(),
+          onPressed: () => context.pop(),
           style: IconButton.styleFrom(
             backgroundColor: Color(0xFFECFAFA), // Filled color
           ),
@@ -230,18 +196,24 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                     ),
                   ],
                 ),
-                if(isCurrentChecked)...[
-                  Text("Current Address", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: "Inter")),
+                if (isCurrentChecked) ...[
+                  Text("Current Address",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: "Inter")),
                   SizedBox(height: 16),
                   _buildTextField(_hNoControllerCurrent, 'H.No/Flat No', true),
                   SizedBox(height: 16),
                   _buildTextField(_streetControllerCurrent, 'Street', true),
                   SizedBox(height: 16),
-                  _buildTextField(_areaControllerCurrent, 'Area/Locality', true),
+                  _buildTextField(
+                      _areaControllerCurrent, 'Area/Locality', true),
                   SizedBox(height: 16),
                   _buildTextField(_landmarkControllerCurrent, 'Landmark', true),
                   SizedBox(height: 16),
-                  _buildTextField(_pincodeControllerCurrent, 'Pincode', true, isNumeric: true),
+                  _buildTextField(_pincodeControllerCurrent, 'Pincode', true,
+                      isNumeric: true),
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
@@ -249,16 +221,16 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                         if (current_Loading) return;
                         setState(() {
                           current_Loading = true;
-                          if(widget.type=="add"){
+                          if (widget.type == "add") {
                             addAddress();
-                          }else{
+                          } else {
                             editAddress();
                           }
                         });
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:primary,
+                      backgroundColor: primary,
                       padding: EdgeInsets.symmetric(vertical: 16.0),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
@@ -266,38 +238,50 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                     ),
                     child: (current_Loading)
                         ? CircularProgressIndicator(color: Colors.white)
-                        : Text('Submit', style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600, color: Colors.white, fontFamily: "Poppins")),
+                        : Text('Submit',
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                                fontFamily: "Poppins")),
                   ),
                 ],
-
                 SizedBox(height: 25),
-
                 if (isPermanentChecked) ...[
-                  Text("Permanent Address", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: "Inter")),
+                  Text("Permanent Address",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: "Inter")),
                   SizedBox(height: 16),
-                  _buildTextField(_hNoControllerPermanent, 'H.No/Flat No',isPermanentChecked),
+                  _buildTextField(_hNoControllerPermanent, 'H.No/Flat No',
+                      isPermanentChecked),
                   SizedBox(height: 16),
-                  _buildTextField(_streetControllerPermanent, 'Street',isPermanentChecked),
+                  _buildTextField(
+                      _streetControllerPermanent, 'Street', isPermanentChecked),
                   SizedBox(height: 16),
-                  _buildTextField(_areaControllerPermanent, 'Area/Locality', isPermanentChecked),
+                  _buildTextField(_areaControllerPermanent, 'Area/Locality',
+                      isPermanentChecked),
                   SizedBox(height: 16),
-                  _buildTextField(_landmarkControllerPermanent, 'Landmark', isPermanentChecked),
+                  _buildTextField(_landmarkControllerPermanent, 'Landmark',
+                      isPermanentChecked),
                   SizedBox(height: 16),
-                  _buildTextField(_pincodeControllerPermanent, 'Pincode', isPermanentChecked, isNumeric: true),
+                  _buildTextField(_pincodeControllerPermanent, 'Pincode',
+                      isPermanentChecked,
+                      isNumeric: true),
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                          if (permanent_Loading) return;
-                          setState(() {
-                            permanent_Loading = true;
-                            if(widget.type=="add"){
-                              addAddress();
-                            }else{
-                              editAddress();
-                            }
-
-                          });
+                        if (permanent_Loading) return;
+                        setState(() {
+                          permanent_Loading = true;
+                          if (widget.type == "add") {
+                            addAddress();
+                          } else {
+                            editAddress();
+                          }
+                        });
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -309,10 +293,13 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                     ),
                     child: (permanent_Loading)
                         ? CircularProgressIndicator(color: Colors.white)
-                        : Text('Submit', style: TextStyle(fontSize: 16, color: Colors.white, fontFamily: "Inter")),
+                        : Text('Submit',
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontFamily: "Inter")),
                   ),
                 ],
-
                 SizedBox(height: 30),
               ],
             ),
@@ -322,16 +309,28 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label, bool isRequired, {bool isNumeric = false}) {
+  Widget _buildTextField(
+      TextEditingController controller, String label, bool isRequired,
+      {bool isNumeric = false}) {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(fontFamily: "Inter", fontWeight: FontWeight.w500, fontSize: 16, color: Colors.black),
+        labelStyle: TextStyle(
+            fontFamily: "Inter",
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+            color: Colors.black),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
-        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 1.2), borderRadius: BorderRadius.circular(10.0)),
-        errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red, width: 1.2), borderRadius: BorderRadius.circular(10.0)),
-        focusedErrorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red, width: 1.2), borderRadius: BorderRadius.circular(10.0)),
+        focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.black, width: 1.2),
+            borderRadius: BorderRadius.circular(10.0)),
+        errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.red, width: 1.2),
+            borderRadius: BorderRadius.circular(10.0)),
+        focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.red, width: 1.2),
+            borderRadius: BorderRadius.circular(10.0)),
       ),
       keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
       validator: (value) {

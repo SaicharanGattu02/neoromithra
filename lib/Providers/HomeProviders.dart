@@ -94,7 +94,7 @@ class HomeProviders with ChangeNotifier {
       notifyListeners();
     }
   }
-  // Clear error
+
   void clearError() {
     _error = '';
     notifyListeners();

@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'DetailsScreen.dart';
 
 class CounsellingListScreen extends StatelessWidget {
-
   final List<Map<String, dynamic>> counsellings = [
     {
       'image': 'assets/Counciling/relationship_counsiling.jpeg',
       'text': 'Relationship Counselling',
       'heading1': 'Relationship Counseling for Couples at NeuroMitra',
       'description1':
-      'At NeuroMitra, we believe that strong, healthy relationships are the foundation of a fulfilling life. Whether you’re navigating the challenges of a new relationship or looking to strengthen the bond you’ve built over years, our Relationship Counseling for Couples is here to support you.',
+          'At NeuroMitra, we believe that strong, healthy relationships are the foundation of a fulfilling life. Whether you’re navigating the challenges of a new relationship or looking to strengthen the bond you’ve built over years, our Relationship Counseling for Couples is here to support you.',
       'heading2': 'Why Relationship Counseling?',
       'description2':
-      'Every relationship experiences ups and downs, but sometimes challenges can feel overwhelming. Our Relationship Counseling provides couples with a safe space to explore their feelings, improve communication, and rebuild trust. Whether you’re dealing with conflicts, communication issues, or simply want to enhance your relationship, we’re here to help.',
+          'Every relationship experiences ups and downs, but sometimes challenges can feel overwhelming. Our Relationship Counseling provides couples with a safe space to explore their feelings, improve communication, and rebuild trust. Whether you’re dealing with conflicts, communication issues, or simply want to enhance your relationship, we’re here to help.',
       'keyAreas': [
         'Personalized Sessions: We understand that every couple is unique. Our counseling sessions are tailored to address the specific needs and goals of your relationship.',
         'Effective Communication: We help you develop better communication skills, ensuring that both partners feel heard and understood.',
@@ -32,10 +31,10 @@ class CounsellingListScreen extends StatelessWidget {
       'text': 'Behavioral Counselling',
       'heading1': 'Behavioral Counseling Services at NeuroMitra',
       'description1':
-      'At NeuroMitra, we are committed to helping individuals understand and modify behaviors that may be affecting their lives. Our Behavioral Counseling Services are designed to support clients in identifying negative behavior patterns, developing positive coping strategies, and achieving lasting change.',
+          'At NeuroMitra, we are committed to helping individuals understand and modify behaviors that may be affecting their lives. Our Behavioral Counseling Services are designed to support clients in identifying negative behavior patterns, developing positive coping strategies, and achieving lasting change.',
       'heading2': 'What is Behavioral Counseling?',
       'description2':
-      'Behavioral Counseling focuses on understanding the connection between thoughts, feelings, and behaviors. It involves working with a trained counselor to identify unhelpful behaviors, understand their underlying causes, and develop strategies to replace them with more positive actions. This type of counseling is particularly effective for individuals dealing with issues such as anxiety, depression, stress, anger management, and behavioral disorders.',
+          'Behavioral Counseling focuses on understanding the connection between thoughts, feelings, and behaviors. It involves working with a trained counselor to identify unhelpful behaviors, understand their underlying causes, and develop strategies to replace them with more positive actions. This type of counseling is particularly effective for individuals dealing with issues such as anxiety, depression, stress, anger management, and behavioral disorders.',
       'keyAreas': [
         'Personalized Treatment Plans: We tailor our counseling sessions to address the specific behaviors and challenges you’re facing, ensuring that you receive targeted and effective support.',
         'Evidence-Based Techniques: Our counselors use proven therapeutic approaches, such as Cognitive Behavioral Therapy (CBT), to help you develop healthier behaviors and thought patterns.',
@@ -55,10 +54,10 @@ class CounsellingListScreen extends StatelessWidget {
       'text': 'Grief Counselling',
       'heading1': 'Grief Counseling Services at NeuroMitra',
       'description1':
-      'At NeuroMitra, we understand that grief is a deeply personal and often overwhelming experience. Our Grief Counseling Services are here to provide compassionate support and guidance as you navigate the difficult journey of loss.',
+          'At NeuroMitra, we understand that grief is a deeply personal and often overwhelming experience. Our Grief Counseling Services are here to provide compassionate support and guidance as you navigate the difficult journey of loss.',
       'heading2': 'What is Grief Counseling?',
       'description2':
-      'Grief Counseling is a therapeutic process designed to help individuals cope with the emotional and psychological impact of losing a loved one. Whether your loss is recent or occurred some time ago, our counselors are here to help you process your feelings, find comfort, and move forward at your own pace.',
+          'Grief Counseling is a therapeutic process designed to help individuals cope with the emotional and psychological impact of losing a loved one. Whether your loss is recent or occurred some time ago, our counselors are here to help you process your feelings, find comfort, and move forward at your own pace.',
       'keyAreas': [
         'Compassionate Support: We offer a safe, non-judgmental space where you can openly express your grief and share your emotions.',
         'Personalized Care: Every individual’s grief journey is unique. We tailor our counseling sessions to meet your specific needs, honoring your personal experience of loss.',
@@ -77,12 +76,11 @@ class CounsellingListScreen extends StatelessWidget {
       'text': 'Group Counselling',
       'heading1': 'Group Counseling Services at NeuroMitra',
       'description1':
-      'At NeuroMitra, we believe in the power of shared experiences. Our Group Counseling Services provide a supportive and collaborative environment where individuals can come together to explore common challenges, share insights, and find strength in community.',
+          'At NeuroMitra, we believe in the power of shared experiences. Our Group Counseling Services provide a supportive and collaborative environment where individuals can come together to explore common challenges, share insights, and find strength in community.',
       'heading2': 'What is Group Counseling?',
       'description2':
-      'Group Counseling involves bringing together a small group of individuals who share similar concerns or life experiences. Led by a skilled therapist, these sessions offer a space for participants to discuss their feelings, learn from each other, and develop new coping strategies. Whether you’re dealing with stress, anxiety, grief, or other life challenges, group counseling can offer the support and perspective you need.',
-      'keyAreas': [
-      ],
+          'Group Counseling involves bringing together a small group of individuals who share similar concerns or life experiences. Led by a skilled therapist, these sessions offer a space for participants to discuss their feelings, learn from each other, and develop new coping strategies. Whether you’re dealing with stress, anxiety, grief, or other life challenges, group counseling can offer the support and perspective you need.',
+      'keyAreas': [],
       'benefits': [
         'Shared Understanding: Connect with others who are facing similar challenges, fostering a sense of belonging and mutual support.',
         'Multiple Perspectives: Gain insights from the diverse experiences and viewpoints of group members, helping you see your situation in a new light.',
@@ -96,10 +94,10 @@ class CounsellingListScreen extends StatelessWidget {
       'text': 'Crisis Counselling',
       'heading1': 'Crisis Counseling Services at NeuroMitra',
       'description1':
-      'At NeuroMitra, we understand that crises can strike unexpectedly, leaving individuals and families feeling overwhelmed and unsure of where to turn. Our Crisis Counseling Services are designed to provide immediate support and guidance during these challenging times.',
+          'At NeuroMitra, we understand that crises can strike unexpectedly, leaving individuals and families feeling overwhelmed and unsure of where to turn. Our Crisis Counseling Services are designed to provide immediate support and guidance during these challenging times.',
       'heading2': 'What is Crisis Counseling?',
       'description2':
-      'Crisis Counseling involves short-term intervention aimed at helping individuals cope with acute stress and trauma resulting from a crisis situation. Whether you’re facing a personal crisis, dealing with a traumatic event, or experiencing heightened emotional distress, our counselors are here to provide compassionate support.',
+          'Crisis Counseling involves short-term intervention aimed at helping individuals cope with acute stress and trauma resulting from a crisis situation. Whether you’re facing a personal crisis, dealing with a traumatic event, or experiencing heightened emotional distress, our counselors are here to provide compassionate support.',
       'keyAreas': [
         'Immediate Support: We offer timely and responsive counseling to address urgent emotional needs.',
         'Holistic Care: Our counselors are trained in various therapeutic approaches, ensuring a comprehensive approach tailored to your unique situation.',
@@ -117,10 +115,10 @@ class CounsellingListScreen extends StatelessWidget {
       'text': 'Career Counselling for parents',
       'heading1': 'Career Counseling for Parents',
       'description1':
-      'Career Counseling for Parents at NEUROMITRA is designed to support parents in navigating the challenges of balancing their careers with family life. Our goal is to help parents achieve both professional fulfillment and a healthy, nurturing home environment.',
+          'Career Counseling for Parents at NEUROMITRA is designed to support parents in navigating the challenges of balancing their careers with family life. Our goal is to help parents achieve both professional fulfillment and a healthy, nurturing home environment.',
       'heading2': 'What is Career Counseling for Parents?',
       'description2':
-      'Career Counseling for Parents focuses on helping parents find harmony between their work and family responsibilities. Whether you’re returning to work after a break, managing the demands of a challenging career, or looking to make a career transition, this counseling provides tailored strategies to help you succeed both at work and at home.',
+          'Career Counseling for Parents focuses on helping parents find harmony between their work and family responsibilities. Whether you’re returning to work after a break, managing the demands of a challenging career, or looking to make a career transition, this counseling provides tailored strategies to help you succeed both at work and at home.',
       'keyAreas': [
         'Work-Life Balance: Develop strategies to effectively manage time and energy between career and family responsibilities.',
         'Career Planning: Receive guidance on career advancement, transitions, or re-entry into the workforce after a break.',
@@ -141,10 +139,10 @@ class CounsellingListScreen extends StatelessWidget {
       'text': 'Sibling Counselling',
       'heading1': 'Sibling Counseling',
       'description1':
-      'Sibling Counseling at NEUROMITRA is designed to support siblings of children with special needs, helping them navigate the unique challenges they may face. Our goal is to foster understanding, communication, and emotional resilience within the sibling relationship, ensuring a supportive and harmonious family dynamic.',
+          'Sibling Counseling at NEUROMITRA is designed to support siblings of children with special needs, helping them navigate the unique challenges they may face. Our goal is to foster understanding, communication, and emotional resilience within the sibling relationship, ensuring a supportive and harmonious family dynamic.',
       'heading2': 'What is Sibling Counseling?',
       'description2':
-      'Sibling Counseling focuses on addressing the emotional and psychological needs of siblings who may experience feelings of jealousy, resentment, confusion, or guilt due to their brother or sister’s special needs. This type of counseling provides a safe space for siblings to express their feelings, gain a deeper understanding of their sibling’s condition, and develop coping strategies to manage their emotions and responsibilities.',
+          'Sibling Counseling focuses on addressing the emotional and psychological needs of siblings who may experience feelings of jealousy, resentment, confusion, or guilt due to their brother or sister’s special needs. This type of counseling provides a safe space for siblings to express their feelings, gain a deeper understanding of their sibling’s condition, and develop coping strategies to manage their emotions and responsibilities.',
       'keyAreas': [
         'Understanding and Acceptance: Helps siblings develop a better understanding of their brother or sister’s special needs, fostering empathy and acceptance.',
         'Emotional Support: Provides a space for siblings to share their feelings and receive validation and support.',
@@ -164,7 +162,7 @@ class CounsellingListScreen extends StatelessWidget {
       'text': 'Educational Counselling',
       'heading1': 'Educational Counseling',
       'description1':
-      'Educational Counseling provides personalized guidance to support children and parents in navigating academic challenges and achieving educational success. This service focuses on identifying learning difficulties, creating effective study plans, and assisting with school transitions, ensuring that each child receives the tools and strategies needed to thrive academically. Whether addressing specific learning disabilities or helping with academic planning, Educational Counseling empowers students to reach their full potential and supports parents in understanding and meeting their child’s educational needs.',
+          'Educational Counseling provides personalized guidance to support children and parents in navigating academic challenges and achieving educational success. This service focuses on identifying learning difficulties, creating effective study plans, and assisting with school transitions, ensuring that each child receives the tools and strategies needed to thrive academically. Whether addressing specific learning disabilities or helping with academic planning, Educational Counseling empowers students to reach their full potential and supports parents in understanding and meeting their child’s educational needs.',
       'heading2': '',
       'description2': '',
       'keyAreas': [
@@ -175,17 +173,17 @@ class CounsellingListScreen extends StatelessWidget {
         'Parental Guidance: Helping parents understand and support their child’s educational journey.',
         'Our goal is to ensure every student receives the support they need to excel in their academic endeavors.'
       ],
-      'benefits': [
-      ]
+      'benefits': []
     },
     {
       'image': 'assets/Counciling/parent_children_relationship.jpeg',
       'text': 'Parent-Child Relationship',
       'heading1': 'Parent-Child Relationship Counseling',
       'description1':
-      'Parent-Child Relationship Counseling at NEUROMITRA is designed to strengthen the connection between parents and their children. This counseling service focuses on improving communication, resolving conflicts, and enhancing emotional bonds within the family, helping both parents and children navigate challenges together.',
+          'Parent-Child Relationship Counseling at NEUROMITRA is designed to strengthen the connection between parents and their children. This counseling service focuses on improving communication, resolving conflicts, and enhancing emotional bonds within the family, helping both parents and children navigate challenges together.',
       'heading2': 'What is Parent-Child Relationship Counseling?',
-      'description2': 'Parent-Child Relationship Counseling addresses the dynamics between parents and their children, focusing on fostering a deeper understanding and improving interactions. This type of counseling helps parents develop effective parenting strategies while providing children with the tools to express their emotions and needs more clearly. The goal is to create a supportive, loving environment where both parent and child feel heard, respected, and valued.',
+      'description2':
+          'Parent-Child Relationship Counseling addresses the dynamics between parents and their children, focusing on fostering a deeper understanding and improving interactions. This type of counseling helps parents develop effective parenting strategies while providing children with the tools to express their emotions and needs more clearly. The goal is to create a supportive, loving environment where both parent and child feel heard, respected, and valued.',
       'keyAreas': [
         'Improved Communication: Enhances the way parents and children talk to each other, making interactions more positive and meaningful.',
         'Conflict Resolution: Provides strategies for resolving conflicts in a healthy and constructive manner.',
@@ -206,9 +204,10 @@ class CounsellingListScreen extends StatelessWidget {
       'text': 'Individual Counselling for children',
       'heading1': 'Individual Counseling for Children',
       'description1':
-      'Individual Counseling for Children at NEUROMITRA is tailored to meet the unique emotional and mental health needs of children. Our goal is to provide a safe, supportive environment where children can express their feelings, overcome challenges, and develop the skills they need to thrive.',
+          'Individual Counseling for Children at NEUROMITRA is tailored to meet the unique emotional and mental health needs of children. Our goal is to provide a safe, supportive environment where children can express their feelings, overcome challenges, and develop the skills they need to thrive.',
       'heading2': 'What is Individual Counseling for Children?',
-      'description2': 'Individual counseling for children focuses on helping them navigate a variety of emotional, behavioral, and psychological issues. Whether your child is dealing with anxiety, depression, behavioral problems, or other mental health concerns, our experienced counselors are here to provide personalized support. Through one-on-one sessions, children are encouraged to explore their emotions, learn coping strategies, and build resilience.',
+      'description2':
+          'Individual counseling for children focuses on helping them navigate a variety of emotional, behavioral, and psychological issues. Whether your child is dealing with anxiety, depression, behavioral problems, or other mental health concerns, our experienced counselors are here to provide personalized support. Through one-on-one sessions, children are encouraged to explore their emotions, learn coping strategies, and build resilience.',
       'keyAreas': [
         'Emotional Expression: Provides children with a safe space to express their thoughts and feelings openly.',
         'Anxiety and Depression Management: Helps children understand and manage symptoms of anxiety, depression, and other mood disorders.',
@@ -229,9 +228,10 @@ class CounsellingListScreen extends StatelessWidget {
       'text': 'Family Counseling',
       'heading1': 'Family Counseling',
       'description1':
-      'Family Counseling at NEUROMITRA is designed to help families navigate challenges, improve communication, and build stronger, healthier relationships. Whether you’re dealing with conflicts, life transitions, or simply want to enhance your family dynamic, our experienced counselors are here to guide you through the process.',
+          'Family Counseling at NEUROMITRA is designed to help families navigate challenges, improve communication, and build stronger, healthier relationships. Whether you’re dealing with conflicts, life transitions, or simply want to enhance your family dynamic, our experienced counselors are here to guide you through the process.',
       'heading2': 'What is Family Counseling?',
-      'description2': 'Family counseling is a form of therapy that addresses the behaviors, emotions, and interactions within a family system. It focuses on improving communication, resolving conflicts, and fostering a supportive environment where each family member feels valued and understood. Family counseling can be especially beneficial during times of stress, such as divorce, illness, or major life changes.',
+      'description2':
+          'Family counseling is a form of therapy that addresses the behaviors, emotions, and interactions within a family system. It focuses on improving communication, resolving conflicts, and fostering a supportive environment where each family member feels valued and understood. Family counseling can be especially beneficial during times of stress, such as divorce, illness, or major life changes.',
       'keyAreas': [
         'Improved Communication: Helps family members express their thoughts and feelings more effectively, leading to better understanding and cooperation.',
         'Conflict Resolution: Provides tools and strategies to resolve conflicts in a healthy and constructive manner.',
@@ -252,9 +252,10 @@ class CounsellingListScreen extends StatelessWidget {
       'text': 'Mental Health Counseling',
       'heading1': 'Mental Health Counseling',
       'description1':
-      'Mental Health Counseling at NEUROMITRA offers personalized support for individuals dealing with a wide range of mental health challenges. Whether you’re facing anxiety, depression, stress, or any other emotional difficulty, our compassionate counselors are here to help you navigate your journey toward better mental health.',
+          'Mental Health Counseling at NEUROMITRA offers personalized support for individuals dealing with a wide range of mental health challenges. Whether you’re facing anxiety, depression, stress, or any other emotional difficulty, our compassionate counselors are here to help you navigate your journey toward better mental health.',
       'heading2': 'What is Mental Health Counseling?',
-      'description2': 'Mental health counseling is a professional service that provides support, guidance, and therapeutic strategies to help individuals cope with and overcome emotional and psychological issues. The goal is to improve mental well-being, enhance self-awareness, and empower you to lead a more fulfilling life.',
+      'description2':
+          'Mental health counseling is a professional service that provides support, guidance, and therapeutic strategies to help individuals cope with and overcome emotional and psychological issues. The goal is to improve mental well-being, enhance self-awareness, and empower you to lead a more fulfilling life.',
       'keyAreas': [
         'Anxiety Management: Learn effective techniques to reduce anxiety and regain control over your thoughts and feelings.',
         'Depression Support: Receive the support and tools needed to manage symptoms of depression and find hope in your life.',
@@ -275,9 +276,10 @@ class CounsellingListScreen extends StatelessWidget {
       'text': 'General stress management',
       'heading1': 'General Stress Management Counseling',
       'description1':
-      'General Stress Management Counseling at NEUROMITRA is designed to help you cope with the pressures of daily life and find a sense of calm and balance. Whether it’s work-related stress, personal challenges, or the constant demands of modern life, our expert counselors are here to guide you in managing stress effectively and improving your overall well-being.',
+          'General Stress Management Counseling at NEUROMITRA is designed to help you cope with the pressures of daily life and find a sense of calm and balance. Whether it’s work-related stress, personal challenges, or the constant demands of modern life, our expert counselors are here to guide you in managing stress effectively and improving your overall well-being.',
       'heading2': 'What is Stress Management Counseling?',
-      'description2': 'Stress Management Counseling focuses on identifying the sources of stress in your life and developing strategies to manage and reduce it. Through personalized sessions, you’ll learn practical tools and techniques to help you navigate stressful situations, improve your mental clarity, and maintain emotional stability.',
+      'description2':
+          'Stress Management Counseling focuses on identifying the sources of stress in your life and developing strategies to manage and reduce it. Through personalized sessions, you’ll learn practical tools and techniques to help you navigate stressful situations, improve your mental clarity, and maintain emotional stability.',
       'keyAreas': [
         'Stress Identification: Understand the root causes of your stress and how it affects your mind and body.',
         'Relaxation Techniques: Learn effective methods such as deep breathing, mindfulness, and meditation to reduce stress levels.',
@@ -298,9 +300,10 @@ class CounsellingListScreen extends StatelessWidget {
       'text': 'Parent Counseling for Autism',
       'heading1': 'Parent Counseling for Autism',
       'description1':
-      'At NEUROMITRA, we understand the unique challenges that come with raising a child with autism. Our Parent Counseling for Autism services are designed to provide parents with the tools, knowledge, and emotional support needed to navigate this journey with confidence and compassion.',
+          'At NEUROMITRA, we understand the unique challenges that come with raising a child with autism. Our Parent Counseling for Autism services are designed to provide parents with the tools, knowledge, and emotional support needed to navigate this journey with confidence and compassion.',
       'heading2': 'What is Parent Counseling for Autism?',
-      'description2': 'Parent Counseling for Autism focuses on helping parents understand autism, manage behaviors, and improve communication with their child. Through personalized counseling sessions, parents are guided in developing effective strategies that support their child’s development and well-being.',
+      'description2':
+          'Parent Counseling for Autism focuses on helping parents understand autism, manage behaviors, and improve communication with their child. Through personalized counseling sessions, parents are guided in developing effective strategies that support their child’s development and well-being.',
       'keyAreas': [
         'Understanding Autism: Gain a deeper understanding of autism spectrum disorder (ASD) and how it affects your child’s behavior and development.',
         'Behavior Management: Learn practical techniques to manage challenging behaviors and encourage positive development.',
@@ -316,7 +319,6 @@ class CounsellingListScreen extends StatelessWidget {
         'Families seeking to improve their overall communication and relationship with their child'
       ]
     },
-
   ];
 
   @override
@@ -324,11 +326,12 @@ class CounsellingListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Counselling List',   style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontFamily: "Inter",
-            color: Color(0xff3EA4D2),
-            fontSize: 20)),
+        title: Text('Counselling List',
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: "Inter",
+                color: Color(0xff3EA4D2),
+                fontSize: 20)),
       ),
       body: GridView.builder(
         padding: EdgeInsets.all(10.0),
@@ -339,56 +342,40 @@ class CounsellingListScreen extends StatelessWidget {
         itemCount: counsellings.length,
         itemBuilder: (context, index) {
           final counselling = counsellings[index];
-          return
-            InkWell(
-              // onTap: () => _onCounsellingTap(context, counselling['text']!),
-              onTap: (){
-                Navigator.of(context)
-                    .push(PageRouteBuilder(
-                  pageBuilder: (context,
-                      animation,
-                      secondaryAnimation) {
-                    return DetailsScreen(
-                      assetImage: counselling['image'],
-                      title: counselling['text'],
-                      descHeading1: counselling['heading1'],
-                      description1: counselling['description1'],
-                      descHeading2: counselling['heading2'],
-                      description2: counselling['description2'],
-                      keyAreas: List<String>.from(counselling['keyAreas']),
-                      benefits: List<String>.from(counselling['benefits']),
-                    );
-                  },
-                  transitionsBuilder:
-                      (context,
-                      animation,
-                      secondaryAnimation,
-                      child) {
-                    const begin =
-                    Offset(1.0, 0.0);
-                    const end = Offset.zero;
-                    const curve =
-                        Curves.easeInOut;
-                    var tween = Tween(
-                        begin: begin,
-                        end: end)
-                        .chain(CurveTween(
-                        curve: curve));
-                    var offsetAnimation =
-                    animation
-                        .drive(tween);
-                    return SlideTransition(
-                        position:
-                        offsetAnimation,
-                        child: child);
-                  },
-                ));
-              },
-              child: ProductGridItem(
-                imageUrl: counselling['image']!,
-                title:counselling['text']!,
-              ),
-            );
+          return InkWell(
+            // onTap: () => _onCounsellingTap(context, counselling['text']!),
+            onTap: () {
+              Navigator.of(context).push(PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) {
+                  return DetailsScreen(
+                    assetImage: counselling['image'],
+                    title: counselling['text'],
+                    descHeading1: counselling['heading1'],
+                    description1: counselling['description1'],
+                    descHeading2: counselling['heading2'],
+                    description2: counselling['description2'],
+                    keyAreas: List<String>.from(counselling['keyAreas']),
+                    benefits: List<String>.from(counselling['benefits']),
+                  );
+                },
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(1.0, 0.0);
+                  const end = Offset.zero;
+                  const curve = Curves.easeInOut;
+                  var tween = Tween(begin: begin, end: end)
+                      .chain(CurveTween(curve: curve));
+                  var offsetAnimation = animation.drive(tween);
+                  return SlideTransition(
+                      position: offsetAnimation, child: child);
+                },
+              ));
+            },
+            child: ProductGridItem(
+              imageUrl: counselling['image']!,
+              title: counselling['text']!,
+            ),
+          );
         },
       ),
     );
@@ -416,7 +403,6 @@ class ProductGridItem extends StatelessWidget {
             width: 150, // Adjust width as needed
             height: 106, // Adjust height as needed
             fit: BoxFit.cover,
-
           ),
         ),
         SizedBox(height: 8.0),

@@ -1429,20 +1429,9 @@ class Userapi {
     }
   }
 
-  static Future<AddAddressModel?> addAddressApi(String flatNo, String street,
-      String area, String landmark, String pincode, int typeOfAddress) async {
+  static Future<AddAddressModel?> addAddressApi(Map<String,dynamic>data) async {
     try {
-      final response = await _dio.post(
-        "/api/add_user_address",
-        data: {
-          "Flat_no": flatNo,
-          "street": street,
-          "area": area,
-          "landmark": landmark,
-          "pincode": pincode,
-          "type_of_address": typeOfAddress,
-        },
-      );
+      final response = await _dio.post("/api/add_user_address",data: data);
       if (response.statusCode == 200) {
         print("AddAddressApi Response: ${response.data}");
         return AddAddressModel.fromJson(response.data);
@@ -1456,26 +1445,9 @@ class Userapi {
     }
   }
 
-  static Future<AddAddressModel?> editAddressApi(
-      String flatNo,
-      String street,
-      String area,
-      String landmark,
-      String pincode,
-      int typeOfAddress,
-      String addressId) async {
+  static Future<AddAddressModel?> editAddressApi(Map<String,dynamic>data, String addressId) async {
     try {
-      final response = await _dio.post(
-        "/api/update_user_address/$addressId",
-        data: {
-          "Flat_no": flatNo,
-          "street": street,
-          "area": area,
-          "landmark": landmark,
-          "pincode": pincode,
-          "type_of_address": typeOfAddress,
-        },
-      );
+      final response = await _dio.post("/api/update_user_address/$addressId",data: data);
       if (response.statusCode == 200) {
         print("EditAddressApi Response: ${response.data}");
         return AddAddressModel.fromJson(response.data);

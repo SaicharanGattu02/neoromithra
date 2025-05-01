@@ -6,8 +6,6 @@ class AddressListProvider with ChangeNotifier {
   bool _isLoading = false;
   String _error = '';
   List<Address> _addresses = [];
-
-  // Getters
   bool get isLoading => _isLoading;
   String get error => _error;
   List<Address> get addresses => _addresses;
@@ -31,6 +29,51 @@ class AddressListProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+  Future<bool> addAddress(Map<String, dynamic> data) async {
+    _isLoading = true;
+    _error = '';
+    notifyListeners();
+
+    try {
+      final res = await Userapi.addAddressApi(data);
+      if (res != null && res.status == true) {
+        await getAddressList();
+        return true;
+      } else {
+        _error = res?.message ?? 'An error occurred. Please try again.';
+        return false;
+      }
+    } catch (e) {
+      _error = e.toString();
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+  Future<bool> EditAddress(Map<String, dynamic> data,id) async {
+    _isLoading = true;
+    _error = '';
+    notifyListeners();
+
+    try {
+      final res = await Userapi.editAddressApi(data,id);
+      if (res != null && res.status == true) {
+        await getAddressList();
+        return true;
+      } else {
+        _error = res?.message ?? 'An error occurred. Please try again.';
+        return false;
+      }
+    } catch (e) {
+      _error = e.toString();
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
 
   // Clear error
   void clearError() {
