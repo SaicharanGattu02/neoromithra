@@ -66,3 +66,19 @@ app.*.map.json
 # Testing
 test_results/
 *.lcov
+
+# Ignore CMake build files
+android/app/.cxx/
+
+# Ignore other build artifacts (optional, if applicable)
+build/
+*.o
+*.bin
+*.json
+*.txt
+*.cmake
+CMakeCache.txt
+CMakeFiles/
+
+# If you want to keep the Dart file, do not add this
+# lib/Components/ProductGridItem.dart
