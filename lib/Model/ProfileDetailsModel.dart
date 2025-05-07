@@ -27,7 +27,7 @@ class User {
   int? id;
   String? name;
   String? email;
-  Null? emailVerifiedAt;
+  String? emailVerifiedAt;
   int? phone;
   int? sos1;
   int? sos2;

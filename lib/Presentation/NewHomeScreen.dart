@@ -34,11 +34,6 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     super.initState();
   }
 
-  // String token = "";
-  // Future<void> _initialize() async {
-  //   token = await PreferenceService().getString('token') ?? "";
-  // }
-
   final List<Map<String, dynamic>> therapies = [
     {
       'image': 'assets/Therephy/speech_theraphy.jpg',
