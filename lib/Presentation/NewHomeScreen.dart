@@ -281,7 +281,6 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     } else {
       greeting = 'Good Evening';
     }
-
     var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width;
     return Consumer<HomeProviders>(
