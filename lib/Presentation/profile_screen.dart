@@ -7,6 +7,7 @@ import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:provider/provider.dart';
 import '../Components/Shimmers.dart';
+import '../utils/Color_Constants.dart';
 import 'AddressListScreen.dart';
 import 'Editprofile _screen.dart';
 import 'GovtSupportinfo.dart';
@@ -22,24 +23,11 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  bool is_loading = true;
   @override
   void initState() {
     Provider.of<HomeProviders>(context, listen: false).getProfileDetails();
     super.initState();
   }
-  //
-  // User user_data= User();
-  // Future<void> GetProfileDetails() async {
-  //   String user_id = await PreferenceService().getString('user_id') ?? "";
-  //   final Response = await Userapi.getProfileDetails(user_id);
-  //   if (Response != null) {
-  //     setState(() {
-  //       user_data = Response.user??User();
-  //       is_loading = false;
-  //     });
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                                 child: CircleAvatar(
                                   radius: 35,
-                                  backgroundColor: Colors.blue.shade700,
+                                  backgroundColor:primarycolor,
                                   child: Text(
                                     '${profileDetails.userData.name != null && profileDetails.userData.name!.isNotEmpty ? '${profileDetails.userData.name![0].toUpperCase()}' : ''}',
                                     style: TextStyle(
@@ -102,7 +90,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     radius: 14,
                                     child: Icon(
                                       Icons.edit,
-                                      color: Colors.blue,
+                                      color:primarycolor,
                                       size: 16,
                                     ),
                                   ),
@@ -412,7 +400,7 @@ void _showLogoutConfirmationDialog(BuildContext context) {
                         style: TextStyle(
                             fontSize: 24.0,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xff3EA4D2),
+                            color: primarycolor,
                             fontFamily: "Poppins"),
                       ),
                       const SizedBox(height: 10.0),
@@ -438,7 +426,7 @@ void _showLogoutConfirmationDialog(BuildContext context) {
                               style: ElevatedButton.styleFrom(
                                 elevation: 0,
                                 backgroundColor:
-                                    Color(0xff3EA4D2), // Filled button color
+                                    primarycolor, // Filled button color
                                 foregroundColor: Colors.white, // Text color
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 20, vertical: 10),
@@ -466,9 +454,9 @@ void _showLogoutConfirmationDialog(BuildContext context) {
                               },
                               style: OutlinedButton.styleFrom(
                                 foregroundColor:
-                                    Color(0xff3EA4D2), // Text color
+                                    primarycolor, // Text color
                                 side: BorderSide(
-                                    color: Color(0xff3EA4D2)), // Border color
+                                    color: primarycolor), // Border color
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 20, vertical: 10),
                               ),

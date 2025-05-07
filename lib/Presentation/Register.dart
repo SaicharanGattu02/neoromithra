@@ -9,6 +9,8 @@ import 'package:neuromithra/Presentation/LogIn.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 
+import '../utils/Color_Constants.dart';
+
 class Register extends StatefulWidget {
   const Register({super.key});
 
@@ -505,7 +507,7 @@ class _RegisterState extends State<Register> {
                         width: width,
                         height: 56,
                         decoration: BoxDecoration(
-                          color: Color(0xff3EA4D2),
+                          color: primarycolor,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Center(

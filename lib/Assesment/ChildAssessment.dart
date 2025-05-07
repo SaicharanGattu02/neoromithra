@@ -9,6 +9,7 @@ import 'package:neuromithra/Presentation/MainDashBoard.dart';
 
 import '../Model/AssessmentQuestion.dart';
 import '../services/userapi.dart';
+import '../utils/Color_Constants.dart';
 import 'ResultScreen.dart';
 
 class ChildAssessment extends StatefulWidget {
@@ -82,14 +83,14 @@ class _ChildAssessmentState extends State<ChildAssessment> {
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontFamily: "Inter",
-            color: Color(0xff3EA4D2),
+            color: primarycolor,
             fontSize: 18,
           ),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xff3EA4D2)),
+          icon: const Icon(Icons.arrow_back, color: primarycolor),
           onPressed: () =>context.pop(),
         ),
       ),
@@ -161,7 +162,7 @@ class _ChildAssessmentState extends State<ChildAssessment> {
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
                           fontFamily: "Poppins",
-                          color: Color(0xff3EA4D2),
+                          color: primarycolor,
                         ),
                       ),
                     ),
@@ -205,7 +206,7 @@ class _ChildAssessmentState extends State<ChildAssessment> {
                                         value!;
                                       });
                                     },
-                                    activeColor: const Color(0xff3EA4D2),
+                                    activeColor: primarycolor,
                                   ),
                                 )
                                     .toList(),

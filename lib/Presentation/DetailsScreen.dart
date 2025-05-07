@@ -4,6 +4,7 @@ import 'package:neuromithra/Presentation/BookAppointment.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../Model/ReviewListModel.dart';
+import '../utils/Color_Constants.dart';
 import 'ReviewListScreen.dart';
 import '../services/userapi.dart';
 import '../utils/ReviewCard.dart';
@@ -77,12 +78,12 @@ class _TherapyDetailsScreenState extends State<DetailsScreen> {
             style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: "Inter",
-                color: Color(0xff3EA4D2),
+                color: primarycolor,
                 fontSize: 18)),
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton.filled(
-          icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
+          icon: Icon(Icons.arrow_back, color: primarycolor), // Icon color
           onPressed: () => context.pop(),
           style: IconButton.styleFrom(
             backgroundColor: Color(0xFFECFAFA), // Filled color
@@ -108,7 +109,7 @@ class _TherapyDetailsScreenState extends State<DetailsScreen> {
                   child: Text("Price : ₹800 /-",
                     style: TextStyle(
                         fontSize: 18,
-                        color: Color(0xff3EA4D2),
+                        color: primarycolor,
                         fontWeight: FontWeight.w600,
                         fontFamily: "Inter"),
                   ),

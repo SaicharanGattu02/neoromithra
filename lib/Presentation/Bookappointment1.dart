@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:phonepe_payment_sdk/phonepe_payment_sdk.dart';
+import '../utils/Color_Constants.dart';
 import 'AddressListScreen.dart';
 import '../Model/AddressListModel.dart';
 import 'BookedApointmentsuccessfully.dart';
@@ -461,12 +462,12 @@ class _Bookappointment1State extends State<Bookappointment1> {
             style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: "Inter",
-                color: Color(0xff3EA4D2),
+                color: primarycolor,
                 fontSize: 18)),
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton.filled(
-          icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
+          icon: Icon(Icons.arrow_back, color: primarycolor), // Icon color
           onPressed: () => Navigator.pop(context),
           style: IconButton.styleFrom(
             backgroundColor: Color(0xFFECFAFA), // Filled color
@@ -679,7 +680,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF3EA4D2), // Updated button color
+                    backgroundColor: primarycolor, // Updated button color
                     padding: EdgeInsets.symmetric(vertical: 14, horizontal: 20),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),

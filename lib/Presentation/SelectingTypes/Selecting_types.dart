@@ -4,6 +4,8 @@ import 'package:neuromithra/Components/CustomAppButton.dart';
 import 'package:neuromithra/Presentation/SelectingTypes/ExploreAdults.dart';
 import 'package:neuromithra/Presentation/SelectingTypes/ExploreChildren.dart';
 
+import '../../utils/Color_Constants.dart';
+
 class SelectingTypes extends StatefulWidget {
   const SelectingTypes({super.key});
 
@@ -23,12 +25,12 @@ class _SelectingTypesState extends State<SelectingTypes> {
             style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: "Inter",
-                color: Color(0xff3EA4D2),
+                color: primarycolor,
                 fontSize: 18)),
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton.filled(
-          icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
+          icon: Icon(Icons.arrow_back, color: primarycolor), // Icon color
           onPressed: () => Navigator.pop(context),
           style: IconButton.styleFrom(
             backgroundColor: Color(0xFFECFAFA), // Filled color

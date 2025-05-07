@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import '../utils/Color_Constants.dart';
 import 'DetailsScreen.dart';
 
 class TherapiesListScreen extends StatelessWidget {
@@ -316,7 +317,7 @@ class TherapiesListScreen extends StatelessWidget {
         title: Text('Therapies List',   style: TextStyle(
             fontWeight: FontWeight.w600,
             fontFamily: "Inter",
-            color: Color(0xff3EA4D2),
+            color: primarycolor,
             fontSize: 20)),
       ),
       body: GridView.builder(

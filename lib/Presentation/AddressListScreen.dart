@@ -4,6 +4,7 @@ import 'package:neuromithra/Presentation/AddAddressScreen.dart';
 import 'package:neuromithra/Providers/AddressListProviders.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:provider/provider.dart';
+import '../utils/Color_Constants.dart';
 import 'CustomAppBar.dart';
 import '../Model/AddressListModel.dart';
 
@@ -28,12 +29,12 @@ class _AddressListScreenState extends State<AddressListScreen> {
             style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: "Inter",
-                color: Color(0xff3EA4D2),
+                color: primarycolor,
                 fontSize: 18)),
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton.filled(
-          icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)),
+          icon: Icon(Icons.arrow_back, color: primarycolor),
           onPressed: () => Navigator.pop(context),
           style: IconButton.styleFrom(
             backgroundColor: Color(0xFFECFAFA), // Filled color
@@ -78,7 +79,7 @@ class _AddressListScreenState extends State<AddressListScreen> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF3EA4D2),
+                            backgroundColor: primarycolor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),

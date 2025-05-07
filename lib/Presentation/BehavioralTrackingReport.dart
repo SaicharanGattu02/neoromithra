@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:neuromithra/services/userapi.dart';
 
+import '../utils/Color_Constants.dart';
 import 'CustomAppBar.dart';
 import '../Model/BehaviouralTrackingModel.dart';
 
@@ -49,14 +50,14 @@ class _BehavioralTrackingReportState extends State<BehavioralTrackingReport> {
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontFamily: "Inter",
-              color: Color(0xff3EA4D2),
+              color: primarycolor,
               fontSize: 18,
             ),
           ),
           centerTitle: true,
           backgroundColor: Colors.white,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Color(0xff3EA4D2)),
+            icon: const Icon(Icons.arrow_back, color: primarycolor),
             onPressed: () =>      context.pop(),
           ),
         ),

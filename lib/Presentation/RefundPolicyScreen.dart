@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/Color_Constants.dart';
+
 class RefundPolicyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -10,14 +12,14 @@ class RefundPolicyScreen extends StatelessWidget {
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontFamily: "Inter",
-            color: Color(0xff3EA4D2),
+            color: primarycolor,
             fontSize: 18,
           ),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton.filled(
-          icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
+          icon: Icon(Icons.arrow_back, color: primarycolor), // Icon color
           onPressed: () => Navigator.pop(context),
           style: IconButton.styleFrom(
             backgroundColor: Color(0xFFECFAFA), // Filled color

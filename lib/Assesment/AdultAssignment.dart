@@ -7,6 +7,7 @@ import '../Components/CustomAppButton.dart';
 import '../Model/AssessmentQuestion.dart';
 import '../Presentation/MainDashBoard.dart';
 import '../services/userapi.dart';
+import '../utils/Color_Constants.dart';
 import 'ResultScreen.dart';
 
 class Adultassignment extends StatefulWidget {
@@ -74,14 +75,14 @@ class _AdultassignmentState extends State<Adultassignment> {
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontFamily: "Inter",
-            color: Color(0xff3EA4D2),
+            color: primarycolor,
             fontSize: 18,
           ),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xff3EA4D2)),
+          icon: const Icon(Icons.arrow_back, color: primarycolor),
           onPressed: () => context.pop(),
         ),
       ),
@@ -155,7 +156,7 @@ class _AdultassignmentState extends State<Adultassignment> {
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
                           fontFamily: "Poppins",
-                          color: Color(0xff3EA4D2),
+                          color: primarycolor,
                         ),
                       ),
                     ),
@@ -199,7 +200,7 @@ class _AdultassignmentState extends State<Adultassignment> {
                                         value!;
                                       });
                                     },
-                                    activeColor: const Color(0xff3EA4D2),
+                                    activeColor: primarycolor,
                                   ),
                                 )
                                     .toList(),

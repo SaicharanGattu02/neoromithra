@@ -139,12 +139,12 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
             style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: "Inter",
-                color: Color(0xff3EA4D2),
+                color: primarycolor,
                 fontSize: 18)),
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton.filled(
-          icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
+          icon: Icon(Icons.arrow_back, color: primarycolor), // Icon color
           onPressed: () => context.pop(),
           style: IconButton.styleFrom(
             backgroundColor: Color(0xFFECFAFA), // Filled color
@@ -167,7 +167,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                       children: [
                         Checkbox(
                           value: isCurrentChecked,
-                          activeColor: primary,
+                          activeColor: primarycolor,
                           onChanged: (bool? value) {
                             setState(() {
                               isCurrentChecked = true;
@@ -183,7 +183,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                       children: [
                         Checkbox(
                           value: isPermanentChecked,
-                          activeColor: primary,
+                          activeColor: primarycolor,
                           onChanged: (bool? value) {
                             setState(() {
                               isPermanentChecked = true;
@@ -230,7 +230,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: primary,
+                      backgroundColor: primarycolor,
                       padding: EdgeInsets.symmetric(vertical: 16.0),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),

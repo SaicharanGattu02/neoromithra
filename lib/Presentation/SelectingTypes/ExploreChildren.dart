@@ -3,6 +3,7 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:neuromithra/Presentation/MainDashBoard.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../Components/CustomAppButton.dart';
+import '../../utils/Color_Constants.dart';
 
 class ExploreChildren extends StatefulWidget {
   const ExploreChildren({super.key});
@@ -28,12 +29,12 @@ class _ExploreChildrenState extends State<ExploreChildren> {
             style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: "Inter",
-                color: Color(0xff3EA4D2),
+                color: primarycolor,
                 fontSize: 18)),
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton.filled(
-          icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
+          icon: Icon(Icons.arrow_back, color: primarycolor), // Icon color
           onPressed: () => Navigator.pop(context),
           style: IconButton.styleFrom(
             backgroundColor: Color(0xFFECFAFA), // Filled color
@@ -53,7 +54,7 @@ class _ExploreChildrenState extends State<ExploreChildren> {
                 Text(
                   textAlign: TextAlign.center,
                   'Are You Ready to Redefine Support for Neurodiverse Minds?',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700,color: Color(0xff3EA4D2)),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700,color: primarycolor),
                 ),
                 SizedBox(height: 20),
 
@@ -87,7 +88,7 @@ class _ExploreChildrenState extends State<ExploreChildren> {
                 Center(
                   child: Text(
                     "What Does It Mean to Be Neurodiverse?",
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500,color: Color(0xff3EA4D2)),
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500,color: primarycolor),
                   ),
                 ),
                 SizedBox(height: 10),
@@ -178,7 +179,7 @@ class _ExploreChildrenState extends State<ExploreChildren> {
                 // Text introducing NeuroMitra's services
                 Text(
                   "At NeuroMitra, we redefine support with:",
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500,color: Color(0xff3EA4D2)),
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500,color: primarycolor),
                 ),
                 SizedBox(height: 10),
                 // Bullet Points for services

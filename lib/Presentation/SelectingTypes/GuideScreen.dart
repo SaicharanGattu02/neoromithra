@@ -4,6 +4,7 @@ import 'package:neuromithra/Assesment/AdultAssignment.dart';
 
 import '../../Assesment/ChildAssessment.dart';
 import '../../Components/CustomAppButton.dart';
+import '../../utils/Color_Constants.dart';
 import 'Selecting_types.dart';
 
 class Guidescreen extends StatefulWidget {
@@ -23,7 +24,7 @@ class _GuidescreenState extends State<Guidescreen> {
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontFamily: "Inter",
-            color: Color(0xff3EA4D2),
+            color: primarycolor,
             fontSize: 20,
           ),
         ),

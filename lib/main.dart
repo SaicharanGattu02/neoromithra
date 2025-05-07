@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,8 +11,6 @@ import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:neuromithra/state_injector.dart';
 import 'package:provider/provider.dart';
-import 'Presentation/LogIn.dart';
-import 'Presentation/SplashScreen.dart';
 import 'Providers/AddressListProviders.dart';
 import 'Providers/BookingHistoryProviders.dart';
 import 'Providers/HomeProviders.dart';
@@ -43,32 +39,6 @@ Future<void> main() async {
           ),
         )
       : await Firebase.initializeApp();
-
-  FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
-
-  const fatalError = true;
-  // Non-async exceptions
-  FlutterError.onError = (errorDetails) {
-    if (fatalError) {
-      // If you want to record a "fatal" exception
-      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-      // ignore: dead_code
-    } else {
-      // If you want to record a "non-fatal" exception
-      FirebaseCrashlytics.instance.recordFlutterError(errorDetails);
-    }
-  };
-  // Async exceptions
-  PlatformDispatcher.instance.onError = (error, stack) {
-    if (fatalError) {
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-      // ignore: dead_code
-    } else {
-      // If you want to record a "non-fatal" exception
-      FirebaseCrashlytics.instance.recordError(error, stack);
-    }
-    return true;
-  };
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
@@ -138,15 +108,6 @@ Future<void> main() async {
   });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  // debugInvertOversizedImages = true;
-  FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-
-  FlutterError.onError = (FlutterErrorDetails details) {
-    // Log the error details to a logging service or print them
-    print("Errrrrrrrrrr:${details.exceptionAsString()}");
-    // Optionally report the error to a remote server
-  };
 // Motion.instance.setUpdateInterval(60.fps);
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => SignInProviders()),

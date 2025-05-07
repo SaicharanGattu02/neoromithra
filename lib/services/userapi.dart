@@ -897,65 +897,7 @@ class Userapi {
       ),
     );
   }
-  // static void setupInterceptors(GlobalKey<NavigatorState> navigatorKey) {
-  //   _dio.interceptors.add(
-  //     InterceptorsWrapper(
-  //       onRequest: (options, handler) async {
-  //         if (!_isUnauthenticatedEndpoint(options.path)) {
-  //           final accessToken = await AuthService.getAccessToken();
-  //           if (accessToken != null) {
-  //             options.headers["Authorization"] = "Bearer $accessToken";
-  //           }
-  //         }
-  //         return handler.next(options);
-  //       },
-  //       onResponse: (response, handler) {
-  //         return handler.next(response);
-  //       },
-  //       onError: (DioException e, handler) async {
-  //         if (e.response != null) {
-  //           switch (e.response?.statusCode) {
-  //             case 401:
-  //               print("Unauthorized: Navigating to SignIn");
-  //               final prefs = await SharedPreferences.getInstance();
-  //               await prefs.clear();
-  //               Future.microtask(() {
-  //                 navigatorKey.currentState?.pushNamedAndRemoveUntil(
-  //                     '/signin', (route) => false);
-  //               });
-  //               return handler.reject(e);
-  //             default:
-  //               print("Error ${e.response?.statusCode}: ${e.response?.data}");
-  //           }
-  //         } else {
-  //           print("Network Error: ${e.message}");
-  //         }
-  //         return handler.next(e);
-  //       },
-  //     ),
-  //   );
-  // }
-  //
-  // /// Checks if the endpoint does not require authentication.
-  // static bool _isUnauthenticatedEndpoint(String path) {
-  //   const unauthenticatedEndpoints = [
-  //     '/api/user/userregister',
-  //     '/api/user/userlogin',
-  //   ];
-  //   return unauthenticatedEndpoints.contains(path);
-  // }
-  //
-  // /// Handles Dio errors and returns a formatted response.
-  // static T? _handleError<T>(dynamic error, {String? context}) {
-  //   if (error is DioException) {
-  //     print("$context DioException: ${error.message}");
-  //     throw error;
-  //   } else {
-  //     print("$context Unexpected error: $error");
-  //     throw Exception("Unexpected error occurred");
-  //   }
-  //   return null;
-  // }
+
   static Future<bool> _refreshToken() async {
     try {
       final newToken = await AuthService.refreshToken();

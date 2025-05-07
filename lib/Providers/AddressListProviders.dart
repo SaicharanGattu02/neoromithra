@@ -14,7 +14,6 @@ class AddressListProvider with ChangeNotifier {
     _isLoading = true;
     _error = '';
     notifyListeners();
-
     try {
       final response = await Userapi.getAddressList();
       if (response != null && response.status == true) {

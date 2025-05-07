@@ -13,6 +13,7 @@ import '../Logic/Location/location_cubit.dart';
 import '../Logic/Location/location_state.dart';
 
 import '../services/Preferances.dart';
+import '../utils/Color_Constants.dart';
 import 'DetailsScreen.dart';
 
 class NewHomeScreen extends StatefulWidget {
@@ -381,7 +382,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                           padding: EdgeInsets.symmetric(
                               horizontal: 16, vertical: 18),
                           decoration: BoxDecoration(
-                            color: Color(0xff3EA4D2),
+                            color: primarycolor,
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Text(

@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../Components/CustomAppButton.dart';
 import '../Presentation/MainDashBoard.dart';
+import '../utils/Color_Constants.dart';
 
 class Resultscreen extends StatefulWidget {
   final Map<String, dynamic> resultData;
@@ -36,14 +37,14 @@ class _ResultscreenState extends State<Resultscreen> {
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontFamily: "Inter",
-            color: Color(0xff3EA4D2),
+            color: primarycolor,
             fontSize: 18,
           ),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xff3EA4D2)),
+          icon: const Icon(Icons.arrow_back, color: primarycolor),
           onPressed: () =>  context.pop(),
         ),
       ),

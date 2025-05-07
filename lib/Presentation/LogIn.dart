@@ -75,8 +75,8 @@ class _LogInState extends State<LogIn> {
                         context.pushReplacement('/main_dashBoard?initialIndex=${0}');
                       },
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: primary, // Button background color
-                          foregroundColor: primary, // Text color
+                          backgroundColor: primarycolor, // Button background color
+                          foregroundColor: primarycolor, // Text color
                           elevation: 0, // Shadow elevation
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(4),
@@ -165,7 +165,7 @@ class _LogInState extends State<LogIn> {
                             borderSide: BorderSide(width: 1, color: Colors.red),
                           ),
                           focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18.0),
+                            borderRadius: BorderRadius.circular(8.0),
                             borderSide: BorderSide(width: 1, color: Colors.red),
                           ),
 
@@ -270,55 +270,52 @@ class _LogInState extends State<LogIn> {
                       SizedBox(
                         height: 25,
                       ),
-                      InkWell(
-                        onTap: () {
-                          if (_formKey.currentState?.validate() ?? false) {
-                            login();
-                          }
-                        },
-                        child: Consumer<SignInProviders>(
-                          builder: (context, signIn, child) {
-                            return Container(
-                              width: width,
-                              height: 56,
-                              decoration: BoxDecoration(
-                                color: Color(0xff3EA4D2),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Center(
-                                child: signIn.isLoading
-                                    ? CircularProgressIndicator(
-                                        color: Color(0xFFFFFFFF),
-                                      )
-                                    : Row(
-                                        mainAxisSize: MainAxisSize
-                                            .min, // To keep the row centered
-                                        children: [
-                                          Center(
-                                            child: Text(
-                                              "Sign In",
-                                              style: TextStyle(
-                                                color: Color(0xFFFFFFFF),
-                                                fontFamily: "Inter",
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                              width:
-                                                  28), // Space between text and icon
-                                          Icon(
-                                            Icons
-                                                .arrow_forward, // Your preferred suffix icon
-                                            color: Colors.white,
-                                            size: 18,
-                                          ),
-                                        ],
-                                      ),
-                              ),
-                            );
+                      SizedBox(
+                        height: 48,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              login();
+                            }
                           },
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            backgroundColor: primarycolor,
+                            foregroundColor: Colors.white,
+                            minimumSize: Size(width, 56),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Consumer<SignInProviders>(
+                            builder: (context, signIn, child) {
+                              return signIn.isLoading
+                                  ? CircularProgressIndicator(
+                                color: Color(0xFFFFFFFF),
+                                strokeWidth: 1,
+                              )
+                                  : Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "Sign In",
+                                    style: TextStyle(
+                                      color: Color(0xFFFFFFFF),
+                                      fontFamily: "Inter",
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  SizedBox(width: 28),
+                                  Icon(
+                                    Icons.arrow_forward,
+                                    color: Colors.white,
+                                    size: 18,
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
                         ),
                       ),
                       SizedBox(

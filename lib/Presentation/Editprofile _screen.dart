@@ -6,6 +6,7 @@ import 'package:neuromithra/services/userapi.dart';
 import 'package:neuromithra/utils/CustomSnackBar.dart';
 import 'package:provider/provider.dart';
 import '../Providers/HomeProviders.dart';
+import '../utils/Color_Constants.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -236,12 +237,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: "Inter",
-                color: Color(0xff3EA4D2),
+                color: primarycolor,
                 fontSize: 18)),
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton.filled(
-          icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
+          icon: Icon(Icons.arrow_back, color: primarycolor), // Icon color
           onPressed: () => Navigator.pop(context),
           style: IconButton.styleFrom(
             backgroundColor: Color(0xFFECFAFA), // Filled color
@@ -476,7 +477,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         child: ElevatedButton(
           onPressed: isLoading ? null : () => _submitForm(context),
           style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFF3EA4D2), // Button Background Color
+            backgroundColor: primarycolor, // Button Background Color
             padding: EdgeInsets.symmetric(vertical: 10),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
