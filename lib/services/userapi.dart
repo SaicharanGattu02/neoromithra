@@ -881,7 +881,8 @@ class Userapi {
                 final prefs = await SharedPreferences.getInstance();
                 await prefs.clear();
                 Future.microtask(() {
-                  navigatorKey.currentState?.pushNamedAndRemoveUntil('/signin', (route) => false);
+                  navigatorKey.currentState
+                      ?.pushNamedAndRemoveUntil('/signin', (route) => false);
                 });
                 return;
               default:
@@ -896,8 +897,65 @@ class Userapi {
       ),
     );
   }
-
-
+  // static void setupInterceptors(GlobalKey<NavigatorState> navigatorKey) {
+  //   _dio.interceptors.add(
+  //     InterceptorsWrapper(
+  //       onRequest: (options, handler) async {
+  //         if (!_isUnauthenticatedEndpoint(options.path)) {
+  //           final accessToken = await AuthService.getAccessToken();
+  //           if (accessToken != null) {
+  //             options.headers["Authorization"] = "Bearer $accessToken";
+  //           }
+  //         }
+  //         return handler.next(options);
+  //       },
+  //       onResponse: (response, handler) {
+  //         return handler.next(response);
+  //       },
+  //       onError: (DioException e, handler) async {
+  //         if (e.response != null) {
+  //           switch (e.response?.statusCode) {
+  //             case 401:
+  //               print("Unauthorized: Navigating to SignIn");
+  //               final prefs = await SharedPreferences.getInstance();
+  //               await prefs.clear();
+  //               Future.microtask(() {
+  //                 navigatorKey.currentState?.pushNamedAndRemoveUntil(
+  //                     '/signin', (route) => false);
+  //               });
+  //               return handler.reject(e);
+  //             default:
+  //               print("Error ${e.response?.statusCode}: ${e.response?.data}");
+  //           }
+  //         } else {
+  //           print("Network Error: ${e.message}");
+  //         }
+  //         return handler.next(e);
+  //       },
+  //     ),
+  //   );
+  // }
+  //
+  // /// Checks if the endpoint does not require authentication.
+  // static bool _isUnauthenticatedEndpoint(String path) {
+  //   const unauthenticatedEndpoints = [
+  //     '/api/user/userregister',
+  //     '/api/user/userlogin',
+  //   ];
+  //   return unauthenticatedEndpoints.contains(path);
+  // }
+  //
+  // /// Handles Dio errors and returns a formatted response.
+  // static T? _handleError<T>(dynamic error, {String? context}) {
+  //   if (error is DioException) {
+  //     print("$context DioException: ${error.message}");
+  //     throw error;
+  //   } else {
+  //     print("$context Unexpected error: $error");
+  //     throw Exception("Unexpected error occurred");
+  //   }
+  //   return null;
+  // }
   static Future<bool> _refreshToken() async {
     try {
       final newToken = await AuthService.refreshToken();
@@ -912,7 +970,8 @@ class Userapi {
   }
 
   // Existing methods
-  static Future<Response> get(String path, {Map<String, dynamic>? queryParameters}) async {
+  static Future<Response> get(String path,
+      {Map<String, dynamic>? queryParameters}) async {
     try {
       print("called get method");
       return await _dio.get(path, queryParameters: queryParameters);
@@ -971,7 +1030,8 @@ class Userapi {
     }
   }
 
-  static Future<Map<String, List<AssessmentQuestion>>> fetchAdultQuestions() async {
+  static Future<Map<String, List<AssessmentQuestion>>>
+      fetchAdultQuestions() async {
     try {
       final response = await _dio.get("/api/list_of_questions_for_adults");
       if (response.statusCode == 200) {
@@ -1012,7 +1072,8 @@ class Userapi {
     }
   }
 
-  static Future<Map<String, List<AssessmentQuestion>>> fetchChildrenQuestions() async {
+  static Future<Map<String, List<AssessmentQuestion>>>
+      fetchChildrenQuestions() async {
     try {
       final response = await _dio.get("/api/list_of_questions");
       if (response.statusCode == 200) {
@@ -1081,7 +1142,7 @@ class Userapi {
         'payment_json': jsonEncode(orderData),
       });
       final response =
-      await _dio.post("/api/for_new_bookappointments", data: formData);
+          await _dio.post("/api/for_new_bookappointments", data: formData);
       if (response.statusCode == 200) {
         print("✅ Appointment Response: ${response.data}");
         return BookApointmentModel.fromJson(response.data);
@@ -1124,7 +1185,7 @@ class Userapi {
         'payment_json': jsonEncode(orderData),
       });
       final response =
-      await _dio.post("/api/for_exesting_bookappointments", data: formData);
+          await _dio.post("/api/for_exesting_bookappointments", data: formData);
       if (response.statusCode == 200) {
         print("✅ Existing Appointment Response: ${response.data}");
         return BookApointmentModel.fromJson(response.data);
@@ -1166,17 +1227,9 @@ class Userapi {
     }
   }
 
-  static Future<Map<String, dynamic>?> postLogin(
-      String mail, String password, String deviceToken) async {
+  static Future<Map<String, dynamic>?> postLogin(data) async {
     try {
-      final response = await _dio.post(
-        "/api/user/userlogin",
-        data: {
-          "email": mail,
-          "password": password,
-          "fcm_token": deviceToken,
-        },
-      );
+      final response = await _dio.post("/api/user/userlogin", data: data);
       if (response.statusCode == 200) {
         print("PostLogin Status: ${response.data}");
         return {
@@ -1346,7 +1399,7 @@ class Userapi {
         ),
       });
       final response =
-      await _dio.post("/api/update_profile_image", data: formData);
+          await _dio.post("/api/update_profile_image", data: formData);
       if (response.statusCode == 200) {
         // Assuming response matches LoginModel structure
         return LoginModel.fromJson(response.data);
@@ -1359,20 +1412,9 @@ class Userapi {
     }
   }
 
-  static Future<AddAddressModel?> addAddressApi(String flatNo, String street,
-      String area, String landmark, String pincode, int typeOfAddress) async {
+  static Future<AddAddressModel?> addAddressApi(Map<String,dynamic>data) async {
     try {
-      final response = await _dio.post(
-        "/api/add_user_address",
-        data: {
-          "Flat_no": flatNo,
-          "street": street,
-          "area": area,
-          "landmark": landmark,
-          "pincode": pincode,
-          "type_of_address": typeOfAddress,
-        },
-      );
+      final response = await _dio.post("/api/add_user_address",data: data);
       if (response.statusCode == 200) {
         print("AddAddressApi Response: ${response.data}");
         return AddAddressModel.fromJson(response.data);
@@ -1386,26 +1428,9 @@ class Userapi {
     }
   }
 
-  static Future<AddAddressModel?> editAddressApi(
-      String flatNo,
-      String street,
-      String area,
-      String landmark,
-      String pincode,
-      int typeOfAddress,
-      String addressId) async {
+  static Future<AddAddressModel?> editAddressApi(Map<String,dynamic>data, String addressId) async {
     try {
-      final response = await _dio.post(
-        "/api/update_user_address/$addressId",
-        data: {
-          "Flat_no": flatNo,
-          "street": street,
-          "area": area,
-          "landmark": landmark,
-          "pincode": pincode,
-          "type_of_address": typeOfAddress,
-        },
-      );
+      final response = await _dio.post("/api/update_user_address/$addressId",data: data);
       if (response.statusCode == 200) {
         print("EditAddressApi Response: ${response.data}");
         return AddAddressModel.fromJson(response.data);
@@ -1455,7 +1480,7 @@ class Userapi {
       String pageSource) async {
     try {
       final response =
-      await _dio.get("/api/check_previous_bookings/$pageSource");
+          await _dio.get("/api/check_previous_bookings/$pageSource");
       if (response.statusCode == 200) {
         print("getpreviousbookings response: ${response.data}");
         return PreviousBookingModel.fromJson(response.data);
@@ -1473,7 +1498,7 @@ class Userapi {
       String id, String pageSource) async {
     try {
       final response =
-      await _dio.get("/api/get_therapy_traking/$id/$pageSource");
+          await _dio.get("/api/get_therapy_traking/$id/$pageSource");
       if (response.statusCode == 200) {
         print("getbehaviourallist response: ${response.data}");
         return BehaviouralTrackingModel.fromJson(response.data);

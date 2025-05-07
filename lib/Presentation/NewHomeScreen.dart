@@ -2,20 +2,18 @@ import 'package:bounce/bounce.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
-
-import 'package:neuromithra/services/Preferances.dart';
-import 'package:neuromithra/services/other_services.dart';
+import 'package:neuromithra/Providers/HomeProviders.dart';
 import 'package:neuromithra/services/userapi.dart';
-import 'package:neuromithra/utils/CustomSnackBar.dart';
 import 'package:neuromithra/utils/Shimmers.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../Logic/Location/location_cubit.dart';
 import '../Logic/Location/location_state.dart';
-import '../Model/ProfileDetailsModel.dart';
+
+import '../services/Preferances.dart';
 import 'DetailsScreen.dart';
-import 'PaymentScreen.dart';
 
 class NewHomeScreen extends StatefulWidget {
   const NewHomeScreen({super.key});
@@ -25,61 +23,20 @@ class NewHomeScreen extends StatefulWidget {
 }
 
 class _NewHomeScreenState extends State<NewHomeScreen> {
+
   @override
   void initState() {
-    getData();
+    // _initialize();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<HomeProviders>(context, listen: false).getData();
+    });
     super.initState();
   }
 
-  bool isLoading = false;
-
-  Future<void> getData() async {
-    setState(() {
-      isLoading = true;
-    });
-    await Future.wait([
-      getProfileDetails(),
-      getQuotes(),
-    ]);
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  String quote = '';
-  Future<void> getQuotes() async {
-    final res = await Userapi.getQuotes();
-    if (res?.quote != null) {
-      setState(() {
-        quote = res?.quote ?? '';
-      });
-    }
-  }
-
-  Future<void> postHealthFeedBack(String msg) async {
-    final res = await Userapi.postHealthFeedback(msg);
-    if (res?.status == true) {
-      getProfileDetails();
-      CustomSnackBar.show(context, res?.message ?? "Submitted Successfully");
-    } else {
-      CustomSnackBar.show(context, res?.message ?? "");
-    }
-  }
-
-  User user_data = User();
-
-  bool status = false;
-  Future<void> getProfileDetails() async {
-    String user_id = await PreferenceService().getString('user_id') ?? "";
-    final Response = await Userapi.getProfileDetails(user_id);
-    if (Response != null) {
-      setState(() {
-        user_data = Response.user ?? User();
-        PreferenceService().saveString("user_mobile", user_data.phone.toString()??"");
-        status = Response.healthFeedback?.status ?? false;
-      });
-    }
-  }
+  // String token = "";
+  // Future<void> _initialize() async {
+  //   token = await PreferenceService().getString('token') ?? "";
+  // }
 
   final List<Map<String, dynamic>> therapies = [
     {
@@ -127,9 +84,10 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     {
       'image': 'assets/Therephy/physical_theraphy.jpeg',
       'text': 'Physio Therapy',
-      'subtitle':'Restoring Strength, Mobility, and Confidence Through Expert Physio Therapy.',
+      'subtitle':
+          'Restoring Strength, Mobility, and Confidence Through Expert Physio Therapy.',
       'description':
-      'Physio Therapy is a therapeutic approach focused on enhancing physical function, strength, and mobility through various techniques and exercises. This therapy aims to address and treat musculoskeletal, neurological, and developmental issues that impact an individual’s ability to perform daily activities and enjoy a fulfilling life.',
+          'Physio Therapy is a therapeutic approach focused on enhancing physical function, strength, and mobility through various techniques and exercises. This therapy aims to address and treat musculoskeletal, neurological, and developmental issues that impact an individual’s ability to perform daily activities and enjoy a fulfilling life.',
       'keyAreas': [
         'Improved Mobility: Enhances range of motion and movement abilities, allowing for greater independence in daily activities.',
         'Increased Strength: Builds muscle strength and endurance to support overall physical health and functionality.',
@@ -175,13 +133,14 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     {
       'image': 'assets/Counciling/behavioral_counciling.jpeg',
       'text': 'Behavioral Counselling',
-      'subtitle':'Empowering Positive Change Through Personalized Behavioral Counselling',
+      'subtitle':
+          'Empowering Positive Change Through Personalized Behavioral Counselling',
       'heading1': 'Behavioral Counseling Services at NeuroMitra',
       'description1':
-      'At NeuroMitra, we are committed to helping individuals understand and modify behaviors that may be affecting their lives. Our Behavioral Counseling Services are designed to support clients in identifying negative behavior patterns, developing positive coping strategies, and achieving lasting change.',
+          'At NeuroMitra, we are committed to helping individuals understand and modify behaviors that may be affecting their lives. Our Behavioral Counseling Services are designed to support clients in identifying negative behavior patterns, developing positive coping strategies, and achieving lasting change.',
       'heading2': 'What is Behavioral Counseling?',
       'description2':
-      'Behavioral Counseling focuses on understanding the connection between thoughts, feelings, and behaviors. It involves working with a trained counselor to identify unhelpful behaviors, understand their underlying causes, and develop strategies to replace them with more positive actions. This type of counseling is particularly effective for individuals dealing with issues such as anxiety, depression, stress, anger management, and behavioral disorders.',
+          'Behavioral Counseling focuses on understanding the connection between thoughts, feelings, and behaviors. It involves working with a trained counselor to identify unhelpful behaviors, understand their underlying causes, and develop strategies to replace them with more positive actions. This type of counseling is particularly effective for individuals dealing with issues such as anxiety, depression, stress, anger management, and behavioral disorders.',
       'keyAreas': [
         'Personalized Treatment Plans: We tailor our counseling sessions to address the specific behaviors and challenges you’re facing, ensuring that you receive targeted and effective support.',
         'Evidence-Based Techniques: Our counselors use proven therapeutic approaches, such as Cognitive Behavioral Therapy (CBT), to help you develop healthier behaviors and thought patterns.',
@@ -249,7 +208,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => context.pop(),
               child: Text("No",
                   style: TextStyle(
                     color: Colors.grey[700],
@@ -260,7 +219,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
             ),
             ElevatedButton.icon(
               onPressed: () {
-                Navigator.pop(context);
+                context.pop();
                 _makeSOSCall(loc);
               },
               icon: Icon(Icons.call, color: Colors.white),
@@ -300,41 +259,14 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     }
   }
 
-  // void launchWhatsApp() async {
-  //   String url = "https://wa.me/+91 8885320115}"; // WhatsApp API URL
-  //   if (await canLaunch(url)) {
-  //     await launch(url);
-  //   } else {
-  //     throw "Could not launch $url";
-  //   }
-  // }
-
   void launchWhatsApp() async {
-  String phoneNumber = '+918885320115'; // WhatsApp number
-  String message = 'Hello!'; // Default message
-  
-  // For Android and iOS, we'll use the WhatsApp scheme to open the app directly.
-  String androidUrl = "whatsapp://send?phone=$phoneNumber&text=$message";
-  String iosUrl = "https://wa.me/$phoneNumber?text=$message";
-  
-  // Check if we are on Android or iOS to launch the appropriate URL scheme
-  if (Theme.of(context).platform == TargetPlatform.iOS) {
-    if (await canLaunch(iosUrl)) {
-      await launch(iosUrl);
+    String url = "https://wa.me/+91 8885320115}"; // WhatsApp API URL
+    if (await canLaunch(url)) {
+      await launch(url);
     } else {
-      throw "Could not launch WhatsApp on iOS.";
+      throw "Could not launch $url";
     }
-  } else if (Theme.of(context).platform == TargetPlatform.android) {
-    if (await canLaunch(androidUrl)) {
-      await launch(androidUrl);
-    } else {
-      throw "Could not launch WhatsApp on Android.";
-    }
-  } else {
-    throw "Platform not supported.";
   }
-}
-
 
   // void payment() async {
   //   try {
@@ -351,15 +283,6 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
   //   }
   // }
 
-  void _launchURL(String url) async {
-    Uri uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } else {
-      debugPrint('Could not launch $url');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     int hour = DateTime.now().hour;
@@ -375,527 +298,547 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
 
     var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width;
-    return isLoading
-        ? _shimmers(context)
-        : Scaffold(
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              title: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Image.asset(
-                      'assets/neuromitralogo.png',
-                      fit: BoxFit.contain,
-                      scale: 10,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+    return Consumer<HomeProviders>(
+      builder: (context, homeProvider, child) {
+        return homeProvider.isLoading
+            ? _shimmers(context)
+            : Scaffold(
+                appBar: AppBar(
+                  automaticallyImplyLeading: false,
+                  title: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Row(
                       children: [
-                        Text(
-                          greeting,
-                          style: TextStyle(
-                              color: Color(0xff371B34),
-                              fontSize: 14,
-                              fontFamily: 'Epi'),
+                        Image.asset(
+                          'assets/neuromitralogo.png',
+                          fit: BoxFit.contain,
+                          scale: 10,
                         ),
-                        Text(
-                          '${user_data.name?[0].toUpperCase()}${user_data.name?.substring(1)}',
-                          style: TextStyle(
-                            color: Color(0xff371B34),
-                            fontSize: 14,
-                            fontFamily: 'Epi',
-                            fontWeight: FontWeight.w600,
-                          ),
-                        )
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              greeting,
+                              style: TextStyle(
+                                  color: Color(0xff371B34),
+                                  fontSize: 14,
+                                  fontFamily: 'Epi'),
+                            ),
+                            // if (token.isNotEmpty) ...[
+                              Text(
+                                homeProvider.userData.name != null &&
+                                        homeProvider.userData.name!.isNotEmpty
+                                    ? '${homeProvider.userData.name![0].toUpperCase()}${homeProvider.userData.name!.substring(1)}'
+                                    : 'Unknown',
+                                style: TextStyle(
+                                  color: Color(0xff371B34),
+                                  fontSize: 14,
+                                  fontFamily: 'Epi',
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              )
+                            // ]
+                          ],
+                        ),
                       ],
                     ),
+                  ),
+                  actions: [
+                    BlocBuilder<LocationCubit, LocationState>(
+                        builder: (context, state) {
+                      String loc = '';
+                      if (state is LocationLoaded) {
+                        loc = state.locationName;
+                      }
+                      return InkResponse(
+                        onTap: () {
+                          _showSOSConfirmationDialog(context, loc);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Lottie.asset(
+                            'assets/animations/sos.json',
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      );
+                    }),
                   ],
                 ),
-              ),
-              actions: [
-                // BlocConsumer<LocationCubit, LocationState>(
-                //   listener: (context, state) {
-                //     if (state is LocationPermissionDenied) {
-                //       showLocationBottomSheet(context);
-                //     } else if (state is LocationLoaded) {
-                //       // Now that we have the location, show the confirmation dialog
-                //       _showSOSConfirmationDialog(context, state.locationName);
-                //     }
-                //   },
-                //   builder: (context, state) {
-                //     return InkResponse(
-                //       onTap: () {
-                //         context.read<LocationCubit>().checkLocationPermission();
-                //       },
-                //       child: Padding(
-                //         padding: const EdgeInsets.all(5.0),
-                //         child: Lottie.asset(
-                //           'assets/animations/sos.json',
-                //           width: 50,
-                //           height: 50,
-                //           fit: BoxFit.contain,
-                //         ),
-                //       ),
-                //     );
-                //   },
-                // ),
-              ],
-            ),
-            body: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(bottom: 18),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-                      decoration: BoxDecoration(
-                        color: Color(0xff3EA4D2),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Text(
-                        textAlign: TextAlign.center,
-                        "${quote}",
-                        style: TextStyle(
-                            color: Color(0xffFBFBFB),
+                body: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(bottom: 18),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 18),
+                          decoration: BoxDecoration(
+                            color: Color(0xff3EA4D2),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Text(
+                            textAlign: TextAlign.center,
+                            "${homeProvider.quote ?? ''}",
+                            style: TextStyle(
+                                color: Color(0xffFBFBFB),
+                                fontFamily: 'Epi',
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14),
+                          ),
+                        ),
+                        // if (token.isNotEmpty) ...[
+                          if (homeProvider.status == false) ...[
+                            Text(
+                              'How are you feeling today ?',
+                              style: TextStyle(
+                                  color: Color(0xffF371B34),
+                                  fontFamily: 'Epi',
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16),
+                            ),
+                            SizedBox(
+                              height: 12,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  spacing: 10,
+                                  children: [
+                                    Bounce(
+                                      onTap: () {
+                                        homeProvider.postHealthFeedBack(
+                                            'Happy', context);
+                                      },
+                                      duration: Duration(milliseconds: 100),
+                                      child: Container(
+                                        width: 60,
+                                        height: 60,
+                                        padding: EdgeInsets.all(14),
+                                        decoration: BoxDecoration(
+                                            color: Color(0xffEF5DA8),
+                                            borderRadius:
+                                                BorderRadius.circular(16)),
+                                        child: Center(
+                                          child:
+                                              Image.asset('assets/smile.png'),
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      'Happy',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Color(0xff828282),
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: 'Epi',
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  spacing: 10,
+                                  children: [
+                                    Bounce(
+                                      onTap: () {
+                                        homeProvider.postHealthFeedBack(
+                                            'Calm', context);
+                                      },
+                                      child: Container(
+                                        width: 60,
+                                        height: 60,
+                                        padding: EdgeInsets.all(14),
+                                        decoration: BoxDecoration(
+                                            color: Color(0xffAEAFF7),
+                                            borderRadius:
+                                                BorderRadius.circular(16)),
+                                        child: Center(
+                                          child: Image.asset('assets/calm.png'),
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      'Calm',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Color(0xff828282),
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: 'Epi',
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  spacing: 10,
+                                  children: [
+                                    Bounce(
+                                      onTap: () {
+                                        homeProvider.postHealthFeedBack(
+                                            'Angry', context);
+                                      },
+                                      child: Container(
+                                        width: 60,
+                                        height: 60,
+                                        padding: EdgeInsets.all(14),
+                                        decoration: BoxDecoration(
+                                            color: Color(0xffEA6D33),
+                                            borderRadius:
+                                                BorderRadius.circular(16)),
+                                        child: Center(
+                                          child:
+                                              Image.asset('assets/angry.png'),
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      'Angry',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Color(0xff828282),
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: 'Epi',
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  spacing: 10,
+                                  children: [
+                                    Bounce(
+                                      onTap: () {
+                                        homeProvider.postHealthFeedBack(
+                                            'Sad', context);
+                                      },
+                                      child: Container(
+                                        width: 60,
+                                        height: 60,
+                                        padding: EdgeInsets.all(14),
+                                        decoration: BoxDecoration(
+                                            color: Color(0xffC3F2A6),
+                                            borderRadius:
+                                                BorderRadius.circular(16)),
+                                        child: Center(
+                                          child:
+                                              Image.asset('assets/smile.png'),
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      'Sad',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Color(0xff828282),
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: 'Epi',
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                          ],
+                        // ],
+                        Text(
+                          'Therapies',
+                          style: TextStyle(
+                            color: Color(0xff0D0D0D),
                             fontFamily: 'Epi',
                             fontWeight: FontWeight.w400,
-                            fontSize: 14),
-                      ),
-                    ),
-                    if (status == false) ...[
-                      Text(
-                        'How are you feeling today ?',
-                        style: TextStyle(
-                            color: Color(0xffF371B34),
-                            fontFamily: 'Epi',
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16),
-                      ),
-                      SizedBox(
-                        height: 12,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            spacing: 10,
-                            children: [
-                              Bounce(
-                                scaleFactor: 1.5,
-                                onTap: () {
-                                  postHealthFeedBack('Happy');
-                                },
-                                duration: Duration(milliseconds: 100),
-                                child: Container(
-                                  width: 60,
-                                  height: 60,
-                                  padding: EdgeInsets.all(14),
-                                  decoration: BoxDecoration(
-                                      color: Color(0xffEF5DA8),
-                                      borderRadius: BorderRadius.circular(16)),
-                                  child: Center(
-                                    child: Image.asset('assets/smile.png'),
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                'Happy',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Color(0xff828282),
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: 'Epi',
-                                ),
-                              )
-                            ],
+                            fontSize: 24,
                           ),
-                          Column(
-                            spacing: 10,
-                            children: [
-                              Bounce(
-                                scaleFactor: 1.5,
-                                onTap: () {
-                                  postHealthFeedBack('Calm');
-                                },
-                                child: Container(
-                                  width: 60,
-                                  height: 60,
-                                  padding: EdgeInsets.all(14),
-                                  decoration: BoxDecoration(
-                                      color: Color(0xffAEAFF7),
-                                      borderRadius: BorderRadius.circular(16)),
-                                  child: Center(
-                                    child: Image.asset('assets/calm.png'),
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                'Calm',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Color(0xff828282),
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: 'Epi',
-                                ),
-                              )
-                            ],
-                          ),
-                          Column(
-                            spacing: 10,
-                            children: [
-                              Bounce(
-                                scaleFactor: 1.5,
-                                onTap: () {
-                                  postHealthFeedBack('Angry');
-                                },
-                                child: Container(
-                                  width: 60,
-                                  height: 60,
-                                  padding: EdgeInsets.all(14),
-                                  decoration: BoxDecoration(
-                                      color: Color(0xffEA6D33),
-                                      borderRadius: BorderRadius.circular(16)),
-                                  child: Center(
-                                    child: Image.asset('assets/angry.png'),
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                'Angry',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Color(0xff828282),
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: 'Epi',
-                                ),
-                              )
-                            ],
-                          ),
-                          Column(
-                            spacing: 10,
-                            children: [
-                              Bounce(
-                                scaleFactor: 1.5,
-                                onTap: () {
-                                  postHealthFeedBack('Sad');
-                                },
-                                child: Container(
-                                  width: 60,
-                                  height: 60,
-                                  padding: EdgeInsets.all(14),
-                                  decoration: BoxDecoration(
-                                      color: Color(0xffC3F2A6),
-                                      borderRadius: BorderRadius.circular(16)),
-                                  child: Center(
-                                    child: Image.asset('assets/smile.png'),
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                'Sad',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Color(0xff828282),
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: 'Epi',
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                    ],
-                    Text(
-                      'Therapies',
-                      style: TextStyle(
-                        color: Color(0xff0D0D0D),
-                        fontFamily: 'Epi',
-                        fontWeight: FontWeight.w400,
-                        fontSize: 24,
-                      ),
-                    ),
-                    CarouselSlider(
-                      options: CarouselOptions(
-                        height: h * 0.25,
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            // currentIndex = index;
-                          });
-                        },
-                        enableInfiniteScroll: true,
-                        viewportFraction: 1,
-                        enlargeCenterPage: false,
-                        autoPlay: true,
-                        scrollDirection: Axis.horizontal,
-                        pauseAutoPlayOnTouch: true,
-                        aspectRatio: 1,
-                      ),
-                      items: therapies.map((item) {
-                        return InkResponse(
-                            onTap: () {
-                              Navigator.of(context).push(PageRouteBuilder(
-                                pageBuilder:
-                                    (context, animation, secondaryAnimation) {
-                                  return DetailsScreen(
-                                    assetImage: item['image'] ??
-                                        'assets/default_image.png', // Fallback for image
-                                    title: item['text'] ??
-                                        'No Title', // Fallback for text
-                                    descHeading1:
-                                        "", // You can add your own heading here
-                                    description1: item['description'] ??
-                                        'No Description', // Fallback for description
-                                    descHeading2: "", // Fallback for heading
-                                    description2:
-                                        "", // Fallback for description
-                                    keyAreas: List<String>.from(
-                                        item['keyAreas'] ??
-                                            []), // Fallback for keyAreas
-                                    benefits: List<String>.from(
-                                        item['benefits'] ??
-                                            []), // Fallback for benefits
-                                  );
-                                },
-                                transitionsBuilder: (context, animation,
-                                    secondaryAnimation, child) {
-                                  const begin = Offset(1.0, 0.0);
-                                  const end = Offset.zero;
-                                  const curve = Curves.easeInOut;
-                                  var tween = Tween(begin: begin, end: end)
-                                      .chain(CurveTween(curve: curve));
-                                  var offsetAnimation = animation.drive(tween);
-                                  return SlideTransition(
-                                      position: offsetAnimation, child: child);
-                                },
-                              ));
+                        ),
+                        CarouselSlider(
+                          options: CarouselOptions(
+                            height: h * 0.25,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                // currentIndex = index;
+                              });
                             },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 8),
-                              child: Stack(
-                                children: [
-                                  Image.asset(
-                                    'assets/theraphybg.png',
-                                    width: w,
-                                    fit: BoxFit.fill,
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 20),
-                                    width: w * 0.5,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          item['text'] ?? 'No Title',
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              color: Color(0xffffffff),
-                                              fontWeight: FontWeight.w800,
-                                              fontFamily: 'Epi',
-                                              fontSize: 16),
-                                        ),
-                                        Text(
-                                          textAlign: TextAlign.start,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          item['subtitle'] ??
-                                              'No Subtitle', // Fallback for subtitle
-                                          style: TextStyle(
-                                              color: Color(0xffDEDEDE),
-                                              fontWeight: FontWeight.w500,
-                                              fontFamily: 'Epi',
-                                              fontSize: 10),
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Row(
-                                          spacing: 5,
+                            enableInfiniteScroll: true,
+                            viewportFraction: 1,
+                            enlargeCenterPage: false,
+                            autoPlay: true,
+                            scrollDirection: Axis.horizontal,
+                            pauseAutoPlayOnTouch: true,
+                            aspectRatio: 1,
+                          ),
+                          items: therapies.map((item) {
+                            return InkResponse(
+                                onTap: () {
+                                  Navigator.of(context).push(PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                        secondaryAnimation) {
+                                      return DetailsScreen(
+                                        assetImage: item['image'] ??
+                                            'assets/default_image.png', // Fallback for image
+                                        title: item['text'] ??
+                                            'No Title', // Fallback for text
+                                        descHeading1:
+                                            "", // You can add your own heading here
+                                        description1: item['description'] ??
+                                            'No Description', // Fallback for description
+                                        descHeading2:
+                                            "", // Fallback for heading
+                                        description2:
+                                            "", // Fallback for description
+                                        keyAreas: List<String>.from(
+                                            item['keyAreas'] ??
+                                                []), // Fallback for keyAreas
+                                        benefits: List<String>.from(
+                                            item['benefits'] ??
+                                                []), // Fallback for benefits
+                                      );
+                                    },
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      const begin = Offset(1.0, 0.0);
+                                      const end = Offset.zero;
+                                      const curve = Curves.easeInOut;
+                                      var tween = Tween(begin: begin, end: end)
+                                          .chain(CurveTween(curve: curve));
+                                      var offsetAnimation =
+                                          animation.drive(tween);
+                                      return SlideTransition(
+                                          position: offsetAnimation,
+                                          child: child);
+                                    },
+                                  ));
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 8),
+                                  child: Stack(
+                                    children: [
+                                      Image.asset(
+                                        'assets/theraphybg.png',
+                                        width: w,
+                                        fit: BoxFit.fill,
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 16, vertical: 20),
+                                        width: w * 0.5,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              'Consult Now',
+                                              item['text'] ?? 'No Title',
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
                                                   color: Color(0xffffffff),
                                                   fontWeight: FontWeight.w800,
                                                   fontFamily: 'Epi',
                                                   fontSize: 16),
                                             ),
-                                            Icon(
-                                              Icons.arrow_forward,
-                                              color: Color(0xffffffff),
-                                              size: 20,
-                                            )
+                                            Text(
+                                              textAlign: TextAlign.start,
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              item['subtitle'] ??
+                                                  'No Subtitle', // Fallback for subtitle
+                                              style: TextStyle(
+                                                  color: Color(0xffDEDEDE),
+                                                  fontWeight: FontWeight.w500,
+                                                  fontFamily: 'Epi',
+                                                  fontSize: 10),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Row(
+                                              spacing: 5,
+                                              children: [
+                                                Text(
+                                                  'Consult Now',
+                                                  style: TextStyle(
+                                                      color: Color(0xffffffff),
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                      fontFamily: 'Epi',
+                                                      fontSize: 16),
+                                                ),
+                                                Icon(
+                                                  Icons.arrow_forward,
+                                                  color: Color(0xffffffff),
+                                                  size: 20,
+                                                )
+                                              ],
+                                            ),
                                           ],
                                         ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ));
-                      }).toList(),
-                    ),
-                    Text(
-                      'Counselling',
-                      style: TextStyle(
-                        color: Color(0xff0D0D0D),
-                        fontFamily: 'Epi',
-                        fontWeight: FontWeight.w400,
-                        fontSize: 24,
-                      ),
-                    ),
-                    CarouselSlider(
-                      options: CarouselOptions(
-                        height: h * 0.25,
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            // currentIndex = index;
-                          });
-                        },
-                        enableInfiniteScroll: true,
-                        viewportFraction: 1,
-                        enlargeCenterPage: false,
-                        autoPlay: true,
-                        scrollDirection: Axis.horizontal,
-                        pauseAutoPlayOnTouch: true,
-                        aspectRatio: 1,
-                      ),
-                      items: counsellings.map((item) {
-                        return InkResponse(
-                            onTap: () {
-                              Navigator.of(context).push(PageRouteBuilder(
-                                pageBuilder:
-                                    (context, animation, secondaryAnimation) {
-                                  return DetailsScreen(
-                                    assetImage: item['image'] ??
-                                        'assets/default_image.png', // Fallback for image
-                                    title: item['text'] ??
-                                        'No Title', // Fallback for text
-                                    descHeading1: item['heading1'] ??
-                                        'No Heading', // Fallback for heading
-                                    description1: item['description1'] ??
-                                        'No Description', // Fallback for description
-                                    descHeading2: item['heading2'] ??
-                                        'No Heading', // Fallback for heading
-                                    description2: item['description2'] ??
-                                        'No Description', // Fallback for description
-                                    keyAreas: List<String>.from(
-                                        item['keyAreas'] ??
-                                            []), // Handle null with empty list
-                                    benefits: List<String>.from(
-                                        item['benefits'] ??
-                                            []), // Handle null with empty list
-                                  );
-                                },
-                                transitionsBuilder: (context, animation,
-                                    secondaryAnimation, child) {
-                                  const begin = Offset(1.0, 0.0);
-                                  const end = Offset.zero;
-                                  const curve = Curves.easeInOut;
-                                  var tween = Tween(begin: begin, end: end)
-                                      .chain(CurveTween(curve: curve));
-                                  var offsetAnimation = animation.drive(tween);
-                                  return SlideTransition(
-                                      position: offsetAnimation, child: child);
-                                },
-                              ));
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 8),
-                              child: Stack(
-                                children: [
-                                  Image.asset(
-                                    'assets/councilingbg.png',
-                                    width: w,
-                                    fit: BoxFit.fill,
+                                      )
+                                    ],
                                   ),
-                                  Container(
-                                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                                    width: w * 0.55,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          item['text'] ?? 'No Title',
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              color: Color(0xff000000),
-                                              fontWeight: FontWeight.w800,
-                                              fontFamily: 'Epi',
-                                              fontSize: 16),
-                                        ),
-                                        Text(
-                                          textAlign: TextAlign.start,
-                                          item['subtitle'] ?? 'No Subtitle',
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              color: Color(0xff000000),
-                                              fontWeight: FontWeight.w500,
-                                              fontFamily: 'Epi',
-                                              fontSize: 10),
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Row(
-                                          spacing: 5,
+                                ));
+                          }).toList(),
+                        ),
+                        Text(
+                          'Counselling',
+                          style: TextStyle(
+                            color: Color(0xff0D0D0D),
+                            fontFamily: 'Epi',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 24,
+                          ),
+                        ),
+                        CarouselSlider(
+                          options: CarouselOptions(
+                            height: h * 0.25,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                // currentIndex = index;
+                              });
+                            },
+                            enableInfiniteScroll: true,
+                            viewportFraction: 1,
+                            enlargeCenterPage: false,
+                            autoPlay: true,
+                            scrollDirection: Axis.horizontal,
+                            pauseAutoPlayOnTouch: true,
+                            aspectRatio: 1,
+                          ),
+                          items: counsellings.map((item) {
+                            return InkResponse(
+                                onTap: () {
+                                  Navigator.of(context).push(PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                        secondaryAnimation) {
+                                      return DetailsScreen(
+                                        assetImage: item['image'] ??
+                                            'assets/default_image.png', // Fallback for image
+                                        title: item['text'] ??
+                                            'No Title', // Fallback for text
+                                        descHeading1: item['heading1'] ??
+                                            'No Heading', // Fallback for heading
+                                        description1: item['description1'] ??
+                                            'No Description', // Fallback for description
+                                        descHeading2: item['heading2'] ??
+                                            'No Heading', // Fallback for heading
+                                        description2: item['description2'] ??
+                                            'No Description', // Fallback for description
+                                        keyAreas: List<String>.from(item[
+                                                'keyAreas'] ??
+                                            []), // Handle null with empty list
+                                        benefits: List<String>.from(item[
+                                                'benefits'] ??
+                                            []), // Handle null with empty list
+                                      );
+                                    },
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      const begin = Offset(1.0, 0.0);
+                                      const end = Offset.zero;
+                                      const curve = Curves.easeInOut;
+                                      var tween = Tween(begin: begin, end: end)
+                                          .chain(CurveTween(curve: curve));
+                                      var offsetAnimation =
+                                          animation.drive(tween);
+                                      return SlideTransition(
+                                          position: offsetAnimation,
+                                          child: child);
+                                    },
+                                  ));
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 8),
+                                  child: Stack(
+                                    children: [
+                                      Image.asset(
+                                        'assets/councilingbg.png',
+                                        width: w,
+                                        fit: BoxFit.fill,
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 16, vertical: 20),
+                                        width: w * 0.55,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              'Consult Now',
+                                              item['text'] ?? 'No Title',
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
-                                                  color: Color(0xff3F414E),
+                                                  color: Color(0xff000000),
                                                   fontWeight: FontWeight.w800,
                                                   fontFamily: 'Epi',
                                                   fontSize: 16),
                                             ),
-                                            Icon(
-                                              Icons.arrow_forward,
-                                              color: Color(0xff3F414E),
-                                              size: 20,
-                                            )
+                                            Text(
+                                              textAlign: TextAlign.start,
+                                              item['subtitle'] ?? 'No Subtitle',
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                  color: Color(0xff000000),
+                                                  fontWeight: FontWeight.w500,
+                                                  fontFamily: 'Epi',
+                                                  fontSize: 10),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Row(
+                                              spacing: 5,
+                                              children: [
+                                                Text(
+                                                  'Consult Now',
+                                                  style: TextStyle(
+                                                      color: Color(0xff3F414E),
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                      fontFamily: 'Epi',
+                                                      fontSize: 16),
+                                                ),
+                                                Icon(
+                                                  Icons.arrow_forward,
+                                                  color: Color(0xff3F414E),
+                                                  size: 20,
+                                                )
+                                              ],
+                                            ),
                                           ],
                                         ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ));
-                      }).toList(),
+                                      )
+                                    ],
+                                  ),
+                                ));
+                          }).toList(),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-            floatingActionButton: FloatingActionButton(
-              shape: CircleBorder(),
-              elevation: 2, // Adds shadow
-              onPressed: () {
-                launchWhatsApp();
-                // // payment();
-                // Navigator.push(context, MaterialPageRoute(builder: (context)=> PaymentScreen()));
-              },
-              backgroundColor: Colors.blue,
-              child: Image.asset("assets/whatsapp.png"),
-            ),
-          );
+                floatingActionButton: FloatingActionButton(
+                  shape: CircleBorder(),
+                  elevation: 2, // Adds shadow
+                  onPressed: () {
+                    launchWhatsApp();
+                    // // payment();
+                    // Navigator.push(context, MaterialPageRoute(builder: (context)=> PaymentScreen()));
+                  },
+                  backgroundColor: Colors.blue,
+                  child: Image.asset("assets/whatsapp.png"),
+                ),
+              );
+      },
+    );
   }
 
   Widget _shimmers(BuildContext context) {
@@ -1088,131 +1031,4 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
       ],
     );
   }
-
-  // void showLocationBottomSheet(BuildContext context) {
-  //   showModalBottomSheet(
-  //     context: context,
-  //     isDismissible: false,
-  //     enableDrag: false,
-  //     isScrollControlled: true, // Allows the bottom sheet to adjust to content size
-  //     shape: const RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
-  //     ),
-  //     builder: (BuildContext bottomSheetContext) {
-  //       return BlocConsumer<LocationCubit, LocationState>(
-  //         listener: (context, state) {
-  //           if (state is LocationLoaded) {
-  //             print('Location Loaded');
-  //             Navigator.pop(bottomSheetContext);
-  //           }
-  //         },
-  //         builder: (context, state) {
-  //           bool isLoading = state is LocationLoading;
-  //           return WillPopScope(
-  //             onWillPop: () async => !isLoading,
-  //             child: SafeArea(
-  //               child: ConstrainedBox(
-  //                 constraints: BoxConstraints(
-  //                   maxHeight: MediaQuery.of(context).size.height * 0.5, // Limit height
-  //                 ),
-  //                 child: Container(
-  //                   padding: const EdgeInsets.all(20.0),
-  //                   decoration: BoxDecoration(
-  //                     color: Theme.of(context).scaffoldBackgroundColor,
-  //                     borderRadius: const BorderRadius.vertical(top: Radius.circular(16.0)),
-  //                   ),
-  //                   child: Column(
-  //                     mainAxisSize: MainAxisSize.min,
-  //                     crossAxisAlignment: CrossAxisAlignment.start,
-  //                     children: [
-  //                       // Header with Icon and Title
-  //                       Row(
-  //                         children: [
-  //                           Container(
-  //                             padding: const EdgeInsets.all(8.0),
-  //                             decoration: BoxDecoration(
-  //                               color: Theme.of(context).primaryColor.withOpacity(0.1),
-  //                               shape: BoxShape.circle,
-  //                             ),
-  //                             child: Icon(
-  //                               Icons.gps_fixed_sharp,
-  //                               size: 24,
-  //                               color: Theme.of(context).primaryColor,
-  //                             ),
-  //                           ),
-  //                           const SizedBox(width: 12),
-  //                           Expanded(
-  //                             child: Text(
-  //                               'Enable Location Services',
-  //                               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-  //                                 fontWeight: FontWeight.w600,
-  //                               ),
-  //                             ),
-  //                           ),
-  //                         ],
-  //                       ),
-  //                       const SizedBox(height: 16),
-  //                       // Description
-  //                       Text(
-  //                         'Granting location permission ensures accurate address detection and a seamless service experience.',
-  //                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-  //                           color: Colors.grey[600],
-  //                           height: 1.4,
-  //                         ),
-  //                       ),
-  //                       const SizedBox(height: 24),
-  //                       // Action Buttons
-  //                       Row(
-  //                         mainAxisAlignment: MainAxisAlignment.end,
-  //                         children: [
-  //                           if (!isLoading)
-  //                             TextButton(
-  //                               onPressed: () {
-  //                                 Navigator.pop(bottomSheetContext);
-  //                               },
-  //                               child: const Text(
-  //                                 'CANCEL',
-  //                                 style: TextStyle(color: Colors.grey),
-  //                               ),
-  //                             ),
-  //                           const SizedBox(width: 8),
-  //                           ElevatedButton(
-  //                             onPressed: isLoading
-  //                                 ? null
-  //                                 : () {
-  //                               context.read<LocationCubit>().requestLocationPermission();
-  //                             },
-  //                             style: ElevatedButton.styleFrom(
-  //                               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-  //                               shape: RoundedRectangleBorder(
-  //                                 borderRadius: BorderRadius.circular(8.0),
-  //                               ),
-  //                             ),
-  //                             child: isLoading
-  //                                 ? const SizedBox(
-  //                               width: 20,
-  //                               height: 20,
-  //                               child: CircularProgressIndicator(
-  //                                 strokeWidth: 2,
-  //                                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-  //                               ),
-  //                             )
-  //                                 : const Text(
-  //                               'GRANT',
-  //                               style: TextStyle(fontWeight: FontWeight.w600),
-  //                             ),
-  //                           ),
-  //                         ],
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
 }

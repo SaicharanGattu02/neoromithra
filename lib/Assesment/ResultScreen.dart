@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -43,7 +44,7 @@ class _ResultscreenState extends State<Resultscreen> {
         backgroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xff3EA4D2)),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () =>  context.pop(),
         ),
       ),
       body: SingleChildScrollView(
@@ -170,10 +171,7 @@ class _ResultscreenState extends State<Resultscreen> {
                 CustomAppButton(
                   text: 'View our Counselling services',
                   onPlusTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MainDashBoard(initialIndex: 2,)));
+                    context.push('/main_dashBoard?initialIndex=${2}');
                   },
                 ),
                 SizedBox(height: 10),
@@ -227,10 +225,7 @@ class _ResultscreenState extends State<Resultscreen> {
                 CustomAppButton(
                   text: 'View our Therapy services',
                   onPlusTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MainDashBoard(initialIndex: 1,)));
+                    context.push('/main_dashBoard?initialIndex=${1}');
                   },
                 ),
                 SizedBox(height: 10),

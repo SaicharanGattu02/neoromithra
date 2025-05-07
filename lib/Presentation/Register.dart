@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:neuromithra/Presentation/LogIn.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
@@ -75,10 +76,7 @@ class _RegisterState extends State<Register> {
           backgroundColor: Color(0xFF32657B),
         ));
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => LogIn()),
-        );
+        context.push('/login');
       } else {
         print("registerrr: ${registerResponse?.message}");
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -549,10 +547,7 @@ class _RegisterState extends State<Register> {
                         Text('Already have an account?'),
                         InkWell(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => LogIn()),
-                            );
+                            context.push('/login');
                           },
                           child: Text(
                             ' Sign In',

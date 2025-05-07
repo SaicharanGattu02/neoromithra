@@ -1,75 +1,103 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
-
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:neuromithra/router.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:neuromithra/state_injector.dart';
+import 'package:provider/provider.dart';
 import 'Presentation/LogIn.dart';
 import 'Presentation/SplashScreen.dart';
-
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
-
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+import 'Providers/AddressListProviders.dart';
+import 'Providers/BookingHistoryProviders.dart';
+import 'Providers/HomeProviders.dart';
+import 'Providers/SignInProviders.dart';
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    'high_importance_channel',
-    'High Importance Notifications',
-    description:
-    'This channel is used for important notifications.',
+    'high_importance_channel', 'High Importance Notifications',
+    description: 'This channel is used for important notifications.',
     importance: Importance.high,
     playSound: true);
 
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
   Userapi.setupInterceptors(navigatorKey);
+  WidgetsFlutterBinding.ensureInitialized();
+  Platform.isAndroid
+      ? await Firebase.initializeApp(
+          options: FirebaseOptions(
+            apiKey: "AIzaSyAJ_g_TtIFpj8FMAs1EpcE2mudfOFvtFK4",
+            appId: "1:814004941342:android:fe8d8e1b907f639c72b40f",
+            messagingSenderId: "814004941342",
+            projectId: "neuromithra",
+          ),
+        )
+      : await Firebase.initializeApp();
 
-  await Firebase.initializeApp(
-    options: Platform.isIOS
-        ? const FirebaseOptions(
-      apiKey: "AIzaSyBrSB6ofAosF2tMvq1eJsqEOPBLkgYGHJw",
-      appId: "1:923226666155:ios:963b75492cf422c554b3ee",
-      messagingSenderId: "923226666155",
-      projectId: "neuromitra-89fe6",
-      iosBundleId: "com.neuromitra.in",
-    )
-        : const FirebaseOptions(
-      apiKey: "AIzaSyDQUhQuxYaNCVzYtZE6fXciJWQKVIIJY9E",
-      appId: "1:923226666155:android:7a75d32281c14efc54b3ee",
-      messagingSenderId: "923226666155",
-      projectId: "neuromitra-89fe6",
-    ),
-  );
+  FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
+
+  const fatalError = true;
+  // Non-async exceptions
+  FlutterError.onError = (errorDetails) {
+    if (fatalError) {
+      // If you want to record a "fatal" exception
+      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+      // ignore: dead_code
+    } else {
+      // If you want to record a "non-fatal" exception
+      FirebaseCrashlytics.instance.recordFlutterError(errorDetails);
+    }
+  };
+  // Async exceptions
+  PlatformDispatcher.instance.onError = (error, stack) {
+    if (fatalError) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      // ignore: dead_code
+    } else {
+      // If you want to record a "non-fatal" exception
+      FirebaseCrashlytics.instance.recordError(error, stack);
+    }
+    return true;
+  };
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  if (Platform.isAndroid) {
+    FirebaseMessaging.instance.getToken().then((value) {
+      String? token = value;
+      print("Androidfbstoken:{$token}");
+      PreferenceService().saveString("fbstoken", token!);
+      // toast(BuildContext , token);
+    });
+  } else {
+    FirebaseMessaging.instance.getToken().then((value) {
+      String? token = value;
+      print("IOSfbstoken:{$token}");
+      PreferenceService().saveString("fbstoken", token!);
+      // toast(BuildContext , token);
+    });
+  }
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-  // Request permissions (iOS)
   NotificationSettings settings = await messaging.requestPermission(
     alert: true,
+    announcement: false,
     badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
     sound: true,
   );
-
-  // Get the APNs token (iOS)
-  if (Platform.isIOS) {
-    String? apnsToken = await messaging.getAPNSToken();
-    print("APNs Token: $apnsToken");
-  }
-
-  // Get the FCM token
-  String? fcmToken = await messaging.getToken();
-  print("FCM Token: $fcmToken");
-  if (fcmToken != null) {
-    PreferenceService().saveString("fbstoken", fcmToken);
-  }
 
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,
@@ -77,48 +105,56 @@ Future<void> main() async {
     sound: true,
   );
 
-  // Create notification channel (Android)
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
-  const DarwinInitializationSettings iosInitSettings = DarwinInitializationSettings(
-    requestAlertPermission: true,
-    requestBadgePermission: true,
-    requestSoundPermission: true,
-  );
-
   const InitializationSettings initializationSettings = InitializationSettings(
-    android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-    iOS: iosInitSettings,
-  );
+      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      iOS: DarwinInitializationSettings());
 
   flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
-    onDidReceiveNotificationResponse: (NotificationResponse response) async {
-      // Handle notification tapped logic
-    },
+    onDidReceiveNotificationResponse:
+        (NotificationResponse notificationResponse) async {},
   );
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     RemoteNotification? notification = message.notification;
     AndroidNotification? android = message.notification?.android;
-
     if (notification != null && android != null) {
+      // print('A new message received: ${notification.title}');
+      // print('RemoteMessage data: ${message.data.toString()}');
       showNotification(notification, android, message.data);
     }
   });
 
-  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-    // Handle notification opened when app was in background
+  // Also handle any interaction when the app is in the background via a
+  // Stream listener
+  FirebaseMessaging.onMessageOpenedApp.listen((message) {
+    // _handleMessage(message);
+    // print("onMessageOpenedApp:${message.data['type']}");
   });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // debugInvertOversizedImages = true;
+  FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
-  runApp(MyApp(navigatorKey: navigatorKey));
+  FlutterError.onError = (FlutterErrorDetails details) {
+    // Log the error details to a logging service or print them
+    print("Errrrrrrrrrr:${details.exceptionAsString()}");
+    // Optionally report the error to a remote server
+  };
+// Motion.instance.setUpdateInterval(60.fps);
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => SignInProviders()),
+    ChangeNotifierProvider(create: (_) => HomeProviders()),
+    ChangeNotifierProvider(create: (_) => BookingHistoryProviders()),
+    ChangeNotifierProvider(create: (_) => AddressListProvider()),
+  ], child: MyApp()));
 }
-
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -150,16 +186,13 @@ void showNotification(RemoteNotification notification,
 }
 
 class MyApp extends StatelessWidget {
-  final GlobalKey<NavigatorState> navigatorKey;
-
-  const MyApp({super.key, required this.navigatorKey});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: StateInjector.blocProviders,
-      child: MaterialApp(
-        navigatorKey: navigatorKey, // ✅ Key part for navigation via interceptors
+      child: MaterialApp.router(
         builder: (context, child) {
           return MediaQuery(
             data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
@@ -208,10 +241,7 @@ class MyApp extends StatelessWidget {
           ),
           colorScheme: const ColorScheme.light(background: Colors.white),
         ),
-        routes: {
-          '/signin': (context) => LogIn(),
-        },
-        home: Splash(),
+        routerConfig: goRouter,
       ),
     );
   }

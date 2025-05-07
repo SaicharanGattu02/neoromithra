@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'CustomAppBar.dart';
 
@@ -17,7 +18,7 @@ class AboutUsScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         leading: IconButton.filled(
           icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
           style: IconButton.styleFrom(
             backgroundColor: Color(0xFFECFAFA), // Filled color
           ),

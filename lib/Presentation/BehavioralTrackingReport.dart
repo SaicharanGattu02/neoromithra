@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:neuromithra/services/userapi.dart';
 
@@ -56,7 +57,7 @@ class _BehavioralTrackingReportState extends State<BehavioralTrackingReport> {
           backgroundColor: Colors.white,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Color(0xff3EA4D2)),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () =>      context.pop(),
           ),
         ),
         body: (is_loading)?Center(
