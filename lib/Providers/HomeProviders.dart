@@ -10,7 +10,6 @@ class HomeProviders with ChangeNotifier {
   bool _isLoading = false;
   String _error = '';
   String _quote = '';
-  User _userData = User();
   bool _status = false;
 
   List<TherapiesList> _therapieslist = [];
@@ -20,7 +19,7 @@ class HomeProviders with ChangeNotifier {
   bool get isLoading => _isLoading;
   String get error => _error;
   String get quote => _quote;
-  User get userData => _userData;
+
   bool get status => _status;
   List<TherapiesList> get therapieslist => _therapieslist;
   List<CounsellingsList> get counsellingslist => _counsellingslist;
@@ -41,7 +40,6 @@ class HomeProviders with ChangeNotifier {
     _setLoading(true);
     try {
       await Future.wait([
-        getProfileDetails(),
         getQuotes(),
         getTherapiesList(),
         getCounsellingsList()
@@ -74,7 +72,6 @@ class HomeProviders with ChangeNotifier {
       final res = await Userapi.postHealthFeedback(msg);
       final message = res?.message ?? "Unknown error";
       if (res?.status == true) {
-        await getProfileDetails();
         CustomSnackBar.show(context, message);
       } else {
         CustomSnackBar.show(context, message);
@@ -87,23 +84,6 @@ class HomeProviders with ChangeNotifier {
     }
   }
 
-  Future<void> getProfileDetails() async {
-    try {
-      String userId = await PreferenceService().getString('user_id') ?? "";
-      final response = await Userapi.getProfileDetails(userId);
-      if (response != null) {
-        _userData = response.user ?? User();
-        _status = response.healthFeedback?.status ?? false;
-        PreferenceService().saveString("user_mobile", _userData.phone.toString());
-      } else {
-        _setError('Failed to fetch profile details');
-      }
-    } catch (e) {
-      _setError('Profile fetch error: $e');
-    } finally {
-      notifyListeners();
-    }
-  }
 
   Future<void> getTherapiesList() async {
     try {

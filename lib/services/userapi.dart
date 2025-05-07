@@ -1195,16 +1195,11 @@ class Userapi {
     }
   }
 
-  static Future<Map<String, dynamic>?> postProfileDetails(String name,
-      String email, String phone) async {
+  static Future<Map<String, dynamic>?> postProfileDetails(data) async {
     try {
       final response = await _dio.post(
         "/api/users/update_user_details",
-        data: {
-          "name": name,
-          "email": email,
-          "phone": phone,
-        },
+        data: data
       );
       if (response.statusCode == 200) {
         print("postProfileDetails Status: ${response.data}");

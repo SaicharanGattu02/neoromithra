@@ -1,12 +1,11 @@
-
-
 import 'package:flutter/cupertino.dart';
 
+import '../Components/CustomSnackBar.dart';
 import '../Model/ProfileDetailsModel.dart';
 import '../services/Preferances.dart';
 import '../services/userapi.dart';
 
-class UserProviders with ChangeNotifier{
+class UserProviders with ChangeNotifier {
   bool _isLoading = false;
   String _error = '';
   Users _userData = Users();
@@ -30,6 +29,24 @@ class UserProviders with ChangeNotifier{
             .saveString("user_mobile", _userData.contact.toString() ?? "");
       } else {
         _error = 'Failed to fetch profile details';
+      }
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> updateProfileDetails(Map<String, dynamic> data) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final result = await Userapi.postProfileDetails(data);
+      if (result != null && result.containsKey("message")) {
+        print("Success: ${result["message"]}");
+      } else if (result != null && result.containsKey("error")) {
+        print("Error: ${result["error"]}");
       }
     } catch (e) {
       _error = e.toString();
