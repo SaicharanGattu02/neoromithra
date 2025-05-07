@@ -10,6 +10,7 @@ import '../Model/AssessmentQuestion.dart';
 import '../Model/BehaviouralTrackingModel.dart';
 import '../Model/BookApointmentModel.dart';
 import '../Model/BookingHistoryModel.dart';
+import '../Model/CounsellingsListModel.dart';
 import '../Model/FeedbackHelathModel.dart';
 import '../Model/LoginModel.dart';
 import '../Model/PreviousBookingModel.dart';
@@ -17,6 +18,7 @@ import '../Model/ProfileDetailsModel.dart';
 import '../Model/RegisterModel.dart';
 import '../Model/ReviewListModel.dart';
 import '../Model/ReviewSubmitModel.dart';
+import '../Model/TherapiesListModel.dart';
 import 'AuthService.dart';
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
@@ -1222,6 +1224,39 @@ class Userapi {
     } catch (e) {
       print("Error occurred: $e");
       return {"error": e.toString()};
+    }
+  }
+
+  static Future<TherapiesListModel?> getTherapiesList() async {
+    try {
+      final response = await _dio.get("/api/users/guest-service?type=Therapy");
+      if (response.statusCode == 200) {
+        print("getprofiledetails Status: ${response.data}");
+        return TherapiesListModel.fromJson(response.data);
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print("Error occurred: $e");
+      return null;
+    }
+  }
+
+
+  static Future<CounsellingsListModel?> getCounsellingsList() async {
+    try {
+      final response = await _dio.get("/api/users/guest-service?type=Counselling");
+      if (response.statusCode == 200) {
+        print("getCounsellingsList Status: ${response.data}");
+        return CounsellingsListModel.fromJson(response.data);
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print("Error occurred: $e");
+      return null;
     }
   }
 
