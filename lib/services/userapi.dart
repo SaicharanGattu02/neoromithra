@@ -1506,7 +1506,7 @@ class Userapi {
   static Future<FeedbackHelathModel?> postHealthFeedback(String msg) async {
     try {
       final response = await _dio.post(
-        "/api/feedback-health",
+        "/api/users/daily-feedback",
         data: {"message": msg},
       );
       if (response.statusCode == 200) {

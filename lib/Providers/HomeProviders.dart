@@ -10,7 +10,6 @@ class HomeProviders with ChangeNotifier {
   bool _isLoading = false;
   String _error = '';
   String _quote = '';
-  User _userData = User();
   bool _status = false;
 
   List<TherapiesList> _therapieslist = [];
@@ -20,7 +19,6 @@ class HomeProviders with ChangeNotifier {
   bool get isLoading => _isLoading;
   String get error => _error;
   String get quote => _quote;
-  User get userData => _userData;
   bool get status => _status;
   List<TherapiesList> get therapieslist => _therapieslist;
   List<CounsellingsList> get counsellingslist => _counsellingslist;
@@ -37,21 +35,6 @@ class HomeProviders with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getData() async {
-    _setLoading(true);
-    try {
-      await Future.wait([
-        getProfileDetails(),
-        getQuotes(),
-        getTherapiesList(),
-        getCounsellingsList()
-      ]);
-    } catch (e) {
-      _setError("Failed to fetch initial data: $e");
-    } finally {
-      _setLoading(false);
-    }
-  }
 
   Future<void> getQuotes() async {
     try {
@@ -74,7 +57,6 @@ class HomeProviders with ChangeNotifier {
       final res = await Userapi.postHealthFeedback(msg);
       final message = res?.message ?? "Unknown error";
       if (res?.status == true) {
-        await getProfileDetails();
         CustomSnackBar.show(context, message);
       } else {
         CustomSnackBar.show(context, message);
@@ -87,47 +69,31 @@ class HomeProviders with ChangeNotifier {
     }
   }
 
-  Future<void> getProfileDetails() async {
-    try {
-      String userId = await PreferenceService().getString('user_id') ?? "";
-      final response = await Userapi.getProfileDetails(userId);
-      if (response != null) {
-        _userData = response.user ?? User();
-        _status = response.healthFeedback?.status ?? false;
-        PreferenceService().saveString("user_mobile", _userData.phone.toString());
-      } else {
-        _setError('Failed to fetch profile details');
-      }
-    } catch (e) {
-      _setError('Profile fetch error: $e');
-    } finally {
-      notifyListeners();
-    }
-  }
-
   Future<void> getTherapiesList() async {
+    _setLoading(true);
     try {
       final response = await Userapi.getTherapiesList();
       if (response?.status == true) {
-        _therapieslist = response!.therapieslist ?? [];
+        _therapieslist = response?.therapieslist ?? [];
       }
     } catch (e) {
       _setError('Failed to fetch therapies: $e');
     } finally {
-      notifyListeners();
+      _setLoading(false);
     }
   }
 
   Future<void> getCounsellingsList() async {
+    _setLoading(true);
     try {
       final response = await Userapi.getCounsellingsList();
       if (response?.status == true) {
-        _counsellingslist = response!.counsellingslist ?? [];
+        _counsellingslist = response?.counsellingslist ?? [];
       }
     } catch (e) {
       _setError('Failed to fetch counsellings: $e');
     } finally {
-      notifyListeners();
+      _setLoading(false);
     }
   }
 
