@@ -15,6 +15,7 @@ import 'Providers/AddressListProviders.dart';
 import 'Providers/BookingHistoryProviders.dart';
 import 'Providers/HomeProviders.dart';
 import 'Providers/SignInProviders.dart';
+import 'Providers/UserProvider.dart';
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'high_importance_channel', 'High Importance Notifications',
@@ -114,6 +115,7 @@ Future<void> main() async {
     ChangeNotifierProvider(create: (_) => HomeProviders()),
     ChangeNotifierProvider(create: (_) => BookingHistoryProviders()),
     ChangeNotifierProvider(create: (_) => AddressListProvider()),
+    ChangeNotifierProvider(create: (_) => UserProviders()),
   ], child: MyApp()));
 }
 

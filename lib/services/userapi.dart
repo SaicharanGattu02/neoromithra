@@ -851,7 +851,8 @@ import 'package:dio/dio.dart';
 class Userapi {
   static final Dio _dio = Dio(
     BaseOptions(
-      baseUrl: "https://api.neuromitra.com",
+      // baseUrl: "https://api.neuromitra.com",
+      baseUrl: "http://192.168.80.237:8000",
       connectTimeout: const Duration(seconds: 60),
       receiveTimeout: const Duration(seconds: 60),
       headers: {
@@ -1171,7 +1172,7 @@ class Userapi {
 
   static Future<Map<String, dynamic>?> postLogin(data) async {
     try {
-      final response = await _dio.post("/api/user/userlogin", data: data);
+      final response = await _dio.post("/api/mobile-login", data: data);
       if (response.statusCode == 200) {
         print("PostLogin Status: ${response.data}");
         return {
@@ -1193,17 +1194,14 @@ class Userapi {
   }
 
   static Future<Map<String, dynamic>?> postProfileDetails(String name,
-      String email, String phone, String sos1, String sos2, String sos3) async {
+      String email, String phone) async {
     try {
       final response = await _dio.post(
-        "/api/update_user_details1",
+        "/api/users/update_user_details",
         data: {
           "name": name,
           "email": email,
           "phone": phone,
-          "sos_1": sos1,
-          "sos_2": sos2,
-          "sos_3": sos3,
         },
       );
       if (response.statusCode == 200) {
@@ -1229,7 +1227,7 @@ class Userapi {
 
   static Future<ProfileDetailsModel?> getProfileDetails(String userId) async {
     try {
-      final response = await _dio.get("/api/get_user_details");
+      final response = await _dio.get("/api/users/view-profile");
       if (response.statusCode == 200) {
         print("getprofiledetails Status: ${response.data}");
         return ProfileDetailsModel.fromJson(response.data);
@@ -1456,7 +1454,7 @@ class Userapi {
 
   static Future<QuoteModel?> getQuotes() async {
     try {
-      final response = await _dio.get("/api/random-quote");
+      final response = await _dio.get("/api/users/quatations");
       if (response.statusCode == 200) {
         print("getquotes response: ${response.data}");
         return QuoteModel.fromJson(response.data);

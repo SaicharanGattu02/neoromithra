@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:neuromithra/Presentation/Aboutus.dart';
 import 'package:neuromithra/Presentation/RefundPolicyScreen.dart';
 import 'package:neuromithra/Providers/HomeProviders.dart';
+import 'package:neuromithra/Providers/UserProvider.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
-    Provider.of<HomeProviders>(context, listen: false).getProfileDetails();
+    Provider.of<UserProviders>(context, listen: false).getProfileDetails();
     super.initState();
   }
 
@@ -38,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           leadingWidth: 0,
         ),
         body:
-            Consumer<HomeProviders>(builder: (context, profileDetails, child) {
+            Consumer<UserProviders>(builder: (context, profileDetails, child) {
           return profileDetails.isLoading
               ? _buildShimmerEffect()
               : Padding(

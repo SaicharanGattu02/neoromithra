@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:neuromithra/Providers/HomeProviders.dart';
+import 'package:neuromithra/Providers/UserProvider.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:neuromithra/utils/Shimmers.dart';
 import 'package:provider/provider.dart';
@@ -24,20 +25,26 @@ class NewHomeScreen extends StatefulWidget {
 }
 
 class _NewHomeScreenState extends State<NewHomeScreen> {
-
   @override
   void initState() {
-    // _initialize();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<HomeProviders>(context, listen: false).getData();
-    });
+    GetData();
+
     super.initState();
   }
 
-  // String token = "";
-  // Future<void> _initialize() async {
-  //   token = await PreferenceService().getString('token') ?? "";
-  // }
+  Future<dynamic> GetData() async {
+    try{
+      final homeScreenData = Provider.of<HomeProviders>(context, listen: false);
+      final userData = Provider.of<UserProviders>(context, listen: false);
+      await Future.wait([
+        homeScreenData.getQuotes(),
+        userData.getProfileDetails()
+      ]);
+    }catch(e){
+      print("Error loading dashboard data: $e");
+    }
+
+  }
 
   final List<Map<String, dynamic>> therapies = [
     {
@@ -301,6 +308,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     var w = MediaQuery.of(context).size.width;
     return Consumer<HomeProviders>(
       builder: (context, homeProvider, child) {
+        final userData = Provider.of<UserProviders>(context, listen: false);
         return homeProvider.isLoading
             ? _shimmers(context)
             : Scaffold(
@@ -329,18 +337,18 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                   fontFamily: 'Epi'),
                             ),
                             // if (token.isNotEmpty) ...[
-                              Text(
-                                homeProvider.userData.name != null &&
-                                        homeProvider.userData.name!.isNotEmpty
-                                    ? '${homeProvider.userData.name![0].toUpperCase()}${homeProvider.userData.name!.substring(1)}'
-                                    : 'Unknown',
-                                style: TextStyle(
-                                  color: Color(0xff371B34),
-                                  fontSize: 14,
-                                  fontFamily: 'Epi',
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              )
+                            Text(
+                              userData.userData.name != null &&
+                                  userData.userData.name!.isNotEmpty
+                                  ? '${userData.userData.name![0].toUpperCase()}${userData.userData.name!.substring(1)}'
+                                  : 'Unknown',
+                              style: TextStyle(
+                                color: Color(0xff371B34),
+                                fontSize: 14,
+                                fontFamily: 'Epi',
+                                fontWeight: FontWeight.w600,
+                              ),
+                            )
                             // ]
                           ],
                         ),
@@ -396,159 +404,156 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                           ),
                         ),
                         // if (token.isNotEmpty) ...[
-                          if (homeProvider.status == false) ...[
-                            Text(
-                              'How are you feeling today ?',
-                              style: TextStyle(
-                                  color: Color(0xffF371B34),
-                                  fontFamily: 'Epi',
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16),
-                            ),
-                            SizedBox(
-                              height: 12,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  spacing: 10,
-                                  children: [
-                                    Bounce(
-                                      onTap: () {
-                                        homeProvider.postHealthFeedBack(
-                                            'Happy', context);
-                                      },
-                                      duration: Duration(milliseconds: 100),
-                                      child: Container(
-                                        width: 60,
-                                        height: 60,
-                                        padding: EdgeInsets.all(14),
-                                        decoration: BoxDecoration(
-                                            color: Color(0xffEF5DA8),
-                                            borderRadius:
-                                                BorderRadius.circular(16)),
-                                        child: Center(
-                                          child:
-                                              Image.asset('assets/smile.png'),
-                                        ),
+                        if (homeProvider.status == false) ...[
+                          Text(
+                            'How are you feeling today ?',
+                            style: TextStyle(
+                                color: Color(0xffF371B34),
+                                fontFamily: 'Epi',
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16),
+                          ),
+                          SizedBox(
+                            height: 12,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                spacing: 10,
+                                children: [
+                                  Bounce(
+                                    onTap: () {
+                                      homeProvider.postHealthFeedBack(
+                                          'Happy', context);
+                                    },
+                                    duration: Duration(milliseconds: 100),
+                                    child: Container(
+                                      width: 60,
+                                      height: 60,
+                                      padding: EdgeInsets.all(14),
+                                      decoration: BoxDecoration(
+                                          color: Color(0xffEF5DA8),
+                                          borderRadius:
+                                              BorderRadius.circular(16)),
+                                      child: Center(
+                                        child: Image.asset('assets/smile.png'),
                                       ),
                                     ),
-                                    Text(
-                                      'Happy',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Color(0xff828282),
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: 'Epi',
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                Column(
-                                  spacing: 10,
-                                  children: [
-                                    Bounce(
-                                      onTap: () {
-                                        homeProvider.postHealthFeedBack(
-                                            'Calm', context);
-                                      },
-                                      child: Container(
-                                        width: 60,
-                                        height: 60,
-                                        padding: EdgeInsets.all(14),
-                                        decoration: BoxDecoration(
-                                            color: Color(0xffAEAFF7),
-                                            borderRadius:
-                                                BorderRadius.circular(16)),
-                                        child: Center(
-                                          child: Image.asset('assets/calm.png'),
-                                        ),
+                                  ),
+                                  Text(
+                                    'Happy',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color(0xff828282),
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: 'Epi',
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Column(
+                                spacing: 10,
+                                children: [
+                                  Bounce(
+                                    onTap: () {
+                                      homeProvider.postHealthFeedBack(
+                                          'Calm', context);
+                                    },
+                                    child: Container(
+                                      width: 60,
+                                      height: 60,
+                                      padding: EdgeInsets.all(14),
+                                      decoration: BoxDecoration(
+                                          color: Color(0xffAEAFF7),
+                                          borderRadius:
+                                              BorderRadius.circular(16)),
+                                      child: Center(
+                                        child: Image.asset('assets/calm.png'),
                                       ),
                                     ),
-                                    Text(
-                                      'Calm',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Color(0xff828282),
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: 'Epi',
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                Column(
-                                  spacing: 10,
-                                  children: [
-                                    Bounce(
-                                      onTap: () {
-                                        homeProvider.postHealthFeedBack(
-                                            'Angry', context);
-                                      },
-                                      child: Container(
-                                        width: 60,
-                                        height: 60,
-                                        padding: EdgeInsets.all(14),
-                                        decoration: BoxDecoration(
-                                            color: Color(0xffEA6D33),
-                                            borderRadius:
-                                                BorderRadius.circular(16)),
-                                        child: Center(
-                                          child:
-                                              Image.asset('assets/angry.png'),
-                                        ),
+                                  ),
+                                  Text(
+                                    'Calm',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color(0xff828282),
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: 'Epi',
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Column(
+                                spacing: 10,
+                                children: [
+                                  Bounce(
+                                    onTap: () {
+                                      homeProvider.postHealthFeedBack(
+                                          'Angry', context);
+                                    },
+                                    child: Container(
+                                      width: 60,
+                                      height: 60,
+                                      padding: EdgeInsets.all(14),
+                                      decoration: BoxDecoration(
+                                          color: Color(0xffEA6D33),
+                                          borderRadius:
+                                              BorderRadius.circular(16)),
+                                      child: Center(
+                                        child: Image.asset('assets/angry.png'),
                                       ),
                                     ),
-                                    Text(
-                                      'Angry',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Color(0xff828282),
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: 'Epi',
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                Column(
-                                  spacing: 10,
-                                  children: [
-                                    Bounce(
-                                      onTap: () {
-                                        homeProvider.postHealthFeedBack(
-                                            'Sad', context);
-                                      },
-                                      child: Container(
-                                        width: 60,
-                                        height: 60,
-                                        padding: EdgeInsets.all(14),
-                                        decoration: BoxDecoration(
-                                            color: Color(0xffC3F2A6),
-                                            borderRadius:
-                                                BorderRadius.circular(16)),
-                                        child: Center(
-                                          child:
-                                              Image.asset('assets/smile.png'),
-                                        ),
+                                  ),
+                                  Text(
+                                    'Angry',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color(0xff828282),
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: 'Epi',
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Column(
+                                spacing: 10,
+                                children: [
+                                  Bounce(
+                                    onTap: () {
+                                      homeProvider.postHealthFeedBack(
+                                          'Sad', context);
+                                    },
+                                    child: Container(
+                                      width: 60,
+                                      height: 60,
+                                      padding: EdgeInsets.all(14),
+                                      decoration: BoxDecoration(
+                                          color: Color(0xffC3F2A6),
+                                          borderRadius:
+                                              BorderRadius.circular(16)),
+                                      child: Center(
+                                        child: Image.asset('assets/smile.png'),
                                       ),
                                     ),
-                                    Text(
-                                      'Sad',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Color(0xff828282),
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: 'Epi',
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                          ],
+                                  ),
+                                  Text(
+                                    'Sad',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color(0xff828282),
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: 'Epi',
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                        ],
                         // ],
                         Text(
                           'Therapies',
@@ -769,7 +774,8 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                             horizontal: 16, vertical: 20),
                                         width: w * 0.55,
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               item['text'] ?? 'No Title',

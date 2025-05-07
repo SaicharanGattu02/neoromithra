@@ -32,7 +32,7 @@ class _LogInState extends State<LogIn> {
   Future<void> login() async {
     String fcmToken = await PreferenceService().getString("fbstoken") ?? "";
     final Map<String, dynamic> data = {
-      "email": _emailController.text,
+      "username": _emailController.text,
       "password": _passwordController.text,
       "fcm_token": fcmToken,
     };
@@ -125,7 +125,7 @@ class _LogInState extends State<LogIn> {
                       ),
                       SizedBox(height: 20),
                       Text(
-                        "Email Address",
+                        "User Name",
                         style: TextStyle(
                           color: Color(0xFF1F2937),
                           fontFamily: "Inter",
@@ -139,7 +139,7 @@ class _LogInState extends State<LogIn> {
                         focusNode: _focusNodeEmail,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          hintText: "Enter Your Email",
+                          hintText: "Enter Your UserName",
                           hintStyle: TextStyle(
                             fontSize: 15,
                             letterSpacing: 0,
@@ -174,18 +174,30 @@ class _LogInState extends State<LogIn> {
                             padding: EdgeInsets.only(
                                 left: 10, right: 5), // Adjust padding
                             child: Icon(
-                              Icons.email_outlined,
+                              Icons.person,
                               color: Color(0xff4B5563),
                             ),
                           ),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your email';
+                            return 'Please enter your email or mobile number';
                           }
-                          if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                            return 'Please enter a valid email address';
+
+                          // Email validation
+                          if (value.contains('@')) {
+                            if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                              return 'Please enter a valid email address';
+                            }
                           }
+                          // Mobile number validation
+                          else {
+                            // Example: Validates a 10-digit mobile number (modify as needed)
+                            if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+                              return 'Please enter a valid 10-digit mobile number';
+                            }
+                          }
+
                           return null;
                         },
                       ),
