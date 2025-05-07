@@ -1,43 +1,68 @@
 # Miscellaneous
-*.class
 *.log
-*.pyc
 *.swp
+*.swo
 .DS_Store
-.atom/
-.buildlog/
-.history
-.svn/
-migrate_working_dir/
+*.bak
+*.tmp
+*.cache
+.env
+.env.*
+!.env.example
+Thumbs.db
 
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
+# Editor and IDE related
 .idea/
-
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+*.iml
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history
 
 # Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
+**/doc/api/
+**/ios/Flutter/.last_build_id
 /build/
+*.generated.dart
+*.g.dart
+*.freezed.dart
+*.config.dart
+coverage/
+lcov.info
 
-# Symbolication related
+# Android related
+/android/.gradle/
+/android/build/
+/android/local.properties
+/android/*.keystore
+/android/*.jks
+/android/key.properties
+*.apk
+*.aab
+
+# iOS related
+**/ios/.build/
+**/ios/Pods/
+**/ios/Podfile.lock
+**/ios/Runner.xcworkspace/
+**/ios/Runner.xcodeproj/xcuserdata/
+**/ios/Runner/GoogleService-Info.plist
+*.ipa
+*.xcarchive
+*.dSYM.zip
+*.dSYM/
+
+# Symbolication and Obfuscation
 app.*.symbols
-
-# Obfuscation related
 app.*.map.json
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+# Testing
+test_results/
+*.lcov

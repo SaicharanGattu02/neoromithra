@@ -1,2 +1,0 @@
-C:/Users/Dell/StudioProjects/neoromithra/android/app/.cxx/Debug/626s2y3g/armeabi-v7a/CMakeFiles/edit_cache.dir
-C:/Users/Dell/StudioProjects/neoromithra/android/app/.cxx/Debug/626s2y3g/armeabi-v7a/CMakeFiles/rebuild_cache.dir

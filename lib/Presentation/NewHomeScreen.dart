@@ -269,21 +269,6 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     }
   }
 
-  // void payment() async {
-  //   try {
-  //     var res = await Userapi.makePayment();
-  //
-  //     if (res != null && res['success'] == true) {
-  //       String paymentUrl = res['payment_url'];
-  //       _launchURL(paymentUrl);
-  //     } else {
-  //       debugPrint("Payment failed: ${res?['message'] ?? 'Unknown error'}");
-  //     }
-  //   } catch (e) {
-  //     debugPrint("Error: ${e.toString()}");
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     int hour = DateTime.now().hour;
@@ -348,27 +333,27 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                     ),
                   ),
                   actions: [
-                    BlocBuilder<LocationCubit, LocationState>(
-                        builder: (context, state) {
-                      String loc = '';
-                      if (state is LocationLoaded) {
-                        loc = state.locationName;
-                      }
-                      return InkResponse(
-                        onTap: () {
-                          _showSOSConfirmationDialog(context, loc);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Lottie.asset(
-                            'assets/animations/sos.json',
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      );
-                    }),
+                    // BlocBuilder<LocationCubit, LocationState>(
+                    //     builder: (context, state) {
+                    //   String loc = '';
+                    //   if (state is LocationLoaded) {
+                    //     loc = state.locationName;
+                    //   }
+                    //   return InkResponse(
+                    //     onTap: () {
+                    //       _showSOSConfirmationDialog(context, loc);
+                    //     },
+                    //     child: Padding(
+                    //       padding: const EdgeInsets.all(5.0),
+                    //       child: Lottie.asset(
+                    //         'assets/animations/sos.json',
+                    //         width: 50,
+                    //         height: 50,
+                    //         fit: BoxFit.contain,
+                    //       ),
+                    //     ),
+                    //   );
+                    // }),
                   ],
                 ),
                 body: SingleChildScrollView(

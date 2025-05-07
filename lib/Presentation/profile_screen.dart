@@ -53,13 +53,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Container(
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black12,
-                                      blurRadius: 8,
-                                      spreadRadius: 2,
-                                    ),
-                                  ],
                                 ),
                                 child: CircleAvatar(
                                   radius: 35,
@@ -335,8 +328,8 @@ Widget _buildOptionTile(IconData icon, String title, VoidCallback onTap) {
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     child: ListTile(
       leading: CircleAvatar(
-        backgroundColor: Colors.blue.shade50,
-        child: Icon(icon, color: Colors.blue.shade700),
+        backgroundColor: primarycolor.withOpacity(0.1),
+        child: Icon(icon, color: primarycolor),
       ),
       title: Text(
         title,
