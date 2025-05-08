@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
-import 'package:neuromithra/main.dart';
+import 'package:neuromithra/Presentation/SeriveDeailsScreen.dart';
+import 'package:neuromithra/utils/constants.dart';
 import 'Assesment/ResultScreen.dart';
 import 'Presentation/BookedApointmentsuccessfully.dart';
 import 'Presentation/ForgotPasswordScreen.dart';
@@ -109,6 +110,16 @@ final GoRouter goRouter =
           int.tryParse(state.uri.queryParameters['initialIndex'] ?? '0') ?? 0;
       return buildSlideTransitionPage(
           MainDashBoard(initialIndex: initialIndex), state);
+    },
+  ),
+  GoRoute(
+    path: '/service_details_screen',
+    pageBuilder: (context, state) {
+      final serviceID = state.uri.queryParameters['serviceID'] ?? '';
+      final serviceName = state.uri.queryParameters['serviceName'] ?? '';
+      return buildSlideTransitionPage(
+          ServiceDetailsScreen(serviceID: serviceID, serviceName: serviceName),
+          state);
     },
   ),
 ]);

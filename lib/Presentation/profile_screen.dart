@@ -26,8 +26,10 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
-    Provider.of<UserProviders>(context, listen: false).getProfileDetails();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<UserProviders>(context, listen: false).getProfileDetails();
+    });
   }
 
   @override

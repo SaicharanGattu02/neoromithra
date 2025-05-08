@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:neuromithra/Providers/HomeProviders.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -264,8 +265,10 @@ class _TherapiesListScreenState extends State<TherapiesListScreen> {
 
   @override
   void initState() {
-    Provider.of<HomeProviders>(context, listen: false).getTherapiesList();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<HomeProviders>(context, listen: false).getTherapiesList();
+    });
   }
 
   @override
@@ -298,7 +301,7 @@ class _TherapiesListScreenState extends State<TherapiesListScreen> {
                               final therapy = homeProvider.therapieslist[index];
                               return InkWell(
                                 onTap: () {
-
+                                  context.push("/service_details_screen?serviceID=${therapy.id}&serviceName=${therapy.name}");
                                 },
                                 child: ProductGridItem(
                                   imageUrl: therapy.image??"",

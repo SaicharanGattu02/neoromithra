@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -28,16 +29,44 @@ class _LogInState extends State<LogIn> {
     _focusNodePassword.dispose();
     super.dispose();
   }
-
   Future<void> login() async {
-    String fcmToken = await PreferenceService().getString("fbstoken") ?? "";
+    // Attempt to get the stored token
+    String? fcmToken = await PreferenceService().getString("fbstoken");
+
+    // If it's null or empty, try fetching from Firebase
+    if (fcmToken == null || fcmToken.isEmpty) {
+      fcmToken = await FirebaseMessaging.instance.getToken();
+      debugPrint("Fetched fcmToken from Firebase: $fcmToken");
+
+      // If it's still null or empty, try one more time (optional retry)
+      if (fcmToken == null || fcmToken.isEmpty) {
+        await Future.delayed(Duration(seconds: 2)); // small delay before retry
+        fcmToken = await FirebaseMessaging.instance.getToken();
+        debugPrint("Retry fetched fcmToken: $fcmToken");
+      }
+
+      // Save the token if we got one
+      if (fcmToken != null && fcmToken.isNotEmpty) {
+         PreferenceService().saveString("fbstoken", fcmToken);
+      }
+    }
+
+    // Abort API call if still no token
+    if (fcmToken == null || fcmToken.isEmpty) {
+      debugPrint("FCM token is still null or empty. API call aborted.");
+      // Optionally show a user message here
+      return;
+    }
+
     final Map<String, dynamic> data = {
       "username": _emailController.text,
       "password": _passwordController.text,
       "fcm_token": fcmToken,
     };
+
     Provider.of<SignInProviders>(context, listen: false).logIn(context, data);
   }
+
 
   @override
   void initState() {

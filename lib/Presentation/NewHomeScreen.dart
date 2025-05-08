@@ -28,8 +28,10 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
   bool isLoading = true;
   @override
   void initState() {
-    GetData();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      GetData();
+    });
   }
 
   Future<dynamic> GetData() async {
@@ -603,7 +605,9 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                     items:
                                         homeProviders.therapieslist.map((item) {
                                       return InkResponse(
-                                          onTap: () {},
+                                          onTap: () {
+                                            context.push("/service_details_screen?serviceID=${item.id}&serviceName=${item.name}");
+                                          },
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 vertical: 8, horizontal: 8),
@@ -715,6 +719,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                     items: homeProviders.counsellingslist.map((item) {
                                       return InkResponse(
                                           onTap: () {
+                                            context.push("/service_details_screen?serviceID=${item.id}&serviceName=${item.name}");
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(

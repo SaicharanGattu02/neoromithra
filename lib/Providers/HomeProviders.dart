@@ -13,6 +13,7 @@ class HomeProviders with ChangeNotifier {
   bool _status = false;
 
   List<TherapiesList> _therapieslist = [];
+  List<TherapiesList> _therapyDetails = [];
   List<CounsellingsList> _counsellingslist = [];
 
   // Getters
@@ -21,6 +22,7 @@ class HomeProviders with ChangeNotifier {
   String get quote => _quote;
   bool get status => _status;
   List<TherapiesList> get therapieslist => _therapieslist;
+  List<TherapiesList> get therapyDetails => _therapyDetails;
   List<CounsellingsList> get counsellingslist => _counsellingslist;
 
   /// Set loading state and notify
@@ -78,6 +80,20 @@ class HomeProviders with ChangeNotifier {
       }
     } catch (e) {
       _setError('Failed to fetch therapies: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> getServiceDetails(String id) async {
+    _setLoading(true);
+    try {
+      final response = await Userapi.getServiceDetails(id);
+      if (response?.status == true) {
+        _therapyDetails = response?.therapieslist ?? [];
+      }
+    } catch (e) {
+      _setError('Failed to fetch getServiceDetails: $e');
     } finally {
       _setLoading(false);
     }

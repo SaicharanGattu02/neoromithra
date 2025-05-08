@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../Components/ProductGridItem.dart';
@@ -333,8 +334,11 @@ class _CounsellingListScreenState extends State<CounsellingListScreen> {
 
   @override
   void initState() {
-    Provider.of<HomeProviders>(context, listen: false).getCounsellingsList();
     super.initState();
+    // Defer the call to after the build phase
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<HomeProviders>(context, listen: false).getCounsellingsList();
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -371,7 +375,7 @@ class _CounsellingListScreenState extends State<CounsellingListScreen> {
                               onTap: homeProvider.isLoading
                                   ? null
                                   : () {
-                                // Add navigation logic here
+                                context.push("/service_details_screen?serviceID=${counselling.id}&serviceName=${counselling.name}");
                               },
                               child: ProductGridItem(
                                 imageUrl: counselling.image ?? "",
