@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:neuromithra/Model/PhonepeDetails.dart';
 import 'package:neuromithra/Model/QuoteModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,7 +27,6 @@ import 'package:dio/dio.dart';
 class Userapi {
   static final Dio _dio = Dio(
     BaseOptions(
-      // baseUrl: "https://api.neuromitra.com",
       baseUrl: "http://192.168.80.237:8000",
       connectTimeout: const Duration(seconds: 60),
       receiveTimeout: const Duration(seconds: 60),
@@ -52,34 +50,19 @@ class Userapi {
           return handler.next(response);
         },
         onError: (DioException e, handler) async {
-          if (e.response != null) {
-            switch (e.response?.statusCode) {
-              case 201:
-                print("Unauthorized: Navigating to SignIn");
-                final prefs = await SharedPreferences.getInstance();
-                await prefs.clear();
-                Future.microtask(() {
-                  navigatorKey.currentState
-                      ?.pushNamedAndRemoveUntil('/login', (route) => false);
-                });
-                return;
-              case 401:
-                print("Unauthorized: Navigating to SignIn");
-                final prefs = await SharedPreferences.getInstance();
-                await prefs.clear();
-                Future.microtask(() {
-                  navigatorKey.currentState
-                      ?.pushNamedAndRemoveUntil('/login', (route) => false);
-                });
-                return;
-              default:
-                print("Error ${e.response?.statusCode}: ${e.response?.data}");
-            }
+          if (e.response?.statusCode == 201 || e.response?.statusCode == 401) {
+            print("Token expired or unauthorized: ${e.response?.statusCode}");
+            // If refresh or retry fails, clear prefs and navigate to login
+            print("Navigating to SignIn");
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.clear();
+            navigatorKey.currentState
+                ?.pushNamedAndRemoveUntil('/login', (route) => false);
+            return handler.reject(e);
           } else {
-            print("Network Error: ${e.message}");
+            print("Error ${e.response?.statusCode}: ${e.response?.data}");
+            return handler.next(e);
           }
-
-          return handler.next(e);
         },
       ),
     );
@@ -92,13 +75,13 @@ class Userapi {
         print("Token refreshed successfully");
         return true;
       }
+      return false;
     } catch (e) {
       print("Token refresh failed: $e");
+      return false;
     }
-    return false;
   }
 
-  // Existing methods
   static Future<Response> get(String path,
       {Map<String, dynamic>? queryParameters}) async {
     try {
@@ -143,26 +126,23 @@ class Userapi {
     }
   }
 
-  // Converted Userapi methods
   static Future<PhonepeDetails?> getPhonepeDetails() async {
     try {
-      final response = await _dio.get("/api/Phonepay");
+      final response = await get("/api/Phonepay");
       if (response.statusCode == 200) {
         print("getPhonepeDetails Status: ${response.data}");
         return PhonepeDetails.fromJson(response.data);
-      } else {
-        throw Exception("Failed to load Phonepe details");
       }
+      throw Exception("Failed to load Phonepe details");
     } catch (e) {
       print("Error fetching Phonepe details: $e");
       return null;
     }
   }
 
-  static Future<Map<String, List<AssessmentQuestion>>>
-      fetchAdultQuestions() async {
+  static Future<Map<String, List<AssessmentQuestion>>> fetchAdultQuestions() async {
     try {
-      final response = await _dio.get("/api/list_of_questions_for_adults");
+      final response = await get("/api/list_of_questions_for_adults");
       if (response.statusCode == 200) {
         final data = response.data;
         Map<String, List<AssessmentQuestion>> parsedData = {};
@@ -172,9 +152,8 @@ class Userapi {
           );
         });
         return parsedData;
-      } else {
-        throw Exception("Failed to load adult questions");
       }
+      throw Exception("Failed to load adult questions");
     } catch (e) {
       print("Error fetching adult questions: $e");
       return {};
@@ -188,23 +167,21 @@ class Userapi {
         'data': jsonEncode(data),
         'role': role,
       });
-      final response = await _dio.post("/api/save_assement", data: formData);
+      final response = await post("/api/save_assement", data: formData);
       if (response.statusCode == 200) {
         print("Success: ${response.data["message"]}");
         return response.data;
-      } else {
-        throw Exception("Submission failed: ${response.data["message"]}");
       }
+      throw Exception("Submission failed: ${response.data["message"]}");
     } catch (e) {
       print("Error submitting answers: $e");
       return {"status": false, "message": "Error submitting answers"};
     }
   }
 
-  static Future<Map<String, List<AssessmentQuestion>>>
-      fetchChildrenQuestions() async {
+  static Future<Map<String, List<AssessmentQuestion>>> fetchChildrenQuestions() async {
     try {
-      final response = await _dio.get("/api/list_of_questions");
+      final response = await get("/api/list_of_questions");
       if (response.statusCode == 200) {
         final data = response.data;
         Map<String, List<AssessmentQuestion>> parsedData = {};
@@ -214,9 +191,8 @@ class Userapi {
           );
         });
         return parsedData;
-      } else {
-        throw Exception("Failed to load children questions");
       }
+      throw Exception("Failed to load children questions");
     } catch (e) {
       print("Error fetching children questions: $e");
       return {};
@@ -225,7 +201,7 @@ class Userapi {
 
   static Future<String?> makeSOSCallApi(String loc) async {
     try {
-      final response = await _dio.post(
+      final response = await post(
         "/api/sos-call",
         data: {"location": loc},
       );
@@ -235,10 +211,9 @@ class Userapi {
       } else if (response.statusCode == 401) {
         print("Unauthorized: ${response.data['error']}");
         return response.data["error"];
-      } else {
-        print("Request failed with status: ${response.statusCode}");
-        return null;
       }
+      print("Request failed with status: ${response.statusCode}");
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
@@ -270,16 +245,14 @@ class Userapi {
         'time_of_appointment': timeOfAppointment,
         'payment_json': jsonEncode(orderData),
       });
-      final response =
-          await _dio.post("/api/for_new_bookappointments", data: formData);
+      final response = await post("/api/for_new_bookappointments", data: formData);
       if (response.statusCode == 200) {
         print("✅ Appointment Response: ${response.data}");
         return BookApointmentModel.fromJson(response.data);
-      } else {
-        print("❌ Failed to book appointment: ${response.statusCode}");
-        print("Response: ${response.data}");
-        return null;
       }
+      print("❌ Failed to book appointment: ${response.statusCode}");
+      print("Response: ${response.data}");
+      return null;
     } catch (e) {
       print("Error: $e");
       return null;
@@ -313,16 +286,14 @@ class Userapi {
         'patient_id': patientId,
         'payment_json': jsonEncode(orderData),
       });
-      final response =
-          await _dio.post("/api/for_exesting_bookappointments", data: formData);
+      final response = await post("/api/for_exesting_bookappointments", data: formData);
       if (response.statusCode == 200) {
         print("✅ Existing Appointment Response: ${response.data}");
         return BookApointmentModel.fromJson(response.data);
-      } else {
-        print("❌ Failed to book existing appointment: ${response.statusCode}");
-        print("Response: ${response.data}");
-        return null;
       }
+      print("❌ Failed to book existing appointment: ${response.statusCode}");
+      print("Response: ${response.data}");
+      return null;
     } catch (e) {
       print("Error: $e");
       return null;
@@ -332,7 +303,7 @@ class Userapi {
   static Future<RegisterModel?> postRegister(String name, String mail,
       String password, String phone, String fcmToken, String sosNumber) async {
     try {
-      final response = await _dio.post(
+      final response = await post(
         "/api/user/userregister",
         data: {
           "name": name,
@@ -346,19 +317,18 @@ class Userapi {
       if (response.statusCode == 200) {
         print("PostRegister Status: ${response.data}");
         return RegisterModel.fromJson(response.data);
-      } else {
-        print("Request failed with status: ${response.statusCode}");
-        return null;
       }
+      print("Request failed with status: ${response.statusCode}");
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
     }
   }
 
-  static Future<Map<String, dynamic>?> postLogin(data) async {
+  static Future<Map<String, dynamic>?> postLogin(dynamic data) async {
     try {
-      final response = await _dio.post("/api/mobile-login", data: data);
+      final response = await post("/api/mobile-login", data: data);
       if (response.statusCode == 200) {
         print("PostLogin Status: ${response.data}");
         return {
@@ -373,16 +343,17 @@ class Userapi {
           "status": response.data["status"],
         };
       }
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
     }
   }
 
-  static Future<Map<String, dynamic>?> postProfileDetails(String name,
-      String email, String phone) async {
+  static Future<Map<String, dynamic>?> postProfileDetails(
+      String name, String email, String phone) async {
     try {
-      final response = await _dio.post(
+      final response = await post(
         "/api/users/update_user_details",
         data: {
           "name": name,
@@ -393,18 +364,9 @@ class Userapi {
       if (response.statusCode == 200) {
         print("postProfileDetails Status: ${response.data}");
         return {"message": response.data["message"]};
-      } else if (response.statusCode == 401) {
-        print("Unauthorized: ${response.data['error']}");
-        return {"error": response.data["error"]};
-      } else if (response.statusCode == 400) {
-        print("postProfileDetails Error: ${response.data}");
-        return response.data.containsKey("errors")
-            ? {"error": response.data["errors"]}
-            : {"error": "Bad request with status 400"};
-      } else {
-        print("Request failed with status: ${response.statusCode}");
-        return {"error": "Request failed with status: ${response.statusCode}"};
       }
+      print("Request failed with status: ${response.statusCode}");
+      return {"error": "Request failed with status: ${response.statusCode}"};
     } catch (e) {
       print("Error occurred: $e");
       return {"error": e.toString()};
@@ -413,14 +375,13 @@ class Userapi {
 
   static Future<TherapiesListModel?> getTherapiesList() async {
     try {
-      final response = await _dio.get("/api/users/guest-service?type=Therapy");
+      final response = await get("/api/users/guest-service?type=Therapy");
       if (response.statusCode == 200) {
-        print("getprofiledetails Status: ${response.data}");
+        print("getTherapiesList Status: ${response.data}");
         return TherapiesListModel.fromJson(response.data);
-      } else {
-        print("Request failed with status: ${response.statusCode}");
-        return null;
       }
+      print("Request failed with status: ${response.statusCode}");
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
@@ -429,14 +390,13 @@ class Userapi {
 
   static Future<TherapiesListModel?> getServiceDetails(String id) async {
     try {
-      final response = await _dio.get("/api/users/guest-service/$id");
+      final response = await get("/api/users/guest-service/$id");
       if (response.statusCode == 200) {
-        print("getTherapyDetails Status: ${response.data}");
+        print("getServiceDetails Status: ${response.data}");
         return TherapiesListModel.fromJson(response.data);
-      } else {
-        print("Request failed with status: ${response.statusCode}");
-        return null;
       }
+      print("Request failed with status: ${response.statusCode}");
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
@@ -445,14 +405,13 @@ class Userapi {
 
   static Future<TherapiesListModel?> getCounsellingDetails(String id) async {
     try {
-      final response = await _dio.get("/api/users/guest-service/$id");
+      final response = await get("/api/users/guest-service/$id");
       if (response.statusCode == 200) {
         print("getCounsellingDetails Status: ${response.data}");
         return TherapiesListModel.fromJson(response.data);
-      } else {
-        print("Request failed with status: ${response.statusCode}");
-        return null;
       }
+      print("Request failed with status: ${response.statusCode}");
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
@@ -461,14 +420,13 @@ class Userapi {
 
   static Future<CounsellingsListModel?> getCounsellingsList() async {
     try {
-      final response = await _dio.get("/api/users/guest-service?type=Counselling");
+      final response = await get("/api/users/guest-service?type=Counselling");
       if (response.statusCode == 200) {
         print("getCounsellingsList Status: ${response.data}");
         return CounsellingsListModel.fromJson(response.data);
-      } else {
-        print("Request failed with status: ${response.statusCode}");
-        return null;
       }
+      print("Request failed with status: ${response.statusCode}");
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
@@ -477,14 +435,13 @@ class Userapi {
 
   static Future<ProfileDetailsModel?> getProfileDetails(String userId) async {
     try {
-      final response = await _dio.get("/api/users/view-profile");
+      final response = await get("/api/users/view-profile");
       if (response.statusCode == 200) {
-        print("getprofiledetails Status: ${response.data}");
+        print("getProfileDetails Status: ${response.data}");
         return ProfileDetailsModel.fromJson(response.data);
-      } else {
-        print("Request failed with status: ${response.statusCode}");
-        return null;
       }
+      print("Request failed with status: ${response.statusCode}");
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
@@ -494,7 +451,7 @@ class Userapi {
   static Future<ReviewSubmitModel?> submitReviewApi(
       String appId, String pageSource, String rating, String review) async {
     try {
-      final response = await _dio.post(
+      final response = await post(
         "/api/create_review",
         data: {
           "app_id": appId,
@@ -504,12 +461,11 @@ class Userapi {
         },
       );
       if (response.statusCode == 200) {
-        print("SubmitReview Status: ${response.data}");
+        print("submitReviewApi Status: ${response.data}");
         return ReviewSubmitModel.fromJson(response.data);
-      } else {
-        print("Error: ${response.statusCode} ${response.data}");
-        return null;
       }
+      print("Error: ${response.statusCode} ${response.data}");
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
@@ -518,14 +474,13 @@ class Userapi {
 
   static Future<BookingHistoryModel?> getBookingHistory() async {
     try {
-      final response = await _dio.get("/api/get_user_booking_hisrory");
+      final response = await get("/api/get_user_booking_hisrory");
       if (response.statusCode == 200) {
-        print("getbookinghistory Status: ${response.data}");
+        print("getBookingHistory Status: ${response.data}");
         return BookingHistoryModel.fromJson(response.data);
-      } else {
-        print("Request failed with status: ${response.statusCode}");
-        return null;
       }
+      print("Request failed with status: ${response.statusCode}");
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
@@ -534,14 +489,13 @@ class Userapi {
 
   static Future<PreviousBookingModel?> getPreviousBookingHistory() async {
     try {
-      final response = await _dio.get("/api/get_user_booking_hisrory");
+      final response = await get("/api/get_user_booking_hisrory");
       if (response.statusCode == 200) {
-        print("getbookinghistory Status: ${response.data}");
+        print("getPreviousBookingHistory Status: ${response.data}");
         return PreviousBookingModel.fromJson(response.data);
-      } else {
-        print("Request failed with status: ${response.statusCode}");
-        return null;
       }
+      print("Request failed with status: ${response.statusCode}");
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
@@ -550,13 +504,12 @@ class Userapi {
 
   static Future<LoginModel?> updateRefreshToken() async {
     try {
-      final response = await _dio.post("/api/refreshToken");
+      final response = await post("/api/refreshToken");
       if (response.statusCode == 200) {
-        print("UpdateRefreshToken response: ${response.data}");
+        print("updateRefreshToken response: ${response.data}");
         return LoginModel.fromJson(response.data);
-      } else {
-        return null;
       }
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
@@ -565,14 +518,13 @@ class Userapi {
 
   static Future<ReviewListModel?> getReviewList(String pageSource) async {
     try {
-      final response = await _dio.get("/api/get_review/$pageSource");
+      final response = await get("/api/get_review/$pageSource");
       if (response.statusCode == 200) {
-        print("getreviewlist response: ${response.data}");
+        print("getReviewList response: ${response.data}");
         return ReviewListModel.fromJson(response.data);
-      } else {
-        print("Request failed with status: ${response.statusCode}");
-        return null;
       }
+      print("Request failed with status: ${response.statusCode}");
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
@@ -588,46 +540,42 @@ class Userapi {
           contentType: mimeType != null ? MediaType.parse(mimeType) : null,
         ),
       });
-      final response =
-          await _dio.post("/api/update_profile_image", data: formData);
+      final response = await post("/api/update_profile_image", data: formData);
       if (response.statusCode == 200) {
-        // Assuming response matches LoginModel structure
         return LoginModel.fromJson(response.data);
-      } else {
-        return null;
       }
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
     }
   }
 
-  static Future<AddAddressModel?> addAddressApi(Map<String,dynamic>data) async {
+  static Future<AddAddressModel?> addAddressApi(Map<String, dynamic> data) async {
     try {
-      final response = await _dio.post("/api/add_user_address",data: data);
+      final response = await post("/api/add_user_address", data: data);
       if (response.statusCode == 200) {
-        print("AddAddressApi Response: ${response.data}");
+        print("addAddressApi Response: ${response.data}");
         return AddAddressModel.fromJson(response.data);
-      } else {
-        print("Error: ${response.statusCode} ${response.data}");
-        return null;
       }
+      print("Error: ${response.statusCode} ${response.data}");
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
     }
   }
 
-  static Future<AddAddressModel?> editAddressApi(Map<String,dynamic>data, String addressId) async {
+  static Future<AddAddressModel?> editAddressApi(
+      Map<String, dynamic> data, String addressId) async {
     try {
-      final response = await _dio.post("/api/update_user_address/$addressId",data: data);
+      final response = await post("/api/update_user_address/$addressId", data: data);
       if (response.statusCode == 200) {
-        print("EditAddressApi Response: ${response.data}");
+        print("editAddressApi Response: ${response.data}");
         return AddAddressModel.fromJson(response.data);
-      } else {
-        print("Error: ${response.statusCode} ${response.data}");
-        return null;
       }
+      print("Error: ${response.statusCode} ${response.data}");
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
@@ -636,14 +584,13 @@ class Userapi {
 
   static Future<AddressListModel?> getAddressList() async {
     try {
-      final response = await _dio.get("/api/get_user_address_details");
+      final response = await get("/api/get_user_address_details");
       if (response.statusCode == 200) {
-        print("getaddresslist response: ${response.data}");
+        print("getAddressList response: ${response.data}");
         return AddressListModel.fromJson(response.data);
-      } else {
-        print("Request failed with status: ${response.statusCode}");
-        return null;
       }
+      print("Request failed with status: ${response.statusCode}");
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
@@ -652,32 +599,28 @@ class Userapi {
 
   static Future<String?> downloadScriptApi() async {
     try {
-      final response = await _dio.get("/api/downloadfile/79");
+      final response = await get("/api/downloadfile/79");
       if (response.statusCode == 200) {
-        print("downloadscriptapi response: ${response.data}");
-        return response.data.toString(); // Assuming it's a string response
-      } else {
-        print("Request failed with status: ${response.statusCode}");
-        return null;
+        print("downloadScriptApi response: ${response.data}");
+        return response.data.toString();
       }
+      print("Request failed with status: ${response.statusCode}");
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
     }
   }
 
-  static Future<PreviousBookingModel?> getPreviousBookings(
-      String pageSource) async {
+  static Future<PreviousBookingModel?> getPreviousBookings(String pageSource) async {
     try {
-      final response =
-          await _dio.get("/api/check_previous_bookings/$pageSource");
+      final response = await get("/api/check_previous_bookings/$pageSource");
       if (response.statusCode == 200) {
-        print("getpreviousbookings response: ${response.data}");
+        print("getPreviousBookings response: ${response.data}");
         return PreviousBookingModel.fromJson(response.data);
-      } else {
-        print("Request failed with status: ${response.statusCode}");
-        return null;
       }
+      print("Request failed with status: ${response.statusCode}");
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
@@ -687,15 +630,13 @@ class Userapi {
   static Future<BehaviouralTrackingModel?> getBehaviouralList(
       String id, String pageSource) async {
     try {
-      final response =
-          await _dio.get("/api/get_therapy_traking/$id/$pageSource");
+      final response = await get("/api/get_therapy_traking/$id/$pageSource");
       if (response.statusCode == 200) {
-        print("getbehaviourallist response: ${response.data}");
+        print("getBehaviouralList response: ${response.data}");
         return BehaviouralTrackingModel.fromJson(response.data);
-      } else {
-        print("Request failed with status: ${response.statusCode}");
-        return null;
       }
+      print("Request failed with status: ${response.statusCode}");
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
@@ -704,14 +645,13 @@ class Userapi {
 
   static Future<QuoteModel?> getQuotes() async {
     try {
-      final response = await _dio.get("/api/users/quatations");
+      final response = await get("/api/users/quatations");
       if (response.statusCode == 200) {
-        print("getquotes response: ${response.data}");
+        print("getQuotes response: ${response.data}");
         return QuoteModel.fromJson(response.data);
-      } else {
-        print("Request failed with status: ${response.statusCode}");
-        return null;
       }
+      print("Request failed with status: ${response.statusCode}");
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;
@@ -720,17 +660,16 @@ class Userapi {
 
   static Future<FeedbackHelathModel?> postHealthFeedback(String msg) async {
     try {
-      final response = await _dio.post(
+      final response = await post(
         "/api/users/daily-feedback",
         data: {"message": msg},
       );
       if (response.statusCode == 200) {
-        print("posthelathFeedback response: ${response.data}");
+        print("postHealthFeedback response: ${response.data}");
         return FeedbackHelathModel.fromJson(response.data);
-      } else {
-        print("Request failed with status: ${response.statusCode}");
-        return null;
       }
+      print("Request failed with status: ${response.statusCode}");
+      return null;
     } catch (e) {
       print("Error occurred: $e");
       return null;

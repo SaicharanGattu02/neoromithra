@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+import '../utils/spinkits.dart';
+
 class ProductGridItem extends StatelessWidget {
   final String imageUrl;
   final String title;
@@ -44,7 +46,7 @@ class ProductGridItem extends StatelessWidget {
                     width: 150.0,
                     height: 106.0,
                     color: Colors.grey[300],
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Center(child: spinkits.getSpinningLinespinkit()),
                   ),
                   errorWidget: (context, url, error) => Container(
                     width: 150.0,

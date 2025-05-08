@@ -1,18 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:neuromithra/Presentation/BookAppointment.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../Model/ReviewListModel.dart';
 import '../Providers/HomeProviders.dart';
 import '../utils/Color_Constants.dart';
 import '../utils/constants.dart';
-import 'ReviewListScreen.dart';
-import '../services/userapi.dart';
-import '../utils/ReviewCard.dart';
+import '../utils/spinkits.dart';
 
 class ServiceDetailsScreen extends StatefulWidget {
   final String serviceName;
@@ -266,7 +262,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
     return AppBar(
       title: Text(
         widget.serviceName,
-        style:  TextStyle(
+        style: TextStyle(
           fontWeight: FontWeight.w600,
           fontFamily: "Inter",
           color: primarycolor,
@@ -374,14 +370,11 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
           width: w,
           height: h * 0.3,
           fit: BoxFit.cover,
-          placeholder: (context, url) => Shimmer.fromColors(
-            baseColor: Colors.grey[300]!,
-            highlightColor: Colors.grey[100]!,
-            child: Container(
-              width: w,
-              height: h * 0.3,
-              color: Colors.white,
-            ),
+          placeholder: (context, url) => Container(
+            width: 150.0,
+            height: 106.0,
+            color: Colors.grey[300],
+            child: Center(child: spinkits.getSpinningLinespinkit()),
           ),
         ),
         Container(
