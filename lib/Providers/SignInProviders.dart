@@ -13,7 +13,7 @@ class SignInProviders with ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   Future<void> logIn(BuildContext context, Map<String, dynamic> data) async {
-    print('Data:${data}');
+    debugPrint('Data:${data}');
     try {
       _isLoading = true;
       _errorMessage = null;

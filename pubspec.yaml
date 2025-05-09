@@ -125,9 +125,11 @@ flutter:
      - family: Poppins
        fonts:
          - asset: fonts/Poppins-Regular.ttf
-         - asset: fonts/Poppins-Bold.ttf
-         - asset: fonts/Poppins-SemiBold.ttf
-           weight: 700
+
+     - family: general_sans
+       fonts:
+         - asset: fonts/GeneralSans-Regular.otf
+
      - family: Epi
        fonts:
          - asset: fonts/Epilogue-Regular.ttf

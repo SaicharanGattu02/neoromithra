@@ -53,7 +53,7 @@ class _RegisterState extends State<Register> {
       "contact": _mobilenumberController.text,
       "fcm_token": fcmToken,
     };
-    Provider.of<RegisterProvider>(context,listen: false).Register(context, data);
+    Provider.of<RegisterProvider>(context,listen: false).Register(data);
   }
 
   @override

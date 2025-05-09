@@ -45,7 +45,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
         userData.getProfileDetails()
       ]);
     } catch (e) {
-      print("Error loading dashboard data: $e");
+      debugPrint("Error loading dashboard data: $e");
     } finally {
       setState(() {
         isLoading = false;
@@ -266,7 +266,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
       setState(() {
         if (res != null && res.isNotEmpty) {
         } else {
-          print('No message received from the API');
+          debugPrint('No message received from the API');
         }
       });
     } catch (e) {
@@ -291,10 +291,10 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
   //       String paymentUrl = res['payment_url'];
   //       _launchURL(paymentUrl);
   //     } else {
-  //       debugPrint("Payment failed: ${res?['message'] ?? 'Unknown error'}");
+  //       debugdebugPrint("Payment failed: ${res?['message'] ?? 'Unknown error'}");
   //     }
   //   } catch (e) {
-  //     debugPrint("Error: ${e.toString()}");
+  //     debugdebugPrint("Error: ${e.toString()}");
   //   }
   // }
 
@@ -363,27 +363,27 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                     ),
                   ),
                   actions: [
-                    BlocBuilder<LocationCubit, LocationState>(
-                        builder: (context, state) {
-                      String loc = '';
-                      if (state is LocationLoaded) {
-                        loc = state.locationName;
-                      }
-                      return InkResponse(
-                        onTap: () {
-                          _showSOSConfirmationDialog(context, loc);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Lottie.asset(
-                            'assets/animations/sos.json',
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      );
-                    }),
+                    // BlocBuilder<LocationCubit, LocationState>(
+                    //     builder: (context, state) {
+                    //   String loc = '';
+                    //   if (state is LocationLoaded) {
+                    //     loc = state.locationName;
+                    //   }
+                    //   return InkResponse(
+                    //     onTap: () {
+                    //       _showSOSConfirmationDialog(context, loc);
+                    //     },
+                    //     child: Padding(
+                    //       padding: const EdgeInsets.all(5.0),
+                    //       child: Lottie.asset(
+                    //         'assets/animations/sos.json',
+                    //         width: 50,
+                    //         height: 50,
+                    //         fit: BoxFit.contain,
+                    //       ),
+                    //     ),
+                    //   );
+                    // }),
                   ],
                 ),
                 body: Consumer<HomeProviders>(

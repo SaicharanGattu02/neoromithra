@@ -76,7 +76,7 @@ class _MainDashBoardState extends State<MainDashBoard> {
         //     onPressed: () {
         //       setState(() {
         //         _makeSOSCall(loc);
-        //         print("loction:${loc}");
+        //         debugPrint("loction:${loc}");
         //       });
         //     },
         //     child: makingSOSCall
@@ -132,7 +132,7 @@ class _MainDashBoardState extends State<MainDashBoard> {
   //       return BlocConsumer<LocationCubit, LocationState>(
   //         listener: (context, state) {
   //           if (state is LocationLoaded) {
-  //             print('Location Loaded');
+  //             debugPrint('Location Loaded');
   //             Navigator.pop(bottomSheetContext);
   //           }
   //         },

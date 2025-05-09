@@ -2,9 +2,11 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:neuromithra/Presentation/SeriveDeailsScreen.dart';
+import 'package:neuromithra/Presentation/BookAppointment.dart';
+import 'package:neuromithra/Presentation/ServiceDeailsScreen.dart';
 import 'package:neuromithra/utils/constants.dart';
 import 'Assesment/ResultScreen.dart';
+import 'Presentation/Bookappointment1.dart';
 import 'Presentation/Authentication/LogInWithMobile.dart';
 import 'Presentation/Authentication/Otp.dart';
 import 'Presentation/BookedApointmentsuccessfully.dart';
@@ -134,6 +136,19 @@ final GoRouter goRouter =
       return buildSlideTransitionPage(
           MainDashBoard(initialIndex: initialIndex), state);
     },
+  ),
+  GoRoute(
+    path: '/book_appointment',
+    pageBuilder: (context, state) {
+      final pagesource = state.uri.queryParameters['pagesource'] ?? '0';
+      return buildSlideTransitionPage(
+          Bookappointment(pagesource: pagesource), state);
+    },
+  ),
+  GoRoute(
+    path: '/book_appointment1',
+    pageBuilder: (context, state) =>
+        buildSlideTransitionPage(Bookappointment1(), state),
   ),
   GoRoute(
     path: '/service_details_screen',
