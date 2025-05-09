@@ -25,169 +25,176 @@ class NewHomeScreen extends StatefulWidget {
 }
 
 class _NewHomeScreenState extends State<NewHomeScreen> {
+  bool isLoading = true;
   @override
   void initState() {
-    GetData();
-
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      GetData();
+    });
   }
 
   Future<dynamic> GetData() async {
-    try{
+    try {
       final homeScreenData = Provider.of<HomeProviders>(context, listen: false);
       final userData = Provider.of<UserProviders>(context, listen: false);
       await Future.wait([
         homeScreenData.getQuotes(),
+        homeScreenData.getTherapiesList(),
+        homeScreenData.getCounsellingsList(),
         userData.getProfileDetails()
       ]);
-    }catch(e){
+    } catch (e) {
       print("Error loading dashboard data: $e");
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
-
   }
 
-  final List<Map<String, dynamic>> therapies = [
-    {
-      'image': 'assets/Therephy/speech_theraphy.jpg',
-      'subtitle': 'Healing begins with self-compassion.',
-      'text': 'Speech Therapy',
-      'description':
-          'Speech Therapy focuses on diagnosing and treating speech and language disorders to enhance a child’s ability to communicate. This therapy addresses various aspects of communication, including articulation, language comprehension, expressive language, and social communication, ensuring a comprehensive approach to speech and language development.',
-      'keyAreas': [
-        'Improved Articulation: Helps children produce clear speech sounds.',
-        'Enhanced Language Comprehension: Develops understanding of spoken language.',
-        'Strengthened Expressive Language: Supports expressing thoughts and emotions.',
-        'Better Social Communication: Teaches essential interaction skills.'
-      ],
-      'benefits': [
-        'Helps individuals with speech sound issues.',
-        'Improves understanding and use of language.',
-        'Enhances social communication skills.',
-        'Supports those with speech-related disorders.'
-      ]
-    },
-    {
-      'image': 'assets/Therephy/occupational_theraphy.jpeg',
-      'subtitle':
-          "Helping Individuals Achieve Independence and Improve Daily Functioning.",
-      'text': 'Occupational Therapy',
-      'description':
-          'Occupational Therapy focuses on helping children perform daily activities and tasks that are essential for their growth and development. This therapy addresses a range of skills, including fine motor skills, sensory processing, self-care tasks, and hand-eye coordination, to support overall functional independence and participation in daily life.',
-      'keyAreas': [
-        'Enhanced Fine Motor Skills: Develops the precise movements needed for activities such as writing, buttoning clothes, and using utensils.',
-        'Improved Sensory Processing: Helps children manage and respond to sensory input effectively, promoting better focus and emotional regulation.',
-        'Support for Self-Care Tasks: Assists in learning and performing essential self-care activities like dressing, grooming, and feeding.',
-        'Better Hand-Eye Coordination: Improves the ability to coordinate visual input with hand movements, essential for many daily tasks.',
-        'Increased Independence: Fosters the skills necessary for children to perform tasks independently, boosting their confidence and self-esteem.',
-      ],
-      'benefits': [
-        'Have developmental delays or disabilities',
-        'Experience difficulties with fine motor skills or hand-eye coordination',
-        'Struggle with sensory processing issues',
-        'Need support with self-care tasks and daily activities',
-        'Need support with self-care tasks and daily activities',
-        'Seek to improve their participation in school and other daily environments',
-      ]
-    },
-    {
-      'image': 'assets/Therephy/physical_theraphy.jpeg',
-      'text': 'Physio Therapy',
-      'subtitle':
-          'Restoring Strength, Mobility, and Confidence Through Expert Physio Therapy.',
-      'description':
-          'Physio Therapy is a therapeutic approach focused on enhancing physical function, strength, and mobility through various techniques and exercises. This therapy aims to address and treat musculoskeletal, neurological, and developmental issues that impact an individual’s ability to perform daily activities and enjoy a fulfilling life.',
-      'keyAreas': [
-        'Improved Mobility: Enhances range of motion and movement abilities, allowing for greater independence in daily activities.',
-        'Increased Strength: Builds muscle strength and endurance to support overall physical health and functionality.',
-        'Enhanced Balance and Coordination: Helps improve balance and coordination, reducing the risk of falls and injuries.',
-        'Pain Relief: Provides techniques and exercises to alleviate pain and discomfort associated with physical conditions or injuries.',
-        'Rehabilitation Support: Assists in recovering from surgeries, injuries, or physical conditions by promoting optimal healing and function.'
-      ],
-      'benefits': [
-        'Are recovering from injuries or surgeries.',
-        'Experience chronic pain or discomfort.',
-        'Have difficulty with movement, strength, or balance.',
-        'Are dealing with musculoskeletal or neurological conditions.',
-        'Seek to improve overall physical health and functionality.'
-      ]
-    },
-  ];
-
-  final List<Map<String, dynamic>> counsellings = [
-    {
-      'image': 'assets/Counciling/relationship_counsiling.jpeg',
-      'text': 'Relationship Counselling',
-      'subtitle': "Strengthening Bonds and Fostering Healthy Communication.",
-      'heading1': 'Relationship Counseling for Couples at NeuroMitra',
-      'description1':
-          'At NeuroMitra, we believe that strong, healthy relationships are the foundation of a fulfilling life. Whether you’re navigating the challenges of a new relationship or looking to strengthen the bond you’ve built over years, our Relationship Counseling for Couples is here to support you.',
-      'heading2': 'Why Relationship Counseling?',
-      'description2':
-          'Every relationship experiences ups and downs, but sometimes challenges can feel overwhelming. Our Relationship Counseling provides couples with a safe space to explore their feelings, improve communication, and rebuild trust. Whether you’re dealing with conflicts, communication issues, or simply want to enhance your relationship, we’re here to help.',
-      'keyAreas': [
-        'Personalized Sessions: We understand that every couple is unique. Our counseling sessions are tailored to address the specific needs and goals of your relationship.',
-        'Effective Communication: We help you develop better communication skills, ensuring that both partners feel heard and understood.',
-        'Conflict Resolution: Learn strategies to manage and resolve conflicts in a healthy, constructive manner.',
-        'Rebuilding Trust: Whether dealing with past hurts or ongoing issues, we work with you to rebuild and strengthen trust in your relationship.',
-        'Growth and Connection: Beyond resolving conflicts, we focus on fostering deeper connection and mutual growth, helping you rediscover the joy in your relationship.'
-      ],
-      'benefits': [
-        'Pre-Marital Counseling: Preparing for marriage and wanting to build a strong foundation.',
-        'Married Couples: Looking to navigate challenges or enhance your relationship.',
-        'Long-Term Partners: Seeking to reignite connection and strengthen your bond.',
-        'Couples in Crisis: Facing significant issues that threaten the stability of your relationship.'
-      ]
-    },
-    {
-      'image': 'assets/Counciling/behavioral_counciling.jpeg',
-      'text': 'Behavioral Counselling',
-      'subtitle':
-          'Empowering Positive Change Through Personalized Behavioral Counselling',
-      'heading1': 'Behavioral Counseling Services at NeuroMitra',
-      'description1':
-          'At NeuroMitra, we are committed to helping individuals understand and modify behaviors that may be affecting their lives. Our Behavioral Counseling Services are designed to support clients in identifying negative behavior patterns, developing positive coping strategies, and achieving lasting change.',
-      'heading2': 'What is Behavioral Counseling?',
-      'description2':
-          'Behavioral Counseling focuses on understanding the connection between thoughts, feelings, and behaviors. It involves working with a trained counselor to identify unhelpful behaviors, understand their underlying causes, and develop strategies to replace them with more positive actions. This type of counseling is particularly effective for individuals dealing with issues such as anxiety, depression, stress, anger management, and behavioral disorders.',
-      'keyAreas': [
-        'Personalized Treatment Plans: We tailor our counseling sessions to address the specific behaviors and challenges you’re facing, ensuring that you receive targeted and effective support.',
-        'Evidence-Based Techniques: Our counselors use proven therapeutic approaches, such as Cognitive Behavioral Therapy (CBT), to help you develop healthier behaviors and thought patterns.',
-        'Goal-Oriented Therapy: We work with you to set achievable goals and track your progress, helping you stay motivated and focused on your journey to change.',
-        'Skill Development: Learn practical techniques to manage emotions, improve decision-making, and respond to situations in healthier ways.'
-      ],
-      'benefits': [
-        'Anxiety and Depression: Learn to manage symptoms by changing the behaviors and thought patterns that contribute to these conditions.',
-        'Stress Management: Develop coping strategies to handle stress more effectively, reducing its impact on your daily life.',
-        'Anger Management: Understand the triggers of your anger and learn healthier ways to express and manage your emotions.',
-        'Behavioral Disorders: Address issues such as ADHD, OCD, and other behavioral challenges with targeted support.',
-        'Relationship Issues: Improve communication, conflict resolution, and other behaviors that impact your relationships.'
-      ]
-    },
-    {
-      'image': 'assets/Counciling/grief_counsiling.jpeg',
-      'text': 'Grief Counselling',
-      'subtitle':
-          "Supporting Healing and Emotional Recovery Through Compassionate Guidance.",
-      'heading1': '"Supporting Healing and Helping You Navigate Loss."',
-      'description1':
-          'At NeuroMitra, we understand that grief is a deeply personal and often overwhelming experience. Our Grief Counseling Services are here to provide compassionate support and guidance as you navigate the difficult journey of loss.',
-      'heading2': 'What is Grief Counseling?',
-      'description2':
-          'Grief Counseling is a therapeutic process designed to help individuals cope with the emotional and psychological impact of losing a loved one. Whether your loss is recent or occurred some time ago, our counselors are here to help you process your feelings, find comfort, and move forward at your own pace.',
-      'keyAreas': [
-        'Compassionate Support: We offer a safe, non-judgmental space where you can openly express your grief and share your emotions.',
-        'Personalized Care: Every individual’s grief journey is unique. We tailor our counseling sessions to meet your specific needs, honoring your personal experience of loss.',
-        'Healing Techniques: Our counselors use evidence-based approaches to help you process your grief, manage overwhelming emotions, and find ways to cope with the changes in your life.',
-        'Long-Term Support: Grief doesn’t have a timeline, and neither does our support. We’re here to walk alongside you, offering continued care as you navigate your grief journey.'
-      ],
-      'benefits': [
-        'Experienced Counselors: Our grief counselors are specially trained in bereavement support and have extensive experience helping individuals process and cope with loss.',
-        'Confidential and Respectful Environment: We respect your privacy and ensure a confidential space where you can share your thoughts and feelings without fear of judgment.',
-        'Holistic Healing: We focus on the whole person, addressing not just the emotional aspects of grief but also the physical, spiritual, and psychological impacts.',
-        'Flexible Support Options: We offer both individual and group counseling sessions, as well as online and in-person options, to accommodate your preferences and needs.'
-      ]
-    }
-  ];
+  // final List<Map<String, dynamic>> therapies = [
+  //   {
+  //     'image': 'assets/Therephy/speech_theraphy.jpg',
+  //     'subtitle': 'Healing begins with self-compassion.',
+  //     'text': 'Speech Therapy',
+  //     'description':
+  //         'Speech Therapy focuses on diagnosing and treating speech and language disorders to enhance a child’s ability to communicate. This therapy addresses various aspects of communication, including articulation, language comprehension, expressive language, and social communication, ensuring a comprehensive approach to speech and language development.',
+  //     'keyAreas': [
+  //       'Improved Articulation: Helps children produce clear speech sounds.',
+  //       'Enhanced Language Comprehension: Develops understanding of spoken language.',
+  //       'Strengthened Expressive Language: Supports expressing thoughts and emotions.',
+  //       'Better Social Communication: Teaches essential interaction skills.'
+  //     ],
+  //     'benefits': [
+  //       'Helps individuals with speech sound issues.',
+  //       'Improves understanding and use of language.',
+  //       'Enhances social communication skills.',
+  //       'Supports those with speech-related disorders.'
+  //     ]
+  //   },
+  //   {
+  //     'image': 'assets/Therephy/occupational_theraphy.jpeg',
+  //     'subtitle':
+  //         "Helping Individuals Achieve Independence and Improve Daily Functioning.",
+  //     'text': 'Occupational Therapy',
+  //     'description':
+  //         'Occupational Therapy focuses on helping children perform daily activities and tasks that are essential for their growth and development. This therapy addresses a range of skills, including fine motor skills, sensory processing, self-care tasks, and hand-eye coordination, to support overall functional independence and participation in daily life.',
+  //     'keyAreas': [
+  //       'Enhanced Fine Motor Skills: Develops the precise movements needed for activities such as writing, buttoning clothes, and using utensils.',
+  //       'Improved Sensory Processing: Helps children manage and respond to sensory input effectively, promoting better focus and emotional regulation.',
+  //       'Support for Self-Care Tasks: Assists in learning and performing essential self-care activities like dressing, grooming, and feeding.',
+  //       'Better Hand-Eye Coordination: Improves the ability to coordinate visual input with hand movements, essential for many daily tasks.',
+  //       'Increased Independence: Fosters the skills necessary for children to perform tasks independently, boosting their confidence and self-esteem.',
+  //     ],
+  //     'benefits': [
+  //       'Have developmental delays or disabilities',
+  //       'Experience difficulties with fine motor skills or hand-eye coordination',
+  //       'Struggle with sensory processing issues',
+  //       'Need support with self-care tasks and daily activities',
+  //       'Need support with self-care tasks and daily activities',
+  //       'Seek to improve their participation in school and other daily environments',
+  //     ]
+  //   },
+  //   {
+  //     'image': 'assets/Therephy/physical_theraphy.jpeg',
+  //     'text': 'Physio Therapy',
+  //     'subtitle':
+  //         'Restoring Strength, Mobility, and Confidence Through Expert Physio Therapy.',
+  //     'description':
+  //         'Physio Therapy is a therapeutic approach focused on enhancing physical function, strength, and mobility through various techniques and exercises. This therapy aims to address and treat musculoskeletal, neurological, and developmental issues that impact an individual’s ability to perform daily activities and enjoy a fulfilling life.',
+  //     'keyAreas': [
+  //       'Improved Mobility: Enhances range of motion and movement abilities, allowing for greater independence in daily activities.',
+  //       'Increased Strength: Builds muscle strength and endurance to support overall physical health and functionality.',
+  //       'Enhanced Balance and Coordination: Helps improve balance and coordination, reducing the risk of falls and injuries.',
+  //       'Pain Relief: Provides techniques and exercises to alleviate pain and discomfort associated with physical conditions or injuries.',
+  //       'Rehabilitation Support: Assists in recovering from surgeries, injuries, or physical conditions by promoting optimal healing and function.'
+  //     ],
+  //     'benefits': [
+  //       'Are recovering from injuries or surgeries.',
+  //       'Experience chronic pain or discomfort.',
+  //       'Have difficulty with movement, strength, or balance.',
+  //       'Are dealing with musculoskeletal or neurological conditions.',
+  //       'Seek to improve overall physical health and functionality.'
+  //     ]
+  //   },
+  // ];
+  //
+  // final List<Map<String, dynamic>> counsellings = [
+  //   {
+  //     'image': 'assets/Counciling/relationship_counsiling.jpeg',
+  //     'text': 'Relationship Counselling',
+  //     'subtitle': "Strengthening Bonds and Fostering Healthy Communication.",
+  //     'heading1': 'Relationship Counseling for Couples at NeuroMitra',
+  //     'description1':
+  //         'At NeuroMitra, we believe that strong, healthy relationships are the foundation of a fulfilling life. Whether you’re navigating the challenges of a new relationship or looking to strengthen the bond you’ve built over years, our Relationship Counseling for Couples is here to support you.',
+  //     'heading2': 'Why Relationship Counseling?',
+  //     'description2':
+  //         'Every relationship experiences ups and downs, but sometimes challenges can feel overwhelming. Our Relationship Counseling provides couples with a safe space to explore their feelings, improve communication, and rebuild trust. Whether you’re dealing with conflicts, communication issues, or simply want to enhance your relationship, we’re here to help.',
+  //     'keyAreas': [
+  //       'Personalized Sessions: We understand that every couple is unique. Our counseling sessions are tailored to address the specific needs and goals of your relationship.',
+  //       'Effective Communication: We help you develop better communication skills, ensuring that both partners feel heard and understood.',
+  //       'Conflict Resolution: Learn strategies to manage and resolve conflicts in a healthy, constructive manner.',
+  //       'Rebuilding Trust: Whether dealing with past hurts or ongoing issues, we work with you to rebuild and strengthen trust in your relationship.',
+  //       'Growth and Connection: Beyond resolving conflicts, we focus on fostering deeper connection and mutual growth, helping you rediscover the joy in your relationship.'
+  //     ],
+  //     'benefits': [
+  //       'Pre-Marital Counseling: Preparing for marriage and wanting to build a strong foundation.',
+  //       'Married Couples: Looking to navigate challenges or enhance your relationship.',
+  //       'Long-Term Partners: Seeking to reignite connection and strengthen your bond.',
+  //       'Couples in Crisis: Facing significant issues that threaten the stability of your relationship.'
+  //     ]
+  //   },
+  //   {
+  //     'image': 'assets/Counciling/behavioral_counciling.jpeg',
+  //     'text': 'Behavioral Counselling',
+  //     'subtitle':
+  //         'Empowering Positive Change Through Personalized Behavioral Counselling',
+  //     'heading1': 'Behavioral Counseling Services at NeuroMitra',
+  //     'description1':
+  //         'At NeuroMitra, we are committed to helping individuals understand and modify behaviors that may be affecting their lives. Our Behavioral Counseling Services are designed to support clients in identifying negative behavior patterns, developing positive coping strategies, and achieving lasting change.',
+  //     'heading2': 'What is Behavioral Counseling?',
+  //     'description2':
+  //         'Behavioral Counseling focuses on understanding the connection between thoughts, feelings, and behaviors. It involves working with a trained counselor to identify unhelpful behaviors, understand their underlying causes, and develop strategies to replace them with more positive actions. This type of counseling is particularly effective for individuals dealing with issues such as anxiety, depression, stress, anger management, and behavioral disorders.',
+  //     'keyAreas': [
+  //       'Personalized Treatment Plans: We tailor our counseling sessions to address the specific behaviors and challenges you’re facing, ensuring that you receive targeted and effective support.',
+  //       'Evidence-Based Techniques: Our counselors use proven therapeutic approaches, such as Cognitive Behavioral Therapy (CBT), to help you develop healthier behaviors and thought patterns.',
+  //       'Goal-Oriented Therapy: We work with you to set achievable goals and track your progress, helping you stay motivated and focused on your journey to change.',
+  //       'Skill Development: Learn practical techniques to manage emotions, improve decision-making, and respond to situations in healthier ways.'
+  //     ],
+  //     'benefits': [
+  //       'Anxiety and Depression: Learn to manage symptoms by changing the behaviors and thought patterns that contribute to these conditions.',
+  //       'Stress Management: Develop coping strategies to handle stress more effectively, reducing its impact on your daily life.',
+  //       'Anger Management: Understand the triggers of your anger and learn healthier ways to express and manage your emotions.',
+  //       'Behavioral Disorders: Address issues such as ADHD, OCD, and other behavioral challenges with targeted support.',
+  //       'Relationship Issues: Improve communication, conflict resolution, and other behaviors that impact your relationships.'
+  //     ]
+  //   },
+  //   {
+  //     'image': 'assets/Counciling/grief_counsiling.jpeg',
+  //     'text': 'Grief Counselling',
+  //     'subtitle':
+  //         "Supporting Healing and Emotional Recovery Through Compassionate Guidance.",
+  //     'heading1': '"Supporting Healing and Helping You Navigate Loss."',
+  //     'description1':
+  //         'At NeuroMitra, we understand that grief is a deeply personal and often overwhelming experience. Our Grief Counseling Services are here to provide compassionate support and guidance as you navigate the difficult journey of loss.',
+  //     'heading2': 'What is Grief Counseling?',
+  //     'description2':
+  //         'Grief Counseling is a therapeutic process designed to help individuals cope with the emotional and psychological impact of losing a loved one. Whether your loss is recent or occurred some time ago, our counselors are here to help you process your feelings, find comfort, and move forward at your own pace.',
+  //     'keyAreas': [
+  //       'Compassionate Support: We offer a safe, non-judgmental space where you can openly express your grief and share your emotions.',
+  //       'Personalized Care: Every individual’s grief journey is unique. We tailor our counseling sessions to meet your specific needs, honoring your personal experience of loss.',
+  //       'Healing Techniques: Our counselors use evidence-based approaches to help you process your grief, manage overwhelming emotions, and find ways to cope with the changes in your life.',
+  //       'Long-Term Support: Grief doesn’t have a timeline, and neither does our support. We’re here to walk alongside you, offering continued care as you navigate your grief journey.'
+  //     ],
+  //     'benefits': [
+  //       'Experienced Counselors: Our grief counselors are specially trained in bereavement support and have extensive experience helping individuals process and cope with loss.',
+  //       'Confidential and Respectful Environment: We respect your privacy and ensure a confidential space where you can share your thoughts and feelings without fear of judgment.',
+  //       'Holistic Healing: We focus on the whole person, addressing not just the emotional aspects of grief but also the physical, spiritual, and psychological impacts.',
+  //       'Flexible Support Options: We offer both individual and group counseling sessions, as well as online and in-person options, to accommodate your preferences and needs.'
+  //     ]
+  //   }
+  // ];
 
   void _showSOSConfirmationDialog(BuildContext context, loc) {
     showDialog(
@@ -339,7 +346,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                             // if (token.isNotEmpty) ...[
                             Text(
                               userData.userData.name != null &&
-                                  userData.userData.name!.isNotEmpty
+                                      userData.userData.name!.isNotEmpty
                                   ? '${userData.userData.name![0].toUpperCase()}${userData.userData.name!.substring(1)}'
                                   : 'Unknown',
                               style: TextStyle(
@@ -379,458 +386,430 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                     }),
                   ],
                 ),
-                body: SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(bottom: 18),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 18),
-                          decoration: BoxDecoration(
-                            color: primarycolor,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Text(
-                            textAlign: TextAlign.center,
-                            "${homeProvider.quote ?? ''}",
-                            style: TextStyle(
-                                color: Color(0xffFBFBFB),
-                                fontFamily: 'Epi',
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14),
-                          ),
-                        ),
-                        // if (token.isNotEmpty) ...[
-                        if (homeProvider.status == false) ...[
-                          Text(
-                            'How are you feeling today ?',
-                            style: TextStyle(
-                                color: Color(0xffF371B34),
-                                fontFamily: 'Epi',
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16),
-                          ),
-                          SizedBox(
-                            height: 12,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                spacing: 10,
+                body: Consumer<HomeProviders>(
+                  builder: (context, homeProviders, child) {
+                    return isLoading
+                        ? _shimmers(context)
+                        : SingleChildScrollView(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Bounce(
-                                    onTap: () {
-                                      homeProvider.postHealthFeedBack(
-                                          'Happy', context);
-                                    },
-                                    duration: Duration(milliseconds: 100),
-                                    child: Container(
-                                      width: 60,
-                                      height: 60,
-                                      padding: EdgeInsets.all(14),
-                                      decoration: BoxDecoration(
-                                          color: Color(0xffEF5DA8),
-                                          borderRadius:
-                                              BorderRadius.circular(16)),
-                                      child: Center(
-                                        child: Image.asset('assets/smile.png'),
-                                      ),
+                                  Container(
+                                    margin: EdgeInsets.only(bottom: 18),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 18),
+                                    decoration: BoxDecoration(
+                                      color: primarycolor,
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Text(
+                                      textAlign: TextAlign.center,
+                                      "${homeProvider.quote ?? ''}",
+                                      style: TextStyle(
+                                          color: Color(0xffFBFBFB),
+                                          fontFamily: 'Epi',
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 14),
                                     ),
                                   ),
-                                  Text(
-                                    'Happy',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Color(0xff828282),
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: 'Epi',
+                                  // if (token.isNotEmpty) ...[
+                                  if (homeProvider.status == false) ...[
+                                    Text(
+                                      'How are you feeling today ?',
+                                      style: TextStyle(
+                                          color: Color(0xffF371B34),
+                                          fontFamily: 'Epi',
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16),
                                     ),
-                                  )
-                                ],
-                              ),
-                              Column(
-                                spacing: 10,
-                                children: [
-                                  Bounce(
-                                    onTap: () {
-                                      homeProvider.postHealthFeedBack(
-                                          'Calm', context);
-                                    },
-                                    child: Container(
-                                      width: 60,
-                                      height: 60,
-                                      padding: EdgeInsets.all(14),
-                                      decoration: BoxDecoration(
-                                          color: Color(0xffAEAFF7),
-                                          borderRadius:
-                                              BorderRadius.circular(16)),
-                                      child: Center(
-                                        child: Image.asset('assets/calm.png'),
-                                      ),
+                                    SizedBox(
+                                      height: 12,
                                     ),
-                                  ),
-                                  Text(
-                                    'Calm',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Color(0xff828282),
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: 'Epi',
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Column(
-                                spacing: 10,
-                                children: [
-                                  Bounce(
-                                    onTap: () {
-                                      homeProvider.postHealthFeedBack(
-                                          'Angry', context);
-                                    },
-                                    child: Container(
-                                      width: 60,
-                                      height: 60,
-                                      padding: EdgeInsets.all(14),
-                                      decoration: BoxDecoration(
-                                          color: Color(0xffEA6D33),
-                                          borderRadius:
-                                              BorderRadius.circular(16)),
-                                      child: Center(
-                                        child: Image.asset('assets/angry.png'),
-                                      ),
-                                    ),
-                                  ),
-                                  Text(
-                                    'Angry',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Color(0xff828282),
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: 'Epi',
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Column(
-                                spacing: 10,
-                                children: [
-                                  Bounce(
-                                    onTap: () {
-                                      homeProvider.postHealthFeedBack(
-                                          'Sad', context);
-                                    },
-                                    child: Container(
-                                      width: 60,
-                                      height: 60,
-                                      padding: EdgeInsets.all(14),
-                                      decoration: BoxDecoration(
-                                          color: Color(0xffC3F2A6),
-                                          borderRadius:
-                                              BorderRadius.circular(16)),
-                                      child: Center(
-                                        child: Image.asset('assets/smile.png'),
-                                      ),
-                                    ),
-                                  ),
-                                  Text(
-                                    'Sad',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Color(0xff828282),
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: 'Epi',
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                        ],
-                        // ],
-                        Text(
-                          'Therapies',
-                          style: TextStyle(
-                            color: Color(0xff0D0D0D),
-                            fontFamily: 'Epi',
-                            fontWeight: FontWeight.w400,
-                            fontSize: 24,
-                          ),
-                        ),
-                        CarouselSlider(
-                          options: CarouselOptions(
-                            height: h * 0.25,
-                            onPageChanged: (index, reason) {
-                              setState(() {
-                                // currentIndex = index;
-                              });
-                            },
-                            enableInfiniteScroll: true,
-                            viewportFraction: 1,
-                            enlargeCenterPage: false,
-                            autoPlay: true,
-                            scrollDirection: Axis.horizontal,
-                            pauseAutoPlayOnTouch: true,
-                            aspectRatio: 1,
-                          ),
-                          items: therapies.map((item) {
-                            return InkResponse(
-                                onTap: () {
-                                  Navigator.of(context).push(PageRouteBuilder(
-                                    pageBuilder: (context, animation,
-                                        secondaryAnimation) {
-                                      return DetailsScreen(
-                                        assetImage: item['image'] ??
-                                            'assets/default_image.png', // Fallback for image
-                                        title: item['text'] ??
-                                            'No Title', // Fallback for text
-                                        descHeading1:
-                                            "", // You can add your own heading here
-                                        description1: item['description'] ??
-                                            'No Description', // Fallback for description
-                                        descHeading2:
-                                            "", // Fallback for heading
-                                        description2:
-                                            "", // Fallback for description
-                                        keyAreas: List<String>.from(
-                                            item['keyAreas'] ??
-                                                []), // Fallback for keyAreas
-                                        benefits: List<String>.from(
-                                            item['benefits'] ??
-                                                []), // Fallback for benefits
-                                      );
-                                    },
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      const begin = Offset(1.0, 0.0);
-                                      const end = Offset.zero;
-                                      const curve = Curves.easeInOut;
-                                      var tween = Tween(begin: begin, end: end)
-                                          .chain(CurveTween(curve: curve));
-                                      var offsetAnimation =
-                                          animation.drive(tween);
-                                      return SlideTransition(
-                                          position: offsetAnimation,
-                                          child: child);
-                                    },
-                                  ));
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 8),
-                                  child: Stack(
-                                    children: [
-                                      Image.asset(
-                                        'assets/theraphybg.png',
-                                        width: w,
-                                        fit: BoxFit.fill,
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 16, vertical: 20),
-                                        width: w * 0.5,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          spacing: 10,
                                           children: [
-                                            Text(
-                                              item['text'] ?? 'No Title',
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                  color: Color(0xffffffff),
-                                                  fontWeight: FontWeight.w800,
-                                                  fontFamily: 'Epi',
-                                                  fontSize: 16),
-                                            ),
-                                            Text(
-                                              textAlign: TextAlign.start,
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              item['subtitle'] ??
-                                                  'No Subtitle', // Fallback for subtitle
-                                              style: TextStyle(
-                                                  color: Color(0xffDEDEDE),
-                                                  fontWeight: FontWeight.w500,
-                                                  fontFamily: 'Epi',
-                                                  fontSize: 10),
-                                            ),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                            Row(
-                                              spacing: 5,
-                                              children: [
-                                                Text(
-                                                  'Consult Now',
-                                                  style: TextStyle(
-                                                      color: Color(0xffffffff),
-                                                      fontWeight:
-                                                          FontWeight.w800,
-                                                      fontFamily: 'Epi',
-                                                      fontSize: 16),
+                                            Bounce(
+                                              onTap: () {
+                                                homeProvider.postHealthFeedBack(
+                                                    'Happy', context);
+                                              },
+                                              duration:
+                                                  Duration(milliseconds: 100),
+                                              child: Container(
+                                                width: 60,
+                                                height: 60,
+                                                padding: EdgeInsets.all(14),
+                                                decoration: BoxDecoration(
+                                                    color: Color(0xffEF5DA8),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            16)),
+                                                child: Center(
+                                                  child: Image.asset(
+                                                      'assets/smile.png'),
                                                 ),
-                                                Icon(
-                                                  Icons.arrow_forward,
-                                                  color: Color(0xffffffff),
-                                                  size: 20,
+                                              ),
+                                            ),
+                                            Text(
+                                              'Happy',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Color(0xff828282),
+                                                fontWeight: FontWeight.w500,
+                                                fontFamily: 'Epi',
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        Column(
+                                          spacing: 10,
+                                          children: [
+                                            Bounce(
+                                              onTap: () {
+                                                homeProvider.postHealthFeedBack(
+                                                    'Calm', context);
+                                              },
+                                              child: Container(
+                                                width: 60,
+                                                height: 60,
+                                                padding: EdgeInsets.all(14),
+                                                decoration: BoxDecoration(
+                                                    color: Color(0xffAEAFF7),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            16)),
+                                                child: Center(
+                                                  child: Image.asset(
+                                                      'assets/calm.png'),
+                                                ),
+                                              ),
+                                            ),
+                                            Text(
+                                              'Calm',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Color(0xff828282),
+                                                fontWeight: FontWeight.w500,
+                                                fontFamily: 'Epi',
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        Column(
+                                          spacing: 10,
+                                          children: [
+                                            Bounce(
+                                              onTap: () {
+                                                homeProvider.postHealthFeedBack(
+                                                    'Angry', context);
+                                              },
+                                              child: Container(
+                                                width: 60,
+                                                height: 60,
+                                                padding: EdgeInsets.all(14),
+                                                decoration: BoxDecoration(
+                                                    color: Color(0xffEA6D33),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            16)),
+                                                child: Center(
+                                                  child: Image.asset(
+                                                      'assets/angry.png'),
+                                                ),
+                                              ),
+                                            ),
+                                            Text(
+                                              'Angry',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Color(0xff828282),
+                                                fontWeight: FontWeight.w500,
+                                                fontFamily: 'Epi',
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        Column(
+                                          spacing: 10,
+                                          children: [
+                                            Bounce(
+                                              onTap: () {
+                                                homeProvider.postHealthFeedBack(
+                                                    'Sad', context);
+                                              },
+                                              child: Container(
+                                                width: 60,
+                                                height: 60,
+                                                padding: EdgeInsets.all(14),
+                                                decoration: BoxDecoration(
+                                                    color: Color(0xffC3F2A6),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            16)),
+                                                child: Center(
+                                                  child: Image.asset(
+                                                      'assets/smile.png'),
+                                                ),
+                                              ),
+                                            ),
+                                            Text(
+                                              'Sad',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Color(0xff828282),
+                                                fontWeight: FontWeight.w500,
+                                                fontFamily: 'Epi',
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                  ],
+                                  // ],
+                                  Text(
+                                    'Therapies',
+                                    style: TextStyle(
+                                      color: Color(0xff0D0D0D),
+                                      fontFamily: 'Epi',
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 24,
+                                    ),
+                                  ),
+                                  CarouselSlider(
+                                    options: CarouselOptions(
+                                      height: h * 0.25,
+                                      onPageChanged: (index, reason) {
+                                        setState(() {
+                                          // currentIndex = index;
+                                        });
+                                      },
+                                      enableInfiniteScroll: true,
+                                      viewportFraction: 1,
+                                      enlargeCenterPage: false,
+                                      autoPlay: true,
+                                      scrollDirection: Axis.horizontal,
+                                      pauseAutoPlayOnTouch: true,
+                                      aspectRatio: 1,
+                                    ),
+                                    items:
+                                        homeProviders.therapieslist.map((item) {
+                                      return InkResponse(
+                                          onTap: () {
+                                            context.push("/service_details_screen?serviceID=${item.id}&serviceName=${item.name}");
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 8, horizontal: 8),
+                                            child: Stack(
+                                              children: [
+                                                Image.asset(
+                                                  'assets/theraphybg.png',
+                                                  width: w,
+                                                  fit: BoxFit.fill,
+                                                ),
+                                                Container(
+                                                  margin: EdgeInsets.symmetric(
+                                                      horizontal: 16,
+                                                      vertical: 20),
+                                                  width: w * 0.5,
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        item.name ??"",
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: TextStyle(
+                                                            color: Color(
+                                                                0xffffffff),
+                                                            fontWeight:
+                                                                FontWeight.w800,
+                                                            fontFamily: 'Epi',
+                                                            fontSize: 16),
+                                                      ),
+                                                      // Text(
+                                                      //   textAlign:
+                                                      //       TextAlign.start,
+                                                      //   maxLines: 2,
+                                                      //   overflow: TextOverflow
+                                                      //       .ellipsis,
+                                                      //   item['subtitle'] ??
+                                                      //       'No Subtitle', // Fallback for subtitle
+                                                      //   style: TextStyle(
+                                                      //       color: Color(
+                                                      //           0xffDEDEDE),
+                                                      //       fontWeight:
+                                                      //           FontWeight.w500,
+                                                      //       fontFamily: 'Epi',
+                                                      //       fontSize: 10),
+                                                      // ),
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      Row(
+                                                        spacing: 5,
+                                                        children: [
+                                                          Text(
+                                                            'Consult Now',
+                                                            style: TextStyle(
+                                                                color: Color(
+                                                                    0xffffffff),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w800,
+                                                                fontFamily:
+                                                                    'Epi',
+                                                                fontSize: 16),
+                                                          ),
+                                                          Icon(
+                                                            Icons.arrow_forward,
+                                                            color: Color(
+                                                                0xffffffff),
+                                                            size: 20,
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
                                                 )
                                               ],
                                             ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
+                                          ));
+                                    }).toList(),
                                   ),
-                                ));
-                          }).toList(),
-                        ),
-                        Text(
-                          'Counselling',
-                          style: TextStyle(
-                            color: Color(0xff0D0D0D),
-                            fontFamily: 'Epi',
-                            fontWeight: FontWeight.w400,
-                            fontSize: 24,
-                          ),
-                        ),
-                        CarouselSlider(
-                          options: CarouselOptions(
-                            height: h * 0.25,
-                            onPageChanged: (index, reason) {
-                              setState(() {
-                                // currentIndex = index;
-                              });
-                            },
-                            enableInfiniteScroll: true,
-                            viewportFraction: 1,
-                            enlargeCenterPage: false,
-                            autoPlay: true,
-                            scrollDirection: Axis.horizontal,
-                            pauseAutoPlayOnTouch: true,
-                            aspectRatio: 1,
-                          ),
-                          items: counsellings.map((item) {
-                            return InkResponse(
-                                onTap: () {
-                                  Navigator.of(context).push(PageRouteBuilder(
-                                    pageBuilder: (context, animation,
-                                        secondaryAnimation) {
-                                      return DetailsScreen(
-                                        assetImage: item['image'] ??
-                                            'assets/default_image.png', // Fallback for image
-                                        title: item['text'] ??
-                                            'No Title', // Fallback for text
-                                        descHeading1: item['heading1'] ??
-                                            'No Heading', // Fallback for heading
-                                        description1: item['description1'] ??
-                                            'No Description', // Fallback for description
-                                        descHeading2: item['heading2'] ??
-                                            'No Heading', // Fallback for heading
-                                        description2: item['description2'] ??
-                                            'No Description', // Fallback for description
-                                        keyAreas: List<String>.from(item[
-                                                'keyAreas'] ??
-                                            []), // Handle null with empty list
-                                        benefits: List<String>.from(item[
-                                                'benefits'] ??
-                                            []), // Handle null with empty list
-                                      );
-                                    },
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      const begin = Offset(1.0, 0.0);
-                                      const end = Offset.zero;
-                                      const curve = Curves.easeInOut;
-                                      var tween = Tween(begin: begin, end: end)
-                                          .chain(CurveTween(curve: curve));
-                                      var offsetAnimation =
-                                          animation.drive(tween);
-                                      return SlideTransition(
-                                          position: offsetAnimation,
-                                          child: child);
-                                    },
-                                  ));
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 8),
-                                  child: Stack(
-                                    children: [
-                                      Image.asset(
-                                        'assets/councilingbg.png',
-                                        width: w,
-                                        fit: BoxFit.fill,
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 16, vertical: 20),
-                                        width: w * 0.55,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              item['text'] ?? 'No Title',
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                  color: Color(0xff000000),
-                                                  fontWeight: FontWeight.w800,
-                                                  fontFamily: 'Epi',
-                                                  fontSize: 16),
-                                            ),
-                                            Text(
-                                              textAlign: TextAlign.start,
-                                              item['subtitle'] ?? 'No Subtitle',
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                  color: Color(0xff000000),
-                                                  fontWeight: FontWeight.w500,
-                                                  fontFamily: 'Epi',
-                                                  fontSize: 10),
-                                            ),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                            Row(
-                                              spacing: 5,
+                                  Text(
+                                    'Counselling',
+                                    style: TextStyle(
+                                      color: Color(0xff0D0D0D),
+                                      fontFamily: 'Epi',
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 24,
+                                    ),
+                                  ),
+                                  CarouselSlider(
+                                    options: CarouselOptions(
+                                      height: h * 0.25,
+                                      onPageChanged: (index, reason) {
+                                        setState(() {
+                                          // currentIndex = index;
+                                        });
+                                      },
+                                      enableInfiniteScroll: true,
+                                      viewportFraction: 1,
+                                      enlargeCenterPage: false,
+                                      autoPlay: true,
+                                      scrollDirection: Axis.horizontal,
+                                      pauseAutoPlayOnTouch: true,
+                                      aspectRatio: 1,
+                                    ),
+                                    items: homeProviders.counsellingslist.map((item) {
+                                      return InkResponse(
+                                          onTap: () {
+                                            context.push("/service_details_screen?serviceID=${item.id}&serviceName=${item.name}");
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 8, horizontal: 8),
+                                            child: Stack(
                                               children: [
-                                                Text(
-                                                  'Consult Now',
-                                                  style: TextStyle(
-                                                      color: Color(0xff3F414E),
-                                                      fontWeight:
-                                                          FontWeight.w800,
-                                                      fontFamily: 'Epi',
-                                                      fontSize: 16),
+                                                Image.asset(
+                                                  'assets/councilingbg.png',
+                                                  width: w,
+                                                  fit: BoxFit.fill,
                                                 ),
-                                                Icon(
-                                                  Icons.arrow_forward,
-                                                  color: Color(0xff3F414E),
-                                                  size: 20,
+                                                Container(
+                                                  margin: EdgeInsets.symmetric(
+                                                      horizontal: 16,
+                                                      vertical: 20),
+                                                  width: w * 0.55,
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        item.name ??
+                                                            'No Title',
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: TextStyle(
+                                                            color: Color(
+                                                                0xff000000),
+                                                            fontWeight:
+                                                                FontWeight.w800,
+                                                            fontFamily: 'Epi',
+                                                            fontSize: 16),
+                                                      ),
+                                                      // Text(
+                                                      //   textAlign:
+                                                      //       TextAlign.start,
+                                                      //   item['subtitle'] ??
+                                                      //       'No Subtitle',
+                                                      //   maxLines: 2,
+                                                      //   overflow: TextOverflow
+                                                      //       .ellipsis,
+                                                      //   style: TextStyle(
+                                                      //       color: Color(
+                                                      //           0xff000000),
+                                                      //       fontWeight:
+                                                      //           FontWeight.w500,
+                                                      //       fontFamily: 'Epi',
+                                                      //       fontSize: 10),
+                                                      // ),
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      Row(
+                                                        spacing: 5,
+                                                        children: [
+                                                          Text(
+                                                            'Consult Now',
+                                                            style: TextStyle(
+                                                                color: Color(
+                                                                    0xff3F414E),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w800,
+                                                                fontFamily:
+                                                                    'Epi',
+                                                                fontSize: 16),
+                                                          ),
+                                                          Icon(
+                                                            Icons.arrow_forward,
+                                                            color: Color(
+                                                                0xff3F414E),
+                                                            size: 20,
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
                                                 )
                                               ],
                                             ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
+                                          ));
+                                    }).toList(),
                                   ),
-                                ));
-                          }).toList(),
-                        ),
-                      ],
-                    ),
-                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                  },
                 ),
                 floatingActionButton: FloatingActionButton(
                   shape: CircleBorder(),
@@ -927,110 +906,142 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                   height: 10,
                 ),
                 shimmerText(120, 12, context),
-                CarouselSlider(
-                  options: CarouselOptions(
-                    height: h * 0.2,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        // currentIndex = index;
-                      });
-                    },
-                    enableInfiniteScroll: true,
-                    viewportFraction: 1,
-                    enlargeCenterPage: false,
-                    autoPlay: true,
-                    scrollDirection: Axis.horizontal,
-                    pauseAutoPlayOnTouch: true,
-                    aspectRatio: 1,
-                  ),
-                  items: therapies.map((item) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 8),
-                      child: Stack(
-                        children: [
-                          shimmerContainer(w, 150, context),
-                          Container(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 20),
-                            width: w * 0.5,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                // CarouselSlider(
+                //   options: CarouselOptions(
+                //     height: h * 0.2,
+                //     onPageChanged: (index, reason) {
+                //       setState(() {
+                //         // currentIndex = index;
+                //       });
+                //     },
+                //     enableInfiniteScroll: true,
+                //     viewportFraction: 1,
+                //     enlargeCenterPage: false,
+                //     autoPlay: true,
+                //     scrollDirection: Axis.horizontal,
+                //     pauseAutoPlayOnTouch: true,
+                //     aspectRatio: 1,
+                //   ),
+                //   items: therapies.map((item) {
+                //     return ;
+                //   }).toList(),
+                // ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 8, horizontal: 8),
+                  child: Stack(
+                    children: [
+                      shimmerContainer(w, 150, context),
+                      Container(
+                        margin: EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 20),
+                        width: w * 0.5,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            shimmerText(80, 12, context),
+                            shimmerText(150, 12, context),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              spacing: 5,
                               children: [
                                 shimmerText(80, 12, context),
-                                shimmerText(150, 12, context),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  spacing: 5,
-                                  children: [
-                                    shimmerText(80, 12, context),
-                                    shimmerRectangle(20, context)
-                                  ],
-                                ),
+                                shimmerRectangle(20, context)
                               ],
                             ),
-                          )
-                        ],
-                      ),
-                    );
-                  }).toList(),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
                 SizedBox(
                   height: 10,
                 ),
                 shimmerText(120, 12, context),
-                CarouselSlider(
-                  options: CarouselOptions(
-                    height: h * 0.2,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        // currentIndex = index;
-                      });
-                    },
-                    enableInfiniteScroll: true,
-                    viewportFraction: 1,
-                    enlargeCenterPage: false,
-                    autoPlay: true,
-                    scrollDirection: Axis.horizontal,
-                    pauseAutoPlayOnTouch: true,
-                    aspectRatio: 1,
-                  ),
-                  items: counsellings.map((item) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 8),
-                      child: Stack(
-                        children: [
-                          shimmerContainer(w, 150, context),
-                          Container(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 20),
-                            width: w * 0.5,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 8, horizontal: 8),
+                  child: Stack(
+                    children: [
+                      shimmerContainer(w, 150, context),
+                      Container(
+                        margin: EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 20),
+                        width: w * 0.5,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            shimmerText(80, 12, context),
+                            shimmerText(150, 12, context),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              spacing: 5,
                               children: [
                                 shimmerText(80, 12, context),
-                                shimmerText(150, 12, context),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  spacing: 5,
-                                  children: [
-                                    shimmerText(80, 12, context),
-                                    shimmerRectangle(20, context)
-                                  ],
-                                ),
+                                shimmerRectangle(20, context)
                               ],
                             ),
-                          )
-                        ],
-                      ),
-                    );
-                  }).toList(),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
+                // CarouselSlider(
+                //   options: CarouselOptions(
+                //     height: h * 0.2,
+                //     onPageChanged: (index, reason) {
+                //       setState(() {
+                //         // currentIndex = index;
+                //       });
+                //     },
+                //     enableInfiniteScroll: true,
+                //     viewportFraction: 1,
+                //     enlargeCenterPage: false,
+                //     autoPlay: true,
+                //     scrollDirection: Axis.horizontal,
+                //     pauseAutoPlayOnTouch: true,
+                //     aspectRatio: 1,
+                //   ),
+                //   items: counsellings.map((item) {
+                //     return Padding(
+                //       padding: const EdgeInsets.symmetric(
+                //           vertical: 8, horizontal: 8),
+                //       child: Stack(
+                //         children: [
+                //           shimmerContainer(w, 150, context),
+                //           Container(
+                //             margin: EdgeInsets.symmetric(
+                //                 horizontal: 16, vertical: 20),
+                //             width: w * 0.5,
+                //             child: Column(
+                //               crossAxisAlignment: CrossAxisAlignment.start,
+                //               children: [
+                //                 shimmerText(80, 12, context),
+                //                 shimmerText(150, 12, context),
+                //                 SizedBox(
+                //                   height: 10,
+                //                 ),
+                //                 Row(
+                //                   spacing: 5,
+                //                   children: [
+                //                     shimmerText(80, 12, context),
+                //                     shimmerRectangle(20, context)
+                //                   ],
+                //                 ),
+                //               ],
+                //             ),
+                //           )
+                //         ],
+                //       ),
+                //     );
+                //   }).toList(),
+                // ),
               ],
             ),
           ),

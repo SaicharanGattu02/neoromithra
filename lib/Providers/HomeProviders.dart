@@ -13,15 +13,16 @@ class HomeProviders with ChangeNotifier {
   bool _status = false;
 
   List<TherapiesList> _therapieslist = [];
+  List<TherapiesList> _therapyDetails = [];
   List<CounsellingsList> _counsellingslist = [];
 
   // Getters
   bool get isLoading => _isLoading;
   String get error => _error;
   String get quote => _quote;
-
   bool get status => _status;
   List<TherapiesList> get therapieslist => _therapieslist;
+  List<TherapiesList> get therapyDetails => _therapyDetails;
   List<CounsellingsList> get counsellingslist => _counsellingslist;
 
   /// Set loading state and notify
@@ -36,20 +37,6 @@ class HomeProviders with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getData() async {
-    _setLoading(true);
-    try {
-      await Future.wait([
-        getQuotes(),
-        getTherapiesList(),
-        getCounsellingsList()
-      ]);
-    } catch (e) {
-      _setError("Failed to fetch initial data: $e");
-    } finally {
-      _setLoading(false);
-    }
-  }
 
   Future<void> getQuotes() async {
     try {
@@ -84,30 +71,45 @@ class HomeProviders with ChangeNotifier {
     }
   }
 
-
   Future<void> getTherapiesList() async {
+    _setLoading(true);
     try {
       final response = await Userapi.getTherapiesList();
       if (response?.status == true) {
-        _therapieslist = response!.therapieslist ?? [];
+        _therapieslist = response?.therapieslist ?? [];
       }
     } catch (e) {
       _setError('Failed to fetch therapies: $e');
     } finally {
-      notifyListeners();
+      _setLoading(false);
+    }
+  }
+
+  Future<void> getServiceDetails(String id) async {
+    _setLoading(true);
+    try {
+      final response = await Userapi.getServiceDetails(id);
+      if (response?.status == true) {
+        _therapyDetails = response?.therapieslist ?? [];
+      }
+    } catch (e) {
+      _setError('Failed to fetch getServiceDetails: $e');
+    } finally {
+      _setLoading(false);
     }
   }
 
   Future<void> getCounsellingsList() async {
+    _setLoading(true);
     try {
       final response = await Userapi.getCounsellingsList();
       if (response?.status == true) {
-        _counsellingslist = response!.counsellingslist ?? [];
+        _counsellingslist = response?.counsellingslist ?? [];
       }
     } catch (e) {
       _setError('Failed to fetch counsellings: $e');
     } finally {
-      notifyListeners();
+      _setLoading(false);
     }
   }
 
