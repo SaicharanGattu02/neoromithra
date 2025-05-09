@@ -61,7 +61,7 @@ class _AddProductRatingState extends State<AddProductRating> {
         }
       });
     } else {
-      print("Data not fetched.");
+      debugPrint("Data not fetched.");
     }
   }
 

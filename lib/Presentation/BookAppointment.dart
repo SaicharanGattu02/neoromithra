@@ -78,12 +78,12 @@ class _BookappointmentState extends State<Bookappointment> {
       (patients.length==0)?
       InkResponse(
         onTap: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Bookappointment1(pagesource: widget.pagesource,patientID: "",patient_name: "",p_age: "",),
-            ),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => Bookappointment1(pagesource: widget.pagesource,patientID: "",patient_name: "",p_age: "",),
+          //   ),
+          // );
         },
         child: Center(
           child: Container(
@@ -138,12 +138,12 @@ class _BookappointmentState extends State<Bookappointment> {
             if (index == 0) {
               return InkResponse(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Bookappointment1(pagesource: widget.pagesource,patientID: "",patient_name: "",p_age: "",),
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => Bookappointment1(pagesource: widget.pagesource,patientID: "",patient_name: "",p_age: "",),
+                  //   ),
+                  // );
                 },
                 child: Center(
                   child: Container(
@@ -177,12 +177,12 @@ class _BookappointmentState extends State<Bookappointment> {
               var booking = patients[index - 1]; // Adjust index for bookingHistory
               return InkResponse(
                 onTap: (){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Bookappointment1(pagesource: widget.pagesource, patientID: booking.pid.toString(),patient_name:booking.pname??"",p_age: booking.page.toString()??"",),
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => Bookappointment1(pagesource: widget.pagesource, patientID: booking.pid.toString(),patient_name:booking.pname??"",p_age: booking.page.toString()??"",),
+                  //   ),
+                  // );
                 },
                 child: Container(
                   padding: EdgeInsets.all(20),

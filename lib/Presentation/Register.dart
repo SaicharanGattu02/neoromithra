@@ -80,7 +80,7 @@ class _RegisterState extends State<Register> {
 
         context.push('/login');
       } else {
-        print("registerrr: ${registerResponse?.message}");
+        debugPrint("registerrr: ${registerResponse?.message}");
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
             registerResponse?.message ?? "Registration failed",

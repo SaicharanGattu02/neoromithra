@@ -80,7 +80,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     setState(() {
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(response.body);
-        print("_resetPassword responseBody: ${responseBody}");
+        debugPrint("_resetPassword responseBody: ${responseBody}");
 
         // Check for success message in the response body
         if (responseBody['message'] == 'Password updated successfully.') {
@@ -102,7 +102,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         resetPassword = false;
         // Assuming a 405 error indicates an invalid OTP
         final responseBody = jsonDecode(response.body);
-        print("_resetPassword responseBody: ${responseBody}");
+        debugPrint("_resetPassword responseBody: ${responseBody}");
 
         if (responseBody['message'] == 'Invalid Otp') {
           ScaffoldMessenger.of(context).showSnackBar(

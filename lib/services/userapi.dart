@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:neuromithra/Model/ChildListModel.dart';
 import 'package:neuromithra/Model/PhonepeDetails.dart';
 import 'package:neuromithra/Model/QuoteModel.dart';
+import 'package:neuromithra/Model/SuccessModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Model/AddAddressModel.dart';
 import '../Model/AddressListModel.dart';
@@ -51,16 +54,16 @@ class Userapi {
         },
         onError: (DioException e, handler) async {
           if (e.response?.statusCode == 201 || e.response?.statusCode == 401) {
-            print("Token expired or unauthorized: ${e.response?.statusCode}");
+            debugPrint("Token expired or unauthorized: ${e.response?.statusCode}");
             // If refresh or retry fails, clear prefs and navigate to login
-            print("Navigating to SignIn");
+            debugPrint("Navigating to SignIn");
             final prefs = await SharedPreferences.getInstance();
             await prefs.clear();
             navigatorKey.currentState
                 ?.pushNamedAndRemoveUntil('/login', (route) => false);
             return handler.reject(e);
           } else {
-            print("Error ${e.response?.statusCode}: ${e.response?.data}");
+            debugPrint("Error ${e.response?.statusCode}: ${e.response?.data}");
             return handler.next(e);
           }
         },
@@ -72,12 +75,12 @@ class Userapi {
     try {
       final newToken = await AuthService.refreshToken();
       if (newToken != null) {
-        print("Token refreshed successfully");
+        debugPrint("Token refreshed successfully");
         return true;
       }
       return false;
     } catch (e) {
-      print("Token refresh failed: $e");
+      debugPrint("Token refresh failed: $e");
       return false;
     }
   }
@@ -85,7 +88,7 @@ class Userapi {
   static Future<Response> get(String path,
       {Map<String, dynamic>? queryParameters}) async {
     try {
-      print("called get method");
+      debugPrint("called get method");
       return await _dio.get(path, queryParameters: queryParameters);
     } catch (e) {
       return _handleError(e);
@@ -118,10 +121,10 @@ class Userapi {
 
   static Response _handleError(dynamic error) {
     if (error is DioException) {
-      print("DioException occurred: ${error.message}");
+      debugPrint("DioException occurred: ${error.message}");
       throw error;
     } else {
-      print("Unexpected error: $error");
+      debugPrint("Unexpected error: $error");
       throw Exception("Unexpected error occurred");
     }
   }
@@ -130,12 +133,12 @@ class Userapi {
     try {
       final response = await get("/api/Phonepay");
       if (response.statusCode == 200) {
-        print("getPhonepeDetails Status: ${response.data}");
+        debugPrint("getPhonepeDetails Status: ${response.data}");
         return PhonepeDetails.fromJson(response.data);
       }
       throw Exception("Failed to load Phonepe details");
     } catch (e) {
-      print("Error fetching Phonepe details: $e");
+      debugPrint("Error fetching Phonepe details: $e");
       return null;
     }
   }
@@ -155,7 +158,7 @@ class Userapi {
       }
       throw Exception("Failed to load adult questions");
     } catch (e) {
-      print("Error fetching adult questions: $e");
+      debugPrint("Error fetching adult questions: $e");
       return {};
     }
   }
@@ -169,12 +172,12 @@ class Userapi {
       });
       final response = await post("/api/save_assement", data: formData);
       if (response.statusCode == 200) {
-        print("Success: ${response.data["message"]}");
+        debugPrint("Success: ${response.data["message"]}");
         return response.data;
       }
       throw Exception("Submission failed: ${response.data["message"]}");
     } catch (e) {
-      print("Error submitting answers: $e");
+      debugPrint("Error submitting answers: $e");
       return {"status": false, "message": "Error submitting answers"};
     }
   }
@@ -194,7 +197,7 @@ class Userapi {
       }
       throw Exception("Failed to load children questions");
     } catch (e) {
-      print("Error fetching children questions: $e");
+      debugPrint("Error fetching children questions: $e");
       return {};
     }
   }
@@ -206,16 +209,16 @@ class Userapi {
         data: {"location": loc},
       );
       if (response.statusCode == 200) {
-        print("makeSOSCallApi Status: ${response.data}");
+        debugPrint("makeSOSCallApi Status: ${response.data}");
         return response.data["message"];
       } else if (response.statusCode == 401) {
-        print("Unauthorized: ${response.data['error']}");
+        debugPrint("Unauthorized: ${response.data['error']}");
         return response.data["error"];
       }
-      print("Request failed with status: ${response.statusCode}");
+      debugPrint("Request failed with status: ${response.statusCode}");
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -247,14 +250,14 @@ class Userapi {
       });
       final response = await post("/api/for_new_bookappointments", data: formData);
       if (response.statusCode == 200) {
-        print("✅ Appointment Response: ${response.data}");
+        debugPrint("✅ Appointment Response: ${response.data}");
         return BookApointmentModel.fromJson(response.data);
       }
-      print("❌ Failed to book appointment: ${response.statusCode}");
-      print("Response: ${response.data}");
+      debugPrint("❌ Failed to book appointment: ${response.statusCode}");
+      debugPrint("Response: ${response.data}");
       return null;
     } catch (e) {
-      print("Error: $e");
+      debugPrint("Error: $e");
       return null;
     }
   }
@@ -288,14 +291,14 @@ class Userapi {
       });
       final response = await post("/api/for_exesting_bookappointments", data: formData);
       if (response.statusCode == 200) {
-        print("✅ Existing Appointment Response: ${response.data}");
+        debugPrint("✅ Existing Appointment Response: ${response.data}");
         return BookApointmentModel.fromJson(response.data);
       }
-      print("❌ Failed to book existing appointment: ${response.statusCode}");
-      print("Response: ${response.data}");
+      debugPrint("❌ Failed to book existing appointment: ${response.statusCode}");
+      debugPrint("Response: ${response.data}");
       return null;
     } catch (e) {
-      print("Error: $e");
+      debugPrint("Error: $e");
       return null;
     }
   }
@@ -315,13 +318,13 @@ class Userapi {
         },
       );
       if (response.statusCode == 200) {
-        print("PostRegister Status: ${response.data}");
+        debugPrint("PostRegister Status: ${response.data}");
         return RegisterModel.fromJson(response.data);
       }
-      print("Request failed with status: ${response.statusCode}");
+      debugPrint("Request failed with status: ${response.statusCode}");
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -330,14 +333,14 @@ class Userapi {
     try {
       final response = await post("/api/mobile-login", data: data);
       if (response.statusCode == 200) {
-        print("PostLogin Status: ${response.data}");
+        debugPrint("PostLogin Status: ${response.data}");
         return {
           "access_token": response.data["access_token"],
           "token_type": response.data["token_type"],
           "expires_in": response.data["expires_in"],
         };
       } else if (response.statusCode == 401 || response.statusCode == 403) {
-        print("Unauthorized: ${response.data['error']}");
+        debugPrint("Unauthorized: ${response.data['error']}");
         return {
           "error": response.data["error"],
           "status": response.data["status"],
@@ -345,7 +348,7 @@ class Userapi {
       }
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -362,13 +365,13 @@ class Userapi {
         },
       );
       if (response.statusCode == 200) {
-        print("postProfileDetails Status: ${response.data}");
+        debugPrint("postProfileDetails Status: ${response.data}");
         return {"message": response.data["message"]};
       }
-      print("Request failed with status: ${response.statusCode}");
+      debugPrint("Request failed with status: ${response.statusCode}");
       return {"error": "Request failed with status: ${response.statusCode}"};
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return {"error": e.toString()};
     }
   }
@@ -377,13 +380,13 @@ class Userapi {
     try {
       final response = await get("/api/users/guest-service?type=Therapy");
       if (response.statusCode == 200) {
-        print("getTherapiesList Status: ${response.data}");
+        debugPrint("getTherapiesList Status: ${response.data}");
         return TherapiesListModel.fromJson(response.data);
       }
-      print("Request failed with status: ${response.statusCode}");
+      debugPrint("Request failed with status: ${response.statusCode}");
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -392,13 +395,13 @@ class Userapi {
     try {
       final response = await get("/api/users/guest-service/$id");
       if (response.statusCode == 200) {
-        print("getServiceDetails Status: ${response.data}");
+        debugPrint("getServiceDetails Status: ${response.data}");
         return TherapiesListModel.fromJson(response.data);
       }
-      print("Request failed with status: ${response.statusCode}");
+      debugPrint("Request failed with status: ${response.statusCode}");
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -407,13 +410,13 @@ class Userapi {
     try {
       final response = await get("/api/users/guest-service/$id");
       if (response.statusCode == 200) {
-        print("getCounsellingDetails Status: ${response.data}");
+        debugPrint("getCounsellingDetails Status: ${response.data}");
         return TherapiesListModel.fromJson(response.data);
       }
-      print("Request failed with status: ${response.statusCode}");
+      debugPrint("Request failed with status: ${response.statusCode}");
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -422,13 +425,13 @@ class Userapi {
     try {
       final response = await get("/api/users/guest-service?type=Counselling");
       if (response.statusCode == 200) {
-        print("getCounsellingsList Status: ${response.data}");
+        debugPrint("getCounsellingsList Status: ${response.data}");
         return CounsellingsListModel.fromJson(response.data);
       }
-      print("Request failed with status: ${response.statusCode}");
+      debugPrint("Request failed with status: ${response.statusCode}");
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -437,13 +440,90 @@ class Userapi {
     try {
       final response = await get("/api/users/view-profile");
       if (response.statusCode == 200) {
-        print("getProfileDetails Status: ${response.data}");
+        debugPrint("getProfileDetails Status: ${response.data}");
         return ProfileDetailsModel.fromJson(response.data);
       }
-      print("Request failed with status: ${response.statusCode}");
+      debugPrint("Request failed with status: ${response.statusCode}");
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
+      return null;
+    }
+  }
+
+  static Future<SuccessModel?> addChild(Map<String, dynamic> data) async {
+    try {
+      final response = await get("/api/users/add-new-child");
+      if (response.statusCode == 200) {
+        debugPrint("addchild Status: ${response.data}");
+        return SuccessModel.fromJson(response.data);
+      }
+      debugPrint("Request failed with status: ${response.statusCode}");
+      return null;
+    } catch (e) {
+      debugPrint("Error occurred: $e");
+      return null;
+    }
+  }
+
+  static Future<SuccessModel?> editChild(Map<String, dynamic> data,String id) async {
+    try {
+      final response = await get("/api/users/edit-child/${id}");
+      if (response.statusCode == 200) {
+        debugPrint("editchild Status: ${response.data}");
+        return SuccessModel.fromJson(response.data);
+      }
+      debugPrint("Request failed with status: ${response.statusCode}");
+      return null;
+    } catch (e) {
+      debugPrint("Error occurred: $e");
+      return null;
+    }
+  }
+
+
+  static Future<SuccessModel?> deleteChild(String id) async {
+    try {
+      final response = await get("/api/users/delete-child/${id}");
+      if (response.statusCode == 200) {
+        debugPrint("deleteChild Status: ${response.data}");
+        return SuccessModel.fromJson(response.data);
+      }
+      debugPrint("Request failed with status: ${response.statusCode}");
+      return null;
+    } catch (e) {
+      debugPrint("Error occurred: $e");
+      return null;
+    }
+  }
+
+  static Future<ChildListModel?> getChildList() async {
+    try {
+      final response = await get("/api/users/get-child-details");
+      if (response.statusCode == 200) {
+        debugPrint("getChildList Status: ${response.data}");
+        return ChildListModel.fromJson(response.data);
+      }
+      debugPrint("Request failed with status: ${response.statusCode}");
+      return null;
+    } catch (e) {
+      debugPrint("Error occurred: $e");
+      return null;
+    }
+  }
+
+
+  static Future<ChildListModel?> getChildDetails(String id) async {
+    try {
+      final response = await get("/api/users/get-child-details/${id}");
+      if (response.statusCode == 200) {
+        debugPrint("getChildDetails Status: ${response.data}");
+        return ChildListModel.fromJson(response.data);
+      }
+      debugPrint("Request failed with status: ${response.statusCode}");
+      return null;
+    } catch (e) {
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -461,13 +541,13 @@ class Userapi {
         },
       );
       if (response.statusCode == 200) {
-        print("submitReviewApi Status: ${response.data}");
+        debugPrint("submitReviewApi Status: ${response.data}");
         return ReviewSubmitModel.fromJson(response.data);
       }
-      print("Error: ${response.statusCode} ${response.data}");
+      debugPrint("Error: ${response.statusCode} ${response.data}");
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -476,13 +556,13 @@ class Userapi {
     try {
       final response = await get("/api/get_user_booking_hisrory");
       if (response.statusCode == 200) {
-        print("getBookingHistory Status: ${response.data}");
+        debugPrint("getBookingHistory Status: ${response.data}");
         return BookingHistoryModel.fromJson(response.data);
       }
-      print("Request failed with status: ${response.statusCode}");
+      debugPrint("Request failed with status: ${response.statusCode}");
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -491,13 +571,13 @@ class Userapi {
     try {
       final response = await get("/api/get_user_booking_hisrory");
       if (response.statusCode == 200) {
-        print("getPreviousBookingHistory Status: ${response.data}");
+        debugPrint("getPreviousBookingHistory Status: ${response.data}");
         return PreviousBookingModel.fromJson(response.data);
       }
-      print("Request failed with status: ${response.statusCode}");
+      debugPrint("Request failed with status: ${response.statusCode}");
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -506,12 +586,12 @@ class Userapi {
     try {
       final response = await post("/api/refreshToken");
       if (response.statusCode == 200) {
-        print("updateRefreshToken response: ${response.data}");
+        debugPrint("updateRefreshToken response: ${response.data}");
         return LoginModel.fromJson(response.data);
       }
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -520,13 +600,13 @@ class Userapi {
     try {
       final response = await get("/api/get_review/$pageSource");
       if (response.statusCode == 200) {
-        print("getReviewList response: ${response.data}");
+        debugPrint("getReviewList response: ${response.data}");
         return ReviewListModel.fromJson(response.data);
       }
-      print("Request failed with status: ${response.statusCode}");
+      debugPrint("Request failed with status: ${response.statusCode}");
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -546,7 +626,7 @@ class Userapi {
       }
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -555,13 +635,13 @@ class Userapi {
     try {
       final response = await post("/api/add_user_address", data: data);
       if (response.statusCode == 200) {
-        print("addAddressApi Response: ${response.data}");
+        debugPrint("addAddressApi Response: ${response.data}");
         return AddAddressModel.fromJson(response.data);
       }
-      print("Error: ${response.statusCode} ${response.data}");
+      debugPrint("Error: ${response.statusCode} ${response.data}");
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -571,13 +651,13 @@ class Userapi {
     try {
       final response = await post("/api/update_user_address/$addressId", data: data);
       if (response.statusCode == 200) {
-        print("editAddressApi Response: ${response.data}");
+        debugPrint("editAddressApi Response: ${response.data}");
         return AddAddressModel.fromJson(response.data);
       }
-      print("Error: ${response.statusCode} ${response.data}");
+      debugPrint("Error: ${response.statusCode} ${response.data}");
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -586,13 +666,13 @@ class Userapi {
     try {
       final response = await get("/api/get_user_address_details");
       if (response.statusCode == 200) {
-        print("getAddressList response: ${response.data}");
+        debugPrint("getAddressList response: ${response.data}");
         return AddressListModel.fromJson(response.data);
       }
-      print("Request failed with status: ${response.statusCode}");
+      debugPrint("Request failed with status: ${response.statusCode}");
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -601,13 +681,13 @@ class Userapi {
     try {
       final response = await get("/api/downloadfile/79");
       if (response.statusCode == 200) {
-        print("downloadScriptApi response: ${response.data}");
+        debugPrint("downloadScriptApi response: ${response.data}");
         return response.data.toString();
       }
-      print("Request failed with status: ${response.statusCode}");
+      debugPrint("Request failed with status: ${response.statusCode}");
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -616,13 +696,13 @@ class Userapi {
     try {
       final response = await get("/api/check_previous_bookings/$pageSource");
       if (response.statusCode == 200) {
-        print("getPreviousBookings response: ${response.data}");
+        debugPrint("getPreviousBookings response: ${response.data}");
         return PreviousBookingModel.fromJson(response.data);
       }
-      print("Request failed with status: ${response.statusCode}");
+      debugPrint("Request failed with status: ${response.statusCode}");
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -632,13 +712,13 @@ class Userapi {
     try {
       final response = await get("/api/get_therapy_traking/$id/$pageSource");
       if (response.statusCode == 200) {
-        print("getBehaviouralList response: ${response.data}");
+        debugPrint("getBehaviouralList response: ${response.data}");
         return BehaviouralTrackingModel.fromJson(response.data);
       }
-      print("Request failed with status: ${response.statusCode}");
+      debugPrint("Request failed with status: ${response.statusCode}");
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -647,13 +727,13 @@ class Userapi {
     try {
       final response = await get("/api/users/quatations");
       if (response.statusCode == 200) {
-        print("getQuotes response: ${response.data}");
+        debugPrint("getQuotes response: ${response.data}");
         return QuoteModel.fromJson(response.data);
       }
-      print("Request failed with status: ${response.statusCode}");
+      debugPrint("Request failed with status: ${response.statusCode}");
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }
@@ -665,13 +745,13 @@ class Userapi {
         data: {"message": msg},
       );
       if (response.statusCode == 200) {
-        print("postHealthFeedback response: ${response.data}");
+       debugPrint("postHealthFeedback response: ${response.data}");
         return FeedbackHelathModel.fromJson(response.data);
       }
-      print("Request failed with status: ${response.statusCode}");
+      debugPrint("Request failed with status: ${response.statusCode}");
       return null;
     } catch (e) {
-      print("Error occurred: $e");
+      debugPrint("Error occurred: $e");
       return null;
     }
   }

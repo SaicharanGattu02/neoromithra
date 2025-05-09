@@ -127,7 +127,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       if (pickedFile != null) {
         _image = File(pickedFile.path); // Trigger image upload
       } else {
-        print('No image selected.');
+        debugPrint('No image selected.');
       }
     });
   }
@@ -143,11 +143,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     setState(() {
       if (result != null && result.containsKey("message")) {
         CustomSnackBar.show(context, '${result["message"]}');
-        print("Success: ${result["message"]}");
+        debugPrint("Success: ${result["message"]}");
         // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Dashboard()));
       } else if (result != null && result.containsKey("error")) {
         CustomSnackBar.show(context, '${result["error"]}');
-        print("Error: ${result["error"]}");
+        debugPrint("Error: ${result["error"]}");
       }
       isLoading = false;
     });

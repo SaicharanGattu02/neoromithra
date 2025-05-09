@@ -259,7 +259,7 @@ class _ChildAssessmentState extends State<ChildAssessment> {
                       );
                     })
                   };
-                  print("Final Submission JSON: ${jsonEncode(submissionData)}");
+                  debugPrint("Final Submission JSON: ${jsonEncode(submissionData)}");
                   submitAnswersApi(submissionData);
                 }
               },

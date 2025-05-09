@@ -46,14 +46,14 @@ Future<void> main() async {
   if (Platform.isAndroid) {
     FirebaseMessaging.instance.getToken().then((value) {
       String? token = value;
-      print("Androidfbstoken:{$token}");
+      debugPrint("Androidfbstoken:{$token}");
       PreferenceService().saveString("fbstoken", token!);
       // toast(BuildContext , token);
     });
   } else {
     FirebaseMessaging.instance.getToken().then((value) {
       String? token = value;
-      print("IOSfbstoken:{$token}");
+      debugPrint("IOSfbstoken:{$token}");
       PreferenceService().saveString("fbstoken", token!);
       // toast(BuildContext , token);
     });
@@ -95,8 +95,8 @@ Future<void> main() async {
     RemoteNotification? notification = message.notification;
     AndroidNotification? android = message.notification?.android;
     if (notification != null && android != null) {
-      // print('A new message received: ${notification.title}');
-      // print('RemoteMessage data: ${message.data.toString()}');
+      // debugPrint('A new message received: ${notification.title}');
+      // debugPrint('RemoteMessage data: ${message.data.toString()}');
       showNotification(notification, android, message.data);
     }
   });
@@ -105,7 +105,7 @@ Future<void> main() async {
   // Stream listener
   FirebaseMessaging.onMessageOpenedApp.listen((message) {
     // _handleMessage(message);
-    // print("onMessageOpenedApp:${message.data['type']}");
+    // debugPrint("onMessageOpenedApp:${message.data['type']}");
   });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -121,7 +121,7 @@ Future<void> main() async {
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  // print('A Background message just showed up :  ${message.data}');
+  // debugPrint('A Background message just showed up :  ${message.data}');
 }
 
 // Function to display local notifications

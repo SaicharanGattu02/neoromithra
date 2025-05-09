@@ -11,11 +11,11 @@ Future<Map<String, String>> getheader() async {
   final sessionid = await PreferenceService().getString("token");
 
   if (sessionid == null || sessionid.isEmpty) {
-    print("Error: No token found.");
+    debugPrint("Error: No token found.");
     return {}; // Return an empty map to prevent invalid headers
   }
 
-  print("Session ID: $sessionid");
+  debugPrint("Session ID: $sessionid");
   String token = "Bearer $sessionid";
 
   return {
@@ -26,7 +26,7 @@ Future<Map<String, String>> getheader() async {
 
 getheader2() async {
   final sessionid = await PreferenceService().getString("token");
-  print(sessionid);
+  debugPrint(sessionid);
   String Token = "Bearer ${sessionid}";
   Map<String, String> a = {
     authorization: Token.toString(),
@@ -37,7 +37,7 @@ getheader2() async {
 
 getheader3() async {
   final sessionid = await PreferenceService().getString("token");
-  print(sessionid);
+  debugPrint(sessionid);
   String Token = "Bearer ${sessionid}";
   Map<String, String> a = {
     authorization: Token.toString(),
@@ -47,7 +47,7 @@ getheader3() async {
 
 getheader1() async {
   final sessionid = await PreferenceService().getString("token");
-  print(sessionid);
+  debugPrint(sessionid);
   String Token = "Bearer ${sessionid}";
   Map<String, String> a = {authorization: Token.toString()};
   return a;

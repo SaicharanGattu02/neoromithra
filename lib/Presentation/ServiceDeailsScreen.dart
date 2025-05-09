@@ -55,7 +55,6 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
   Widget build(BuildContext context) {
     final h = MediaQuery.of(context).size.height;
     final w = MediaQuery.of(context).size.width;
-
     return Scaffold(
       appBar: _buildAppBar(context),
       body: Consumer<HomeProviders>(
@@ -199,8 +198,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
               primarycolor,
                   () {
                 context.push(
-                  '/book_appointment',
-                  extra: {'pagesource': widget.serviceName},
+                  '/book_appointment1'
                 );
               },
             ),

@@ -36,24 +36,24 @@ class _LastBookingState extends State<LastBooking> {
 
   Future<void> downloadInvoice(String url) async {
     try {
-      print("Checking storage permission...");
+      debugPrint("Checking storage permission...");
       var status = await Permission.mediaLibrary.status;
 
       if (!status.isGranted) {
-        print("Storage permission not granted. Requesting...");
+        debugPrint("Storage permission not granted. Requesting...");
         await Permission.mediaLibrary.request();
       }
       status = await Permission.mediaLibrary.status;
       if (status.isGranted) {
-        print("Storage permission granted.");
+        debugPrint("Storage permission granted.");
         Directory dir =
             Directory('/storage/emulated/0/Download/'); // for Android
         if (!await dir.exists()) {
-          print(
+          debugPrint(
               "Download directory does not exist. Using external storage directory.");
           dir = await getExternalStorageDirectory() ?? Directory.systemTemp;
         } else {
-          print("Download directory exists: ${dir.path}");
+          debugPrint("Download directory exists: ${dir.path}");
         }
 
         String generateFileName(String originalName) {
@@ -63,39 +63,39 @@ class _LastBookingState extends State<LastBooking> {
           String uniqueId = DateTime.now().millisecondsSinceEpoch.toString();
           // Return unique filename with the same extension
           String fileName = "Prescription_$uniqueId.$extension";
-          print("Generated filename: $fileName");
+          debugPrint("Generated filename: $fileName");
           return fileName;
         }
 
         // Start downloading the file
-        print("Starting download from: $url");
+        debugPrint("Starting download from: $url");
         FileDownloader.downloadFile(
           url: url.toString().trim(),
           name: generateFileName("Order_invoice.docx"), // Adjusted here
           notificationType: NotificationType.all,
           downloadDestination: DownloadDestinations.publicDownloads,
           onDownloadRequestIdReceived: (downloadId) {
-            print('Download request ID received: $downloadId');
+            debugPrint('Download request ID received: $downloadId');
           },
           onProgress: (fileName, progress) {
-            print('Downloading $fileName: $progress%');
+            debugPrint('Downloading $fileName: $progress%');
           },
           onDownloadError: (String error) {
-            print('DOWNLOAD ERROR: $error');
+            debugPrint('DOWNLOAD ERROR: $error');
           },
           onDownloadCompleted: (path) {
-            print('Download completed! File saved at: $path');
+            debugPrint('Download completed! File saved at: $path');
             setState(() {
               // Update UI if necessary
             });
           },
         );
       } else {
-        print("Storage permission denied.");
+        debugPrint("Storage permission denied.");
       }
     } catch (e, s) {
-      print('Exception caught: $e');
-      print('Stack trace: $s');
+      debugPrint('Exception caught: $e');
+      debugPrint('Stack trace: $s');
     }
   }
 
@@ -118,12 +118,12 @@ class _LastBookingState extends State<LastBooking> {
   //       final file = File(filePath);
   //       await file.writeAsBytes(response.bodyBytes);
   //
-  //       print('File downloaded to: $filePath');
+  //       debugPrint('File downloaded to: $filePath');
   //     } else {
-  //       print('Failed to download file: ${response.statusCode}');
+  //       debugPrint('Failed to download file: ${response.statusCode}');
   //     }
   //   } catch (e) {
-  //     print('Error: $e');
+  //     debugPrint('Error: $e');
   //   }
   // }
 

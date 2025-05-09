@@ -100,7 +100,7 @@ build clean: CLEAN
 
 
 #############################################
-# Print all primary targets available.
+# debugPrint all primary targets available.
 
 build help: HELP
 
