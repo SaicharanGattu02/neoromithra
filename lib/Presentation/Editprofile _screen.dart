@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:neuromithra/utils/CustomSnackBar.dart';
@@ -62,22 +64,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return null;
   }
 
-
-  void _submitForm(context) {
+  void _submitForm(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
-      Map<String, dynamic> data = {
+      FormData formData = FormData.fromMap({
         "name": _nameController.text,
         "email": _emailController.text,
-        "phone": _mobileController.text,
-        "password":_pwdController.text,
-        "profile_pic": _image,
-      };
-      Provider.of<UserProviders>(context, listen: false)
-          .updateProfileDetails(data);
-    } else {
-      setState(() {
-        isLoading = false;
+        "contact": _mobileController.text,
+        "password": _pwdController.text,
+        "profile_pic": _image != null
+            ? await MultipartFile.fromFile(_image!.path,
+                filename: _image!.path.split('/').last)
+            : null,
       });
+      try {
+        final res = await Provider.of<UserProviders>(context, listen: false)
+            .updateProfileDetails(formData);
+        if (res == true) {
+          context.pop();
+        }
+      } catch (e) {
+        print("Error submitting form: $e");
+        // Show error to user (e.g., using a SnackBar)
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to update profile: $e")),
+        );
+      }
+    } else {
+      print("Form validation failed");
     }
   }
 
@@ -161,11 +174,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 ? CachedNetworkImageProvider(profile_image)
                                     as ImageProvider
                                 : null,
-                        child: _image == null &&
-                                (profile_image == null || profile_image.isEmpty)
-                            ? const Icon(Icons.person,
-                                size: 50, color: Colors.white)
-                            : null,
                       ),
                       Positioned(
                         bottom: 0,
@@ -285,7 +293,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                         ),
                         keyboardType: TextInputType.phone,
-
                       ),
                       // TextFormField(
                       //   controller: _sos2Controller,
@@ -343,37 +350,40 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           );
         },
       ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        child: ElevatedButton(
-          onPressed: isLoading ? null : () => _submitForm(context),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: primarycolor, // Button Background Color
-            padding: EdgeInsets.symmetric(vertical: 10),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            elevation: 3, // Light shadow for better visibility
-          ),
-          child: isLoading
-              ? SizedBox(
-                  height: 24,
-                  width: 24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+      bottomNavigationBar: Consumer<UserProviders>(
+        builder: (context, userDetails, child) {
+          return Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              child: ElevatedButton(
+                  onPressed: isLoading ? null : () => _submitForm(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primarycolor, // Button Background Color
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 3, // Light shadow for better visibility
                   ),
-                )
-              : Text(
-                  "Save",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontFamily: "Inter",
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-        ),
+                  child: userDetails.isSaving
+                      ? SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : Text(
+                          "Save",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontFamily: "Inter",
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )));
+        },
       ),
     );
   }

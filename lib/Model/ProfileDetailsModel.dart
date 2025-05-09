@@ -6,8 +6,7 @@ class ProfileDetailsModel {
 
   ProfileDetailsModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
-    user =
-    json['message'] != null ? new Users.fromJson(json['message']) : null;
+    user = json['message'] != null ? new Users.fromJson(json['message']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -25,46 +24,46 @@ class Users {
   String? name;
   String? email;
   int? contact;
-  Null? emailVerifiedAt;
+  String? emailVerifiedAt;
   String? refreshToken;
-  Null? webFcmToken;
+  String? webFcmToken;
   String? deviceFcmToken;
   String? role;
-  Null? gender;
-  Null? profilePic;
-  Null? state;
-  Null? city;
-  Null? country;
-  Null? postalcode;
+  String? gender;
+  String? profilePic;
+  String? state;
+  String? city;
+  String? country;
+  String? postalcode;
   String? uniqueHostalId;
-  Null? emailOtp;
-  Null? expiredTime;
+  String? emailOtp;
+  String? expiredTime;
   int? deletedAt;
   String? createdAt;
   String? updatedAt;
 
   Users(
       {this.id,
-        this.name,
-        this.email,
-        this.contact,
-        this.emailVerifiedAt,
-        this.refreshToken,
-        this.webFcmToken,
-        this.deviceFcmToken,
-        this.role,
-        this.gender,
-        this.profilePic,
-        this.state,
-        this.city,
-        this.country,
-        this.postalcode,
-        this.uniqueHostalId,
-        this.emailOtp,
-        this.expiredTime,
-        this.deletedAt,
-        this.createdAt,
-        this.updatedAt});
+      this.name,
+      this.email,
+      this.contact,
+      this.emailVerifiedAt,
+      this.refreshToken,
+      this.webFcmToken,
+      this.deviceFcmToken,
+      this.role,
+      this.gender,
+      this.profilePic,
+      this.state,
+      this.city,
+      this.country,
+      this.postalcode,
+      this.uniqueHostalId,
+      this.emailOtp,
+      this.expiredTime,
+      this.deletedAt,
+      this.createdAt,
+      this.updatedAt});
 
   Users.fromJson(Map<String, dynamic> json) {
     id = json['id'];

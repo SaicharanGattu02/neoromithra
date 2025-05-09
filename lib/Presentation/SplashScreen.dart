@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:neuromithra/Presentation/MainDashBoard.dart';
 import 'package:neuromithra/services/Preferances.dart';
-import 'LogIn.dart';
+import 'Authentication/LogIn.dart';
 import 'OnBoardScreen.dart';
 
 class Splash extends StatefulWidget {
@@ -36,7 +36,7 @@ class _SplashState extends State<Splash> {
       } else if (userId.isNotEmpty) {
         context.pushReplacement('/main_dashBoard?initialIndex=${0}');
       } else {
-        context.pushReplacement('/login');
+        context.pushReplacement('/login_with_mobile');
       }
     });
   }

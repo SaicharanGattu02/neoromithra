@@ -18,6 +18,7 @@ import '../Model/ProfileDetailsModel.dart';
 import '../Model/RegisterModel.dart';
 import '../Model/ReviewListModel.dart';
 import '../Model/ReviewSubmitModel.dart';
+import '../Model/SignInMobileModel.dart';
 import '../Model/TherapiesListModel.dart';
 import 'AuthService.dart';
 import 'package:mime/mime.dart';
@@ -1145,20 +1146,9 @@ class Userapi {
     }
   }
 
-  static Future<RegisterModel?> postRegister(String name, String mail,
-      String password, String phone, String fcmToken, String sosNumber) async {
+  static Future<RegisterModel?> postRegister(data) async {
     try {
-      final response = await _dio.post(
-        "/api/user/userregister",
-        data: {
-          "name": name,
-          "email": mail,
-          "password": password,
-          "phone": phone,
-          "fcm_token": fcmToken,
-          "sos_1": sosNumber,
-        },
-      );
+      final response = await _dio.post("/api/register-user", data: data);
       if (response.statusCode == 200) {
         print("PostRegister Status: ${response.data}");
         return RegisterModel.fromJson(response.data);
@@ -1195,23 +1185,57 @@ class Userapi {
     }
   }
 
-  static Future<Map<String, dynamic>?> postProfileDetails(data) async {
+  static Future<SignInMobileModel?> postLoginWithMobile(data) async {
     try {
-      final response = await _dio.post(
-        "/api/users/update_user_details",
-        data: data
-      );
+      final response = await _dio.post("/api/login-otp", data: data);
+      if (response.statusCode == 200) {
+        print("postLoginWithMobile Status: ${response.data}");
+        return SignInMobileModel.fromJson(response.data);
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print("Error occurred: $e");
+      return null;
+    }
+  }
+
+  static Future<Map<String, dynamic>?> verifyOtp(data)  async {
+    try {
+      final response = await _dio.post("/api/verify-login-otp", data: data);
+      if (response.statusCode == 200) {
+        print("PostLogin Status: ${response.data}");
+        return {
+          "access_token": response.data["access_token"],
+          "token_type": response.data["token_type"],
+          "expires_in": response.data["expires_in"],
+        };
+      } else if (response.statusCode == 401 || response.statusCode == 403) {
+        print("Unauthorized: ${response.data['error']}");
+        return {
+          "error": response.data["error"],
+          "status": response.data["status"],
+        };
+      }
+    } catch (e) {
+      print("Error occurred: $e");
+      return null;
+    }
+  }
+
+  static Future<Map<String, dynamic>?> postProfileDetails(
+      FormData formData) async {
+    debugPrint("UseraData fields:");
+    for (var field in formData.fields) {
+      debugPrint("Field: ${field.key} = ${field.value}");
+    }
+    try {
+      final response =
+          await _dio.post("/api/users/profile-update", data: formData);
       if (response.statusCode == 200) {
         print("postProfileDetails Status: ${response.data}");
         return {"message": response.data["message"]};
-      } else if (response.statusCode == 401) {
-        print("Unauthorized: ${response.data['error']}");
-        return {"error": response.data["error"]};
-      } else if (response.statusCode == 400) {
-        print("postProfileDetails Error: ${response.data}");
-        return response.data.containsKey("errors")
-            ? {"error": response.data["errors"]}
-            : {"error": "Bad request with status 400"};
       } else {
         print("Request failed with status: ${response.statusCode}");
         return {"error": "Request failed with status: ${response.statusCode}"};
@@ -1238,10 +1262,10 @@ class Userapi {
     }
   }
 
-
   static Future<CounsellingsListModel?> getCounsellingsList() async {
     try {
-      final response = await _dio.get("/api/users/guest-service?type=Counselling");
+      final response =
+          await _dio.get("/api/users/guest-service?type=Counselling");
       if (response.statusCode == 200) {
         print("getCounsellingsList Status: ${response.data}");
         return CounsellingsListModel.fromJson(response.data);
@@ -1382,9 +1406,10 @@ class Userapi {
     }
   }
 
-  static Future<AddAddressModel?> addAddressApi(Map<String,dynamic>data) async {
+  static Future<AddAddressModel?> addAddressApi(
+      Map<String, dynamic> data) async {
     try {
-      final response = await _dio.post("/api/add_user_address",data: data);
+      final response = await _dio.post("/api/add_user_address", data: data);
       if (response.statusCode == 200) {
         print("AddAddressApi Response: ${response.data}");
         return AddAddressModel.fromJson(response.data);
@@ -1398,9 +1423,11 @@ class Userapi {
     }
   }
 
-  static Future<AddAddressModel?> editAddressApi(Map<String,dynamic>data, String addressId) async {
+  static Future<AddAddressModel?> editAddressApi(
+      Map<String, dynamic> data, String addressId) async {
     try {
-      final response = await _dio.post("/api/update_user_address/$addressId",data: data);
+      final response =
+          await _dio.post("/api/update_user_address/$addressId", data: data);
       if (response.statusCode == 200) {
         print("EditAddressApi Response: ${response.data}");
         return AddAddressModel.fromJson(response.data);

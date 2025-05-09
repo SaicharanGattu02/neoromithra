@@ -6,14 +6,17 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:neuromithra/Providers/LogInWithMobileProvider.dart';
 import 'package:neuromithra/router.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:neuromithra/state_injector.dart';
+import 'package:neuromithra/utils/media_query_helper.dart';
 import 'package:provider/provider.dart';
 import 'Providers/AddressListProviders.dart';
 import 'Providers/BookingHistoryProviders.dart';
 import 'Providers/HomeProviders.dart';
+import 'Providers/RegisterProvider.dart';
 import 'Providers/SignInProviders.dart';
 import 'Providers/UserProvider.dart';
 
@@ -116,6 +119,8 @@ Future<void> main() async {
     ChangeNotifierProvider(create: (_) => BookingHistoryProviders()),
     ChangeNotifierProvider(create: (_) => AddressListProvider()),
     ChangeNotifierProvider(create: (_) => UserProviders()),
+    ChangeNotifierProvider(create: (_) => RegisterProvider()),
+    ChangeNotifierProvider(create: (_) => LoginWithMobileProvider()),
   ], child: MyApp()));
 }
 
@@ -153,6 +158,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     return MultiBlocProvider(
       providers: StateInjector.blocProviders,
       child: MaterialApp.router(
