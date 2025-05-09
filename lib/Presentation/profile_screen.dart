@@ -443,10 +443,7 @@ void _showLogoutConfirmationDialog(BuildContext context) {
                             child: OutlinedButton(
                               onPressed: () async {
                                 PreferenceService().clearPreferences();
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => LogIn()));
+                             context.pushReplacement('/login_with_mobile');
                               },
                               style: OutlinedButton.styleFrom(
                                 foregroundColor:

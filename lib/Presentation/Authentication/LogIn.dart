@@ -79,19 +79,18 @@ class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
             children: [
 
               SizedBox(height: height * 0.03),
-              Align(
-                alignment: Alignment.centerLeft,
-                child:IconButton.filled(
-                  icon: Icon(Icons.arrow_back, color: primarycolor), // Icon color
-                  onPressed: () => context.pop(),
-                  style: IconButton.styleFrom(
-                    backgroundColor: Color(0xFFECFAFA), // Filled color
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton.filled(
+                    icon: Icon(Icons.arrow_back, color: primarycolor),
+                    onPressed: () => context.pop(),
+                    style: IconButton.styleFrom(
+                      backgroundColor: Color(0xFFECFAFA),
+                    ),
                   ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: _buildSkipButton(),
+                  _buildSkipButton(),
+                ],
               ),
               SizedBox(height: height * 0.06),
               _buildLogo(),
@@ -103,15 +102,13 @@ class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Center(
-                        child: Text(
-                          "Sign In",
-                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            color: charcoal,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
-                          ),
+                      Text(
+                        "Sign In",
+                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          color: charcoal,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w500,
+
                         ),
                       ),
                       SizedBox(height: height * 0.03),
@@ -136,20 +133,21 @@ class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildSkipButton() {
-    return GestureDetector(
-      onTap: () => context.pushReplacement('/main_dashBoard?initialIndex=0'),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          border: Border.all(color: primarycolor, width: 1.5),
-          borderRadius: BorderRadius.circular(8),
+    return SizedBox(height: 30,
+      child: OutlinedButton(
+        onPressed: () => context.pushReplacement('/main_dashBoard?initialIndex=0'),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: primarycolor,
+          side: BorderSide(color: primarycolor, width: 1.5),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
         ),
-        child: Text(
+        child: const Text(
           'Skip',
           style: TextStyle(
             fontSize: 16,
-            color: primarycolor,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w500,
           ),

@@ -88,7 +88,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        context.push('/login');
+                        context.push('/login_with_mobile');
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:  primarycolor, // Button background
