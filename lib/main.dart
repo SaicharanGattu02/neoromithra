@@ -10,9 +10,11 @@ import 'package:neuromithra/router.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:neuromithra/state_injector.dart';
+import 'package:neuromithra/utils/Color_Constants.dart';
 import 'package:provider/provider.dart';
 import 'Providers/AddressListProviders.dart';
 import 'Providers/BookingHistoryProviders.dart';
+import 'Providers/ChildProvider.dart';
 import 'Providers/HomeProviders.dart';
 import 'Providers/SignInProviders.dart';
 import 'Providers/UserProvider.dart';
@@ -116,6 +118,7 @@ Future<void> main() async {
     ChangeNotifierProvider(create: (_) => BookingHistoryProviders()),
     ChangeNotifierProvider(create: (_) => AddressListProvider()),
     ChangeNotifierProvider(create: (_) => UserProviders()),
+    ChangeNotifierProvider(create: (_) => ChildProvider()),
   ], child: MyApp()));
 }
 
@@ -173,7 +176,6 @@ class MyApp extends StatelessWidget {
           dialogBackgroundColor: Colors.white,
           cardColor: Colors.white,
           searchBarTheme: const SearchBarThemeData(),
-          tabBarTheme: const TabBarTheme(),
           dialogTheme: const DialogTheme(
             shadowColor: Colors.white,
             surfaceTintColor: Colors.white,
@@ -195,14 +197,43 @@ class MyApp extends StatelessWidget {
             surfaceTintColor: Colors.white,
             color: Colors.white,
           ),
-          textButtonTheme: TextButtonThemeData(
-            style: ButtonStyle(),
-          ),
           bottomSheetTheme: const BottomSheetThemeData(
             surfaceTintColor: Colors.white,
             backgroundColor: Colors.white,
           ),
           colorScheme: const ColorScheme.light(background: Colors.white),
+          switchTheme: SwitchThemeData(
+            thumbColor: MaterialStateProperty.all(primarycolor),
+            trackColor: MaterialStateProperty.all(primarycolor.withOpacity(0.5)),
+          ),
+          checkboxTheme: CheckboxThemeData(
+            fillColor: MaterialStateProperty.all(primarycolor),
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              foregroundColor: primarycolor,
+            ),
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primarycolor,
+              foregroundColor: Colors.white,
+            ),
+          ),
+          outlinedButtonTheme: OutlinedButtonThemeData(
+            style: OutlinedButton.styleFrom(
+              foregroundColor: primarycolor,
+              side: BorderSide(color: primarycolor),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+          ),
+          textTheme: TextTheme(
+            bodyMedium: TextStyle(color: Colors.black),
+            titleLarge: TextStyle(fontWeight: FontWeight.bold),
+            // Add more if needed
+          ),
         ),
         routerConfig: goRouter,
       ),

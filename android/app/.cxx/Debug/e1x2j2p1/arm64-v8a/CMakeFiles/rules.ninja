@@ -37,7 +37,7 @@ rule CLEAN
 
 
 #############################################
-# Rule for debugPrinting all primary targets available.
+# Rule for printing all primary targets available.
 
 rule HELP
   command = C:\Users\user\AppData\Local\Android\sdk\cmake\3.22.1\bin\ninja.exe -t targets
