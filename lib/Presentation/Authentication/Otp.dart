@@ -1,12 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:neuromithra/Providers/LogInWithMobileProvider.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:provider/provider.dart';
-import '../../services/AuthService.dart';
 import '../../services/Preferances.dart';
 import '../../utils/Color_Constants.dart';
 import '../../utils/media_query_helper.dart';
