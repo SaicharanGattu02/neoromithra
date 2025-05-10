@@ -11,11 +11,8 @@ import 'Presentation/Bookappointment1.dart';
 import 'Presentation/Authentication/LogInWithMobile.dart';
 import 'Presentation/Authentication/Otp.dart';
 import 'Presentation/BookedApointmentsuccessfully.dart';
-import 'Presentation/ForgotPasswordScreen.dart';
 import 'Presentation/BookingHistory.dart';
-import 'Presentation/LogIn.dart';
 import 'Presentation/Authentication/ForgotPasswordScreen.dart';
-import 'Presentation/LastBooking.dart';
 import 'Presentation/Authentication/LogIn.dart';
 import 'Presentation/MainDashBoard.dart';
 import 'Presentation/OnBoardScreen.dart';
@@ -38,21 +35,21 @@ final GoRouter goRouter =
     path: '/login',
     pageBuilder: (context, state) => buildSlideTransitionPage(LogIn(), state),
   ),
-      GoRoute(
-        path: '/otp',
-        pageBuilder: (context, state) {
-          final mobile = state.uri.queryParameters['mobile'];
-          if (mobile == null || mobile.isEmpty) {
-            return buildSlideTransitionPage(
-              const Scaffold(
-                body: Center(child: Text('Error: Mobile number missing')),
-              ),
-              state,
-            );
-          }
-          return buildSlideTransitionPage(Otp(mobile: mobile), state);
-        },
-      ),
+  // GoRoute(
+  //   path: '/otp',
+  //   pageBuilder: (context, state) {
+  //     final mobile = state.uri.queryParameters['mobile'];
+  //     if (mobile == null || mobile.isEmpty) {
+  //       return buildSlideTransitionPage(
+  //         const Scaffold(
+  //           body: Center(child: Text('Error: Mobile number missing')),
+  //         ),
+  //         state,
+  //       );
+  //     }
+  //     return buildSlideTransitionPage(Otp(mobile: mobile), state);
+  //   },
+  // ),
   GoRoute(
     path: '/register',
     pageBuilder: (context, state) =>
@@ -122,7 +119,7 @@ final GoRouter goRouter =
     pageBuilder: (context, state) =>
         buildSlideTransitionPage(ForgotPasswordScreen(), state),
   ),
-      GoRoute(
+  GoRoute(
     path: '/login_with_mobile',
     pageBuilder: (context, state) =>
         buildSlideTransitionPage(LoginWithMobile(), state),

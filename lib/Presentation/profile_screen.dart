@@ -13,7 +13,6 @@ import 'AddressListScreen.dart';
 import 'Editprofile _screen.dart';
 import 'GovtSupportinfo.dart';
 import 'BookingHistory.dart';
-import 'LogIn.dart';
 import '../Model/ProfileDetailsModel.dart';
 import 'PrivacyPolicyScreen.dart';
 import 'TermsAndConditionsScreen.dart';
@@ -443,10 +442,6 @@ void _showLogoutConfirmationDialog(BuildContext context) {
                             child: OutlinedButton(
                               onPressed: () async {
                                 PreferenceService().clearPreferences();
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => LogIn()));
                               },
                               style: OutlinedButton.styleFrom(
                                 foregroundColor:
