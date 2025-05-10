@@ -567,6 +567,21 @@ class Userapi {
     }
   }
 
+  static Future<SuccessModel?> createBooking(Map<String,dynamic> data) async {
+    try {
+      final response = await post("/api/users/create-appointment-request",data: data);
+      if (response.statusCode == 200) {
+        debugPrint("createBooking Status: ${response.data}");
+        return SuccessModel.fromJson(response.data);
+      }
+      debugPrint("Request failed with status: ${response.statusCode}");
+      return null;
+    } catch (e) {
+      debugPrint("Error occurred: $e");
+      return null;
+    }
+  }
+
   static Future<PreviousBookingModel?> getPreviousBookingHistory() async {
     try {
       final response = await get("/api/get_user_booking_hisrory");

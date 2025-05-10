@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../Components/Shimmers.dart';
 import '../Model/ReviewListModel.dart';
 import '../Providers/HomeProviders.dart';
 import '../utils/Color_Constants.dart';
@@ -20,27 +21,18 @@ class ServiceDetailsScreen extends StatefulWidget {
   State<ServiceDetailsScreen> createState() => _ServiceDetailsScreenState();
 }
 
+
 class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
   bool showFocus = true;
+
   @override
   void initState() {
     super.initState();
-    // GetReviewsList();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<HomeProviders>(context, listen: false)
           .getServiceDetails(widget.serviceID);
     });
   }
-
-  List<Review> reviews = [];
-  // Future<void> GetReviewsList() async {
-  //   final response = await Userapi.getReviewList();
-  //   if (response != null) {
-  //     setState(() {
-  //       reviews = response.review ?? [];
-  //     });
-  //   }
-  // }
 
   Future<void> _launchCall(String phoneNumber) async {
     final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
@@ -56,7 +48,27 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
     final h = MediaQuery.of(context).size.height;
     final w = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: _buildAppBar(context),
+      appBar: AppBar(
+        title: Text(
+          widget.serviceName,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontFamily: "general_sans",
+            color: primarycolor,
+            fontSize: 18,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton.filled(
+          icon: const Icon(Icons.arrow_back, color: primarycolor),
+          onPressed: () => context.pop(),
+          style: IconButton.styleFrom(
+            backgroundColor: const Color(0xFFECFAFA),
+          ),
+        ),
+      ),
       body: Consumer<HomeProviders>(
         builder: (context, homeProviders, child) {
           if (homeProviders.isLoading) {
@@ -73,15 +85,13 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildHeaderImage(data.image ??"", w, h),
-                    const SizedBox(height: 10),
+                    _buildHeaderImage(data.image ?? "", w, h),
+                    const SizedBox(height: 12),
                     _buildPrice(data.amount.toString(), w),
-                    _buildDescription(
-                        data.description ?? 'No description available'),
+                    _buildDescription(data.description ?? 'No description available'),
                     _buildTabs(data),
+                    const SizedBox(height: 10),
                     _buildTabContent(data),
-                    // Uncomment and enhance reviews section
-                    // _buildReviewsSection(context),
                   ],
                 ),
               ),
@@ -93,44 +103,157 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
     );
   }
 
-  // Description display
+  Widget _buildShimmerLoading(double w, double h) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          shimmerContainer(w, h * 0.3, context),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: shimmerText(120, 20, context),
+          ),
+          const SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: shimmerText(w * 0.85, 90, context),
+          ),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                shimmerText(100, 24, context),
+                const SizedBox(width: 16),
+                shimmerText(80, 24, context),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorState(String message) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.error_outline, color: Colors.red, size: 50),
+          const SizedBox(height: 10),
+          Text(
+            message,
+            style: const TextStyle(
+              fontFamily: "general_sans",
+              fontSize: 16,
+              color: Colors.black54,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeaderImage(String imageUrl, double w, double h) {
+    return Stack(
+      children: [
+        CachedNetworkImage(
+          imageUrl: imageUrl,
+          width: w,
+          height: h * 0.3,
+          fit: BoxFit.cover,
+          placeholder: (context, url) => shimmerContainer(w, h * 0.3, context),
+          errorWidget: (context, url, error) => Container(
+            width: w,
+            height: h * 0.3,
+            color: Colors.grey[300],
+            child: const Icon(Icons.broken_image, color: Colors.red),
+          ),
+        ),
+        Container(
+          width: w,
+          height: h * 0.3,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.black.withOpacity(0.3), Colors.transparent],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAppBar(BuildContext context) {
+    return AppBar(
+      title: Text(
+        widget.serviceName,
+        style: const TextStyle(
+          fontWeight: FontWeight.w600,
+          fontFamily: "general_sans",
+          color: primarycolor,
+          fontSize: 18,
+        ),
+      ),
+      centerTitle: true,
+      backgroundColor: Colors.white,
+      elevation: 0,
+      leading: IconButton.filled(
+        icon: const Icon(Icons.arrow_back, color: primarycolor),
+        onPressed: () => context.pop(),
+        style: IconButton.styleFrom(
+          backgroundColor: const Color(0xFFECFAFA),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPrice(String amount, double w) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Text(
+        "Price: ₹$amount /-",
+        style: const TextStyle(
+          fontSize: 18,
+          color: primarycolor,
+          fontWeight: FontWeight.w600,
+          fontFamily: "general_sans",
+        ),
+      ),
+    );
+  }
+
   Widget _buildDescription(String description) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: defaultPadding,
-        vertical: 10,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
       child: Text(
         description,
         style: const TextStyle(
           fontSize: 16,
           height: 1.5,
-          fontFamily: "Inter",
+          fontFamily: "general_sans",
           color: Colors.black87,
         ),
       ),
     );
   }
 
-  // Tabs for Key Areas of Focus and Benefits
   Widget _buildTabs(dynamic data) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
         children: [
           if (data.keyAreaFocus?.isNotEmpty ?? false) ...[
             _tabButton("Key Areas of Focus", showFocus, () {
-              setState(() {
-                showFocus = true;
-              });
+              setState(() => showFocus = true);
             }),
             const SizedBox(width: 20),
           ],
           if (data.benefits?.isNotEmpty ?? false) ...[
             _tabButton("Benefits", !showFocus, () {
-              setState(() {
-                showFocus = false;
-              });
+              setState(() => showFocus = false);
             }),
           ],
         ],
@@ -138,39 +261,55 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
     );
   }
 
-  // Tab content display with animation
   Widget _buildTabContent(dynamic data) {
     return AnimatedCrossFade(
       firstChild: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Text(
           data.keyAreaFocus ?? "No key areas of focus available",
           style: const TextStyle(
             fontSize: 16,
             height: 1.5,
-            fontFamily: "Inter",
+            fontFamily: "general_sans",
             color: Colors.black87,
           ),
         ),
       ),
       secondChild: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Text(
           data.benefits ?? "No benefits available",
           style: const TextStyle(
             fontSize: 16,
             height: 1.5,
-            fontFamily: "Inter",
+            fontFamily: "general_sans",
             color: Colors.black87,
           ),
         ),
       ),
-      crossFadeState: showFocus ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+      crossFadeState:
+      showFocus ? CrossFadeState.showFirst : CrossFadeState.showSecond,
       duration: const Duration(milliseconds: 300),
     );
   }
 
-  // Bottom navigation bar with Call Us and Book Now buttons
+  Widget _tabButton(String text, bool isActive, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Text(
+        text,
+        style: TextStyle(
+          color: isActive ? primarycolor : Colors.black54,
+          fontSize: 18,
+          fontFamily: "general_sans",
+          fontWeight: FontWeight.w600,
+          decoration: isActive ? TextDecoration.underline : TextDecoration.none,
+          decorationColor: primarycolor,
+        ),
+      ),
+    );
+  }
+
   Widget _buildBottomNavigationBar(BuildContext context, double h) {
     return SafeArea(
       child: Container(
@@ -187,46 +326,17 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
         ),
         child: Row(
           children: [
-            _bottomButton(
-              "Call Us",
-              primarycolor,
-                  () => _launchCall("8885320115"),
-            ),
+            _bottomButton("Call Us", primarycolor, () => _launchCall("8885320115")),
             const SizedBox(width: 12),
-            _bottomButton(
-              "Book Now",
-              primarycolor,
-                  () {
-                context.push(
-                  '/book_appointment1'
-                );
-              },
-            ),
+            _bottomButton("Book Now", primarycolor, () {
+              context.push('/book_appointment1');
+            }),
           ],
         ),
       ),
     );
   }
 
-  // Tab button widget
-  Widget _tabButton(String text, bool isActive, VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      child: Text(
-        text,
-        style: TextStyle(
-          color: isActive ? primarycolor : Colors.black54,
-          fontSize: 18,
-          fontFamily: "Inter",
-          fontWeight: FontWeight.w600,
-          decoration: isActive ? TextDecoration.underline : TextDecoration.none,
-          decorationColor: isActive ? primarycolor : Colors.black54,
-        ),
-      ),
-    );
-  }
-
-  // Bottom button widget
   Widget _bottomButton(String text, Color color, VoidCallback onTap) {
     return Expanded(
       child: SizedBox(
@@ -245,162 +355,10 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
             style: const TextStyle(
               color: Colors.white,
               fontSize: 18,
-              fontFamily: "Inter",
+              fontFamily: "general_sans",
               fontWeight: FontWeight.w600,
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-
-  // AppBar widget
-  AppBar _buildAppBar(BuildContext context) {
-    return AppBar(
-      title: Text(
-        widget.serviceName,
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontFamily: "Inter",
-          color: primarycolor,
-          fontSize: 18,
-        ),
-      ),
-      centerTitle: true,
-      backgroundColor: Colors.white,
-      elevation: 0,
-      leading: IconButton.filled(
-        icon: const Icon(Icons.arrow_back, color: primarycolor),
-        onPressed: () => context.pop(),
-        style: IconButton.styleFrom(
-          backgroundColor: Color(0xFFECFAFA),
-        ),
-      ),
-    );
-  }
-
-  // Shimmer loading effect
-  Widget _buildShimmerLoading(double w, double h) {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: w,
-              height: h * 0.3,
-              color: Colors.white,
-            ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.only(left: defaultPadding),
-              child: Container(
-                width: 150,
-                height: 20,
-                color: Colors.white,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: defaultPadding,
-                vertical: 10,
-              ),
-              child: Container(
-                width: w * 0.8,
-                height: 100,
-                color: Colors.white,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-              child: Row(
-                children: [
-                  Container(
-                    width: 120,
-                    height: 30,
-                    color: Colors.white,
-                  ),
-                  const SizedBox(width: 20),
-                  Container(
-                    width: 100,
-                    height: 30,
-                    color: Colors.white,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Error state widget
-  Widget _buildErrorState(String message) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.error_outline, color: Colors.red, size: 50),
-          const SizedBox(height: 10),
-          Text(
-            message,
-            style: const TextStyle(
-              fontFamily: "Inter",
-              fontSize: 16,
-              color: Colors.black54,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Header image with gradient overlay
-  Widget _buildHeaderImage(String imageUrl, double w, double h) {
-    return Stack(
-      children: [
-        CachedNetworkImage(
-          imageUrl: imageUrl,
-          width: w,
-          height: h * 0.3,
-          fit: BoxFit.cover,
-          placeholder: (context, url) => Container(
-            width: 150.0,
-            height: 106.0,
-            color: Colors.grey[300],
-            child: Center(child: spinkits.getSpinningLinespinkit()),
-          ),
-        ),
-        Container(
-          width: w,
-          height: h * 0.3,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.black.withOpacity(0.3), Colors.transparent],
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // Price display
-  Widget _buildPrice(String amount, double w) {
-    return Padding(
-      padding: const EdgeInsets.only(left: defaultPadding),
-      child: Text(
-        "Price: ₹$amount /-",
-        style:  TextStyle(
-          fontSize: 18,
-          color: primarycolor,
-          fontWeight: FontWeight.w600,
-          fontFamily: "Inter",
         ),
       ),
     );

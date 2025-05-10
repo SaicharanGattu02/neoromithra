@@ -206,9 +206,6 @@ class MyApp extends StatelessWidget {
             thumbColor: MaterialStateProperty.all(primarycolor),
             trackColor: MaterialStateProperty.all(primarycolor.withOpacity(0.5)),
           ),
-          checkboxTheme: CheckboxThemeData(
-            fillColor: MaterialStateProperty.all(primarycolor),
-          ),
           textButtonTheme: TextButtonThemeData(
             style: TextButton.styleFrom(
               foregroundColor: primarycolor,

@@ -25,19 +25,22 @@ class _ExploreChildrenState extends State<ExploreChildren> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text( 'Support for Children',
-            style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontFamily: "Inter",
-                color: primarycolor,
-                fontSize: 18)),
+        title: Text(
+          'Support for Children',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontFamily: "general_sans",
+            color: primarycolor,
+            fontSize: 18,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton.filled(
-          icon: Icon(Icons.arrow_back, color: primarycolor), // Icon color
+          icon: Icon(Icons.arrow_back, color: primarycolor),
           onPressed: () => Navigator.pop(context),
           style: IconButton.styleFrom(
-            backgroundColor: Color(0xFFECFAFA), // Filled color
+            backgroundColor: Color(0xFFECFAFA),
           ),
         ),
       ),
@@ -48,179 +51,163 @@ class _ExploreChildrenState extends State<ExploreChildren> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
                 Text(
-                  textAlign: TextAlign.center,
                   'Are You Ready to Redefine Support for Neurodiverse Minds?',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700,color: primarycolor),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: primarycolor,
+                    fontFamily: "general_sans",
+                  ),
                 ),
-                SizedBox(height: 20),
-
-                // Bullet Points for initial questions
-                Text(
-                  "• Is your child struggling with developmental delays, autism, ADHD, or any neurodiverse condition?",
-                  style: TextStyle(fontSize: 16),
-                ),
-                Text(
-                  "• Do you feel lost navigating therapies, government support, and school admissions for your child?",
-                  style: TextStyle(fontSize: 16),
-                ),
-                SizedBox(height: 20),
-
-                // Description about NeuroMitra
+                const SizedBox(height: 20),
+                ...[
+                  "Is your child struggling with developmental delays, autism, ADHD, or any neurodiverse condition?",
+                  "Do you feel lost navigating therapies, government support, and school admissions for your child?"
+                ].map((text) => Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text("• $text",
+                      style: TextStyle(fontSize: 16, fontFamily: "general_sans")),
+                )),
+                const SizedBox(height: 20),
                 Text(
                   "NeuroMitra is here to guide and support you. Designed for parents and caregivers, we offer solutions tailored for neurodiverse children and their unique challenges.",
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 16, fontFamily: "general_sans"),
                 ),
-                SizedBox(height: 20),
-
-                // Centered Title
+                const SizedBox(height: 24),
                 Center(
-                  child: Text(
-                    "Understanding Neurodiverse Minds",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                  child: Column(
+                    children: [
+                      Text(
+                        "Understanding Neurodiverse Minds",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: "general_sans",
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        "What Does It Mean to Be Neurodiverse?",
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                          color: primarycolor,
+                          fontFamily: "general_sans",
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(height: 10),
-                Center(
-                  child: Text(
-                    "What Does It Mean to Be Neurodiverse?",
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500,color: primarycolor),
-                  ),
-                ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 HtmlWidget(
                   'To be neurodiverse means having a brain that processes, learns, and behaves differently from what is considered "typical." Neurodiversity encompasses a range of conditions emphasizing that these differences are natural variations in human cognition rather than deficits. It promotes acceptance, inclusion, and the value of diverse ways of thinking.',
-                  textStyle: TextStyle(fontSize: 16),
+                  textStyle: TextStyle(fontSize: 16, fontFamily: "general_sans"),
                 ),
-                SizedBox(height: 20),
-
-                // Text explaining the uniqueness of each child
+                const SizedBox(height: 20),
                 Text(
                   "Every child is unique, and neurodiversity celebrates their differences. Whether your child has:",
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 16, fontFamily: "general_sans"),
                 ),
-                SizedBox(height: 10),
-
-                // Bullet Points for specific neurodiverse conditions
-                Text(
-                  "• Autism Spectrum Disorder (ASD)",
-                  style: TextStyle(fontSize: 16),
-                ),
-                Text(
-                  "• Attention-Deficit/Hyperactivity Disorder (ADHD)",
-                  style: TextStyle(fontSize: 16),
-                ),
-                Text(
-                  "• Dyslexia, Dyscalculia, or Dyspraxia",
-                  style: TextStyle(fontSize: 16),
-                ),
-                Text(
-                  "• Speech or Language Delays",
-                  style: TextStyle(fontSize: 16),
-                ),
-                SizedBox(height: 20),
-                // Text to emphasize NeuroMitra's support
+                const SizedBox(height: 10),
+                ...[
+                  "Autism Spectrum Disorder (ASD)",
+                  "Attention-Deficit/Hyperactivity Disorder (ADHD)",
+                  "Dyslexia, Dyscalculia, or Dyspraxia",
+                  "Speech or Language Delays"
+                ].map((text) => Padding(
+                  padding: const EdgeInsets.only(bottom: 6.0),
+                  child: Text("• $text",
+                      style: TextStyle(fontSize: 16, fontFamily: "general_sans")),
+                )),
+                const SizedBox(height: 20),
                 Text(
                   "We’re here to help them reach their full potential with the right tools, therapies, and support.",
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 16, fontFamily: "general_sans"),
                 ),
-                SizedBox(height: 20),
-
-                // Bullet Points for challenges children may face
+                const SizedBox(height: 20),
                 Text(
                   "• Is Your Child Struggling with These Challenges?",
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 16, fontFamily: "general_sans"),
                 ),
-
+                ...[
+                  "Difficulty communicating or expressing thoughts?",
+                  "Trouble focusing, staying organized, or sitting still?",
+                  "Challenges in reading, writing, or basic math skills?",
+                  "Frequent meltdowns or difficulty adapting to changes?",
+                  "Struggling with motor skills like holding a pencil or tying shoelaces?"
+                ].map((text) => Padding(
+                  padding: const EdgeInsets.only(bottom: 6.0),
+                  child: Text("• $text",
+                      style: TextStyle(fontSize: 16, fontFamily: "general_sans")),
+                )),
+                const SizedBox(height: 20),
                 Text(
-                  "• Difficulty communicating or expressing thoughts?",
-                  style: TextStyle(fontSize: 16),
-                ),
-                Text(
-                  "• Trouble focusing, staying organized, or sitting still?",
-                  style: TextStyle(fontSize: 16),
-                ),
-                Text(
-                  "• Challenges in reading, writing, or basic math skills?",
-                  style: TextStyle(fontSize: 16),
-                ),
-                Text(
-                  "• Frequent meltdowns or difficulty adapting to changes?",
-                  style: TextStyle(fontSize: 16),
-                ),
-                Text(
-                  "• Struggling with motor skills like holding a pencil or tying shoelaces?",
-                  style: TextStyle(fontSize: 16),
-                ),
-                SizedBox(height: 20),
-                Text(
-                  textAlign: TextAlign.center,
                   "Don’t worry—you’re not alone. NeuroMitra is here to guide you every step of the way.",
-                  style: TextStyle(fontSize: 16),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16, fontFamily: "general_sans"),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 16),
                 ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.asset("assets/image5.webp",fit: BoxFit.cover,)),
-
-                SizedBox(height: 20),
-                // Centered Title for "How NeuroMitra Can Help"
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset("assets/image5.webp", fit: BoxFit.cover),
+                ),
+                const SizedBox(height: 24),
                 Center(
                   child: Text(
                     "How NeuroMitra Can Help?",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: "general_sans",
+                    ),
                   ),
                 ),
-                SizedBox(height: 10),
-                // Text introducing NeuroMitra's services
+                const SizedBox(height: 10),
                 Text(
                   "At NeuroMitra, we redefine support with:",
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500,color: primarycolor),
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                    color: primarycolor,
+                    fontFamily: "general_sans",
+                  ),
                 ),
-                SizedBox(height: 10),
-                // Bullet Points for services
-                Text(
-                  "• Early Identification: Our simple guide is designed by experts to identify potential developmental delays.",
-                  style: TextStyle(fontSize: 16),
+                const SizedBox(height: 10),
+                ...[
+                  "Early Identification: Our simple guide is designed by experts to identify potential developmental delays.",
+                  "Therapies & Resources: Tailored to your child’s unique needs, including speech therapy, occupational therapy, and behavioral support.",
+                  "Parental Guidance: We equip parents with tools and strategies to empower their child’s journey."
+                ].map((text) => Padding(
+                  padding: const EdgeInsets.only(bottom: 6.0),
+                  child: Text("• $text",
+                      style: TextStyle(fontSize: 16, fontFamily: "general_sans")),
+                )),
+                const SizedBox(height: 20),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset("assets/image6.webp", fit: BoxFit.cover),
                 ),
-                Text(
-                  "• Therapies & Resources: Tailored to your child’s unique needs, including speech therapy, occupational therapy, and behavioral support.",
-                  style: TextStyle(fontSize: 16),
+                const SizedBox(height: 16),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset("assets/banner1.png", fit: BoxFit.contain),
                 ),
-                Text(
-                  "• Parental Guidance: We equip parents with tools and strategies to empower their child’s journey.",
-                  style: TextStyle(fontSize: 16),
-                ),
-                SizedBox(height: 20),
-                SizedBox(
-                  height: 280,
-                  width: double.infinity,
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.asset("assets/image6.webp",fit: BoxFit.cover,)),
-                ),
-                SizedBox(height: 10),
-                SizedBox(
-                  width: double.infinity,
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.asset("assets/banner1.png",fit: BoxFit.contain,)),
-                ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 CustomAppButton(
                   text: 'View our therapy services',
                   onPlusTap: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MainDashBoard(initialIndex: 1,)));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MainDashBoard(initialIndex: 1),
+                      ),
+                    );
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 CustomAppButton(
                   textcolor: Colors.white,
                   text: 'Schedule A Session',
@@ -229,7 +216,7 @@ class _ExploreChildrenState extends State<ExploreChildren> {
                     _launchCall("8885320115");
                   },
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
               ],
             ),
           ),
@@ -237,4 +224,5 @@ class _ExploreChildrenState extends State<ExploreChildren> {
       ),
     );
   }
+
 }

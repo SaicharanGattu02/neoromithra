@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:neuromithra/services/userapi.dart';
 
-class AddProductRating extends StatefulWidget {
+class AddRating extends StatefulWidget {
   final app_id;
   final page_source;
-  const AddProductRating(
+  const AddRating(
       {super.key, required this.app_id, required this.page_source});
   @override
-  State<AddProductRating> createState() => _AddProductRatingState();
+  State<AddRating> createState() => _AddRatingState();
 }
 
-class _AddProductRatingState extends State<AddProductRating> {
+class _AddRatingState extends State<AddRating> {
   var bar;
   bool isLoading = false;
   var rating = 0;

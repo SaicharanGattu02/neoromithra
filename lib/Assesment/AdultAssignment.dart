@@ -74,7 +74,7 @@ class _AdultassignmentState extends State<Adultassignment> {
           'Adult Intake Form',
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontFamily: "Inter",
+            fontFamily: "general_sans",
             color: primarycolor,
             fontSize: 18,
           ),
@@ -99,7 +99,7 @@ class _AdultassignmentState extends State<Adultassignment> {
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                     height: 1,
-                    fontFamily: "Poppins"),
+                    fontFamily: "general_sans"),
               ),
             ),
             const SizedBox(height: 10),
@@ -108,7 +108,7 @@ class _AdultassignmentState extends State<Adultassignment> {
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
-                  fontFamily: "Poppins"),
+                  fontFamily: "general_sans"),
             ),
             const SizedBox(height: 20),
             const Text(
@@ -116,7 +116,7 @@ class _AdultassignmentState extends State<Adultassignment> {
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
-                  fontFamily: "Poppins"),
+                  fontFamily: "general_sans"),
             ),
             const SizedBox(height: 20),
             const Text(
@@ -124,7 +124,7 @@ class _AdultassignmentState extends State<Adultassignment> {
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
-                  fontFamily: "Poppins"),
+                  fontFamily: "general_sans"),
             ),
             const SizedBox(height: 20),
             const Text(
@@ -132,7 +132,7 @@ class _AdultassignmentState extends State<Adultassignment> {
               style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w400,
-                  fontFamily: "Poppins"),
+                  fontFamily: "general_sans"),
             ),
             const SizedBox(height: 20),
             isLoading
@@ -155,7 +155,7 @@ class _AdultassignmentState extends State<Adultassignment> {
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
-                          fontFamily: "Poppins",
+                          fontFamily: "general_sans",
                           color: primarycolor,
                         ),
                       ),
@@ -177,7 +177,7 @@ class _AdultassignmentState extends State<Adultassignment> {
                                 question.question,
                                 style: const TextStyle(
                                   fontSize: 15,
-                                  fontFamily: "Poppins",
+                                  fontFamily: "general_sans",
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -189,7 +189,7 @@ class _AdultassignmentState extends State<Adultassignment> {
                                       (answer) => RadioListTile(
                                     visualDensity: VisualDensity.compact,
                                     title: Text(answer,style: TextStyle(
-                                        fontFamily: "Poppins"
+                                        fontFamily: "general_sans",
                                     ),),
                                     value: answer,
                                     groupValue:

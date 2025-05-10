@@ -42,47 +42,74 @@ class SupportProgramsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFF5F7FA),
       appBar: AppBar(
-        title: Text( 'Govt Support Info',
+        elevation: 0,
+        title: Text('Govt Support Info',
             style: TextStyle(
                 fontWeight: FontWeight.w600,
-                fontFamily: "Inter",
+                fontFamily: "general_sans",
                 color: primarycolor,
                 fontSize: 18)),
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton.filled(
-          icon: Icon(Icons.arrow_back, color: primarycolor), // Icon color
-          onPressed: () =>  context.pop(),
+          icon: Icon(Icons.arrow_back, color: primarycolor),
+          onPressed: () => context.pop(),
           style: IconButton.styleFrom(
-            backgroundColor: Color(0xFFECFAFA), // Filled color
+            backgroundColor: Color(0xFFECFAFA),
           ),
         ),
       ),
       body: ListView.builder(
         itemCount: programs.length,
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         itemBuilder: (context, index) {
-          return Card(
-            margin: EdgeInsets.all(10),
+          return Container(
+            margin: EdgeInsets.only(bottom: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 6,
+                  offset: Offset(0, 3),
+                )
+              ],
+            ),
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    programs[index]['title']!,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: "Inter"
-                    ),
+                  // Optional: Add an icon header
+                  Row(
+                    children: [
+                      Icon(Icons.verified_user, color: primarycolor),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          programs[index]['title']!,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "general_sans",
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: 10),
                   Text(
                     programs[index]['description']!,
-                    style: TextStyle(fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        fontFamily: "Inter"
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: "general_sans",
+                      color: Colors.grey[800],
+                      height: 1.5,
                     ),
                   ),
                 ],

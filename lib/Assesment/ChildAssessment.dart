@@ -82,7 +82,7 @@ class _ChildAssessmentState extends State<ChildAssessment> {
           'Child Intake Form',
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontFamily: "Inter",
+            fontFamily: "general_sans",
             color: primarycolor,
             fontSize: 18,
           ),
@@ -103,27 +103,27 @@ class _ChildAssessmentState extends State<ChildAssessment> {
             const Text(
               'Start with Our Simple Guide',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600,fontFamily: "Poppins"),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600,fontFamily: "general_sans",),
             ),
             const SizedBox(height: 10),
             const Text(
               'Get started today by taking our simple guide. It’s quick, easy, and provides actionable insights into your child’s development.',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400,fontFamily: "Poppins"),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400,fontFamily: "general_sans",),
             ),
             const SizedBox(height: 20),
             const Text(
               'Take Our Simple Guide Now',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600,fontFamily: "Poppins"),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600,fontFamily: "general_sans",),
             ),
             const SizedBox(height: 10),
             const Text(
               'Purpose ',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600,fontFamily: "Poppins"),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600,fontFamily: "general_sans",),
             ),
             const SizedBox(height: 8),
             const Text(
               'To help parents check their child’s developmental milestones and identify early signs of conditions like Autism Spectrum Disorder (ASD), ADHD, Dyslexia, and other developmental delays.',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400,fontFamily: "Poppins"),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400,fontFamily: "general_sans",),
             ),
             const SizedBox(height: 16),
             Form(
@@ -281,7 +281,7 @@ class _ChildAssessmentState extends State<ChildAssessment> {
         inputFormatters: label == "Age" ? [FilteringTextInputFormatter.digitsOnly] : [],
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: TextStyle(fontFamily: "Poppins"),
+          labelStyle: TextStyle(fontFamily: "general_sans",),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         ),
         validator: (value) {

@@ -4,15 +4,13 @@ import '../services/userapi.dart';
 
 class AddressListProvider with ChangeNotifier {
   bool _isLoading = false;
-  String _error = '';
   List<Address> _addresses = [];
   bool get isLoading => _isLoading;
-  String get error => _error;
+
   List<Address> get addresses => _addresses;
 
   Future<void> getAddressList() async {
     _isLoading = true;
-    _error = '';
     notifyListeners();
     try {
       final response = await Userapi.getAddressList();
@@ -22,7 +20,6 @@ class AddressListProvider with ChangeNotifier {
         // _error = response?.message ?? 'Failed to fetch addresses';
       }
     } catch (e) {
-      _error = e.toString();
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -30,7 +27,6 @@ class AddressListProvider with ChangeNotifier {
   }
   Future<bool> addAddress(Map<String, dynamic> data) async {
     _isLoading = true;
-    _error = '';
     notifyListeners();
 
     try {
@@ -39,11 +35,9 @@ class AddressListProvider with ChangeNotifier {
         await getAddressList();
         return true;
       } else {
-        _error = res?.message ?? 'An error occurred. Please try again.';
         return false;
       }
     } catch (e) {
-      _error = e.toString();
       return false;
     } finally {
       _isLoading = false;
@@ -52,7 +46,6 @@ class AddressListProvider with ChangeNotifier {
   }
   Future<bool> EditAddress(Map<String, dynamic> data,id) async {
     _isLoading = true;
-    _error = '';
     notifyListeners();
 
     try {
@@ -61,11 +54,9 @@ class AddressListProvider with ChangeNotifier {
         await getAddressList();
         return true;
       } else {
-        _error = res?.message ?? 'An error occurred. Please try again.';
         return false;
       }
     } catch (e) {
-      _error = e.toString();
       return false;
     } finally {
       _isLoading = false;
@@ -73,10 +64,4 @@ class AddressListProvider with ChangeNotifier {
     }
   }
 
-
-  // Clear error
-  void clearError() {
-    _error = '';
-    notifyListeners();
-  }
 }

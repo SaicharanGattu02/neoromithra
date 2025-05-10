@@ -12,7 +12,7 @@ import '../utils/Color_Constants.dart';
 import 'AddressListScreen.dart';
 import 'Editprofile _screen.dart';
 import 'GovtSupportinfo.dart';
-import 'LastBooking.dart';
+import 'BookingHistory.dart';
 import 'LogIn.dart';
 import '../Model/ProfileDetailsModel.dart';
 import 'PrivacyPolicyScreen.dart';
@@ -127,7 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           children: [
                             _buildOptionTile(Icons.history, 'Booking History',
                                 () {
-                              context.push('/last_booking');
+                              context.push('/booking_history');
                             }),
                             _buildOptionTile(
                                 Icons.location_on_outlined, 'Address List', () {

@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:neuromithra/Presentation/AddAddressScreen.dart';
+import 'package:neuromithra/Presentation/AddressListScreen.dart';
 import 'package:neuromithra/Presentation/BookAppointment.dart';
 import 'package:neuromithra/Presentation/ServiceDeailsScreen.dart';
 import 'package:neuromithra/utils/constants.dart';
@@ -8,7 +10,7 @@ import 'Assesment/ResultScreen.dart';
 import 'Presentation/Bookappointment1.dart';
 import 'Presentation/BookedApointmentsuccessfully.dart';
 import 'Presentation/ForgotPasswordScreen.dart';
-import 'Presentation/LastBooking.dart';
+import 'Presentation/BookingHistory.dart';
 import 'Presentation/LogIn.dart';
 import 'Presentation/MainDashBoard.dart';
 import 'Presentation/OnBoardScreen.dart';
@@ -101,9 +103,9 @@ final GoRouter goRouter =
         buildSlideTransitionPage(ForgotPasswordScreen(), state),
   ),
   GoRoute(
-    path: '/last_booking',
+    path: '/booking_history',
     pageBuilder: (context, state) =>
-        buildSlideTransitionPage(LastBooking(), state),
+        buildSlideTransitionPage(BookingHistory(), state),
   ),
   GoRoute(
     path: '/main_dashBoard',
@@ -126,6 +128,24 @@ final GoRouter goRouter =
     path: '/book_appointment1',
     pageBuilder: (context, state) =>
         buildSlideTransitionPage(Bookappointment1(), state),
+  ),
+  GoRoute(
+    path: '/address_list',
+    pageBuilder: (context, state) =>
+        buildSlideTransitionPage(AddressListScreen(), state),
+  ),
+  GoRoute(
+    path: '/add_address',
+    pageBuilder: (context, state) {
+      final id = state.uri.queryParameters['id'] ?? '';
+      final type = state.uri.queryParameters['type'] ?? '';
+      return buildSlideTransitionPage(
+          AddAddressScreen(
+            id: id,
+            type: type,
+          ),
+          state);
+    },
   ),
   GoRoute(
     path: '/service_details_screen',

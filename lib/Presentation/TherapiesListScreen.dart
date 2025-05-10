@@ -4,6 +4,7 @@ import 'package:neuromithra/Providers/HomeProviders.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../Components/ProductGridItem.dart';
+import '../Components/Shimmers.dart';
 import '../utils/Color_Constants.dart';
 import 'DetailsScreen.dart';
 
@@ -279,46 +280,84 @@ class _TherapiesListScreenState extends State<TherapiesListScreen> {
         title: Text('Therapies List',
             style: TextStyle(
                 fontWeight: FontWeight.w600,
-                fontFamily: "Inter",
+                fontFamily: "general_sans",
                 color: primarycolor,
                 fontSize: 20)),
       ),
       body: Consumer<HomeProviders>(
         builder: (context, homeProvider, child) {
-          return Skeletonizer(
-            enabled: homeProvider.isLoading,
-            child: CustomScrollView(
-                    slivers: [
-                      SliverPadding(
-                        padding: EdgeInsets.all(10.0),
-                        sliver: SliverGrid(
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2, // Number of items per row
-                            crossAxisSpacing: 10.0,
-                          ),
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                              final therapy = homeProvider.therapieslist[index];
-                              return InkWell(
-                                onTap: () {
-                                  context.push("/service_details_screen?serviceID=${therapy.id}&serviceName=${therapy.name}");
-                                },
-                                child: ProductGridItem(
-                                  imageUrl: therapy.image??"",
-                                  title: therapy.name??"",
-                                ),
-                              );
-                            },
-                            childCount: homeProvider.therapieslist.length,
-                          ),
-                        ),
-                      ),
-                    ],
+          final isLoading = homeProvider.isLoading;
+          final itemCount = isLoading ? 6 : homeProvider.therapieslist.length;
+          return CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.all(10.0),
+                sliver: SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 10.0,
+                    mainAxisSpacing: 10.0,
+                    childAspectRatio: 0.95,
                   ),
+                  delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          if (isLoading) {
+                            return therapyGridShimmerItem(context);
+                          } else {
+                            final therapy = homeProvider.therapieslist[index];
+                            return InkWell(
+                              borderRadius: BorderRadius.circular(8),
+                              onTap: () {
+                                context.push(
+                                    "/service_details_screen?serviceID=${therapy.id}&serviceName=${therapy.name}");
+                              },
+                              child: ProductGridItem(
+                                imageUrl: therapy.image ?? "",
+                                title: therapy.name ?? "",
+                              ),
+                            );
+                          }
+                    },
+                    childCount: itemCount,
+                  ),
+                ),
+              ),
+            ],
           );
         },
       ),
     );
   }
+
+  Widget therapyGridShimmerItem(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 3,
+            offset: Offset(0, 2),
+          )
+        ],
+      ),
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: shimmerContainer(double.infinity, 106, context),
+          ),
+          const SizedBox(height: 10),
+          shimmerText(100, 14, context),
+          const SizedBox(height: 6),
+          shimmerText(60, 12, context),
+        ],
+      ),
+    );
+  }
+
 }
 
