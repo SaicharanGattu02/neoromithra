@@ -22,6 +22,7 @@ import '../Model/ReviewListModel.dart';
 import '../Model/ReviewSubmitModel.dart';
 import '../Model/SignInMobileModel.dart';
 import '../Model/TherapiesListModel.dart';
+import '../api_endpoint_urls.dart';
 import '../utils/constants.dart';
 import 'AuthService.dart';
 import 'package:mime/mime.dart';
@@ -31,7 +32,7 @@ import 'package:dio/dio.dart';
 class Userapi {
   static final Dio _dio = Dio(
     BaseOptions(
-      baseUrl: "http://192.168.80.237:8000",
+      baseUrl: APIEndpointUrls.baseUrl,
       connectTimeout: const Duration(seconds: 60),
       receiveTimeout: const Duration(seconds: 60),
       headers: {
@@ -324,7 +325,7 @@ class Userapi {
 
   static Future<Map<String, dynamic>?> postLogin(dynamic data) async {
     try {
-      final response = await post("/api/mobile-login", data: data);
+      final response = await post(APIEndpointUrls.userLogin, data: data);
       if (response.statusCode == 200) {
         debugPrint("PostLogin Status: ${response.data}");
         return {
@@ -348,7 +349,7 @@ class Userapi {
 
   static Future<SignInMobileModel?> postLoginWithMobile(data) async {
     try {
-      final response = await _dio.post("/api/login-otp", data: data);
+      final response = await _dio.post(APIEndpointUrls.LoginWithMobile, data: data);
       if (response.statusCode == 200) {
         print("postLoginWithMobile Status: ${response.data}");
         return SignInMobileModel.fromJson(response.data);
@@ -364,7 +365,7 @@ class Userapi {
 
   static Future<Map<String, dynamic>?> verifyOtp(data)  async {
     try {
-      final response = await _dio.post("/api/verify-login-otp", data: data);
+      final response = await _dio.post(APIEndpointUrls.userVerifyOtp, data: data);
       if (response.statusCode == 200) {
         print("PostLogin Status: ${response.data}");
         return {
@@ -390,7 +391,7 @@ class Userapi {
      formData) async {
     try {
       final response = await post(
-        "/api/users/update_user_details",
+        APIEndpointUrls.profileDetails,
         data: formData,
       );
       if (response.statusCode == 200) {
@@ -407,7 +408,7 @@ class Userapi {
 
   static Future<TherapiesListModel?> getTherapiesList() async {
     try {
-      final response = await get("/api/users/guest-service?type=Therapy");
+      final response = await get("${APIEndpointUrls.serviceList}?type=Therapy");
       if (response.statusCode == 200) {
         debugPrint("getTherapiesList Status: ${response.data}");
         return TherapiesListModel.fromJson(response.data);
@@ -422,7 +423,7 @@ class Userapi {
 
   static Future<TherapiesListModel?> getServiceDetails(String id) async {
     try {
-      final response = await get("/api/users/guest-service/$id");
+      final response = await get("${APIEndpointUrls.guestServiceDetails}/$id");
       if (response.statusCode == 200) {
         debugPrint("getServiceDetails Status: ${response.data}");
         return TherapiesListModel.fromJson(response.data);
@@ -435,24 +436,10 @@ class Userapi {
     }
   }
 
-  static Future<TherapiesListModel?> getCounsellingDetails(String id) async {
-    try {
-      final response = await get("/api/users/guest-service/$id");
-      if (response.statusCode == 200) {
-        debugPrint("getCounsellingDetails Status: ${response.data}");
-        return TherapiesListModel.fromJson(response.data);
-      }
-      debugPrint("Request failed with status: ${response.statusCode}");
-      return null;
-    } catch (e) {
-      debugPrint("Error occurred: $e");
-      return null;
-    }
-  }
 
   static Future<CounsellingsListModel?> getCounsellingsList() async {
     try {
-      final response = await get("/api/users/guest-service?type=Counselling");
+      final response = await get("${APIEndpointUrls.guestServiceDetails}?type=Counselling");
       if (response.statusCode == 200) {
         debugPrint("getCounsellingsList Status: ${response.data}");
         return CounsellingsListModel.fromJson(response.data);
@@ -467,7 +454,7 @@ class Userapi {
 
   static Future<ProfileDetailsModel?> getProfileDetails(String userId) async {
     try {
-      final response = await get("/api/users/view-profile");
+      final response = await get("${APIEndpointUrls.getprofileDetails}");
       if (response.statusCode == 200) {
         debugPrint("getProfileDetails Status: ${response.data}");
         return ProfileDetailsModel.fromJson(response.data);
@@ -482,7 +469,7 @@ class Userapi {
 
   static Future<SuccessModel?> addChild(Map<String, dynamic> data) async {
     try {
-      final response = await get("/api/users/add-new-child");
+      final response = await get("${APIEndpointUrls.addChild}");
       if (response.statusCode == 200) {
         debugPrint("addchild Status: ${response.data}");
         return SuccessModel.fromJson(response.data);
@@ -497,7 +484,7 @@ class Userapi {
 
   static Future<SuccessModel?> editChild(Map<String, dynamic> data,String id) async {
     try {
-      final response = await get("/api/users/edit-child/${id}");
+      final response = await get("${APIEndpointUrls.editChild}/${id}");
       if (response.statusCode == 200) {
         debugPrint("editchild Status: ${response.data}");
         return SuccessModel.fromJson(response.data);
@@ -513,7 +500,7 @@ class Userapi {
 
   static Future<SuccessModel?> deleteChild(String id) async {
     try {
-      final response = await get("/api/users/delete-child/${id}");
+      final response = await get("${APIEndpointUrls.deleteChild}/${id}");
       if (response.statusCode == 200) {
         debugPrint("deleteChild Status: ${response.data}");
         return SuccessModel.fromJson(response.data);
@@ -528,12 +515,12 @@ class Userapi {
 
   static Future<ChildListModel?> getChildList() async {
     try {
-      final response = await get("/api/users/get-child-details");
+      final response = await get("${APIEndpointUrls.childList}");
       if (response.statusCode == 200) {
         debugPrint("getChildList Status: ${response.data}");
         return ChildListModel.fromJson(response.data);
       }
-      debugPrint("Request failed with status: ${response.statusCode}");
+      debugPrint("Request failed with status:${response.statusCode}");
       return null;
     } catch (e) {
       debugPrint("Error occurred: $e");
@@ -544,7 +531,7 @@ class Userapi {
 
   static Future<ChildListModel?> getChildDetails(String id) async {
     try {
-      final response = await get("/api/users/get-child-details/${id}");
+      final response = await get("${APIEndpointUrls.childDetails}/${id}");
       if (response.statusCode == 200) {
         debugPrint("getChildDetails Status: ${response.data}");
         return ChildListModel.fromJson(response.data);
@@ -561,7 +548,7 @@ class Userapi {
       String appId, String pageSource, String rating, String review) async {
     try {
       final response = await post(
-        "/api/create_review",
+        "${APIEndpointUrls.submitReview}",
         data: {
           "app_id": appId,
           "rating": rating,
@@ -583,7 +570,7 @@ class Userapi {
 
   static Future<BookingHistoryModel?> getBookingHistory() async {
     try {
-      final response = await get("/api/get_user_booking_hisrory");
+      final response = await get("${APIEndpointUrls.bookingHistory}");
       if (response.statusCode == 200) {
         debugPrint("getBookingHistory Status: ${response.data}");
         return BookingHistoryModel.fromJson(response.data);
@@ -598,7 +585,7 @@ class Userapi {
 
   static Future<PreviousBookingModel?> getPreviousBookingHistory() async {
     try {
-      final response = await get("/api/get_user_booking_hisrory");
+      final response = await get("${APIEndpointUrls.bookingHistory}");
       if (response.statusCode == 200) {
         debugPrint("getPreviousBookingHistory Status: ${response.data}");
         return PreviousBookingModel.fromJson(response.data);
@@ -613,7 +600,7 @@ class Userapi {
 
   static Future<LoginModel?> updateRefreshToken() async {
     try {
-      final response = await post("/api/refreshToken");
+      final response = await post("${APIEndpointUrls.updateRefreshToken}");
       if (response.statusCode == 200) {
         debugPrint("updateRefreshToken response: ${response.data}");
         return LoginModel.fromJson(response.data);
@@ -627,7 +614,7 @@ class Userapi {
 
   static Future<ReviewListModel?> getReviewList(String pageSource) async {
     try {
-      final response = await get("/api/get_review/$pageSource");
+      final response = await get("${APIEndpointUrls.getReviewList}/$pageSource");
       if (response.statusCode == 200) {
         debugPrint("getReviewList response: ${response.data}");
         return ReviewListModel.fromJson(response.data);
@@ -649,7 +636,7 @@ class Userapi {
           contentType: mimeType != null ? MediaType.parse(mimeType) : null,
         ),
       });
-      final response = await post("/api/update_profile_image", data: formData);
+      final response = await post("${APIEndpointUrls.updateProfileImage}", data: formData);
       if (response.statusCode == 200) {
         return LoginModel.fromJson(response.data);
       }
@@ -662,7 +649,7 @@ class Userapi {
 
   static Future<AddAddressModel?> addAddressApi(Map<String, dynamic> data) async {
     try {
-      final response = await post("/api/add_user_address", data: data);
+      final response = await post("${APIEndpointUrls.addUserAddressApi}", data: data);
       if (response.statusCode == 200) {
         debugPrint("addAddressApi Response: ${response.data}");
         return AddAddressModel.fromJson(response.data);
@@ -678,7 +665,7 @@ class Userapi {
   static Future<AddAddressModel?> editAddressApi(
       Map<String, dynamic> data, String addressId) async {
     try {
-      final response = await post("/api/update_user_address/$addressId", data: data);
+      final response = await post("${APIEndpointUrls.updateUserAddress}/$addressId", data: data);
       if (response.statusCode == 200) {
         debugPrint("editAddressApi Response: ${response.data}");
         return AddAddressModel.fromJson(response.data);
@@ -693,7 +680,7 @@ class Userapi {
 
   static Future<AddressListModel?> getAddressList() async {
     try {
-      final response = await get("/api/get_user_address_details");
+      final response = await get("${APIEndpointUrls.userAdressList}");
       if (response.statusCode == 200) {
         debugPrint("getAddressList response: ${response.data}");
         return AddressListModel.fromJson(response.data);
@@ -708,7 +695,7 @@ class Userapi {
 
   static Future<String?> downloadScriptApi() async {
     try {
-      final response = await get("/api/downloadfile/79");
+      final response = await get("${APIEndpointUrls.downloadScriptAPi}/79");
       if (response.statusCode == 200) {
         debugPrint("downloadScriptApi response: ${response.data}");
         return response.data.toString();
@@ -723,7 +710,7 @@ class Userapi {
 
   static Future<PreviousBookingModel?> getPreviousBookings(String pageSource) async {
     try {
-      final response = await get("/api/check_previous_bookings/$pageSource");
+      final response = await get("${APIEndpointUrls.checkPreviousBooking}/$pageSource");
       if (response.statusCode == 200) {
         debugPrint("getPreviousBookings response: ${response.data}");
         return PreviousBookingModel.fromJson(response.data);
@@ -739,7 +726,7 @@ class Userapi {
   static Future<BehaviouralTrackingModel?> getBehaviouralList(
       String id, String pageSource) async {
     try {
-      final response = await get("/api/get_therapy_traking/$id/$pageSource");
+      final response = await get("${APIEndpointUrls.getTheraphyTracking}/$id/$pageSource");
       if (response.statusCode == 200) {
         debugPrint("getBehaviouralList response: ${response.data}");
         return BehaviouralTrackingModel.fromJson(response.data);
@@ -754,7 +741,7 @@ class Userapi {
 
   static Future<QuoteModel?> getQuotes() async {
     try {
-      final response = await get("/api/users/quatations");
+      final response = await get("${APIEndpointUrls.quotes}");
       if (response.statusCode == 200) {
         debugPrint("getQuotes response: ${response.data}");
         return QuoteModel.fromJson(response.data);
@@ -770,7 +757,7 @@ class Userapi {
   static Future<FeedbackHelathModel?> postHealthFeedback(String msg) async {
     try {
       final response = await post(
-        "/api/users/daily-feedback",
+        "${APIEndpointUrls.dailyFeedBack}",
         data: {"message": msg},
       );
       if (response.statusCode == 200) {
