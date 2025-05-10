@@ -469,7 +469,7 @@ class Userapi {
 
   static Future<SuccessModel?> addChild(Map<String, dynamic> data) async {
     try {
-      final response = await get("${APIEndpointUrls.addChild}");
+      final response = await post("${APIEndpointUrls.addChild}");
       if (response.statusCode == 200) {
         debugPrint("addchild Status: ${response.data}");
         return SuccessModel.fromJson(response.data);
@@ -484,7 +484,7 @@ class Userapi {
 
   static Future<SuccessModel?> editChild(Map<String, dynamic> data,String id) async {
     try {
-      final response = await get("${APIEndpointUrls.editChild}/${id}");
+      final response = await put("${APIEndpointUrls.editChild}/${id}");
       if (response.statusCode == 200) {
         debugPrint("editchild Status: ${response.data}");
         return SuccessModel.fromJson(response.data);
@@ -500,7 +500,7 @@ class Userapi {
 
   static Future<SuccessModel?> deleteChild(String id) async {
     try {
-      final response = await get("${APIEndpointUrls.deleteChild}/${id}");
+      final response = await delete("${APIEndpointUrls.deleteChild}/${id}");
       if (response.statusCode == 200) {
         debugPrint("deleteChild Status: ${response.data}");
         return SuccessModel.fromJson(response.data);

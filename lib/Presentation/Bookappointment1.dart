@@ -8,7 +8,12 @@ import 'package:intl/intl.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:phonepe_payment_sdk/phonepe_payment_sdk.dart';
+import 'package:provider/provider.dart';
+import '../Model/ChildListModel.dart';
+import '../Model/SuccessModel.dart';
+import '../Providers/ChildProvider.dart';
 import '../utils/Color_Constants.dart';
+import '../utils/constants.dart';
 import 'AddressListScreen.dart';
 import '../Model/AddressListModel.dart';
 import 'BookedApointmentsuccessfully.dart';
@@ -54,11 +59,13 @@ class _Bookappointment1State extends State<Bookappointment1> {
   String Orderamount = "";
   String user_id = "";
 
+  String? _selectedOption = 'self'; // Default selection
+
   @override
   void initState() {
+    super.initState();
     GetAddressList();
     getPhonepeDetailsApi();
-    super.initState();
     _fullNameController.addListener(() {
       setState(() {
         _validateFullName = "";
@@ -377,7 +384,6 @@ class _Bookappointment1State extends State<Bookappointment1> {
       firstDate: DateTime.now(),
       lastDate: DateTime(2100),
     );
-
     if (pickedDate != null) {
       setState(() {
         _dateOfAppointmentController.text =
@@ -462,17 +468,205 @@ class _Bookappointment1State extends State<Bookappointment1> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
         child: Column(
+          spacing: 10,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 30),
-            _buildDropdownField(
-                "Appointment",
-                appointment,
-                _appointmentController,
-                _validateAppointment,
-                ['Self', 'Children']),
+            // _buildDropdownField(
+            //     "Appointment",
+            //     appointment,
+            //     _appointmentController,
+            //     _validateAppointment,
+            //     ['Self', 'Children']),
+            Text(
+              "Appointment Type",
+              style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                  fontFamily: "general_sans"),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 100,
+                  height: 45,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      setState(() {
+                        _selectedOption = 'self';
+                      });
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(
+                        color: _selectedOption == 'self'
+                            ? primarycolor
+                            : Colors.grey.shade300,
+                        width: 1,
+                      ),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(36)),
+                      foregroundColor: _selectedOption == 'self'
+                          ? primarycolor
+                          : Colors.grey,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                      textStyle: TextStyle(
+                        fontFamily: "general_sans",
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                      ),
+                    ),
+                    child: Text('Self'),
+                  ),
+                ),
+                SizedBox(width: 15),
+                SizedBox(
+                  width: 100,
+                  height: 45,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      setState(() {
+                        _selectedOption = 'children';
+                      });
+                      _showChildListBottomSheet(context);
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(
+                        color: _selectedOption == 'children'
+                            ? primarycolor
+                            : Colors.grey.shade300,
+                        width: 1,
+                      ),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(36)),
+                      foregroundColor: _selectedOption == 'children'
+                          ? primarycolor
+                          : Colors.grey,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                      textStyle: TextStyle(
+                        fontFamily: "general_sans",
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                      ),
+                    ),
+                    child: Text('Children'),
+                  ),
+                ),
+              ],
+            ),
+            if (_selectedOption != 'self') ...[
+              Consumer<ChildProvider>(
+                builder: (context, provider, child) {
+                  final child = (provider.childDetails.length != 0)
+                      ? provider.childDetails[0]
+                      : null;
+                  return ((child?.name ?? "").isNotEmpty)
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Childe Details',
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: 'general_sans',
+                                color: Colors.black,
+                              ),
+                            ),
+                            Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: BorderSide(color: Colors.transparent),
+                              ),
+                              elevation: 2,
+                              margin: EdgeInsets.all(0),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Name: ${child?.name ?? 'N/A'}',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontFamily: 'general_sans',
+                                              color: Colors.grey[700],
+                                            ),
+                                          ),
+                                          SizedBox(height: 4),
+                                          Text(
+                                            'Gender: ${child?.gender ?? 'N/A'}',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontFamily: 'general_sans',
+                                              color: Colors.grey[700],
+                                            ),
+                                          ),
+                                          SizedBox(height: 2),
+                                          Text(
+                                            'Age: ${child?.age ?? 'N/A'}',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontFamily: 'general_sans',
+                                              color: Colors.grey[700],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 30,
+                                      child: OutlinedButton(
+                                        onPressed: () {
+                                          _showChildListBottomSheet(context);
+                                        },
+                                        style: OutlinedButton.styleFrom(
+                                          side: BorderSide(
+                                            color: primarycolor,
+                                            width: 1,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8)),
+                                          foregroundColor: primarycolor,
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 16, vertical: 0),
+                                          textStyle: TextStyle(
+                                            fontFamily: "general_sans",
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'Change',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: "general_sans",
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : SizedBox.shrink();
+                },
+              ),
+            ],
             _buildTextField("Full Name", _fullNameController, _validateFullName,
                 TextInputType.name, r'^[a-zA-Z\s]+$'),
             _buildTextField("Phone Number", _phoneNumberController,
@@ -704,6 +898,474 @@ class _Bookappointment1State extends State<Bookappointment1> {
     );
   }
 
+  void _showChildListBottomSheet(BuildContext context) {
+    final childProvider = Provider.of<ChildProvider>(context, listen: false);
+    childProvider.getChildList(); // Fetch child list
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Consumer<ChildProvider>(
+          builder: (context, provider, _) {
+            String? selectedChildId;
+            return Container(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Select Child',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'general_sans',
+                        ),
+                      ),
+                      OutlinedButton(
+                        onPressed: () {
+                          _showAddEditChildBottomSheet(context, isEdit: false);
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: primarycolor),
+                          foregroundColor: primarycolor,
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: Text(
+                          'Add Child',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'general_sans',
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  provider.isLoading
+                      ? Center(
+                          child: CircularProgressIndicator(
+                          color: primarycolor,
+                          strokeWidth: 1,
+                        ))
+                      : provider.childDataList.isEmpty
+                          ? Text(
+                              'No children added yet.',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey,
+                                fontFamily: 'general_sans',
+                              ),
+                            )
+                          : Flexible(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: provider.childDataList.length,
+                                itemBuilder: (context, index) {
+                                  final child = provider.childDataList[index];
+                                  final isSelected =
+                                      selectedChildId == child.id;
+                                  return Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      side: isSelected
+                                          ? BorderSide(
+                                              color: primarycolor, width: 2)
+                                          : BorderSide(
+                                              color: Colors.transparent),
+                                    ),
+                                    elevation: 2,
+                                    margin: EdgeInsets.symmetric(vertical: 6),
+                                    child: ListTile(
+                                      onTap: () async {
+                                        setState(() {
+                                          selectedChildId = child.id.toString();
+                                        });
+                                        Navigator.pop(
+                                            context); // Close the bottom sheet
+                                        await provider.getChildDetails(child.id
+                                            .toString()); // Fetch details
+                                      },
+                                      leading: CircleAvatar(
+                                        backgroundColor:
+                                            primarycolor.withOpacity(0.1),
+                                        child: Text(
+                                          child.name?[0].toUpperCase() ?? 'C',
+                                          style: TextStyle(
+                                            fontFamily: 'general_sans',
+                                            color: primarycolor,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ),
+                                      title: Text(
+                                        child.name ?? 'Unknown',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: primarycolor,
+                                          fontFamily: 'general_sans',
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        'Age: ${child.age ?? 'N/A'}, ${child.gender ?? 'N/A'}',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontFamily: 'general_sans',
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      trailing: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          IconButton.filled(
+                                            onPressed: () {
+                                              _showAddEditChildBottomSheet(
+                                                context,
+                                                isEdit: true,
+                                                child: child,
+                                              );
+                                            },
+                                            icon: Icon(Icons.edit, size: 18),
+                                            style: IconButton.styleFrom(
+                                              backgroundColor:
+                                                  primarycolor.withOpacity(0.1),
+                                              foregroundColor: primarycolor,
+                                              padding: EdgeInsets.all(8),
+                                              minimumSize: Size(36, 36),
+                                            ),
+                                            tooltip: 'Edit',
+                                          ),
+                                          SizedBox(width: 8),
+                                          IconButton.filled(
+                                            onPressed: () async {
+                                              final result =
+                                                  await provider.deleteChild(
+                                                      child.id.toString());
+                                              if (result?.status == true) {
+                                                showAnimatedTopSnackBar(context,
+                                                    'Child deleted successfully');
+                                              } else {
+                                                showAnimatedTopSnackBar(context,
+                                                    'Failed to delete child');
+                                              }
+                                            },
+                                            icon: Icon(Icons.delete, size: 18),
+                                            style: IconButton.styleFrom(
+                                              backgroundColor:
+                                                  Colors.red.shade50,
+                                              foregroundColor: Colors.red,
+                                              padding: EdgeInsets.all(8),
+                                              minimumSize: Size(36, 36),
+                                            ),
+                                            tooltip: 'Delete',
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                  SizedBox(height: 16),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showAddEditChildBottomSheet(BuildContext context,
+      {bool isEdit = false, ChildData? child}) {
+    final nameController =
+        TextEditingController(text: isEdit ? child?.name : '');
+    final ageController =
+        TextEditingController(text: isEdit ? child?.age?.toString() : '');
+    String? selectedGender = isEdit ? child?.gender : "Male";
+    final formKey = GlobalKey<FormState>();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 16,
+            right: 16,
+            top: 16,
+          ),
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return SingleChildScrollView(
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        isEdit ? 'Edit Child' : 'Add Child',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'general_sans',
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      TextFormField(
+                        controller: nameController,
+                        cursorColor: Colors.black,
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: "general_sans"),
+                        decoration: InputDecoration(
+                          labelText: 'Name',
+                          labelStyle: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: "general_sans"),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ), // Normal border
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ), // Focused border
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ),
+                          errorStyle: TextStyle(
+                            color: Colors.red,
+                            fontSize: 12,
+                            fontFamily: "general_sans",
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please Enter Name';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 12),
+                      TextFormField(
+                        controller: ageController,
+                        cursorColor: Colors.black,
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: "general_sans"),
+                        decoration: InputDecoration(
+                          labelText: 'Age',
+                          labelStyle: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: "general_sans"),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ), // Normal border
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ), // Focused border
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ),
+                          errorStyle: TextStyle(
+                            color: Colors.red,
+                            fontSize: 12,
+                            fontFamily: "general_sans",
+                          ),
+                        ),
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please Enter Age';
+                          }
+                          if (int.tryParse(value) == null ||
+                              int.parse(value) <= 0) {
+                            return 'Please Enter A Valid Age';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        'Gender',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'general_sans',
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Radio<String>(
+                                  value: 'Male',
+                                  groupValue: selectedGender,
+                                  activeColor: primarycolor,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedGender = value;
+                                    });
+                                  },
+                                ),
+                                Text(
+                                  'Male',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontFamily: 'general_sans',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Radio<String>(
+                                  value: 'Female',
+                                  groupValue: selectedGender,
+                                  activeColor: primarycolor,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedGender = value;
+                                    });
+                                  },
+                                ),
+                                Text(
+                                  'Female',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontFamily: 'general_sans',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (selectedGender == null &&
+                          formKey.currentState?.validate() == false)
+                        Padding(
+                          padding: EdgeInsets.only(left: 12, top: 4),
+                          child: Text(
+                            'Please select a gender',
+                            style: TextStyle(color: Colors.red, fontSize: 12),
+                          ),
+                        ),
+                      SizedBox(height: 24),
+                      Consumer<ChildProvider>(
+                        builder: (context, provider, _) {
+                          return ElevatedButton(
+                            onPressed: provider.isLoading
+                                ? null
+                                : () async {
+                                    if (formKey.currentState!.validate() &&
+                                        selectedGender != null) {
+                                      final data = {
+                                        'name': nameController.text,
+                                        'age': ageController.text,
+                                        'gender': selectedGender,
+                                      };
+                                      SuccessModel? result;
+                                      if (isEdit && child?.id != null) {
+                                        result = await provider.editChild(
+                                            data, child!.id.toString());
+                                      } else {
+                                        result = await provider.addChild(data);
+                                      }
+                                      if (result?.status == true) {
+                                        provider.getChildList();
+                                        Navigator.pop(context);
+                                        showAnimatedTopSnackBar(
+                                          context,
+                                          isEdit
+                                              ? 'Child updated successfully'
+                                              : 'Child added successfully',
+                                        );
+                                      } else {
+                                        showAnimatedTopSnackBar(
+                                            context, 'Operation failed');
+                                      }
+                                    } else if (selectedGender == null) {
+                                      setState(
+                                          () {}); // Trigger validation message
+                                    }
+                                  },
+                            child: provider.isLoading
+                                ? CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 1,
+                                  )
+                                : Text(
+                                    isEdit ? 'Update Child' : 'Add Child',
+                                    style: TextStyle(
+                                        fontFamily: "general_sans",
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                        color: Colors.white),
+                                  ),
+                            style: ElevatedButton.styleFrom(
+                                minimumSize: Size(double.infinity, 48),
+                                backgroundColor: primarycolor,
+                                disabledBackgroundColor: primarycolor,
+                                disabledForegroundColor: primarycolor,
+                                foregroundColor: primarycolor,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8))),
+                          );
+                        },
+                      ),
+                      SizedBox(height: 16),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildTextField(String label, TextEditingController controller,
       String validation, TextInputType keyboardType,
       [String? pattern]) {
@@ -719,7 +1381,6 @@ class _Bookappointment1State extends State<Bookappointment1> {
             color: Color(0xFF374151),
           ),
         ),
-        const SizedBox(height: 4),
         TextFormField(
           controller: controller,
           cursorColor: Colors.black,
@@ -769,7 +1430,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
             ),
           ),
         ] else ...[
-          SizedBox(height: 15),
+          SizedBox(height: 5),
         ]
       ],
     );
@@ -788,7 +1449,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
           label,
           style: TextStyle(
             fontSize: 16,
-            fontFamily: 'Poppins',
+            fontFamily: 'general_sans',
             fontWeight: FontWeight.w500,
             color: Color(0xFF374151),
           ),

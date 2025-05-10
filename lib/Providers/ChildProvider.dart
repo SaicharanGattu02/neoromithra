@@ -4,7 +4,6 @@ import '../Model/ChildListModel.dart';
 import '../services/userapi.dart';
 import 'package:flutter/foundation.dart';
 
-
 class ChildProvider extends ChangeNotifier {
   List<ChildData> _childDataList = [];
   List<ChildData> _childDetails = [];

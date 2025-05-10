@@ -12,7 +12,7 @@ class AboutUsScreen extends StatelessWidget {
         title: Text( 'About Us',
             style: TextStyle(
                 fontWeight: FontWeight.w600,
-                fontFamily: "Inter",
+                fontFamily: "general_sans",
                 color: primarycolor,
                 fontSize: 18)),
         centerTitle: true,
@@ -120,7 +120,7 @@ class AboutUsScreen extends StatelessWidget {
         title,
         textAlign: TextAlign.center,
         style: TextStyle(
-            fontSize: 18, fontWeight: FontWeight.bold,fontFamily: "Inter"),
+            fontSize: 18, fontWeight: FontWeight.bold,fontFamily: "general_sans"),
       ),
     );
   }
@@ -130,7 +130,7 @@ class AboutUsScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Text(
         content,
-        style: TextStyle(fontSize: 16),
+        style: TextStyle(fontSize: 16,fontFamily: "general_sans"),
       ),
     );
   }
@@ -143,16 +143,16 @@ class AboutUsScreen extends StatelessWidget {
         children: [
           Text(
             name,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,fontFamily: "general_sans"),
           ),
           Text(
             title,
-            style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+            style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic,fontFamily: "general_sans"),
           ),
           SizedBox(height: 8),
           Text(
             description,
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 16,fontFamily: "general_sans"),
           ),
         ],
       ),
@@ -168,7 +168,8 @@ class AboutUsScreen extends StatelessWidget {
           SizedBox(width: 8),
           Expanded(child: Text(point,
             style: TextStyle(
-              fontSize: 16
+              fontSize: 16,
+                fontFamily: "general_sans"
             ),
           )),
         ],
