@@ -8,14 +8,19 @@ import 'package:neuromithra/Presentation/ServiceDeailsScreen.dart';
 import 'package:neuromithra/utils/constants.dart';
 import 'Assesment/ResultScreen.dart';
 import 'Presentation/Bookappointment1.dart';
+import 'Presentation/Authentication/LogInWithMobile.dart';
+import 'Presentation/Authentication/Otp.dart';
 import 'Presentation/BookedApointmentsuccessfully.dart';
 import 'Presentation/ForgotPasswordScreen.dart';
 import 'Presentation/BookingHistory.dart';
 import 'Presentation/LogIn.dart';
+import 'Presentation/Authentication/ForgotPasswordScreen.dart';
+import 'Presentation/LastBooking.dart';
+import 'Presentation/Authentication/LogIn.dart';
 import 'Presentation/MainDashBoard.dart';
 import 'Presentation/OnBoardScreen.dart';
 import 'Presentation/PaymentStatusScreen.dart';
-import 'Presentation/Register.dart';
+import 'Presentation/Authentication/Register.dart';
 import 'Presentation/SplashScreen.dart';
 
 final GoRouter goRouter =
@@ -33,6 +38,21 @@ final GoRouter goRouter =
     path: '/login',
     pageBuilder: (context, state) => buildSlideTransitionPage(LogIn(), state),
   ),
+      GoRoute(
+        path: '/otp',
+        pageBuilder: (context, state) {
+          final mobile = state.uri.queryParameters['mobile'];
+          if (mobile == null || mobile.isEmpty) {
+            return buildSlideTransitionPage(
+              const Scaffold(
+                body: Center(child: Text('Error: Mobile number missing')),
+              ),
+              state,
+            );
+          }
+          return buildSlideTransitionPage(Otp(mobile: mobile), state);
+        },
+      ),
   GoRoute(
     path: '/register',
     pageBuilder: (context, state) =>
@@ -101,6 +121,11 @@ final GoRouter goRouter =
     path: '/forgot_password',
     pageBuilder: (context, state) =>
         buildSlideTransitionPage(ForgotPasswordScreen(), state),
+  ),
+      GoRoute(
+    path: '/login_with_mobile',
+    pageBuilder: (context, state) =>
+        buildSlideTransitionPage(LoginWithMobile(), state),
   ),
   GoRoute(
     path: '/booking_history',

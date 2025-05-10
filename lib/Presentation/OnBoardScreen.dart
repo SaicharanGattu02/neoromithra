@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:neuromithra/services/Preferances.dart';
 
 import '../utils/Color_Constants.dart';
-import 'LogIn.dart';
+import 'Authentication/LogIn.dart';
 
 class OnBoardScreen extends StatefulWidget {
   const OnBoardScreen({super.key});
@@ -88,7 +88,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        context.push('/login');
+                        context.push('/login_with_mobile');
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:  primarycolor, // Button background

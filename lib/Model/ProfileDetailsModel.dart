@@ -6,8 +6,7 @@ class ProfileDetailsModel {
 
   ProfileDetailsModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
-    user =
-    json['message'] != null ? new Users.fromJson(json['message']) : null;
+    user = json['message'] != null ? new Users.fromJson(json['message']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -45,26 +44,26 @@ class Users {
 
   Users(
       {this.id,
-        this.name,
-        this.email,
-        this.contact,
-        this.emailVerifiedAt,
-        this.refreshToken,
-        this.webFcmToken,
-        this.deviceFcmToken,
-        this.role,
-        this.gender,
-        this.profilePic,
-        this.state,
-        this.city,
-        this.country,
-        this.postalcode,
-        this.uniqueHostalId,
-        this.emailOtp,
-        this.expiredTime,
-        this.deletedAt,
-        this.createdAt,
-        this.updatedAt});
+      this.name,
+      this.email,
+      this.contact,
+      this.emailVerifiedAt,
+      this.refreshToken,
+      this.webFcmToken,
+      this.deviceFcmToken,
+      this.role,
+      this.gender,
+      this.profilePic,
+      this.state,
+      this.city,
+      this.country,
+      this.postalcode,
+      this.uniqueHostalId,
+      this.emailOtp,
+      this.expiredTime,
+      this.deletedAt,
+      this.createdAt,
+      this.updatedAt});
 
   Users.fromJson(Map<String, dynamic> json) {
     id = json['id'];

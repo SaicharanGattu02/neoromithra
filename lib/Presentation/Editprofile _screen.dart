@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:neuromithra/utils/CustomSnackBar.dart';
@@ -30,6 +32,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _mobileController = TextEditingController();
+  final TextEditingController _pwdController = TextEditingController();
 
   String name = "";
 
@@ -61,46 +64,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return null;
   }
 
-  String? _validateMobileSos1(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your sos1 mobile number';
-    }
-    if (value.length != 10 || !RegExp(r'^[0-9]+$').hasMatch(value)) {
-      return 'Please enter a valid 10-digit mobile number';
-    }
-    return null;
-  }
-
-  String? _validateMobileSos2(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your sos2 mobile number';
-    }
-    if (value.length != 10 || !RegExp(r'^[0-9]+$').hasMatch(value)) {
-      return 'Please enter a valid 10-digit mobile number';
-    }
-    return null;
-  }
-
-  String? _validateMobileSos3(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your sos3 mobile number';
-    }
-    if (value.length != 10 || !RegExp(r'^[0-9]+$').hasMatch(value)) {
-      return 'Please enter a valid 10-digit mobile number';
-    }
-    return null;
-  }
-
-  void _submitForm(context) {
+  void _submitForm(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        isLoading = true;
+      FormData formData = FormData.fromMap({
+        "name": _nameController.text,
+        "email": _emailController.text,
+        "contact": _mobileController.text,
+        "password": _pwdController.text,
+        "profile_pic": _image != null
+            ? await MultipartFile.fromFile(_image!.path,
+                filename: _image!.path.split('/').last)
+            : null,
       });
-      _updateProfileDetails(context);
+      try {
+        final res = await Provider.of<UserProviders>(context, listen: false)
+            .updateProfileDetails(formData);
+        if (res == true) {
+          context.pop();
+        }
+      } catch (e) {
+        print("Error submitting form: $e");
+        // Show error to user (e.g., using a SnackBar)
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to update profile: $e")),
+        );
+      }
     } else {
-      setState(() {
-        isLoading = false;
-      });
+      print("Form validation failed");
     }
   }
 
@@ -127,29 +117,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       if (pickedFile != null) {
         _image = File(pickedFile.path); // Trigger image upload
       } else {
-        debugPrint('No image selected.');
+        print('No image selected.');
       }
-    });
-  }
-
-  Future<void> _updateProfileDetails(BuildContext context) async {
-    setState(() {
-      isLoading = true;
-    });
-
-    final result = await Userapi.postProfileDetails(
-        _nameController.text, _emailController.text, _mobileController.text);
-
-    setState(() {
-      if (result != null && result.containsKey("message")) {
-        CustomSnackBar.show(context, '${result["message"]}');
-        debugPrint("Success: ${result["message"]}");
-        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Dashboard()));
-      } else if (result != null && result.containsKey("error")) {
-        CustomSnackBar.show(context, '${result["error"]}');
-        debugPrint("Error: ${result["error"]}");
-      }
-      isLoading = false;
     });
   }
 
@@ -192,50 +161,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                // Stack(
-                //   children: [
-                //     CircleAvatar(
-                //       radius: 60,
-                //       backgroundColor: const Color(0xff80C4E9),
-                //       backgroundImage: _image != null
-                //           ? FileImage(_image!)
-                //           : (profile_image.isNotEmpty
-                //           ? NetworkImage(profile_image)
-                //           : null) as ImageProvider?,
-                //       child: (_image == null && profile_image.isEmpty)
-                //           ? Text(
-                //         name.isNotEmpty
-                //             ? name[0].toUpperCase()
-                //             : "",
-                //         style: const TextStyle(
-                //             fontSize: 50, color: Color(0xffFFF6E9)),
-                //       )
-                //           : null,
-                //     ),
-                //     Positioned(
-                //       bottom: 0,
-                //       right: 0,
-                //       child: GestureDetector(
-                //         onTap: _pickImage,
-                //         child: CircleAvatar(
-                //           radius: 18,
-                //           backgroundColor: Colors.grey,
-                //           child: image_uploading
-                //               ? CircularProgressIndicator(
-                //             strokeWidth: 2,
-                //             valueColor:
-                //             AlwaysStoppedAnimation<Color>(Colors.white),
-                //           )
-                //               : const Icon(
-                //             Icons.edit,
-                //             color: Colors.white,
-                //           ),
-                //         ),
-                //       ),
-                //     ),
-                //   ],
-                // ),
-                // const SizedBox(height: 30),
                 Center(
                   child: Stack(
                     children: [
@@ -247,13 +172,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             : (profile_image != null &&
                                     profile_image.isNotEmpty)
                                 ? CachedNetworkImageProvider(profile_image)
-                                : const AssetImage('assets/person.png')
-                                    as ImageProvider<Object>,
-                        child: _image != null ||
-                                (profile_image != null &&
-                                    profile_image.isNotEmpty)
-                            ? null
-                            : Icon(Icons.person, size: 50, color: Colors.white),
+                                    as ImageProvider
+                                : null,
                       ),
                       Positioned(
                         bottom: 0,
@@ -265,8 +185,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             backgroundColor: Colors.white,
                             child: Icon(
                               Icons.camera_alt,
-                              color: primarycolor,
-                              size: 20, // Size of the camera icon
+                              color:
+                                  primarycolor, // Ensure primarycolor is defined
+                              size: 20,
                             ),
                           ),
                         ),
@@ -351,30 +272,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         validator: _validateMobile,
                       ),
                       SizedBox(height: 20),
-                      // TextFormField(
-                      //   controller: _sos1Controller,
-                      //   decoration: InputDecoration(
-                      //     labelText: 'SOS Mobile Number 1',
-                      //     labelStyle: TextStyle(
-                      //         fontSize: 15,
-                      //         fontFamily: "Inter",
-                      //         fontWeight: FontWeight.w400,
-                      //         color: Colors.black),
-                      //     floatingLabelBehavior: FloatingLabelBehavior.auto,
-                      //     border: OutlineInputBorder(), // Add border
-                      //     enabledBorder: OutlineInputBorder(
-                      //       borderSide:
-                      //           BorderSide(color: Colors.grey, width: 1.0),
-                      //     ),
-                      //     focusedBorder: OutlineInputBorder(
-                      //       borderSide:
-                      //           BorderSide(color: Colors.blue, width: 2.0),
-                      //     ),
-                      //   ),
-                      //   keyboardType: TextInputType.phone,
-                      //   validator: _validateMobileSos1,
-                      // ),
-                      // SizedBox(height: 20),
+                      TextFormField(
+                        controller: _pwdController,
+                        decoration: InputDecoration(
+                          labelText: 'Enter Your Password',
+                          labelStyle: TextStyle(
+                              fontSize: 15,
+                              fontFamily: "Inter",
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black),
+                          floatingLabelBehavior: FloatingLabelBehavior.auto,
+                          border: OutlineInputBorder(), // Add border
+                          enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.grey, width: 1.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.blue, width: 2.0),
+                          ),
+                        ),
+                        keyboardType: TextInputType.phone,
+                      ),
                       // TextFormField(
                       //   controller: _sos2Controller,
                       //   decoration: InputDecoration(
@@ -431,37 +350,40 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           );
         },
       ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        child: ElevatedButton(
-          onPressed: isLoading ? null : () => _submitForm(context),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: primarycolor, // Button Background Color
-            padding: EdgeInsets.symmetric(vertical: 10),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            elevation: 3, // Light shadow for better visibility
-          ),
-          child: isLoading
-              ? SizedBox(
-                  height: 24,
-                  width: 24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+      bottomNavigationBar: Consumer<UserProviders>(
+        builder: (context, userDetails, child) {
+          return Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              child: ElevatedButton(
+                  onPressed: isLoading ? null : () => _submitForm(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primarycolor, // Button Background Color
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 3, // Light shadow for better visibility
                   ),
-                )
-              : Text(
-                  "Save",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontFamily: "Inter",
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-        ),
+                  child: userDetails.isSaving
+                      ? SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : Text(
+                          "Save",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontFamily: "Inter",
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )));
+        },
       ),
     );
   }
