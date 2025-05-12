@@ -353,6 +353,15 @@ class _CounsellingListScreenState extends State<CounsellingListScreen> {
                 fontFamily: "Inter",
                 color: primarycolor,
                 fontSize: 20)),
+        leading: IconButton.filled(
+          icon: const Icon(Icons.arrow_back, color: primarycolor),
+          onPressed: () {
+            context.push("/main_dashBoard?initialIndex=0");
+          },
+          style: IconButton.styleFrom(
+            backgroundColor: const Color(0xFFECFAFA),
+          ),
+        ),
       ),
       body: Consumer<HomeProviders>(
         builder: (context, homeProvider, child) {

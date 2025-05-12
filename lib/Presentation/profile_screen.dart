@@ -38,6 +38,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
             fontSize: 20,
           ),
         ),
+        leading: IconButton.filled(
+          icon: const Icon(Icons.arrow_back, color: primarycolor),
+          onPressed: () {
+            context.push("/main_dashBoard?initialIndex=0");
+          },
+          style: IconButton.styleFrom(
+            backgroundColor: const Color(0xFFECFAFA),
+          ),
+        ),
       ),
       body: FutureBuilder<bool>(
         future: AuthService.isGuest,
@@ -74,35 +83,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       SizedBox(width: 15),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            isGuest
-                                ? 'Guest User'
-                                : (profileDetails.userData.name != null &&
-                                profileDetails.userData.name!.isNotEmpty
-                                ? '${profileDetails.userData.name![0].toUpperCase()}${profileDetails.userData.name!.substring(1)}'
-                                : 'Unknown'),
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: "general_sans",
-                              color: Colors.black87,
-                            ),
-                          ),
-                          if (!isGuest)
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             Text(
-                              profileDetails.userData.email ?? "",
+                              isGuest
+                                  ? 'Guest User'
+                                  : (profileDetails.userData.name != null &&
+                                  profileDetails.userData.name!.isNotEmpty
+                                  ? '${profileDetails.userData.name![0].toUpperCase()}${profileDetails.userData.name!.substring(1)}'
+                                  : 'Unknown'),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.grey.shade600,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
                                 fontFamily: "general_sans",
+                                color: Colors.black87,
                               ),
                             ),
-                        ],
+                            if (!isGuest)
+                              Text(
+                                profileDetails.userData.email ?? "",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.grey.shade600,
+                                  fontFamily: "general_sans",
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
-                      Spacer(),
                       if (!isGuest)
                         GestureDetector(
                           onTap: () {
@@ -113,9 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             );
                           },
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: 14,
+                          child: ClipRRect(
                             child: Icon(
                               Icons.edit,
                               color: primarycolor,

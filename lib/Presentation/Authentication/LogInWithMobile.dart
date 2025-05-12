@@ -234,6 +234,7 @@ class _LoginWithMobileState extends State<LoginWithMobile>
         SizedBox(height: SizeConfig.screenHeight * 0.01),
         TextFormField(
           controller: _mobileController,
+          cursorColor: Colors.black,
           focusNode: _phoneFocusNode,
           keyboardType: TextInputType.phone,
           textInputAction: TextInputAction.done,
@@ -297,7 +298,7 @@ class _LoginWithMobileState extends State<LoginWithMobile>
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: primarycolor, width: 2),
+              borderSide: BorderSide(color: primarycolor, width: 1),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),

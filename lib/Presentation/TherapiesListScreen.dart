@@ -283,6 +283,15 @@ class _TherapiesListScreenState extends State<TherapiesListScreen> {
                 fontFamily: "general_sans",
                 color: primarycolor,
                 fontSize: 20)),
+        leading: IconButton.filled(
+          icon: const Icon(Icons.arrow_back, color: primarycolor),
+          onPressed: () {
+            context.push("/main_dashBoard?initialIndex=0");
+          },
+          style: IconButton.styleFrom(
+            backgroundColor: const Color(0xFFECFAFA),
+          ),
+        ),
       ),
       body: Consumer<HomeProviders>(
         builder: (context, homeProvider, child) {
@@ -300,23 +309,23 @@ class _TherapiesListScreenState extends State<TherapiesListScreen> {
                     childAspectRatio: 0.95,
                   ),
                   delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          if (isLoading) {
-                            return therapyGridShimmerItem(context);
-                          } else {
-                            final therapy = homeProvider.therapieslist[index];
-                            return InkWell(
-                              borderRadius: BorderRadius.circular(8),
-                              onTap: () {
-                                context.push(
-                                    "/service_details_screen?serviceID=${therapy.id}&serviceName=${therapy.name}");
-                              },
-                              child: ProductGridItem(
-                                imageUrl: therapy.image ?? "",
-                                title: therapy.name ?? "",
-                              ),
-                            );
-                          }
+                    (context, index) {
+                      if (isLoading) {
+                        return therapyGridShimmerItem(context);
+                      } else {
+                        final therapy = homeProvider.therapieslist[index];
+                        return InkWell(
+                          borderRadius: BorderRadius.circular(8),
+                          onTap: () {
+                            context.push(
+                                "/service_details_screen?serviceID=${therapy.id}&serviceName=${therapy.name}");
+                          },
+                          child: ProductGridItem(
+                            imageUrl: therapy.image ?? "",
+                            title: therapy.name ?? "",
+                          ),
+                        );
+                      }
                     },
                     childCount: itemCount,
                   ),
@@ -358,6 +367,4 @@ class _TherapiesListScreenState extends State<TherapiesListScreen> {
       ),
     );
   }
-
 }
-

@@ -30,9 +30,15 @@ class _GuidescreenState extends State<Guidescreen> {
             fontSize: 20,
           ),
         ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: false,
+        leading: IconButton.filled(
+          icon: const Icon(Icons.arrow_back, color: primarycolor),
+          onPressed: () {
+            context.push("/main_dashBoard?initialIndex=0");
+          },
+          style: IconButton.styleFrom(
+            backgroundColor: const Color(0xFFECFAFA),
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
