@@ -66,76 +66,81 @@ class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
 
-    return
-    Scaffold(
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(
-            horizontal: width * 0.06,
-            vertical: height * 0.04,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-
-              SizedBox(height: height * 0.03),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton.filled(
-                    icon: Icon(Icons.arrow_back, color: primarycolor),
-                    onPressed: () => context.pop(),
-                    style: IconButton.styleFrom(
-                      backgroundColor: Color(0xFFECFAFA),
-                    ),
-                  ),
-                  _buildSkipButton(),
-                ],
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton.filled(
+              icon: Icon(Icons.arrow_back, color: primarycolor),
+              onPressed: () => context.pop(),
+              style: IconButton.styleFrom(
+                backgroundColor: Color(0xFFECFAFA),
               ),
-              SizedBox(height: height * 0.06),
-              _buildLogo(),
-              SizedBox(height: height * 0.05),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Sign In",
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: charcoal,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500,
-
-                        ),
-                      ),
-                      SizedBox(height: height * 0.03),
-                      _buildUsernameField(),
-                      SizedBox(height: height * 0.03),
-                      _buildPasswordField(),
-                      SizedBox(height: height * 0.04),
-                      _buildSignInButton(),
-                      SizedBox(height: height * 0.03),
-                      _buildSignUpLink(),
-                      SizedBox(height: height * 0.02),
-                      _buildForgotPasswordLink(),
-                    ],
-                  ),
+            ),
+          ],
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: _buildSkipButton(),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(
+          horizontal: width * 0.035,
+          vertical: height * 0.04,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: width * 0.06),
+            _buildLogo(),
+            SizedBox(height: width * 0.05),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Sign In",
+                      style:TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "general_sans",
+                      )
+                    ),
+                    SizedBox(height: height * 0.03),
+                    _buildUsernameField(),
+                    SizedBox(height: height * 0.03),
+                    _buildPasswordField(),
+                    SizedBox(height: height * 0.04),
+                    _buildSignInButton(),
+                    SizedBox(height: height * 0.03),
+                    _buildSignUpLink(),
+                    SizedBox(height: height * 0.02),
+                    _buildForgotPasswordLink(),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-
+      ),
     );
   }
 
   Widget _buildSkipButton() {
-    return SizedBox(height: 30,
+    return SizedBox(
+      height: 30,
       child: OutlinedButton(
-        onPressed: () => context.pushReplacement('/main_dashBoard?initialIndex=0'),
+        onPressed: () =>
+            context.pushReplacement('/main_dashBoard?initialIndex=0'),
         style: OutlinedButton.styleFrom(
           foregroundColor: primarycolor,
           side: BorderSide(color: primarycolor, width: 1.5),
@@ -148,7 +153,7 @@ class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
           'Skip',
           style: TextStyle(
             fontSize: 16,
-            fontFamily: 'Poppins',
+            fontFamily: "general_sans",
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -188,7 +193,7 @@ class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
           keyboardType: TextInputType.emailAddress,
           style: const TextStyle(
             color: charcoal,
-            fontFamily: 'Poppins',
+            fontFamily: "general_sans",
             fontSize: 16,
             fontWeight: FontWeight.w500,
           ),
@@ -196,39 +201,41 @@ class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
             hintText: "Enter your username or email",
             hintStyle: TextStyle(
               color: neutral_gray.withOpacity(0.6),
-              fontFamily: 'Poppins',
+              fontFamily: "general_sans",
               fontSize: 14,
             ),
             filled: true,
             fillColor: Colors.grey[100],
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 18,
-              horizontal: 16,
-            ),
+            contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16,),
             prefixIcon: Icon(
               Icons.person_outline,
               color: neutral_gray,
               size: 24,
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: primarycolor, width: 1),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: primarycolor, width: 2),
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: primarycolor, width: 1),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.red, width: 1),
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.red, width: 2),
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+            ),
+            errorStyle: TextStyle(
+              color: Colors.red,
+              fontSize: 12,
+              fontFamily: "general_sans",
             ),
           ),
           validator: (value) {
@@ -260,7 +267,7 @@ class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
           style: TextStyle(
             color: charcoal,
             fontSize: 16,
-            fontFamily: 'Poppins',
+            fontFamily: "general_sans",
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -272,7 +279,7 @@ class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
           obscureText: !_isPasswordVisible,
           style: const TextStyle(
             color: charcoal,
-            fontFamily: 'Poppins',
+            fontFamily: "general_sans",
             fontSize: 16,
             fontWeight: FontWeight.w500,
           ),
@@ -280,15 +287,12 @@ class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
             hintText: "Enter your password",
             hintStyle: TextStyle(
               color: neutral_gray.withOpacity(0.6),
-              fontFamily: 'Poppins',
+              fontFamily: "general_sans",
               fontSize: 14,
             ),
             filled: true,
             fillColor: Colors.grey[100],
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 18,
-              horizontal: 16,
-            ),
+            contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16,),
             prefixIcon: Icon(
               Icons.lock_outline,
               color: neutral_gray,
@@ -308,7 +312,7 @@ class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
+              borderSide: BorderSide(color: primarycolor, width: 1),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -316,15 +320,20 @@ class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: primarycolor, width: 2),
+              borderSide: BorderSide(color: primarycolor, width: 1),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.red, width: 1),
+              borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.red, width: 2),
+              borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+            ),
+            errorStyle: TextStyle(
+              color: Colors.red,
+              fontSize: 12,
+              fontFamily: "general_sans",
             ),
           ),
           validator: (value) {
@@ -341,7 +350,7 @@ class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
   Widget _buildSignInButton() {
     return SizedBox(
       width: double.infinity,
-      height: 56,
+      height: 48,
       child: ElevatedButton(
         onPressed: login,
         style: ElevatedButton.styleFrom(
@@ -358,33 +367,33 @@ class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
           builder: (context, signIn, child) {
             return signIn.isLoading
                 ? const SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 2,
-              ),
-            )
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
                 : Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  "Sign In",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Icon(
-                  Icons.arrow_forward,
-                  color: Colors.white,
-                  size: 20,
-                ),
-              ],
-            );
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        "Sign In",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: "general_sans",
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Icon(
+                        Icons.arrow_forward,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ],
+                  );
           },
         ),
       ),
@@ -399,7 +408,7 @@ class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
           style: TextStyle(
             fontSize: 14,
             color: neutral_gray,
-            fontFamily: 'Poppins',
+            fontFamily: "general_sans",
           ),
           children: [
             TextSpan(
@@ -410,7 +419,7 @@ class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
                 fontWeight: FontWeight.w600,
                 decoration: TextDecoration.underline,
                 decorationColor: primarycolor,
-                fontFamily: 'Poppins',
+                fontFamily: "general_sans",
               ),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
@@ -437,7 +446,7 @@ class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
             fontWeight: FontWeight.w600,
             decoration: TextDecoration.underline,
             decorationColor: primarycolor.withOpacity(0.5),
-            fontFamily: 'Poppins',
+            fontFamily: "general_sans",
           ),
         ),
       ),

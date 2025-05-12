@@ -13,6 +13,12 @@ class AuthService {
     return prefs.getString(_accessTokenKey);
   }
 
+  /// Check if the user is a guest (no token or empty token)
+  static Future<bool> get isGuest async {
+    final token = await getAccessToken();
+    return token == null || token.isEmpty;
+  }
+
   /// Get stored refresh token
   static Future<String?> getRefreshToken() async {
     final prefs = await SharedPreferences.getInstance();

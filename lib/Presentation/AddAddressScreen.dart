@@ -121,7 +121,11 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                             });
                           },
                         ),
-                        Text('Current'),
+                        Text('Current',
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: "general_sans")),
                       ],
                     ),
                     SizedBox(width: 20), // Spacing between checkboxes
@@ -138,7 +142,11 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                             });
                           },
                         ),
-                        Text('Permanent'),
+                        Text('Permanent',
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: "general_sans")),
                       ],
                     ),
                   ],
@@ -189,7 +197,10 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                         ),
                       ),
                       child: (current_Loading)
-                          ? CircularProgressIndicator(color: Colors.white,strokeWidth: 1,)
+                          ? CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 1,
+                            )
                           : Text('Submit',
                               style: TextStyle(
                                   fontSize: 18,
@@ -272,14 +283,14 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
       {bool isNumeric = false}) {
     return TextFormField(
       controller: controller,
+      cursorColor: Colors.black,
       style: TextStyle(
           fontFamily: "general_sans",
           fontWeight: FontWeight.w500,
           fontSize: 17,
-          color: Colors.black
-      ),
+          color: Colors.black),
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(vertical: 4,horizontal: 16),
+        contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
         labelText: label,
         labelStyle: TextStyle(
             fontFamily: "general_sans",

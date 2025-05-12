@@ -204,22 +204,40 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     children: <Widget>[
                       TextFormField(
                         controller: _nameController,
+                        cursorColor: Colors.black,
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: "general_sans"),
                         decoration: InputDecoration(
                           labelText: 'Name',
                           labelStyle: TextStyle(
-                              fontSize: 15,
-                              fontFamily: "Inter",
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black),
+                              fontSize: 16,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: "general_sans"),
                           floatingLabelBehavior: FloatingLabelBehavior.auto,
-                          border: OutlineInputBorder(), // Add border
                           enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.grey, width: 1.0),
-                          ),
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ), // Normal border
                           focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.blue, width: 2.0),
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ), // Focused border
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ),
+                          errorStyle: TextStyle(
+                            color: Colors.red,
+                            fontSize: 12,
+                            fontFamily: "general_sans",
                           ),
                         ),
                         validator: _validateName,
@@ -227,22 +245,40 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       SizedBox(height: 16),
                       TextFormField(
                         controller: _emailController,
+                        cursorColor: Colors.black,
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: "general_sans"),
                         decoration: InputDecoration(
                           labelText: 'Email',
                           labelStyle: TextStyle(
-                              fontSize: 15,
-                              fontFamily: "Inter",
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black),
+                              fontSize: 16,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: "general_sans"),
                           floatingLabelBehavior: FloatingLabelBehavior.auto,
-                          border: OutlineInputBorder(), // Add border
                           enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.grey, width: 1.0),
-                          ),
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ), // Normal border
                           focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.blue, width: 2.0),
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ), // Focused border
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ),
+                          errorStyle: TextStyle(
+                            color: Colors.red,
+                            fontSize: 12,
+                            fontFamily: "general_sans",
                           ),
                         ),
                         validator: _validateEmail,
@@ -250,22 +286,40 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       SizedBox(height: 16), // Space between fields
                       TextFormField(
                         controller: _mobileController,
+                        cursorColor: Colors.black,
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: "general_sans"),
                         decoration: InputDecoration(
                           labelText: 'Mobile Number',
                           labelStyle: TextStyle(
-                              fontSize: 15,
-                              fontFamily: "Inter",
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black),
+                              fontSize: 16,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: "general_sans"),
                           floatingLabelBehavior: FloatingLabelBehavior.auto,
-                          border: OutlineInputBorder(), // Add border
                           enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.grey, width: 1.0),
-                          ),
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ), // Normal border
                           focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.blue, width: 2.0),
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ), // Focused border
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ),
+                          errorStyle: TextStyle(
+                            color: Colors.red,
+                            fontSize: 12,
+                            fontFamily: "general_sans",
                           ),
                         ),
                         keyboardType: TextInputType.phone,
@@ -274,74 +328,44 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       SizedBox(height: 20),
                       TextFormField(
                         controller: _pwdController,
+                        cursorColor: Colors.black,
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: "general_sans"),
                         decoration: InputDecoration(
                           labelText: 'Enter Your Password',
                           labelStyle: TextStyle(
-                              fontSize: 15,
-                              fontFamily: "Inter",
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black),
+                              fontSize: 16,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: "general_sans"),
                           floatingLabelBehavior: FloatingLabelBehavior.auto,
-                          border: OutlineInputBorder(), // Add border
                           enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.grey, width: 1.0),
-                          ),
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ), // Normal border
                           focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.blue, width: 2.0),
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ), // Focused border
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
+                          ),
+                          errorStyle: TextStyle(
+                            color: Colors.red,
+                            fontSize: 12,
+                            fontFamily: "general_sans",
                           ),
                         ),
                         keyboardType: TextInputType.phone,
                       ),
-                      // TextFormField(
-                      //   controller: _sos2Controller,
-                      //   decoration: InputDecoration(
-                      //     labelText: 'SOS Mobile Number 2',
-                      //     labelStyle: TextStyle(
-                      //         fontSize: 15,
-                      //         fontFamily: "Inter",
-                      //         fontWeight: FontWeight.w400,
-                      //         color: Colors.black),
-                      //     floatingLabelBehavior: FloatingLabelBehavior.auto,
-                      //     border: OutlineInputBorder(), // Add border
-                      //     enabledBorder: OutlineInputBorder(
-                      //       borderSide:
-                      //           BorderSide(color: Colors.grey, width: 1.0),
-                      //     ),
-                      //     focusedBorder: OutlineInputBorder(
-                      //       borderSide:
-                      //           BorderSide(color: Colors.blue, width: 2.0),
-                      //     ),
-                      //   ),
-                      //   keyboardType: TextInputType.phone,
-                      //   // validator: _validateMobileSos2,
-                      // ),
-                      // SizedBox(height: 20),
-                      // TextFormField(
-                      //   controller: _sos3Controller,
-                      //   decoration: InputDecoration(
-                      //     labelText: 'SOS Mobile Number 3',
-                      //     labelStyle: TextStyle(
-                      //         fontSize: 15,
-                      //         fontFamily: "Inter",
-                      //         fontWeight: FontWeight.w400,
-                      //         color: Colors.black),
-                      //     floatingLabelBehavior: FloatingLabelBehavior.auto,
-                      //     border: OutlineInputBorder(), // Add border
-                      //     enabledBorder: OutlineInputBorder(
-                      //       borderSide:
-                      //           BorderSide(color: Colors.grey, width: 1.0),
-                      //     ),
-                      //     focusedBorder: OutlineInputBorder(
-                      //       borderSide:
-                      //           BorderSide(color: Colors.blue, width: 2.0),
-                      //     ),
-                      //   ),
-                      //   keyboardType: TextInputType.phone,
-                      //   // validator: _validateMobileSos3,
-                      // ),
-                      // SizedBox(height: 20),
                     ],
                   ),
                 ),
@@ -353,16 +377,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       bottomNavigationBar: Consumer<UserProviders>(
         builder: (context, userDetails, child) {
           return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            padding: const EdgeInsets.all(16.0),
+            child: SizedBox(
+              height: 48,
               child: ElevatedButton(
                   onPressed: isLoading ? null : () => _submitForm(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primarycolor, // Button Background Color
-                    padding: EdgeInsets.symmetric(vertical: 10),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    elevation: 3, // Light shadow for better visibility
+                    elevation: 0, // Light shadow for better visibility
                   ),
                   child: userDetails.isSaving
                       ? SizedBox(
@@ -379,10 +404,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
-                            fontFamily: "Inter",
+                            fontFamily: "general_sans",
                             fontWeight: FontWeight.w600,
                           ),
-                        )));
+                        )),
+            ),
+          );
         },
       ),
     );

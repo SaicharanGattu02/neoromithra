@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:go_router/go_router.dart';
 import 'package:neuromithra/Components/CustomAppButton.dart';
 import 'package:neuromithra/Presentation/SelectingTypes/ExploreAdults.dart';
 import 'package:neuromithra/Presentation/SelectingTypes/ExploreChildren.dart';
@@ -132,8 +133,7 @@ class _SelectingTypesState extends State<SelectingTypes> {
             CustomAppButton(
               text: 'Explore Support for Children',
               onPlusTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ExploreChildren()));
+                context.push("/explore_child");
               },
             ),
             SizedBox(height: 24),
@@ -152,8 +152,7 @@ class _SelectingTypesState extends State<SelectingTypes> {
             CustomAppButton(
               text: 'Discover Services for Adults',
               onPlusTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ExploreAdults()));
+                context.push("/explore_adult");
               },
             ),
           ],

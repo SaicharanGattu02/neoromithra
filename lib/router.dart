@@ -1,10 +1,18 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:neuromithra/Assesment/AdultAssignment.dart';
+import 'package:neuromithra/Assesment/ChildAssessment.dart';
+import 'package:neuromithra/Presentation/Aboutus.dart';
 import 'package:neuromithra/Presentation/AddAddressScreen.dart';
 import 'package:neuromithra/Presentation/AddressListScreen.dart';
 import 'package:neuromithra/Presentation/BookAppointment.dart';
+import 'package:neuromithra/Presentation/PrivacyPolicyScreen.dart';
+import 'package:neuromithra/Presentation/RefundPolicyScreen.dart';
+import 'package:neuromithra/Presentation/SelectingTypes/ExploreAdults.dart';
+import 'package:neuromithra/Presentation/SelectingTypes/ExploreChildren.dart';
 import 'package:neuromithra/Presentation/ServiceDeailsScreen.dart';
+import 'package:neuromithra/Presentation/TermsAndConditionsScreen.dart';
 import 'package:neuromithra/utils/constants.dart';
 import 'Assesment/ResultScreen.dart';
 import 'Presentation/Bookappointment1.dart';
@@ -14,10 +22,12 @@ import 'Presentation/BookedApointmentsuccessfully.dart';
 import 'Presentation/BookingHistory.dart';
 import 'Presentation/Authentication/ForgotPasswordScreen.dart';
 import 'Presentation/Authentication/LogIn.dart';
+import 'Presentation/GovtSupportinfo.dart';
 import 'Presentation/MainDashBoard.dart';
 import 'Presentation/OnBoardScreen.dart';
 import 'Presentation/PaymentStatusScreen.dart';
 import 'Presentation/Authentication/Register.dart';
+import 'Presentation/SelectingTypes/Selecting_types.dart';
 import 'Presentation/SplashScreen.dart';
 
 final GoRouter goRouter =
@@ -35,21 +45,12 @@ final GoRouter goRouter =
     path: '/login',
     pageBuilder: (context, state) => buildSlideTransitionPage(LogIn(), state),
   ),
-  // GoRoute(
-  //   path: '/otp',
-  //   pageBuilder: (context, state) {
-  //     final mobile = state.uri.queryParameters['mobile'];
-  //     if (mobile == null || mobile.isEmpty) {
-  //       return buildSlideTransitionPage(
-  //         const Scaffold(
-  //           body: Center(child: Text('Error: Mobile number missing')),
-  //         ),
-  //         state,
-  //       );
-  //     }
-  //     return buildSlideTransitionPage(Otp(mobile: mobile), state);
-  //   },
-  // ),
+  GoRoute(
+      path: '/otp',
+      pageBuilder: (context, state) {
+        final mobile = state.uri.queryParameters['mobile'];
+        return buildSlideTransitionPage(Otp(mobile: mobile ?? ""), state);
+      }),
   GoRoute(
     path: '/register',
     pageBuilder: (context, state) =>
@@ -125,11 +126,6 @@ final GoRouter goRouter =
         buildSlideTransitionPage(LoginWithMobile(), state),
   ),
   GoRoute(
-    path: '/booking_history',
-    pageBuilder: (context, state) =>
-        buildSlideTransitionPage(BookingHistory(), state),
-  ),
-  GoRoute(
     path: '/main_dashBoard',
     pageBuilder: (context, state) {
       final initialIndex =
@@ -147,14 +143,49 @@ final GoRouter goRouter =
     },
   ),
   GoRoute(
-    path: '/book_appointment1',
+    path: '/service_details_screen',
+    pageBuilder: (context, state) {
+      final serviceID = state.uri.queryParameters['serviceID'] ?? '';
+      final serviceName = state.uri.queryParameters['serviceName'] ?? '';
+      return buildSlideTransitionPage(
+          ServiceDetailsScreen(serviceID: serviceID, serviceName: serviceName),
+          state);
+    },
+  ),
+  GoRoute(
+    path: '/about_us',
     pageBuilder: (context, state) =>
-        buildSlideTransitionPage(Bookappointment1(), state),
+        buildSlideTransitionPage(AboutUsScreen(), state),
+  ),
+  GoRoute(
+    path: '/terms_conditions',
+    pageBuilder: (context, state) =>
+        buildSlideTransitionPage(TermsAndConditionsScreen(), state),
+  ),
+  GoRoute(
+    path: '/privacy_policy',
+    pageBuilder: (context, state) =>
+        buildSlideTransitionPage(PrivacyPolicyScreen(), state),
+  ),
+  GoRoute(
+    path: '/refund_policy',
+    pageBuilder: (context, state) =>
+        buildSlideTransitionPage(RefundPolicyScreen(), state),
+  ),
+  GoRoute(
+    path: '/govt_support_info',
+    pageBuilder: (context, state) =>
+        buildSlideTransitionPage(SupportProgramsScreen(), state),
   ),
   GoRoute(
     path: '/address_list',
     pageBuilder: (context, state) =>
         buildSlideTransitionPage(AddressListScreen(), state),
+  ),
+  GoRoute(
+    path: '/book_appointment1',
+    pageBuilder: (context, state) =>
+        buildSlideTransitionPage(Bookappointment1(), state),
   ),
   GoRoute(
     path: '/add_address',
@@ -170,14 +201,34 @@ final GoRouter goRouter =
     },
   ),
   GoRoute(
-    path: '/service_details_screen',
-    pageBuilder: (context, state) {
-      final serviceID = state.uri.queryParameters['serviceID'] ?? '';
-      final serviceName = state.uri.queryParameters['serviceName'] ?? '';
-      return buildSlideTransitionPage(
-          ServiceDetailsScreen(serviceID: serviceID, serviceName: serviceName),
-          state);
-    },
+    path: '/booking_history',
+    pageBuilder: (context, state) =>
+        buildSlideTransitionPage(BookingHistory(), state),
+  ),
+  GoRoute(
+    path: '/adult_guide',
+    pageBuilder: (context, state) =>
+        buildSlideTransitionPage(Adultassignment(), state),
+  ),
+  GoRoute(
+    path: '/child_guide',
+    pageBuilder: (context, state) =>
+        buildSlideTransitionPage(ChildAssessment(), state),
+  ),
+  GoRoute(
+    path: '/selecting_type',
+    pageBuilder: (context, state) =>
+        buildSlideTransitionPage(SelectingTypes(), state),
+  ),
+  GoRoute(
+    path: '/explore_child',
+    pageBuilder: (context, state) =>
+        buildSlideTransitionPage(ExploreChildren(), state),
+  ),
+  GoRoute(
+    path: '/explore_adult',
+    pageBuilder: (context, state) =>
+        buildSlideTransitionPage(ExploreAdults(), state),
   ),
 ]);
 

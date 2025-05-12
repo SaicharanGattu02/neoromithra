@@ -8,7 +8,7 @@ import '../services/userapi.dart';
 
 class UserProviders with ChangeNotifier {
   bool _isLoading = false;
-  bool _isSaving= false;
+  bool _isSaving = false;
   String _error = '';
   Users _userData = Users();
   bool _status = false;
@@ -45,10 +45,11 @@ class UserProviders with ChangeNotifier {
     _isSaving = true;
     notifyListeners();
     try {
-      final result = await Userapi.postProfileDetails(formData);
+      final result = await Userapi.updateProfileDetails(formData);
       if (result != null && result.containsKey("message")) {
         print("Success: ${result["message"]}");
-return true;
+        getProfileDetails();
+        return true;
       } else if (result != null && result.containsKey("error")) {
         print("Error: ${result["error"]}");
         return false;

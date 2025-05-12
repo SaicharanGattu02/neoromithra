@@ -1,6 +1,6 @@
 class APIEndpointUrls {
   // static const String baseUrl = 'https://api.ridev.in/';
-  static const String baseUrl = 'http://192.168.80.237:8000';
+  static const String baseUrl = 'http://192.168.80.237:8000/';
 
   static const String apiUrl = 'api/';
   static const String userUrl = 'api/users/';
@@ -9,7 +9,7 @@ class APIEndpointUrls {
   static const String userLogin = '${apiUrl}mobile-login';
   static const String LoginWithMobile = '${apiUrl}/login-otp';
   static const String userVerifyOtp = '${apiUrl}/verify-login-otp';
-  static const String profileDetails = '${userUrl}update_user_details';
+  static const String updateprofileDetails = '${userUrl}profile-update';
   static const String serviceList = '${userUrl}guest-service';
   static const String guestServiceDetails = '${userUrl}guest-service';
   static const String getprofileDetails = '${userUrl}view-profile';

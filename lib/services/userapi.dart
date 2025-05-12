@@ -387,11 +387,11 @@ class Userapi {
   }
 
 
-  static Future<Map<String, dynamic>?> postProfileDetails(
+  static Future<Map<String, dynamic>?> updateProfileDetails(
      formData) async {
     try {
       final response = await post(
-        APIEndpointUrls.profileDetails,
+        APIEndpointUrls.updateprofileDetails,
         data: formData,
       );
       if (response.statusCode == 200) {

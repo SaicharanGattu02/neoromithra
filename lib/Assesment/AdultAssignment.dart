@@ -138,7 +138,9 @@ class _AdultassignmentState extends State<Adultassignment> {
             isLoading
                 ? const Center(child: CircularProgressIndicator()) // Show loader
                 : parsedData.isEmpty
-                ? const Center(child: Text("No questions available"))
+                ? const Center(child: Text("No questions available",style: TextStyle(
+              fontFamily: "general_sans",
+            ),))
                 : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: parsedData.entries.map<Widget>((entry) {

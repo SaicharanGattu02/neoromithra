@@ -133,7 +133,7 @@ class _LoginWithMobileState extends State<LoginWithMobile>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: SizeConfig.screenHeight * 0.05),
+                  SizedBox(height: SizeConfig.screenHeight * 0.03),
                   Align(
                     alignment: Alignment.centerRight,
                     child: _buildSkipButton(),
@@ -158,21 +158,22 @@ class _LoginWithMobileState extends State<LoginWithMobile>
   }
 
   Widget _buildSkipButton() {
-    return GestureDetector(
-      onTap: () => context.pushReplacement('/main_dashBoard?initialIndex=${0}'),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          border: Border.all(color: primarycolor, width: 1.5),
-          borderRadius: BorderRadius.circular(8),
+    return SizedBox(
+      height: 30,
+      child: OutlinedButton(
+        onPressed: () => context.pushReplacement('/main_dashBoard?initialIndex=${0}'),
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(color: primarycolor, width: 1.5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
         ),
         child: Text(
           'Skip',
           style: TextStyle(
             fontSize: 16,
             color: primarycolor,
-            fontFamily: 'Poppins',
+            fontFamily: "general_sans",
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -197,12 +198,11 @@ class _LoginWithMobileState extends State<LoginWithMobile>
       children: [
         Text(
           'Login with Mobile',
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: charcoal,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Poppins',
-                letterSpacing: 0.5,
-              ),
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+            fontFamily: "general_sans",
+          )
         ),
         SizedBox(height: SizeConfig.screenHeight * 0.01),
         Text(
@@ -210,7 +210,7 @@ class _LoginWithMobileState extends State<LoginWithMobile>
           style: TextStyle(
             color: neutral_gray,
             fontSize: 16,
-            fontFamily: 'Poppins',
+            fontFamily: "general_sans",
             fontWeight: FontWeight.w400,
           ),
         ),
@@ -227,7 +227,7 @@ class _LoginWithMobileState extends State<LoginWithMobile>
           style: TextStyle(
             color: charcoal,
             fontSize: 16,
-            fontFamily: 'Poppins',
+            fontFamily: "general_sans",
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -243,13 +243,12 @@ class _LoginWithMobileState extends State<LoginWithMobile>
           ],
           style: const TextStyle(
             color: charcoal,
-            fontFamily: 'Poppins',
+            fontFamily: "general_sans",
             fontSize: 16,
             fontWeight: FontWeight.w500,
           ),
           decoration: InputDecoration(
-            prefixIcon: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+            prefixIcon: Container(padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -257,7 +256,7 @@ class _LoginWithMobileState extends State<LoginWithMobile>
                     '+91',
                     style: TextStyle(
                       color: charcoal,
-                      fontFamily: 'Poppins',
+                      fontFamily: "general_sans",
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
@@ -279,33 +278,33 @@ class _LoginWithMobileState extends State<LoginWithMobile>
             hintText: 'Enter 10-digit mobile number',
             hintStyle: TextStyle(
               color: neutral_gray.withOpacity(0.6),
-              fontFamily: 'Poppins',
+              fontFamily: "general_sans",
               fontSize: 14,
             ),
             filled: true,
             fillColor: Colors.grey[100],
             contentPadding: const EdgeInsets.symmetric(
-              vertical: 18,
+              vertical: 4,
               horizontal: 16,
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: primarycolor, width: 2),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
               borderSide: const BorderSide(color: Colors.red, width: 1),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
               borderSide: const BorderSide(color: Colors.red, width: 2),
             ),
           ),
@@ -330,7 +329,7 @@ class _LoginWithMobileState extends State<LoginWithMobile>
                     child: Text(
                       _phoneError,
                       style: const TextStyle(
-                        fontFamily: 'Poppins',
+                        fontFamily: "general_sans",
                         fontSize: 12,
                         color: Colors.red,
                         fontWeight: FontWeight.w400,
@@ -348,7 +347,7 @@ class _LoginWithMobileState extends State<LoginWithMobile>
   Widget _buildContinueButton(LoginWithMobileProvider numProvider) {
     return SizedBox(
       width: double.infinity,
-      height: 56,
+      height: 48,
       child: ElevatedButton(
         onPressed:
             _isPhoneValid && !numProvider.isLoading ? _handleSubmit : null,
@@ -376,7 +375,7 @@ class _LoginWithMobileState extends State<LoginWithMobile>
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18,
-                  fontFamily: 'Poppins',
+                  fontFamily: "general_sans",
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -394,7 +393,7 @@ class _LoginWithMobileState extends State<LoginWithMobile>
             style: TextStyle(
               fontSize: 14,
               color: neutral_gray,
-              fontFamily: 'Poppins',
+              fontFamily: "general_sans",
             ),
             children: [
               TextSpan(
@@ -405,7 +404,7 @@ class _LoginWithMobileState extends State<LoginWithMobile>
                   fontWeight: FontWeight.w600,
                   decoration: TextDecoration.underline,
                   decorationColor: primarycolor,
-                  fontFamily: 'Poppins',
+                  fontFamily: "general_sans",
                 ),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {

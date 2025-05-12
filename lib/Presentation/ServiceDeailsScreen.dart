@@ -346,9 +346,9 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
           style: ElevatedButton.styleFrom(
             backgroundColor: color,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
             ),
-            elevation: 2,
+            elevation: 0,
           ),
           child: Text(
             text,
