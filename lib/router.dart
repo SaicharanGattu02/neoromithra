@@ -9,6 +9,7 @@ import 'package:neuromithra/Presentation/AddressListScreen.dart';
 import 'package:neuromithra/Presentation/BookAppointment.dart';
 import 'package:neuromithra/Presentation/PrivacyPolicyScreen.dart';
 import 'package:neuromithra/Presentation/RefundPolicyScreen.dart';
+import 'package:neuromithra/Presentation/SelectLocation.dart';
 import 'package:neuromithra/Presentation/SelectingTypes/ExploreAdults.dart';
 import 'package:neuromithra/Presentation/SelectingTypes/ExploreChildren.dart';
 import 'package:neuromithra/Presentation/ServiceDeailsScreen.dart';
@@ -200,6 +201,19 @@ final GoRouter goRouter =
           state);
     },
   ),
+      GoRoute(
+        path: '/select_location',
+        pageBuilder: (context, state) {
+          final id = state.uri.queryParameters['id'] ?? '';
+          final type = state.uri.queryParameters['type'] ?? '';
+          return buildSlideTransitionPage(
+              SelectLocation(
+                id: id,
+                type: type,
+              ),
+              state);
+        },
+      ),
   GoRoute(
     path: '/booking_history',
     pageBuilder: (context, state) =>

@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:neuromithra/Providers/AddressListProviders.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utils/Color_Constants.dart';
 
@@ -40,41 +43,69 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
   final TextEditingController _pincodeControllerPermanent =
       TextEditingController();
 
-  bool _isSameAddress = false;
-  bool _addPermanentAddress = false; // Optional permanent address toggle
   bool current_Loading = false;
   bool permanent_Loading = false;
   @override
   void initState() {
+    loadLocationDataFromPreferences();
     super.initState();
   }
 
-  Future<void> addAddress() async {
-    var typeOfAddress = isCurrentChecked ? 0 : 1;
-    Map<String, dynamic> data = {
-      "Flat_no": _hNoControllerCurrent.text,
-      "street": _streetControllerCurrent.text,
-      "area": _areaControllerCurrent.text,
-      "landmark": _landmarkControllerCurrent.text,
-      "pincode": _pincodeControllerCurrent.text,
-      "address_type": typeOfAddress,
-    };
-    Provider.of<AddressListProvider>(context, listen: false).addAddress(data);
+  Future<void> loadLocationDataFromPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final locationName = prefs.getString('location_name') ?? '';
+    final area = prefs.getString('area') ?? '';
+    final city = prefs.getString('city') ?? '';
+    final pincode = prefs.getString('pincode') ?? '';
+
+    // Populate your TextEditingControllers
+    setState(() {
+      _areaControllerPermanent.text = locationName;
+      _pincodeControllerPermanent.text = pincode;
+
+      _areaControllerCurrent.text = locationName;
+      _pincodeControllerCurrent.text = pincode;
+    });
   }
 
-  Future<void> editAddress() async {
-    var typeOfAddress = isCurrentChecked ? 0 : 1;
-    Map<String, dynamic> data = {
-      "Flat_no": _hNoControllerCurrent.text,
-      "street": _streetControllerCurrent.text,
-      "area": _areaControllerCurrent.text,
-      "landmark": _landmarkControllerCurrent.text,
-      "pincode": _pincodeControllerCurrent.text,
-      "address_type": typeOfAddress,
-    };
-    Provider.of<AddressListProvider>(context, listen: false)
-        .EditAddress(data, widget.id);
+  Future<void> _submitAddress() async {
+    try {
+      final addressProvider = Provider.of<AddressListProvider>(context, listen: false);
+      Map<String, dynamic> data;
+
+      if (isCurrentChecked) {
+        data = {
+          "flat_no": _hNoControllerCurrent.text,
+          "street": _streetControllerCurrent.text,
+          "area": _areaControllerCurrent.text,
+          "landmark": _landmarkControllerCurrent.text,
+          "pincode": _pincodeControllerCurrent.text,
+          "type_of_address": 0,
+        };
+      } else {
+        data = {
+          "flat_no": _hNoControllerPermanent.text,
+          "street": _streetControllerPermanent.text,
+          "area": _areaControllerPermanent.text,
+          "landmark": _landmarkControllerPermanent.text,
+          "pincode": _pincodeControllerPermanent.text,
+          "type_of_address": 1,
+        };
+      }
+
+      if (widget.type == "add") {
+        await addressProvider.addAddress(data);
+      } else {
+        await addressProvider.EditAddress(data, widget.id);
+      }
+
+      // Optionally show success message or navigate
+    } catch (e) {
+      print("Address submission failed: $e");
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -96,184 +127,185 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
           ),
         ),
       ),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+      body: Consumer<AddressListProvider>(
+        builder: (context, addressProvider, child) {
+          return Container(
+            height: MediaQuery.of(context).size.height,
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Checkbox(
-                          visualDensity: VisualDensity.compact,
-                          value: isCurrentChecked,
-                          activeColor: primarycolor,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              isCurrentChecked = true;
-                              isPermanentChecked = false;
-                            });
-                          },
+                        Row(
+                          children: [
+                            Checkbox(
+                              visualDensity: VisualDensity.compact,
+                              value: isCurrentChecked,
+                              activeColor: primarycolor,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  isCurrentChecked = true;
+                                  isPermanentChecked = false;
+                                });
+                              },
+                            ),
+                            Text('Current',
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: "general_sans")),
+                          ],
                         ),
-                        Text('Current',
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: "general_sans")),
+                        SizedBox(width: 20), // Spacing between checkboxes
+                        Row(
+                          children: [
+                            Checkbox(
+                              visualDensity: VisualDensity.compact,
+                              value: isPermanentChecked,
+                              activeColor: primarycolor,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  isPermanentChecked = true;
+                                  isCurrentChecked = false;
+                                });
+                              },
+                            ),
+                            Text('Permanent',
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: "general_sans")),
+                          ],
+                        ),
                       ],
                     ),
-                    SizedBox(width: 20), // Spacing between checkboxes
-                    Row(
-                      children: [
-                        Checkbox(
-                          visualDensity: VisualDensity.compact,
-                          value: isPermanentChecked,
-                          activeColor: primarycolor,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              isPermanentChecked = true;
-                              isCurrentChecked = false;
-                            });
+                    if (isCurrentChecked) ...[
+                      SizedBox(height: 25),
+                      Text("Current Address",
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "general_sans")),
+                      SizedBox(height: 16),
+                      _buildTextField(
+                          _hNoControllerCurrent, 'H.No/Flat No', true),
+                      SizedBox(height: 16),
+                      _buildTextField(_streetControllerCurrent, 'Street', true),
+                      SizedBox(height: 16),
+                      _buildTextField(
+                          _areaControllerCurrent, 'Area/Locality', true),
+                      SizedBox(height: 16),
+                      _buildTextField(
+                          _landmarkControllerCurrent, 'Landmark', true),
+                      SizedBox(height: 16),
+                      _buildTextField(
+                          _pincodeControllerCurrent, 'Pincode', true,
+                          isNumeric: true),
+                      SizedBox(height: 100),
+                      SizedBox(
+                        height: 48,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              addressProvider.isLoading ? null:_submitAddress();
+                            }
                           },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primarycolor,
+                            foregroundColor: primarycolor,
+                            disabledForegroundColor: primarycolor,
+                            disabledBackgroundColor: primarycolor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                          child: addressProvider.isLoading
+                              ? CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 1,
+                                )
+                              : Text(
+                                  'Submit',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                    fontFamily: "general_sans",
+                                  ),
+                                ),
                         ),
-                        Text('Permanent',
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: "general_sans")),
-                      ],
-                    ),
+                      )
+                    ],
+                    if (isPermanentChecked) ...[
+                      SizedBox(height: 25),
+                      Text("Permanent Address",
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: "general_sans")),
+                      SizedBox(height: 16),
+                      _buildTextField(_hNoControllerPermanent, 'H.No/Flat No',
+                          isPermanentChecked),
+                      SizedBox(height: 16),
+                      _buildTextField(_streetControllerPermanent, 'Street',
+                          isPermanentChecked),
+                      SizedBox(height: 16),
+                      _buildTextField(_areaControllerPermanent, 'Area/Locality',
+                          isPermanentChecked),
+                      SizedBox(height: 16),
+                      _buildTextField(_landmarkControllerPermanent, 'Landmark',
+                          isPermanentChecked),
+                      SizedBox(height: 16),
+                      _buildTextField(_pincodeControllerPermanent, 'Pincode',
+                          isPermanentChecked,
+                          isNumeric: true),
+                      SizedBox(height: 100),
+                      SizedBox(
+                        height: 48,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              addressProvider.isLoading ? null:_submitAddress();
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primarycolor,
+                            foregroundColor: primarycolor,
+                            disabledForegroundColor: primarycolor,
+                            disabledBackgroundColor: primarycolor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                          child:addressProvider.isLoading
+                              ? CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 1,
+                                )
+                              : Text(
+                                  'Submit',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                    fontFamily: "general_sans",
+                                  ),
+                                ),
+                        ),
+                      )
+                    ],
+                    SizedBox(height: 30),
                   ],
                 ),
-                if (isCurrentChecked) ...[
-                  SizedBox(height: 25),
-                  Text("Current Address",
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "general_sans")),
-                  SizedBox(height: 16),
-                  _buildTextField(_hNoControllerCurrent, 'H.No/Flat No', true),
-                  SizedBox(height: 16),
-                  _buildTextField(_streetControllerCurrent, 'Street', true),
-                  SizedBox(height: 16),
-                  _buildTextField(
-                      _areaControllerCurrent, 'Area/Locality', true),
-                  SizedBox(height: 16),
-                  _buildTextField(_landmarkControllerCurrent, 'Landmark', true),
-                  SizedBox(height: 16),
-                  _buildTextField(_pincodeControllerCurrent, 'Pincode', true,
-                      isNumeric: true),
-                  SizedBox(height: 100),
-                  SizedBox(
-                    height: 48,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          if (current_Loading) return;
-                          setState(() {
-                            current_Loading = true;
-                            if (widget.type == "add") {
-                              addAddress();
-                            } else {
-                              editAddress();
-                            }
-                          });
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primarycolor,
-                        foregroundColor: primarycolor,
-                        disabledForegroundColor: primarycolor,
-                        disabledBackgroundColor: primarycolor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                      child: (current_Loading)
-                          ? CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 1,
-                            )
-                          : Text('Submit',
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                  fontFamily: "general_sans")),
-                    ),
-                  ),
-                ],
-                if (isPermanentChecked) ...[
-                  SizedBox(height: 25),
-                  Text("Permanent Address",
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: "general_sans")),
-                  SizedBox(height: 16),
-                  _buildTextField(_hNoControllerPermanent, 'H.No/Flat No',
-                      isPermanentChecked),
-                  SizedBox(height: 16),
-                  _buildTextField(
-                      _streetControllerPermanent, 'Street', isPermanentChecked),
-                  SizedBox(height: 16),
-                  _buildTextField(_areaControllerPermanent, 'Area/Locality',
-                      isPermanentChecked),
-                  SizedBox(height: 16),
-                  _buildTextField(_landmarkControllerPermanent, 'Landmark',
-                      isPermanentChecked),
-                  SizedBox(height: 16),
-                  _buildTextField(_pincodeControllerPermanent, 'Pincode',
-                      isPermanentChecked,
-                      isNumeric: true),
-                  SizedBox(height: 100),
-                  SizedBox(
-                    height: 48,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          if (permanent_Loading) return;
-                          setState(() {
-                            permanent_Loading = true;
-                            if (widget.type == "add") {
-                              addAddress();
-                            } else {
-                              editAddress();
-                            }
-                          });
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primarycolor,
-                        foregroundColor: primarycolor,
-                        disabledForegroundColor: primarycolor,
-                        disabledBackgroundColor: primarycolor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                      child: (permanent_Loading)
-                          ? CircularProgressIndicator(color: Colors.white)
-                          : Text('Submit',
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                  fontFamily: "general_sans")),
-                    ),
-                  ),
-                ],
-                SizedBox(height: 30),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

@@ -47,7 +47,8 @@ class _AddressListScreenState extends State<AddressListScreen> {
               height: 30,
               child: OutlinedButton.icon(
                 onPressed: () async {
-                  context.push("/add_address?type=add&id=");
+                  // context.push("/add_address?type=add&id=");
+                  context.push("/select_location?type=add&id=");
                 },
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: primarycolor, width: 1.5),

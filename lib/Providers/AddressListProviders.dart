@@ -17,7 +17,6 @@ class AddressListProvider with ChangeNotifier {
       if (response != null && response.status == true) {
         _addresses = response.address ?? [];
       } else {
-        // _error = response?.message ?? 'Failed to fetch addresses';
       }
     } catch (e) {
     } finally {
@@ -28,7 +27,6 @@ class AddressListProvider with ChangeNotifier {
   Future<bool> addAddress(Map<String, dynamic> data) async {
     _isLoading = true;
     notifyListeners();
-
     try {
       final res = await Userapi.addAddressApi(data);
       if (res != null && res.status == true) {
@@ -47,7 +45,6 @@ class AddressListProvider with ChangeNotifier {
   Future<bool> EditAddress(Map<String, dynamic> data,id) async {
     _isLoading = true;
     notifyListeners();
-
     try {
       final res = await Userapi.editAddressApi(data,id);
       if (res != null && res.status == true) {

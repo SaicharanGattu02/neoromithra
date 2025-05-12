@@ -664,7 +664,7 @@ class Userapi {
 
   static Future<AddAddressModel?> addAddressApi(Map<String, dynamic> data) async {
     try {
-      final response = await post("${APIEndpointUrls.addUserAddressApi}", data: data);
+      final response = await post("${APIEndpointUrls.addAddress}", data: data);
       if (response.statusCode == 200) {
         debugPrint("addAddressApi Response: ${response.data}");
         return AddAddressModel.fromJson(response.data);
@@ -680,7 +680,7 @@ class Userapi {
   static Future<AddAddressModel?> editAddressApi(
       Map<String, dynamic> data, String addressId) async {
     try {
-      final response = await post("${APIEndpointUrls.updateUserAddress}/$addressId", data: data);
+      final response = await put("${APIEndpointUrls.updateAddress}/$addressId", data: data);
       if (response.statusCode == 200) {
         debugPrint("editAddressApi Response: ${response.data}");
         return AddAddressModel.fromJson(response.data);
@@ -695,7 +695,7 @@ class Userapi {
 
   static Future<AddressListModel?> getAddressList() async {
     try {
-      final response = await get("${APIEndpointUrls.userAdressList}");
+      final response = await get("${APIEndpointUrls.getAddress}");
       if (response.statusCode == 200) {
         debugPrint("getAddressList response: ${response.data}");
         return AddressListModel.fromJson(response.data);
