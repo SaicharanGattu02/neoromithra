@@ -338,7 +338,7 @@ class _SelectLocationState extends State<SelectLocation> {
                                   ),
                                   onPressed: () {
                                     context.pushReplacement(
-                                        '/add_address?type=${widget.type}&id=${widget.type}');
+                                        '/add_address?type=${widget.type}&id=${widget.id}');
                                   },
                                   child: Text(
                                     "Add Address",

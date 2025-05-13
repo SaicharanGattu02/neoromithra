@@ -1,35 +1,32 @@
-class AddressResponse {
+class AddressDetailsResponse {
   final bool status;
-  final List<Address> data;
+  final AddressDetails? data;
 
-  AddressResponse({
+  AddressDetailsResponse({
     required this.status,
     required this.data,
   });
 
-  factory AddressResponse.fromJson(Map<String, dynamic> json) {
-    return AddressResponse(
+  factory AddressDetailsResponse.fromJson(Map<String, dynamic> json) {
+    return AddressDetailsResponse(
       status: json['status'] ?? false,
-      data: (json['data'] as List<dynamic>?)
-          ?.map((e) => Address.fromJson(e))
-          .toList() ??
-          [],
+      data: json['data'] != null ? AddressDetails.fromJson(json['data']) : null,
     );
   }
 }
 
-class Address {
+class AddressDetails {
   final int id;
   final int uid;
   final String flatNo;
   final String street;
   final String area;
   final String landmark;
-  final int pincode;
+  final String pincode;
   final int typeOfAddress;
   final String locationAccess;
 
-  Address({
+  AddressDetails({
     required this.id,
     required this.uid,
     required this.flatNo,
@@ -41,15 +38,15 @@ class Address {
     required this.locationAccess,
   });
 
-  factory Address.fromJson(Map<String, dynamic> json) {
-    return Address(
+  factory AddressDetails.fromJson(Map<String, dynamic> json) {
+    return AddressDetails(
       id: json['id'] ?? 0,
       uid: json['uid'] ?? 0,
       flatNo: json['Flat_no'] ?? '',
       street: json['street'] ?? '',
       area: json['area'] ?? '',
       landmark: json['landmark'] ?? '',
-      pincode: json['pincode'] ?? '',
+      pincode: json['pincode'].toString(),
       typeOfAddress: json['type_of_address'] ?? 0,
       locationAccess: json['location_access'] ?? '',
     );

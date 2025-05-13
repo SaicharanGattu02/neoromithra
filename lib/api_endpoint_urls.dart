@@ -21,10 +21,10 @@ class APIEndpointUrls {
   static const String childDetails ='${userUrl}get-child-details';
 
 
-  static const String addAddress ='${apiUrl}create-address';
-  static const String updateAddress ='${apiUrl}update-address';
-  static const String getAddress ='${apiUrl}view-address';
-  static const String deleteAddress ='${apiUrl}delete-address';
+  static const String addAddress ='${userUrl}create-address';
+  static const String updateAddress ='${userUrl}update-address';
+  static const String getAddress ='${userUrl}view-address';
+  static const String deleteAddress ='${userUrl}delete-address';
 
 
   static const String submitReview ='${apiUrl}create_review';

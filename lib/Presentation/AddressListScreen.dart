@@ -106,7 +106,7 @@ class _AddressListScreenState extends State<AddressListScreen> {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
-                          fontFamily: "Poppins",
+                          fontFamily: "general_sans",
                           color: Colors.grey[800],
                         ),
                       ),
@@ -117,13 +117,13 @@ class _AddressListScreenState extends State<AddressListScreen> {
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey[600],
-                          fontFamily: "Poppins",
+                          fontFamily: "general_sans",
                         ),
                       ),
                       SizedBox(height: 20),
                       OutlinedButton.icon(
                         onPressed: () {
-                          context.push("/add_address?type=add&id=");
+                          context.push("/select_location?type=add&id=");
                         },
                         icon: Icon(Icons.add_location_alt, color: primarycolor),
                         label: Text(
@@ -131,7 +131,7 @@ class _AddressListScreenState extends State<AddressListScreen> {
                           style: TextStyle(
                             color: primarycolor,
                             fontWeight: FontWeight.w600,
-                            fontFamily: "Poppins",
+                            fontFamily: "general_sans",
                           ),
                         ),
                         style: OutlinedButton.styleFrom(
@@ -152,62 +152,162 @@ class _AddressListScreenState extends State<AddressListScreen> {
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: ListView.separated(
                 itemCount: addressListProvider.addresses.length,
-                separatorBuilder: (_, __) => SizedBox(height: 10),
+                separatorBuilder: (_, __) => SizedBox(height: 12),
                 itemBuilder: (context, index) {
                   var data = addressListProvider.addresses[index];
+
                   return Card(
                     margin: EdgeInsets.zero,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    elevation: 2,
+                    elevation: 3,
                     child: Padding(
                       padding: EdgeInsets.all(16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          /// Top row: Address type + action buttons
                           Row(
                             children: [
-                              Icon(Icons.location_on,
-                                  color: Colors.red, size: 22),
+                              Icon(Icons.location_on, color: Colors.red, size: 22),
                               SizedBox(width: 6),
                               Expanded(
                                 child: Text(
-                                  data.area ?? "Unknown Area",
+                                  data.typeOfAddress == 0 ? "Current Address" : "Permanent Address",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
-                                    fontFamily: "Inter",
+                                    fontFamily: "general_sans",
                                     color: Colors.blueGrey[800],
                                   ),
                                 ),
                               ),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton.filled(
+                                    onPressed: () async {
+                                      context.push("/select_location?type=edit&id=${data.id}");
+                                    },
+                                    icon: Icon(Icons.edit, size: 18),
+                                    style: IconButton.styleFrom(
+                                      backgroundColor:
+                                      primarycolor.withOpacity(0.1),
+                                      foregroundColor: primarycolor,
+                                      padding: EdgeInsets.all(8),
+                                      minimumSize: Size(36, 36),
+                                    ),
+                                    tooltip: 'Edit',
+                                  ),
+                                  SizedBox(width: 8),
+                                  IconButton.filled(
+                                    onPressed: () async {
+                                      final confirm = await showDialog<bool>(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                            title: Text(
+                                              'Delete Address',
+                                              style: TextStyle(
+                                                fontFamily: "general_sans",
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                            content: Text(
+                                              'Are you sure you want to delete this address?',
+                                              style: TextStyle(
+                                                fontFamily: "general_sans",
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.grey,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                            actions: [
+                                              OutlinedButton(
+                                                onPressed: () => Navigator.of(context).pop(false),
+                                                style: OutlinedButton.styleFrom(
+                                                  side: BorderSide(color: Colors.grey),
+                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                                ),
+                                                child: Text(
+                                                  'Cancel',
+                                                  style: TextStyle(
+                                                    fontFamily: "general_sans",
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Colors.grey[800],
+                                                  ),
+                                                ),
+                                              ),
+                                              ElevatedButton(
+                                                onPressed: () => Navigator.of(context).pop(true),
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.red,
+                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                                ),
+                                                child: Text(
+                                                  'Delete',
+                                                  style: TextStyle(
+                                                    fontFamily: "general_sans",
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+
+                                      if (confirm == true) {
+                                        // Call delete method from provider
+                                        await addressListProvider.deleteAddress(data.id);
+                                      }
+                                    },
+                                    icon: Icon(Icons.delete, size: 18),
+                                    style: IconButton.styleFrom(
+                                      backgroundColor:
+                                      Colors.red.shade50,
+                                      foregroundColor: Colors.red,
+                                      padding: EdgeInsets.all(8),
+                                      minimumSize: Size(36, 36),
+                                    ),
+                                    tooltip: 'Delete',
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
-                          SizedBox(height: 8.0),
+
+                          SizedBox(height: 8),
+
+                          /// Address Line
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(Icons.home,
-                                  color: Colors.blueAccent, size: 20),
+                              Icon(Icons. home_outlined, color:primarycolor, size: 20),
                               SizedBox(width: 6),
                               Expanded(
                                 child: Text(
-                                  "${data.flatNo}, ${data.street}, ${data.landmark}",
+                                  "${data.flatNo}, ${data.street}, ${data.landmark}, ${data.area}",
                                   style: TextStyle(
                                     fontSize: 15.0,
                                     color: Colors.black87,
-                                    fontFamily: "Inter",
+                                    fontFamily: "general_sans",
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(height: 6.0),
+
+                          SizedBox(height: 6),
+
+                          /// Pincode
                           Row(
                             children: [
-                              Icon(Icons.pin_drop,
-                                  color: Colors.green, size: 20),
+                              Icon(Icons.pin_drop_outlined, color:primarycolor, size: 20),
                               SizedBox(width: 6),
                               Text(
                                 data.pincode.toString(),
@@ -215,7 +315,7 @@ class _AddressListScreenState extends State<AddressListScreen> {
                                   fontSize: 15.0,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.black87,
-                                  fontFamily: "Inter",
+                                  fontFamily: "general_sans",
                                 ),
                               ),
                             ],
@@ -225,7 +325,7 @@ class _AddressListScreenState extends State<AddressListScreen> {
                     ),
                   );
                 },
-              ),
+              )
             );
           },
         ));

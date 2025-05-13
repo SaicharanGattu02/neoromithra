@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:neuromithra/Providers/AddressListProviders.dart';
 import 'package:neuromithra/Providers/UserProvider.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
@@ -59,8 +60,8 @@ class _Bookappointment1State extends State<Bookappointment1> {
   @override
   void initState() {
     super.initState();
-    GetAddressList();
     getPhonepeDetailsApi();
+    Provider.of<AddressListProvider>(context, listen: false).getAddressList();
     var res = Provider.of<UserProviders>(context, listen: false).userData;
     setState(() {
       _fullNameController.text = res.name ?? "";
@@ -156,17 +157,6 @@ class _Bookappointment1State extends State<Bookappointment1> {
     }
   }
 
-  List<Address> addresses = [];
-  Future<void> GetAddressList() async {
-    user_id = await PreferenceService().getString('user_id') ?? "";
-    final response = await Userapi.getAddressList();
-    setState(() {
-      if (response?.status == true) {
-        addresses = response?.address ?? [];
-        debugPrint("${addresses}");
-      } else {}
-    });
-  }
 
   Future<void> getPhonepeDetailsApi() async {
     final response = await Userapi.getPhonepeDetails();
@@ -285,19 +275,16 @@ class _Bookappointment1State extends State<Bookappointment1> {
       //         _phoneNumberController.text.length < 10
       //     ? "Please enter your phone number"
       //     : "";
-      _validateAge = _ageController.text.isEmpty ? "Please enter your age" : "";
-      _validateAppointmentType = _selected_appointment_type.isEmpty
-          ? "Please enter appointment type"
-          : "";
+      _validateAge = _ageController.text.isEmpty ? "Please Enter your Age" : "";
+      _validateDays = _daysController.text.isEmpty ? "Please Enter Number of Days" : "";
+
       _validateDateOfAppointment = _dateOfAppointmentController.text.isEmpty
           ? "Please enter the date of appointment"
           : "";
 
       _validateLocation = address_id == 0 ? "Please select your location" : "";
 
-      if (_validateAppointment.isEmpty &&
-          _validateAge.isEmpty &&
-          _validateAppointmentType.isEmpty &&
+      if (_validateAge.isEmpty &&
           _validateDateOfAppointment.isEmpty &&
           _validateLocation.isEmpty) {}
     });
@@ -954,10 +941,10 @@ class _Bookappointment1State extends State<Bookappointment1> {
                       height: 60,
                       margin: const EdgeInsets.symmetric(horizontal: 6),
                       decoration: BoxDecoration(
-                        color: isSelected ? primarycolor : Colors.grey[200],
+                        color: isSelected ? primarycolor : Colors.white,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                            color: isSelected ? primarycolor : Colors.grey),
+                            color: isSelected ? primarycolor : primarycolor.withOpacity(0.5)),
                       ),
                       child: Center(
                         child: Text(
@@ -965,7 +952,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                           style: TextStyle(
                             fontSize: 16,
                             fontFamily: "general_sans",
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w500,
                             color: isSelected ? Colors.white : Colors.black87,
                           ),
                         ),
@@ -975,42 +962,96 @@ class _Bookappointment1State extends State<Bookappointment1> {
                 },
               ),
             ),
-            Column(
-              children: List.generate(addresses.length, (index) {
-                String title = addresses[index].typeOfAddress == 1
-                    ? "Current Address"
-                    : "Permanent Address";
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8.0,
-                  ),
-                  child: Row(
-                    children: [
-                      Checkbox(
-                        value: selectedAddressIndex == index,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            // Update the selected index
-                            selectedAddressIndex = value == true ? index : null;
-                            address_id = addresses[index].id ?? 0;
-                            debugPrint("Address id:${address_id}");
-                            _validateLocation = "";
-                          });
-                        },
-                      ),
-                      Expanded(
-                        child: ListTile(
-                          title: Text(title),
-                          subtitle: Text(
-                              "${addresses[index].flatNo}, ${addresses[index].street}, ${addresses[index].area} - ${addresses[index].landmark}, ${addresses[index].pincode}"),
-                          contentPadding: EdgeInsets
-                              .zero, // Remove padding for better alignment
+            Text(
+              "Select Address",
+              style: TextStyle(
+                fontSize: 17,
+                fontFamily: "general_sans",
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+              ),
+            ),
+            Consumer<AddressListProvider>(
+              builder: (context, provider, _) {
+                final addresses = provider.addresses;
+
+                if (addresses.isEmpty) {
+                  return SizedBox.shrink();
+                }
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: List.generate(addresses.length, (index) {
+                    final address = addresses[index];
+                    final title = address.typeOfAddress == 1
+                        ? "Current Address"
+                        : "Permanent Address";
+
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12.0),
+                      child: Material(
+                        elevation: 2,
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: selectedAddressIndex == index
+                                ? Colors.blue.shade50
+                                : Colors.white,
+                          ),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Checkbox(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4)),
+                                  value: selectedAddressIndex == index,
+                                  activeColor: primarycolor,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      selectedAddressIndex =
+                                      value == true ? index : null;
+                                      address_id = address.id;
+                                      _validateLocation = "";
+                                    });
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                child: ListTile(
+                                  contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  title: Text(
+                                    title,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "general_sans",
+                                      color: Colors.blueGrey[800],
+                                    ),
+                                  ),
+                                  subtitle: Padding(
+                                    padding: const EdgeInsets.only(top: 4.0),
+                                    child: Text(
+                                      "${address.flatNo}, ${address.street}, ${address.area} - ${address.landmark}, ${address.pincode}",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: "general_sans",
+                                        color: Colors.grey[700],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ],
-                  ),
+                    );
+                  }),
                 );
-              }),
+              },
             ),
             if (_validateLocation.isNotEmpty) ...[
               Container(
@@ -1041,7 +1082,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                 height: 48,
                 child: ElevatedButton(
                   onPressed: () {
-                    if (addresses.isNotEmpty) {
+                    if (address_id!="" && address_id!=null) {
                       // if (!_isLoading) {
                       _validateFields();
                       // }

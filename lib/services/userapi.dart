@@ -7,6 +7,7 @@ import 'package:neuromithra/Model/QuoteModel.dart';
 import 'package:neuromithra/Model/SuccessModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Model/AddAddressModel.dart';
+import '../Model/AddressDetailsResponse.dart';
 import '../Model/AddressListModel.dart';
 import '../Model/AssessmentQuestion.dart';
 import '../Model/BehaviouralTrackingModel.dart';
@@ -469,7 +470,7 @@ class Userapi {
 
   static Future<SuccessModel?> addChild(Map<String, dynamic> data) async {
     try {
-      final response = await post("${APIEndpointUrls.addChild}");
+      final response = await post("${APIEndpointUrls.addChild}",data: data);
       if (response.statusCode == 200) {
         debugPrint("addchild Status: ${response.data}");
         return SuccessModel.fromJson(response.data);
@@ -484,7 +485,7 @@ class Userapi {
 
   static Future<SuccessModel?> editChild(Map<String, dynamic> data,String id) async {
     try {
-      final response = await put("${APIEndpointUrls.editChild}/${id}");
+      final response = await put("${APIEndpointUrls.editChild}/${id}",data: data);
       if (response.statusCode == 200) {
         debugPrint("editchild Status: ${response.data}");
         return SuccessModel.fromJson(response.data);
@@ -662,12 +663,12 @@ class Userapi {
     }
   }
 
-  static Future<AddAddressModel?> addAddressApi(Map<String, dynamic> data) async {
+  static Future<SuccessModel?> addAddressApi(Map<String, dynamic> data) async {
     try {
       final response = await post("${APIEndpointUrls.addAddress}", data: data);
       if (response.statusCode == 200) {
         debugPrint("addAddressApi Response: ${response.data}");
-        return AddAddressModel.fromJson(response.data);
+        return SuccessModel.fromJson(response.data);
       }
       debugPrint("Error: ${response.statusCode} ${response.data}");
       return null;
@@ -677,13 +678,13 @@ class Userapi {
     }
   }
 
-  static Future<AddAddressModel?> editAddressApi(
+  static Future<SuccessModel?> editAddressApi(
       Map<String, dynamic> data, String addressId) async {
     try {
       final response = await put("${APIEndpointUrls.updateAddress}/$addressId", data: data);
       if (response.statusCode == 200) {
         debugPrint("editAddressApi Response: ${response.data}");
-        return AddAddressModel.fromJson(response.data);
+        return SuccessModel.fromJson(response.data);
       }
       debugPrint("Error: ${response.statusCode} ${response.data}");
       return null;
@@ -693,12 +694,42 @@ class Userapi {
     }
   }
 
-  static Future<AddressListModel?> getAddressList() async {
+  static Future<SuccessModel?> deleteAddressApi(int addressId) async {
+    try {
+      final response = await delete("${APIEndpointUrls.deleteAddress}/$addressId");
+      if (response.statusCode == 200) {
+        debugPrint("deleteAddressApi Response: ${response.data}");
+        return SuccessModel.fromJson(response.data);
+      }
+      debugPrint("Error: ${response.statusCode} ${response.data}");
+      return null;
+    } catch (e) {
+      debugPrint("Error occurred: $e");
+      return null;
+    }
+  }
+
+  static Future<AddressResponse?> getAddressList() async {
     try {
       final response = await get("${APIEndpointUrls.getAddress}");
       if (response.statusCode == 200) {
         debugPrint("getAddressList response: ${response.data}");
-        return AddressListModel.fromJson(response.data);
+        return AddressResponse.fromJson(response.data);
+      }
+      debugPrint("Request failed with status: ${response.statusCode}");
+      return null;
+    } catch (e) {
+      debugPrint("Error occurred: $e");
+      return null;
+    }
+  }
+
+  static Future<AddressDetailsResponse?> getAddressDetails(id) async {
+    try {
+      final response = await get("${APIEndpointUrls.getAddress}/${id}");
+      if (response.statusCode == 200) {
+        debugPrint("getAddressDetails response: ${response.data}");
+        return AddressDetailsResponse.fromJson(response.data);
       }
       debugPrint("Request failed with status: ${response.statusCode}");
       return null;

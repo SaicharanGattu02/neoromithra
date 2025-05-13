@@ -7,7 +7,9 @@ import 'package:neuromithra/services/userapi.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Model/SuccessModel.dart';
 import '../utils/Color_Constants.dart';
+import '../utils/constants.dart';
 
 class AddAddressScreen extends StatefulWidget {
   final String type;
@@ -20,8 +22,9 @@ class AddAddressScreen extends StatefulWidget {
 
 class _AddAddressScreenState extends State<AddAddressScreen> {
   final _formKey = GlobalKey<FormState>();
-  bool isCurrentChecked = true;
+  bool isCurrentChecked = false;
   bool isPermanentChecked = false;
+
   // Controllers for Current Address
   final TextEditingController _hNoControllerCurrent = TextEditingController();
   final TextEditingController _streetControllerCurrent =
@@ -45,16 +48,49 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
 
   bool current_Loading = false;
   bool permanent_Loading = false;
+  String latlongs ="";
+
+
   @override
   void initState() {
-    loadLocationDataFromPreferences();
     super.initState();
+
+    loadLocationDataFromPreferences();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.id != null && widget.id.toString().isNotEmpty) {
+        final addressProvider = Provider.of<AddressListProvider>(context, listen: false);
+
+        addressProvider.getAddressDetails(widget.id).then((_) {
+            final address = addressProvider.addressesDetails;
+            setState(() {
+              if (address?.typeOfAddress == 0) {
+                isCurrentChecked = true;
+                _hNoControllerCurrent.text = address?.flatNo??"";
+                _streetControllerCurrent.text = address?.street??"";
+                _landmarkControllerCurrent.text = address?.landmark??"";
+              } else {
+                isPermanentChecked = true;
+                _hNoControllerPermanent.text = address?.flatNo??"";
+                _streetControllerPermanent.text = address?.street??"";
+                _landmarkControllerPermanent.text = address?.landmark??"";
+              }
+            });
+
+        }).catchError((e) {
+          print('Error fetching data: $e');
+        });
+      }else{
+        isCurrentChecked = true;
+      }
+    });
   }
 
   Future<void> loadLocationDataFromPreferences() async {
     final prefs = await SharedPreferences.getInstance();
 
     final locationName = prefs.getString('location_name') ?? '';
+    latlongs = prefs.getString('latlongs') ?? '';
     final area = prefs.getString('area') ?? '';
     final city = prefs.getString('city') ?? '';
     final pincode = prefs.getString('pincode') ?? '';
@@ -82,6 +118,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
           "landmark": _landmarkControllerCurrent.text,
           "pincode": _pincodeControllerCurrent.text,
           "type_of_address": 0,
+          "location_access": latlongs,
         };
       } else {
         data = {
@@ -91,16 +128,23 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
           "landmark": _landmarkControllerPermanent.text,
           "pincode": _pincodeControllerPermanent.text,
           "type_of_address": 1,
+          "location_access": latlongs,
         };
       }
-
+      SuccessModel? res;
       if (widget.type == "add") {
-        await addressProvider.addAddress(data);
+         res = await addressProvider.addAddress(data);
       } else {
-        await addressProvider.EditAddress(data, widget.id);
+         res = await addressProvider.editAddress(data, widget.id);
       }
-
-      // Optionally show success message or navigate
+      if(res?.status==true){
+        context.pop();
+        showAnimatedTopSnackBar(
+            context, 'Address ${widget.type == "add" ? "added" : "updated"} successfully');
+      }else{
+        showAnimatedTopSnackBar(
+            context, '${res?.message}');
+      }
     } catch (e) {
       print("Address submission failed: $e");
     }
