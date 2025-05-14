@@ -3,7 +3,6 @@ import 'dart:convert' show base64Encode, jsonEncode, utf8;
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:neuromithra/Providers/AddressListProviders.dart';
 import 'package:neuromithra/Providers/UserProvider.dart';
@@ -17,15 +16,14 @@ import '../Providers/BookingHistoryProviders.dart';
 import '../Providers/ChildProvider.dart';
 import '../utils/Color_Constants.dart';
 import '../utils/constants.dart';
-import 'AddressListScreen.dart';
-import '../Model/AddressListModel.dart';
-import 'BookedApointmentsuccessfully.dart';
-import 'PaymentStatusScreen.dart';
 import 'ShakeWidget.dart';
 import 'package:crypto/crypto.dart';
 
 class Bookappointment1 extends StatefulWidget {
-  const Bookappointment1({super.key});
+  final String serviceID;
+  final String price;
+  final String appointmentMode;
+  const Bookappointment1({super.key, required this.serviceID,required this.appointmentMode,required this.price});
 
   @override
   State<Bookappointment1> createState() => _Bookappointment1State();
@@ -36,14 +34,14 @@ class _Bookappointment1State extends State<Bookappointment1> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _daysController = TextEditingController();
-  final TextEditingController _dateOfAppointmentController =
-      TextEditingController();
+  final TextEditingController _dateOfAppointmentController = TextEditingController();
 
   int address_id = 0;
+  String patient_id = "";
 
   // final String environment = "PRODUCTION";
-  String environment = "PRODUCTION"; // Change to "SANDBOX" for testing
-  String appId = ""; // Merchant ID
+  String environment = "PRODUCTION";
+  String appId = "";
   String merchantId = "";
   String saltKey = "";
   int saltIndex = 1;
@@ -53,13 +51,17 @@ class _Bookappointment1State extends State<Bookappointment1> {
   String Orderamount = "";
   String user_id = "";
 
-  String _selected_appointment_type = 'self'; // Default selection
-  String _selected_appointment_mode = 'Online'; // Default selection
-  String selectedGender = 'Male'; // Default selection
+  String _selected_appointment_type = 'self';
+  String _selected_appointment_mode = 'online';
+  String selectedGender = 'Male';
+  int total_amount=0;
 
   @override
   void initState() {
     super.initState();
+    _selected_appointment_mode = widget.appointmentMode == 'both'
+        ? 'online' // default to online when both are allowed
+        : widget.appointmentMode;
     getPhonepeDetailsApi();
     Provider.of<AddressListProvider>(context, listen: false).getAddressList();
     var res = Provider.of<UserProviders>(context, listen: false).userData;
@@ -77,6 +79,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
         _validatePhoneNumber = "";
       });
     });
+
     _ageController.addListener(() {
       setState(() {
         _validateAge = "";
@@ -115,8 +118,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
 
   Future<void> initiateTransaction(int amount) async {
     try {
-      String user_mobile =
-          await PreferenceService().getString('user_mobile') ?? "";
+      String user_mobile = await PreferenceService().getString('user_mobile') ?? "";
       setState(() {
         transactionId = "TXN${DateTime.now().millisecondsSinceEpoch}";
         Orderamount = amount.toString();
@@ -174,119 +176,55 @@ class _Bookappointment1State extends State<Bookappointment1> {
 
   int? selectedAddressIndex;
 
-  // Future<void> NewBookAppointment() async {
-  //   String user_id = await PreferenceService().getString('user_id') ?? "";
-  //   String fullname = _fullNameController.text.trim();
-  //   String phone = _phoneNumberController.text.trim();
-  //   String appointment = _appointmentController.text.trim();
-  //   String age = _ageController.text.trim();
-  //   String appointmentType = _appointmentTypeController.text.trim();
-  //   String date = _dateOfAppointmentController.text.trim();
-  //   String timeOfAppointment = _timeOfAppointmentController.text.trim();
-  //   // Map<String,dynamic> order_data = {
-  //   //   "amount":"${Orderamount}",
-  //   //   "transactionID":"$transactionId"
-  //   // };
-  //   Map<String, dynamic> order_data = {
-  //     "amount": "1",
-  //     "transactionID": "XYZKJUHGKIJNKLJNOIJ"
-  //   };
-  //   final data = await Userapi.newApointment(
-  //       fullname,
-  //       phone,
-  //       appointment,
-  //       age,
-  //       appointmentType,
-  //       date,
-  //       address_id.toString(),
-  //       widget.pagesource,
-  //       timeOfAppointment,
-  //       user_id,
-  //       order_data);
-  //   if (data != null) {
-  //     setState(() {
-  //       if (data.status == true) {
-  //         Navigator.pushReplacement(context,
-  //             MaterialPageRoute(builder: (context) => ApointmentSuccess()));
-  //       }
-  //     });
-  //   } else {
-  //     debugPrint("Data not fetched.");
-  //   }
-  // }
-  //
-  // Future<void> ExistBookAppointment() async {
-  //   String user_id = await PreferenceService().getString('user_id') ?? "";
-  //   String fullname = _fullNameController.text.trim();
-  //   String phone = _phoneNumberController.text.trim();
-  //   String appointment = _appointmentController.text.trim();
-  //   String age = _ageController.text.trim();
-  //   String appointmentType = _appointmentTypeController.text.trim();
-  //   String date = _dateOfAppointmentController.text.trim();
-  //   String timeOfAppointment = _timeOfAppointmentController.text.trim();
-  //   // Map<String,dynamic> order_data = {
-  //   //   "amount":"${Orderamount}",
-  //   //   "transactionID":"$transactionId"
-  //   // };
-  //   Map<String, dynamic> order_data = {
-  //     "amount": "1",
-  //     "transactionID": "XYZKJUHGKIJNKLJNOIJ"
-  //   };
-  //   final data = await Userapi.existApointment(
-  //       fullname,
-  //       phone,
-  //       appointment,
-  //       age,
-  //       appointmentType,
-  //       date,
-  //       address_id.toString(),
-  //       widget.pagesource,
-  //       timeOfAppointment,
-  //       user_id,
-  //       widget.patientID.toString(),
-  //       order_data);
-  //   if (data != null) {
-  //     setState(() {
-  //       if (data.status == true) {
-  //         Navigator.push(context,
-  //             MaterialPageRoute(builder: (context) => ApointmentSuccess()));
-  //       }
-  //     });
-  //   } else {
-  //     debugPrint("Data not fetched.");
-  //   }
-  // }
+  Future<void> bookAppointment() async {
+    Map<String,dynamic> data = {
+      "appointment_for": _selected_appointment_type,
+      "age":_ageController.text,
+      "gender":selectedGender,
+      "appointment_mode":_selected_appointment_mode,
+      "appointment_request_date": _dateOfAppointmentController.text,
+      "service_id": widget.serviceID,
+      "days": _daysController.text,
+      "amount":total_amount,
+      "address":address_id,
+      "calender_days": _selectedDays.toList(),
+      "patient_id":patient_id,
+    };
+    final response = await  Provider.of<BookingHistoryProvider>(context, listen: false).bookAppointment(data);
+    if (response != null) {
+    } else {
+      debugPrint("Data not fetched.");
+    }
+  }
+
+
 
   String _validateFullName = "";
   String _validatePhoneNumber = "";
-  String _validateAppointment = "";
   String _validateAge = "";
   String _validateDays = "";
-  String _validateAppointmentType = "";
   String _validateDateOfAppointment = "";
-  String _validateTimeOfAppointment = "";
   String _validateLocation = "";
+  String _validateWeekDays = "";
 
   void _validateFields() {
     setState(() {
-      // _validateFullName =
-      //     _fullNameController.text.isEmpty ? "Please enter your full name" : "";
-      // _validatePhoneNumber = _phoneNumberController.text.isEmpty ||
-      //         _phoneNumberController.text.length < 10
-      //     ? "Please enter your phone number"
-      //     : "";
       _validateAge = _ageController.text.isEmpty ? "Please Enter your Age" : "";
       _validateDays = _daysController.text.isEmpty ? "Please Enter Number of Days" : "";
 
       _validateDateOfAppointment = _dateOfAppointmentController.text.isEmpty
-          ? "Please enter the date of appointment"
+          ? "Please Enter The Date Of Appointment"
           : "";
 
-      _validateLocation = address_id == 0 ? "Please select your location" : "";
+      _validateLocation = address_id == 0 ? "Please Select Your Location" : "";
+      _validateWeekDays = _selectedDays.length <= 4 ? "Please Select Week Days" : "";
 
       if (_validateAge.isEmpty &&
           _validateDateOfAppointment.isEmpty &&
-          _validateLocation.isEmpty) {}
+          _validateWeekDays.isEmpty &&
+          _validateLocation.isEmpty) {
+        bookAppointment();
+      }
     });
   }
 
@@ -378,8 +316,6 @@ class _Bookappointment1State extends State<Bookappointment1> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    final provider =
-        Provider.of<BookingHistoryProviders>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text("Booking Appointment",
@@ -495,6 +431,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                   final child = (provider.childDetails.length != 0)
                       ? provider.childDetails[0]
                       : null;
+                  patient_id = child?.id.toString()??"";
                   return ((child?.name ?? "").isNotEmpty)
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -613,110 +550,16 @@ class _Bookappointment1State extends State<Bookappointment1> {
                   TextInputType.number,
                   r'^\d{0,10}$',
                   true),
-              _buildTextField("Age", _ageController, _validateAge,
-                  TextInputType.number, r'^\d{0,9}$'),
-              Text(
-                "Gender",
-                style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
-                    fontFamily: "general_sans"),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 100,
-                    height: 45,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        setState(() {
-                          selectedGender = 'Male';
-                        });
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(
-                          color: selectedGender == 'Male'
-                              ? primarycolor
-                              : Colors.grey.shade300,
-                          width: 1,
-                        ),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(36)),
-                        foregroundColor: selectedGender == 'Male'
-                            ? primarycolor
-                            : Colors.grey,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                        textStyle: TextStyle(
-                          fontFamily: "general_sans",
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                        ),
-                      ),
-                      child: Text(
-                        'Male',
-                        style: TextStyle(
-                          fontFamily: "general_sans",
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 15),
-                  SizedBox(
-                    width: 100,
-                    height: 45,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        setState(() {
-                          selectedGender = 'Female';
-                        });
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(
-                          color: selectedGender == 'Female'
-                              ? primarycolor
-                              : Colors.grey.shade300,
-                          width: 1,
-                        ),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(36)),
-                        foregroundColor: selectedGender == 'Female'
-                            ? primarycolor
-                            : Colors.grey,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                        textStyle: TextStyle(
-                          fontFamily: "general_sans",
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                        ),
-                      ),
-                      child: Text(
-                        'Female',
-                        style: TextStyle(
-                          fontFamily: "general_sans",
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ],
-            // _buildTextField("Appointment Mode", _appointmentTypeController, _validateAppointmentType, TextInputType.text),
+            _buildTextField("Age", _ageController, _validateAge,
+                TextInputType.number, r'^\d{0,9}$'),
             Text(
-              "Appointment Mode",
+              "Gender",
               style: TextStyle(
-                fontSize: 16,
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF374151),
-              ),
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                  fontFamily: "general_sans"),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -727,23 +570,23 @@ class _Bookappointment1State extends State<Bookappointment1> {
                   child: OutlinedButton(
                     onPressed: () {
                       setState(() {
-                        _selected_appointment_mode = 'Online';
+                        selectedGender = 'Male';
                       });
                     },
                     style: OutlinedButton.styleFrom(
                       side: BorderSide(
-                        color: _selected_appointment_mode == 'Online'
+                        color: selectedGender == 'Male'
                             ? primarycolor
                             : Colors.grey.shade300,
                         width: 1,
                       ),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(36)),
-                      foregroundColor: _selected_appointment_mode == 'Online'
+                      foregroundColor: selectedGender == 'Male'
                           ? primarycolor
                           : Colors.grey,
                       padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                      EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                       textStyle: TextStyle(
                         fontFamily: "general_sans",
                         fontWeight: FontWeight.w500,
@@ -751,7 +594,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                       ),
                     ),
                     child: Text(
-                      'Online',
+                      'Male',
                       style: TextStyle(
                         fontFamily: "general_sans",
                         fontWeight: FontWeight.w500,
@@ -767,23 +610,23 @@ class _Bookappointment1State extends State<Bookappointment1> {
                   child: OutlinedButton(
                     onPressed: () {
                       setState(() {
-                        _selected_appointment_mode = 'Offline';
+                        selectedGender = 'Female';
                       });
                     },
                     style: OutlinedButton.styleFrom(
                       side: BorderSide(
-                        color: _selected_appointment_mode == 'Offline'
+                        color: selectedGender == 'Female'
                             ? primarycolor
                             : Colors.grey.shade300,
                         width: 1,
                       ),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(36)),
-                      foregroundColor: _selected_appointment_mode == 'Offline'
+                      foregroundColor: selectedGender == 'Female'
                           ? primarycolor
                           : Colors.grey,
                       padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                      EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                       textStyle: TextStyle(
                         fontFamily: "general_sans",
                         fontWeight: FontWeight.w500,
@@ -791,7 +634,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                       ),
                     ),
                     child: Text(
-                      'Offline',
+                      'Female',
                       style: TextStyle(
                         fontFamily: "general_sans",
                         fontWeight: FontWeight.w500,
@@ -800,6 +643,94 @@ class _Bookappointment1State extends State<Bookappointment1> {
                     ),
                   ),
                 ),
+              ],
+            ),
+            // _buildTextField("Appointment Mode", _appointmentTypeController, _validateAppointmentType, TextInputType.text),
+            Text(
+              "Appointment Mode",
+              style: TextStyle(
+                fontSize: 16,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF374151),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                if (widget.appointmentMode == 'both' || widget.appointmentMode == 'online')
+                  Padding(
+                    padding: const EdgeInsets.only(right: 15),
+                    child: SizedBox(
+                      width: 100,
+                      height: 45,
+                      child: OutlinedButton(
+                        onPressed: widget.appointmentMode == 'both'
+                            ? () {
+                          setState(() {
+                            _selected_appointment_mode = 'online';
+                          });
+                        }
+                            : null, // disable button if only one mode
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(
+                            color: _selected_appointment_mode == 'online'
+                                ? primarycolor
+                                : Colors.grey.shade300,
+                            width: 1,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(36),
+                          ),
+                          foregroundColor: _selected_appointment_mode == 'online'
+                              ? primarycolor
+                              : Colors.grey,
+                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                          textStyle: TextStyle(
+                            fontFamily: "general_sans",
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                          ),
+                        ),
+                        child: Text('Online'),
+                      ),
+                    ),
+                  ),
+                if (widget.appointmentMode == 'both' || widget.appointmentMode == 'offline')
+                  SizedBox(
+                    width: 100,
+                    height: 45,
+                    child: OutlinedButton(
+                      onPressed: widget.appointmentMode == 'both'
+                          ? () {
+                        setState(() {
+                          _selected_appointment_mode = 'offline';
+                        });
+                      }
+                          : null,
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(
+                          color: _selected_appointment_mode == 'offline'
+                              ? primarycolor
+                              : Colors.grey.shade300,
+                          width: 1,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(36),
+                        ),
+                        foregroundColor: _selected_appointment_mode == 'offline'
+                            ? primarycolor
+                            : Colors.grey,
+                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                        textStyle: TextStyle(
+                          fontFamily: "general_sans",
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        ),
+                      ),
+                      child: Text('Offline'),
+                    ),
+                  ),
               ],
             ),
             // DropdownButtonFormField<String>(
@@ -896,13 +827,14 @@ class _Bookappointment1State extends State<Bookappointment1> {
               false,
               (value) {
                 final days = int.tryParse(value) ?? 1;
-                Provider.of<BookingHistoryProviders>(context, listen: false)
-                    .updatePriceByDays(days);
+                Provider.of<BookingHistoryProvider>(context, listen: false)
+                    .updatePriceByDays(days,ratePerDay: int.parse(widget.price));
               },
             ),
 
-            Consumer<BookingHistoryProviders>(
+            Consumer<BookingHistoryProvider>(
               builder: (context, provider, child) {
+                total_amount= provider.price;
                 return Text(
                   "Total Price For Service : ₹${provider.price}",
                   style: TextStyle(
@@ -962,6 +894,28 @@ class _Bookappointment1State extends State<Bookappointment1> {
                 },
               ),
             ),
+            if (_validateWeekDays.isNotEmpty) ...[
+              Container(
+                alignment: Alignment.topLeft,
+                margin: EdgeInsets.only(left: 8, bottom: 10, top: 5),
+                width: MediaQuery.of(context).size.width * 0.6,
+                child: ShakeWidget(
+                  key: Key("value"),
+                  duration: Duration(milliseconds: 700),
+                  child: Text(
+                    _validateWeekDays,
+                    style: TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 12,
+                      color: Colors.red,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ] else ...[
+              SizedBox(height: 15),
+            ],
             Text(
               "Select Address",
               style: TextStyle(
@@ -1080,55 +1034,43 @@ class _Bookappointment1State extends State<Bookappointment1> {
               child: SizedBox(
                 width: double.infinity,
                 height: 48,
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (address_id!="" && address_id!=null) {
-                      // if (!_isLoading) {
-                      _validateFields();
-                      // }
-                    } else {
-                      context.push("/address_list");
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            "Please first add address.",
-                            style: TextStyle(
-                                color: Colors.white, fontFamily: "Inter"),
-                          ),
-                          duration: Duration(seconds: 1),
-                          backgroundColor: Color(0xFF32657B),
-                        ),
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primarycolor, // Updated button color
-                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                child: Consumer<BookingHistoryProvider>(builder: (context, provider, child) {
+                  return ElevatedButton(
+                    onPressed: () {
+                      if(!provider.isSubmitting){
+                        _validateFields();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primarycolor, // Updated button color
+                      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      elevation: 0, // Adds a slight shadow for better UI
                     ),
-                    elevation: 0, // Adds a slight shadow for better UI
-                  ),
-                  child:
-                      // _isLoading
-                      //     ? SizedBox(
-                      //         width: 24,
-                      //         height: 24,
-                      //         child: CircularProgressIndicator(
-                      //           color: Colors.white,
-                      //           strokeWidth: 3,
-                      //         ),
-                      //       )
-                      //     :
-                      Text(
-                    "Book Appointment",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Epi',
+                    child:
+                    provider.isSubmitting
+                        ? SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 3,
+                      ),
+                    )
+                        :
+                    Text(
+                      "Book Appointment",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Epi',
+                      ),
                     ),
-                  ),
+                  );
+                },
                 ),
               ),
             ),

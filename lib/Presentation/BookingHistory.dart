@@ -30,8 +30,8 @@ class BookingHistory extends StatefulWidget {
 class _BookingHistoryState extends State<BookingHistory> {
   @override
   void initState() {
-    Provider.of<BookingHistoryProviders>(context, listen: false)
-        .GetBookingHistory();
+    Provider.of<BookingHistoryProvider>(context, listen: false)
+        .getBookingHistory();
     super.initState();
   }
 
@@ -123,7 +123,7 @@ class _BookingHistoryState extends State<BookingHistory> {
             ),
           ),
         ),
-        body: Consumer<BookingHistoryProviders>(
+        body: Consumer<BookingHistoryProvider>(
           builder: (context, bookingHistoryProvider, child) {
             if (bookingHistoryProvider.isLoading) {
               // 🟦 Shimmer loading skeleton

@@ -185,8 +185,14 @@ final GoRouter goRouter =
   ),
   GoRoute(
     path: '/book_appointment1',
-    pageBuilder: (context, state) =>
-        buildSlideTransitionPage(Bookappointment1(), state),
+    pageBuilder: (context, state) {
+      final serviceID = state.uri.queryParameters['serviceID'] ?? '';
+      final appointmentMode = state.uri.queryParameters['appointmentMode'] ?? '';
+      final price = state.uri.queryParameters['price'] ?? '';
+      return buildSlideTransitionPage(
+          Bookappointment1(serviceID: serviceID, appointmentMode: appointmentMode,price: price),
+          state);
+    },
   ),
   GoRoute(
     path: '/add_address',
@@ -201,19 +207,19 @@ final GoRouter goRouter =
           state);
     },
   ),
-      GoRoute(
-        path: '/select_location',
-        pageBuilder: (context, state) {
-          final id = state.uri.queryParameters['id'] ?? '';
-          final type = state.uri.queryParameters['type'] ?? '';
-          return buildSlideTransitionPage(
-              SelectLocation(
-                id: id,
-                type: type,
-              ),
-              state);
-        },
-      ),
+  GoRoute(
+    path: '/select_location',
+    pageBuilder: (context, state) {
+      final id = state.uri.queryParameters['id'] ?? '';
+      final type = state.uri.queryParameters['type'] ?? '';
+      return buildSlideTransitionPage(
+          SelectLocation(
+            id: id,
+            type: type,
+          ),
+          state);
+    },
+  ),
   GoRoute(
     path: '/booking_history',
     pageBuilder: (context, state) =>

@@ -4,51 +4,72 @@ import 'package:neuromithra/Model/SuccessModel.dart';
 import '../Model/BookingHistoryModel.dart';
 import '../services/userapi.dart';
 
-class BookingHistoryProviders with ChangeNotifier {
+import 'package:flutter/foundation.dart';
+
+class BookingHistoryProvider with ChangeNotifier {
   bool _isLoading = false;
-  List <BookingHistory> _bookingHistory = [];
+  bool _isSubmitting = false;
+  int _price = 800;
+  List<BookingHistory> _bookingHistory = [];
+
   bool get isLoading => _isLoading;
+  bool get isSubmitting => _isSubmitting;
+  int get price => _price;
   List<BookingHistory> get bookingHistory => _bookingHistory;
 
-  int price = 800;
-
+  /// Updates price based on selected days
   void updatePriceByDays(int days, {int ratePerDay = 800}) {
-    price = days * ratePerDay;
+    _price = days * ratePerDay;
     notifyListeners();
   }
 
-
-  Future<void> GetBookingHistory() async {
+  /// Fetches the user's booking history
+  Future<void> getBookingHistory() async {
     _isLoading = true;
     notifyListeners();
+
     try {
       final response = await Userapi.getBookingHistory();
       if (response != null && response.status == true) {
         _bookingHistory = response.bookingHistory ?? [];
       } else {
+        _bookingHistory = [];
+        if (kDebugMode) {
+          print('No booking history or error in response');
+        }
       }
-    } catch (e) {
+    } catch (e, stacktrace) {
+      if (kDebugMode) {
+        print('Error fetching booking history: $e');
+        print(stacktrace);
+      }
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<SuccessModel?> CreateBooking(Map<String,dynamic> data) async {
-    _isLoading = true;
+  /// Submits a new appointment booking
+  Future<SuccessModel?> bookAppointment(Map<String, dynamic> data) async {
+    _isSubmitting = true;
     notifyListeners();
+
     try {
-      final response = await Userapi.createBooking(data);
+      final response = await Userapi.bookAppointment(data);
       if (response != null && response.status == true) {
         return response;
-      } else {
-        return null;
       }
-    } catch (e) {
+    } catch (e, stacktrace) {
+      if (kDebugMode) {
+        print('Error booking appointment: $e');
+        print(stacktrace);
+      }
     } finally {
-      _isLoading = false;
+      _isSubmitting = false;
       notifyListeners();
     }
-  }
 
+    return null;
+  }
 }
+

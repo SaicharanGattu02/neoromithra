@@ -11,6 +11,8 @@ import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:provider/provider.dart';
 
+import '../../Components/CustomSnackBar.dart';
+import '../../services/AuthService.dart';
 import '../../utils/Color_Constants.dart';
 
 class Register extends StatefulWidget {
@@ -53,7 +55,14 @@ class _RegisterState extends State<Register> {
       "contact": _mobilenumberController.text,
       "fcm_token": fcmToken,
     };
-    Provider.of<RegisterProvider>(context,listen: false).Register(data);
+    var res = await Provider.of<RegisterProvider>(context, listen: false).register(data);
+    if(res?.status ==true){
+      AuthService.saveTokens(res?.accessToken??"", res?.refreshToken??"", res?.expiresIn??0);
+      context.go("/main_dashBoard?initialIndex=0");
+    }else{
+      CustomSnackBar.show(context,"${res?.message}");
+    }
+
   }
 
   @override
@@ -63,47 +72,48 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 40,
-            ),
-            Center(
+      body: Column(
+        children: [
+          SizedBox(
+            height: 40,
+          ),
+          Center(
+            child: ClipOval(
               child: Image.asset(
-                "assets/neuromitralogo.png",
+                "assets/applogo.jpeg",
                 height: 100,
                 width: 100,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
+          ),
+          Center(
+            child: Text(
+              "Register",
+              style: TextStyle(
+                color: Color(0xFF1F2937),
+                fontFamily: "general_sans",
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          SizedBox(height: 11),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 16),
               child: Form(
                 key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Center(
-                      child: Text(
-                        " Register ",
-                        style: TextStyle(
-                          color: Color(0xFF1F2937),
-                          fontFamily: "Inter",
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 11),
                     Text(
                       "Name",
                       style: TextStyle(
                         color: Color(0xFF1F2937),
-                        fontFamily: "Inter",
+                        fontFamily: "general_sans",
                         fontSize: 13,
                         fontWeight: FontWeight.w400,
                       ),
@@ -111,38 +121,49 @@ class _RegisterState extends State<Register> {
                     SizedBox(height: 8),
                     TextFormField(
                       controller: _nameController,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.black,
+                        fontFamily: "general_sans",
+                        fontWeight: FontWeight.w400,
+                      ),
                       cursorColor: Colors.black,
                       focusNode: _focusNodeName,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                         hintText: "Enter Your name",
                         hintStyle: TextStyle(
                           fontSize: 15,
                           letterSpacing: 0,
                           height: 1.2,
                           color: Color(0xffAFAFAF),
-                          fontFamily: 'Poppins',
+                          fontFamily: "general_sans",
                           fontWeight: FontWeight.w400,
                         ),
                         filled: true,
                         fillColor: Color(0xffF3F4F6),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide:
-                              BorderSide(width: 1, color: Colors.transparent),
-                        ),
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade500),
+                        ), // Normal border
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide:
-                              BorderSide(width: 1, color: Color(0xff14B8A6)),
-                        ),
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade500),
+                        ), // Focused border
                         errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide(width: 1, color: Colors.red),
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade500),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide(width: 1, color: Colors.red),
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade500),
+                        ),
+                        errorStyle: TextStyle(
+                          color: Colors.red,
+                          fontSize: 12,
+                          fontFamily: "general_sans",
                         ),
                         prefixIcon: Padding(
                           padding: EdgeInsets.only(
@@ -167,7 +188,7 @@ class _RegisterState extends State<Register> {
                       "Email Address",
                       style: TextStyle(
                         color: Color(0xFF1F2937),
-                        fontFamily: "Inter",
+                        fontFamily: "general_sans",
                         fontSize: 13,
                         fontWeight: FontWeight.w400,
                       ),
@@ -178,35 +199,46 @@ class _RegisterState extends State<Register> {
                       cursorColor: Colors.black,
                       focusNode: _focusNodeEmail,
                       keyboardType: TextInputType.emailAddress,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.black,
+                        fontFamily: "general_sans",
+                        fontWeight: FontWeight.w400,
+                      ),
                       decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                         hintText: "Enter Your Email",
                         hintStyle: TextStyle(
                           fontSize: 15,
                           letterSpacing: 0,
                           height: 1.2,
                           color: Color(0xffAFAFAF),
-                          fontFamily: 'Poppins',
+                          fontFamily: "general_sans",
                           fontWeight: FontWeight.w400,
                         ),
                         filled: true,
                         fillColor: Color(0xffF3F4F6),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide:
-                              BorderSide(width: 1, color: Colors.transparent),
-                        ),
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade500),
+                        ), // Normal border
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide:
-                              BorderSide(width: 1, color: Color(0xff14B8A6)),
-                        ),
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade500),
+                        ), // Focused border
                         errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide(width: 1, color: Colors.red),
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade500),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(18.0),
-                          borderSide: BorderSide(width: 1, color: Colors.red),
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade500),
+                        ),
+                        errorStyle: TextStyle(
+                          color: Colors.red,
+                          fontSize: 12,
+                          fontFamily: "general_sans",
                         ),
 
                         // Always visible email icon at the start
@@ -234,7 +266,7 @@ class _RegisterState extends State<Register> {
                       "Password",
                       style: TextStyle(
                         color: Color(0xFF1F2937),
-                        fontFamily: "Inter",
+                        fontFamily: "general_sans",
                         fontSize: 13,
                         fontWeight: FontWeight.w400,
                       ),
@@ -245,37 +277,47 @@ class _RegisterState extends State<Register> {
                       cursorColor: Colors.black,
                       focusNode: _focusNodePassword,
                       obscureText: !_isPasswordVisible,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.black,
+                        fontFamily: "general_sans",
+                        fontWeight: FontWeight.w400,
+                      ),
                       decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                         hintText: "Enter Your Password",
                         hintStyle: TextStyle(
                           fontSize: 15,
                           letterSpacing: 0,
                           height: 1.2,
                           color: Color(0xffAFAFAF),
-                          fontFamily: 'Poppins',
+                          fontFamily: "general_sans",
                           fontWeight: FontWeight.w400,
                         ),
                         filled: true,
                         fillColor: Color(0xffF3F4F6),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide:
-                              BorderSide(width: 1, color: Colors.transparent),
-                        ),
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade500),
+                        ), // Normal border
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide:
-                              BorderSide(width: 1, color: Color(0xff14B8A6)),
-                        ),
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade500),
+                        ), // Focused border
                         errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide(width: 1, color: Colors.red),
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade500),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide(width: 1, color: Colors.red),
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade500),
                         ),
-
+                        errorStyle: TextStyle(
+                          color: Colors.red,
+                          fontSize: 12,
+                          fontFamily: "general_sans",
+                        ),
                         // Lock icon at the start
                         prefixIcon: Padding(
                           padding: EdgeInsets.only(
@@ -313,7 +355,7 @@ class _RegisterState extends State<Register> {
                       "Mobile Number",
                       style: TextStyle(
                         color: Color(0xFF1F2937),
-                        fontFamily: "Inter",
+                        fontFamily: "general_sans",
                         fontSize: 13,
                         fontWeight: FontWeight.w400,
                       ),
@@ -321,39 +363,50 @@ class _RegisterState extends State<Register> {
                     SizedBox(height: 8),
                     TextFormField(
                       controller: _mobilenumberController,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.black,
+                        fontFamily: "general_sans",
+                        fontWeight: FontWeight.w400,
+                      ),
                       cursorColor: Colors.black,
                       focusNode: _focusNodemobile,
                       keyboardType: TextInputType.phone,
                       inputFormatters: [LengthLimitingTextInputFormatter(10)],
                       decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                         hintText: "Enter your mobile number",
                         hintStyle: TextStyle(
                           fontSize: 15,
                           letterSpacing: 0,
                           height: 1.2,
                           color: Color(0xffAFAFAF),
-                          fontFamily: 'Poppins',
+                          fontFamily: "general_sans",
                           fontWeight: FontWeight.w400,
                         ),
                         filled: true,
                         fillColor: Color(0xffF3F4F6),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide:
-                              BorderSide(width: 1, color: Colors.transparent),
-                        ),
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade500),
+                        ), // Normal border
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide:
-                              BorderSide(width: 1, color: Color(0xff14B8A6)),
-                        ),
+                          borderSide: BorderSide(color: Colors.grey.shade500),
+                        ), // Focused border
                         errorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(width: 1, color: Colors.red),
+                          borderSide: BorderSide(color: Colors.grey.shade500),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(width: 1, color: Colors.red),
+                          borderSide: BorderSide(color: Colors.grey.shade500),
+                        ),
+                        errorStyle: TextStyle(
+                          color: Colors.red,
+                          fontSize: 12,
+                          fontFamily: "general_sans",
                         ),
                         prefixIcon: Padding(
                           padding: EdgeInsets.only(
@@ -375,46 +428,44 @@ class _RegisterState extends State<Register> {
                       },
                     ),
                     SizedBox(height: 30),
-                    InkWell(
-                      onTap: () {
-                        if (_formKey.currentState?.validate() ?? false) {
-                          RegisterApi();
-                        }
-                      },
-                      child: Consumer<RegisterProvider>(builder: (context, register, child) {
-                        return Container(
+                    Consumer<RegisterProvider>(
+                      builder: (context, register, child) {
+                        return SizedBox(
                           width: width,
-                          height: 56,
-                          decoration: BoxDecoration(
-                            color: primarycolor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Center(
+                          height: 48,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: primarycolor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            onPressed: () {
+                              if (_formKey.currentState?.validate() ?? false) {
+                                if(!register.isLoading){
+                                  RegisterApi();
+                                }
+                              }
+                            },
                             child: register.isLoading
                                 ? CircularProgressIndicator(
-                              color: Color(0xFFFFFFFF),
+                              color: Colors.white,
                             )
                                 : Row(
-                              mainAxisSize: MainAxisSize
-                                  .min, // To keep the row centered
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Center(
-                                  child: Text(
-                                    "Register",
-                                    style: TextStyle(
-                                      color: Color(0xFFFFFFFF),
-                                      fontFamily: "Inter",
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 16,
-                                    ),
+                                Text(
+                                  "Register",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "general_sans",
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 16,
                                   ),
                                 ),
-                                SizedBox(
-                                    width:
-                                    28), // Space between text and icon
+                                SizedBox(width: 28),
                                 Icon(
-                                  Icons
-                                      .arrow_forward, // Your preferred suffix icon
+                                  Icons.arrow_forward,
                                   color: Colors.white,
                                   size: 18,
                                 ),
@@ -423,8 +474,6 @@ class _RegisterState extends State<Register> {
                           ),
                         );
                       },
-
-                      ),
                     ),
                     SizedBox(
                       height: 15,
@@ -432,7 +481,14 @@ class _RegisterState extends State<Register> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Already have an account?'),
+                        Text(
+                          'Already have an account?',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: "general_sans",
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
                         InkWell(
                           onTap: () {
                             context.push('/login');
@@ -441,18 +497,22 @@ class _RegisterState extends State<Register> {
                             ' Sign In',
                             style: TextStyle(
                               color: Color(0xff4949C9),
+                              fontFamily: "general_sans",
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ],
-                    )
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
                   ],
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

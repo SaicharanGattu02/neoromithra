@@ -2,9 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:neuromithra/Providers/LogInWithMobileProvider.dart';
+import 'package:neuromithra/Providers/SignInProviders.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:provider/provider.dart';
+import '../../services/AuthService.dart';
 import '../../services/Preferances.dart';
 import '../../utils/Color_Constants.dart';
 import '../../utils/media_query_helper.dart';
@@ -51,7 +52,11 @@ class _OtpState extends State<Otp> {
       "otp": _otpController.text,
       "fcm_token": fcmToken,
     };
-   Provider.of<LoginWithMobileProvider>(context,listen: false).VerifyOtp(context, data);
+   var res = await Provider.of<SignInProviders>(context,listen: false).verifyOtp(data);
+    if(res?.status ==true){
+      AuthService.saveTokens(res?.accessToken??"", res?.refreshToken??"", res?.expiresIn??0);
+      context.go("/main_dashBoard?initialIndex=0");
+    }
 
   }
 
@@ -193,7 +198,7 @@ class _OtpState extends State<Otp> {
                       ),
                     ),
                     SizedBox(height: 24),
-                    Consumer<LoginWithMobileProvider>(builder: (context, value, child) {
+                    Consumer<SignInProviders>(builder: (context, value, child) {
                       return SizedBox(
                         width: double.infinity,
                         height: 48,

@@ -15,12 +15,13 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<UserProviders>(context, listen: false).getProfileDetails();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if(!await AuthService.isGuest){
+        Provider.of<UserProviders>(context, listen: false).getProfileDetails();
+      }
     });
   }
 
@@ -168,7 +169,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         !isGuest
                             ? _buildLogoutTile(context)
                             : _buildOptionTile(Icons.login, 'Login', () {
-                          context.push('/login'); // or use Navigator.push if needed
+                          context.go('/login_with_mobile');
                         }),
                       ],
                     ),
@@ -359,14 +360,12 @@ void _showLogoutConfirmationDialog(BuildContext context) {
                               ),
                             ),
                           ),
-
-                          // Yes Button (Outlined)
                           SizedBox(
                             width: 100,
                             child: OutlinedButton(
                               onPressed: () async {
-                                PreferenceService().clearPreferences();
-                                context.go("/login");
+                                PreferenceService().remove("access_token");
+                                context.go("/login_with_mobile");
                               },
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: primarycolor, // Text color

@@ -3,8 +3,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:neuromithra/Components/CustomSnackBar.dart';
+import 'package:neuromithra/Providers/SignInProviders.dart';
 import 'package:provider/provider.dart';
-import '../../Providers/LogInWithMobileProvider.dart';
 import '../../utils/Color_Constants.dart';
 import '../../utils/media_query_helper.dart';
 
@@ -104,13 +105,13 @@ class _LoginWithMobileState extends State<LoginWithMobile>
     if (validationResult == null) {
       _phoneFocusNode.unfocus();
       Map<String, dynamic> data = {"phone": _mobileController.text};
-      final res = await Provider.of<LoginWithMobileProvider>(context, listen: false)
-          .LogInWithMobileProvider(context, data);
-      if (res == true) {
+      final res = await Provider.of<SignInProviders>(context, listen: false).logInWithMobile(data);
+      if (res?.status == true) {
         context.push('/otp?mobile=${_mobileController.text}');
+        CustomSnackBar.show(context, "OTP Send Successfully!");
+      }else{
+        CustomSnackBar.show(context, "${res?.message}");
       }
-    } else {
-      _animationController.forward(from: 0);
     }
   }
 
@@ -123,7 +124,7 @@ class _LoginWithMobileState extends State<LoginWithMobile>
       },
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: Consumer<LoginWithMobileProvider>(
+        body: Consumer<SignInProviders>(
           builder: (context, numProvider, child) {
             return SingleChildScrollView(
               padding: EdgeInsets.symmetric(
@@ -183,11 +184,12 @@ class _LoginWithMobileState extends State<LoginWithMobile>
 
   Widget _buildLogo() {
     return Center(
-      child: Image.asset(
-        "assets/neuromitralogo.png",
-        width: SizeConfig.screenWidth * 0.4,
-        height: SizeConfig.screenHeight * 0.18,
-        fit: BoxFit.contain,
+      child: ClipOval(
+        child: Image.asset(
+          "assets/applogo.jpeg",
+          height: SizeConfig.screenHeight * 0.18,
+          fit: BoxFit.contain,
+        ),
       ),
     );
   }
@@ -345,7 +347,7 @@ class _LoginWithMobileState extends State<LoginWithMobile>
     );
   }
 
-  Widget _buildContinueButton(LoginWithMobileProvider numProvider) {
+  Widget _buildContinueButton(SignInProviders numProvider) {
     return SizedBox(
       width: double.infinity,
       height: 48,

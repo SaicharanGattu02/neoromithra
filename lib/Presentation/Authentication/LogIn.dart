@@ -3,6 +3,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:neuromithra/Components/CustomSnackBar.dart';
+import 'package:neuromithra/services/AuthService.dart';
 import 'package:provider/provider.dart';
 import '../../Providers/SignInProviders.dart';
 import '../../services/Preferances.dart';
@@ -15,35 +17,24 @@ class LogIn extends StatefulWidget {
   State<LogIn> createState() => _LogInState();
 }
 
-class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
+class _LogInState extends State<LogIn> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final FocusNode _focusNodeEmail = FocusNode();
   final FocusNode _focusNodePassword = FocusNode();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  late AnimationController _animationController;
-  late Animation<double> _shakeAnimation;
   bool _isPasswordVisible = false;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 700),
-      vsync: this,
-    );
-    _shakeAnimation = Tween<double>(begin: 0, end: 10).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.elasticIn),
-    );
   }
-
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     _focusNodeEmail.dispose();
     _focusNodePassword.dispose();
-    _animationController.dispose();
     super.dispose();
   }
 
@@ -55,9 +46,14 @@ class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
         "password": _passwordController.text,
         "fcm_token": fcmToken,
       };
-      Provider.of<SignInProviders>(context, listen: false).logIn(context, data);
+      var res = await Provider.of<SignInProviders>(context, listen: false).logInWithUsername(data);
+      if(res?.status ==true){
+       AuthService.saveTokens(res?.accessToken??"", res?.refreshToken??"", res?.expiresIn??0);
+       context.go("/main_dashBoard?initialIndex=0");
+      }else{
+        CustomSnackBar.show(context, "${res?.message}");
+      }
     } else {
-      _animationController.forward(from: 0);
     }
   }
 
@@ -163,11 +159,13 @@ class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
 
   Widget _buildLogo() {
     return Center(
-      child: Image.asset(
-        "assets/neuromitralogo.png",
-        height: 120,
-        width: 120,
-        fit: BoxFit.contain,
+      child: ClipOval(
+        child: Image.asset(
+          "assets/applogo.jpeg",
+          height: 120,
+          width: 120,
+          fit: BoxFit.contain,
+        ),
       ),
     );
   }
@@ -181,7 +179,7 @@ class _LogInState extends State<LogIn> with SingleTickerProviderStateMixin {
           style: TextStyle(
             color: charcoal,
             fontSize: 16,
-            fontFamily: 'Poppins',
+            fontFamily: "general_sans",
             fontWeight: FontWeight.w600,
           ),
         ),

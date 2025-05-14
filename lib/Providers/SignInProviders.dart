@@ -1,106 +1,82 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:neuromithra/Components/CustomSnackBar.dart';
+import 'package:neuromithra/Model/SignInModel.dart';
+import 'package:neuromithra/Model/SuccessModel.dart';
 import '../Presentation/MainDashBoard.dart';
 import '../services/AuthService.dart';
 import '../services/Preferances.dart';
-import '../services/userapi.dart'; // Adjust import
+import '../services/userapi.dart';
 
 class SignInProviders with ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
+
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
-  Future<void> logIn(BuildContext context, Map<String, dynamic> data) async {
-    debugPrint('Data:${data}');
+  Future<SignInModel?> logInWithUsername(Map<String, dynamic> data) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
     try {
-      _isLoading = true;
-      _errorMessage = null;
-      notifyListeners();
-      final loginResponse = await Userapi.postLogin(data);
-      if (loginResponse != null) {
-        if (loginResponse.containsKey("access_token")) {
-          await _handleSuccessfulLogin(loginResponse);
-          if (context.mounted) {
-            CustomSnackBar.show(
-              context,
-              "You are logged in successfully",
-            );
-            context.pushReplacement('/main_dashBoard?initialIndex=${0}');
-          }
-        } else if (loginResponse.containsKey("error")) {
-          _errorMessage = loginResponse["error"];
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  _errorMessage!,
-                  style:
-                      TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
-                ),
-                duration: Duration(seconds: 1),
-                backgroundColor: Color(0xFF32657B),
-              ),
-            );
-          }
-        } else {
-          if (context.mounted) {
-            CustomSnackBar.show(
-              context,
-              "An unexpected error occurred. Please try again.",
-            );
-          }
-        }
+      final response = await Userapi.loginWithUsername(data);
+      if (response?.status == true) {
+        return response;
       } else {
-        _errorMessage = "Login request failed. Please try again.";
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                _errorMessage!,
-                style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
-              ),
-              duration: Duration(seconds: 1),
-              backgroundColor: Color(0xFF32657B),
-            ),
-          );
-        }
+        return response;
       }
     } catch (e) {
-      _errorMessage = "An error occurred: $e";
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              _errorMessage!,
-              style: TextStyle(color: Color(0xFFFFFFFF), fontFamily: "Inter"),
-            ),
-            duration: Duration(seconds: 1),
-            backgroundColor: Color(0xFF32657B),
-          ),
-        );
-      }
+      debugPrint("Login error: $e");
+      _errorMessage = "Something went wrong. Please try again.";
+      return null;
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<void> _handleSuccessfulLogin(
-      Map<String, dynamic> loginResponse) async {
-    PreferenceService()
-        .saveString("token", loginResponse["access_token"] ?? "");
-    final expiryTimestamp = (DateTime.now().millisecondsSinceEpoch ~/ 1000 +
-            loginResponse["expires_in"])
-        .toString();
-    PreferenceService().saveString("access_expiry_timestamp", expiryTimestamp);
+  Future<SuccessModel?> logInWithMobile(Map<String, dynamic> data) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      final response = await Userapi.loginWithMobile(data);
+      if (response?.status == true) {
+        return response;
+      } else {
+        return response;
+      }
+    } catch (e) {
+      debugPrint("Login error: $e");
+      _errorMessage = "Something went wrong. Please try again.";
+      return null;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 
-    await AuthService.saveTokens(
-      loginResponse["access_token"],
-      loginResponse["access_token"],
-      DateTime.now().millisecondsSinceEpoch ~/ 1000 +
-          int.parse(loginResponse["expires_in"].toString()),
-    );
+
+  Future<SignInModel?> verifyOtp(Map<String, dynamic> data) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      final response = await Userapi.verifyOtp(data);
+      if (response?.status == true) {
+        return response;
+      } else {
+        return response;
+      }
+    } catch (e) {
+      debugPrint("Login error: $e");
+      _errorMessage = "Something went wrong. Please try again.";
+      return null;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 }
+

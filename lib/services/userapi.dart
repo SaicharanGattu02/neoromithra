@@ -1,27 +1,24 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:neuromithra/Model/ChildListModel.dart';
 import 'package:neuromithra/Model/PhonepeDetails.dart';
 import 'package:neuromithra/Model/QuoteModel.dart';
+import 'package:neuromithra/Model/SignInModel.dart';
 import 'package:neuromithra/Model/SuccessModel.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../Model/AddAddressModel.dart';
+import 'package:neuromithra/Model/UpcomingAppointmentsModel.dart';
 import '../Model/AddressDetailsResponse.dart';
 import '../Model/AddressListModel.dart';
 import '../Model/AssessmentQuestion.dart';
 import '../Model/BehaviouralTrackingModel.dart';
-import '../Model/BookApointmentModel.dart';
 import '../Model/BookingHistoryModel.dart';
 import '../Model/CounsellingsListModel.dart';
-import '../Model/FeedbackHelathModel.dart';
 import '../Model/LoginModel.dart';
 import '../Model/PreviousBookingModel.dart';
 import '../Model/ProfileDetailsModel.dart';
-import '../Model/RegisterModel.dart';
 import '../Model/ReviewListModel.dart';
 import '../Model/ReviewSubmitModel.dart';
-import '../Model/SignInMobileModel.dart';
 import '../Model/TherapiesListModel.dart';
 import '../api_endpoint_urls.dart';
 import '../utils/constants.dart';
@@ -29,6 +26,8 @@ import 'AuthService.dart';
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:dio/dio.dart';
+
+import 'Preferances.dart';
 
 class Userapi {
   static final Dio _dio = Dio(
@@ -53,25 +52,35 @@ class Userapi {
           return handler.next(options);
         },
         onResponse: (response, handler) {
+          _handleNavigation(response.statusCode, navigatorKey);
           return handler.next(response);
         },
         onError: (DioException e, handler) async {
-          if (e.response?.statusCode == 201 || e.response?.statusCode == 401) {
-            debugPrint("Token expired or unauthorized: ${e.response?.statusCode}");
-            // If refresh or retry fails, clear prefs and navigate to login
-            debugPrint("Navigating to SignIn");
-            final prefs = await SharedPreferences.getInstance();
-            await prefs.clear();
-            navigatorKey.currentState
-                ?.pushNamedAndRemoveUntil('/login', (route) => false);
-            return handler.reject(e);
-          } else {
-            debugPrint("Error ${e.response?.statusCode}: ${e.response?.data}");
-            return handler.next(e);
+          if (e.response != null) {
+            _handleNavigation(e.response?.statusCode, navigatorKey);
           }
+          return handler.next(e);
         },
       ),
     );
+  }
+
+  static void _handleNavigation(
+      int? statusCode, GlobalKey<NavigatorState> navigatorKey) async {
+    if (statusCode == null) return;
+    switch (statusCode) {
+      case 201:
+        await PreferenceService().remove("token");
+        navigatorKey.currentState?.context.go('/login_with_mobile');
+        break;
+      case 403:
+        navigatorKey.currentState?.context.go('/login_with_mobile');
+        break;
+      case 429:
+        navigatorKey.currentState?.context.go('/login_with_mobile');
+        break;
+      default:
+    }
   }
 
   static Future<bool> _refreshToken() async {
@@ -146,7 +155,8 @@ class Userapi {
     }
   }
 
-  static Future<Map<String, List<AssessmentQuestion>>> fetchAdultQuestions() async {
+  static Future<Map<String, List<AssessmentQuestion>>>
+      fetchAdultQuestions() async {
     try {
       final response = await get("/api/list_of_questions_for_adults");
       if (response.statusCode == 200) {
@@ -185,7 +195,8 @@ class Userapi {
     }
   }
 
-  static Future<Map<String, List<AssessmentQuestion>>> fetchChildrenQuestions() async {
+  static Future<Map<String, List<AssessmentQuestion>>>
+      fetchChildrenQuestions() async {
     try {
       final response = await get("/api/list_of_questions");
       if (response.statusCode == 200) {
@@ -226,95 +237,14 @@ class Userapi {
     }
   }
 
-  static Future<BookApointmentModel?> newApointment(
-      String fname,
-      String pnum,
-      String appointment,
-      String age,
-      String appointmentType,
-      String dateOfAppointment,
-      String location,
-      String pageSource,
-      String timeOfAppointment,
-      String userId,
-      Map<String, dynamic> orderData) async {
+  static Future<SuccessModel?> bookAppointment(
+      Map<String, dynamic> data) async {
     try {
-      final formData = FormData.fromMap({
-        'Full_Name': fname,
-        'phone_Number': pnum,
-        'appointment': appointment,
-        'age': age,
-        'appointment_type': appointmentType,
-        'Date_of_appointment': dateOfAppointment,
-        'location': location,
-        'page_source': pageSource,
-        'time_of_appointment': timeOfAppointment,
-        'payment_json': jsonEncode(orderData),
-      });
-      final response = await post("/api/for_new_bookappointments", data: formData);
+      final response =
+          await post("${APIEndpointUrls.bookAppointment}", data: data);
       if (response.statusCode == 200) {
-        debugPrint("✅ Appointment Response: ${response.data}");
-        return BookApointmentModel.fromJson(response.data);
-      }
-      debugPrint("❌ Failed to book appointment: ${response.statusCode}");
-      debugPrint("Response: ${response.data}");
-      return null;
-    } catch (e) {
-      debugPrint("Error: $e");
-      return null;
-    }
-  }
-
-  static Future<BookApointmentModel?> existApointment(
-      String fname,
-      String pnum,
-      String appointment,
-      String age,
-      String appointmentType,
-      String dateOfAppointment,
-      String location,
-      String pageSource,
-      String timeOfAppointment,
-      String userId,
-      String patientId,
-      Map<String, dynamic> orderData) async {
-    try {
-      final formData = FormData.fromMap({
-        'Full_Name': fname,
-        'phone_Number': pnum,
-        'appointment': appointment,
-        'age': age,
-        'appointment_type': appointmentType,
-        'Date_of_appointment': dateOfAppointment,
-        'location': location,
-        'page_source': pageSource,
-        'time_of_appointment': timeOfAppointment,
-        'patient_id': patientId,
-        'payment_json': jsonEncode(orderData),
-      });
-      final response = await post("/api/for_exesting_bookappointments", data: formData);
-      if (response.statusCode == 200) {
-        debugPrint("✅ Existing Appointment Response: ${response.data}");
-        return BookApointmentModel.fromJson(response.data);
-      }
-      debugPrint("❌ Failed to book existing appointment: ${response.statusCode}");
-      debugPrint("Response: ${response.data}");
-      return null;
-    } catch (e) {
-      debugPrint("Error: $e");
-      return null;
-    }
-  }
-
-  static Future<RegisterModel?> postRegister(data) async {
-    try {
-      final response = await post(
-        "/api/user/userregister",
-        data: data
-      );
-      if (response.statusCode == 200) {
-        debugPrint("PostRegister Status: ${response.data}");
-        return RegisterModel.fromJson(response.data);
+        debugPrint("bookAppointment Status: ${response.data}");
+        return SuccessModel.fromJson(response.data);
       }
       debugPrint("Request failed with status: ${response.statusCode}");
       return null;
@@ -324,23 +254,14 @@ class Userapi {
     }
   }
 
-  static Future<Map<String, dynamic>?> postLogin(dynamic data) async {
+  static Future<SignInModel?> postRegister(data) async {
     try {
-      final response = await post(APIEndpointUrls.userLogin, data: data);
+      final response = await post(APIEndpointUrls.user_register, data: data);
       if (response.statusCode == 200) {
-        debugPrint("PostLogin Status: ${response.data}");
-        return {
-          "access_token": response.data["access_token"],
-          "token_type": response.data["token_type"],
-          "expires_in": response.data["expires_in"],
-        };
-      } else if (response.statusCode == 401 || response.statusCode == 403) {
-        debugPrint("Unauthorized: ${response.data['error']}");
-        return {
-          "error": response.data["error"],
-          "status": response.data["status"],
-        };
+        debugPrint("PostRegister Status: ${response.data}");
+        return SignInModel.fromJson(response.data);
       }
+      debugPrint("Request failed with status: ${response.statusCode}");
       return null;
     } catch (e) {
       debugPrint("Error occurred: $e");
@@ -348,12 +269,30 @@ class Userapi {
     }
   }
 
-  static Future<SignInMobileModel?> postLoginWithMobile(data) async {
+  static Future<SignInModel?> loginWithUsername(dynamic data) async {
     try {
-      final response = await _dio.post(APIEndpointUrls.LoginWithMobile, data: data);
+      final response = await post(APIEndpointUrls.login_with_username, data: data);
       if (response.statusCode == 200) {
-        print("postLoginWithMobile Status: ${response.data}");
-        return SignInMobileModel.fromJson(response.data);
+        debugPrint("loginWithUsername Status: ${response.data}");
+        return SignInModel.fromJson(response.data);
+      }else{
+        return null;
+      }
+      debugPrint("Request failed with status: ${response.statusCode}");
+    } catch (e) {
+      debugPrint("Error occurred: $e");
+      return null;
+    }
+    return null;
+  }
+
+  static Future<SuccessModel?> loginWithMobile(data) async {
+    try {
+      final response =
+          await _dio.post(APIEndpointUrls.login_with_mobile, data: data);
+      if (response.statusCode == 200) {
+        print("loginWithMobile Status: ${response.data}");
+        return SuccessModel.fromJson(response.data);
       } else {
         print("Request failed with status: ${response.statusCode}");
         return null;
@@ -364,22 +303,15 @@ class Userapi {
     }
   }
 
-  static Future<Map<String, dynamic>?> verifyOtp(data)  async {
+  static Future<SignInModel?> verifyOtp(data) async {
     try {
-      final response = await _dio.post(APIEndpointUrls.userVerifyOtp, data: data);
+      final response = await _dio.post(APIEndpointUrls.verify_login_otp, data: data);
       if (response.statusCode == 200) {
-        print("PostLogin Status: ${response.data}");
-        return {
-          "access_token": response.data["access_token"],
-          "token_type": response.data["token_type"],
-          "expires_in": response.data["expires_in"],
-        };
-      } else if (response.statusCode == 401 || response.statusCode == 403) {
-        print("Unauthorized: ${response.data['error']}");
-        return {
-          "error": response.data["error"],
-          "status": response.data["status"],
-        };
+        print("verifyOtp Status: ${response.data}");
+        return SignInModel.fromJson(response.data);
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+        return null;
       }
     } catch (e) {
       print("Error occurred: $e");
@@ -387,9 +319,7 @@ class Userapi {
     }
   }
 
-
-  static Future<Map<String, dynamic>?> updateProfileDetails(
-     formData) async {
+  static Future<Map<String, dynamic>?> updateProfileDetails(formData) async {
     try {
       final response = await post(
         APIEndpointUrls.updateprofileDetails,
@@ -437,10 +367,10 @@ class Userapi {
     }
   }
 
-
   static Future<CounsellingsListModel?> getCounsellingsList() async {
     try {
-      final response = await get("${APIEndpointUrls.guestServiceDetails}?type=Counselling");
+      final response =
+          await get("${APIEndpointUrls.guestServiceDetails}?type=Counselling");
       if (response.statusCode == 200) {
         debugPrint("getCounsellingsList Status: ${response.data}");
         return CounsellingsListModel.fromJson(response.data);
@@ -470,7 +400,7 @@ class Userapi {
 
   static Future<SuccessModel?> addChild(Map<String, dynamic> data) async {
     try {
-      final response = await post("${APIEndpointUrls.addChild}",data: data);
+      final response = await post("${APIEndpointUrls.addChild}", data: data);
       if (response.statusCode == 200) {
         debugPrint("addchild Status: ${response.data}");
         return SuccessModel.fromJson(response.data);
@@ -483,9 +413,11 @@ class Userapi {
     }
   }
 
-  static Future<SuccessModel?> editChild(Map<String, dynamic> data,String id) async {
+  static Future<SuccessModel?> editChild(
+      Map<String, dynamic> data, String id) async {
     try {
-      final response = await put("${APIEndpointUrls.editChild}/${id}",data: data);
+      final response =
+          await put("${APIEndpointUrls.editChild}/${id}", data: data);
       if (response.statusCode == 200) {
         debugPrint("editchild Status: ${response.data}");
         return SuccessModel.fromJson(response.data);
@@ -497,7 +429,6 @@ class Userapi {
       return null;
     }
   }
-
 
   static Future<SuccessModel?> deleteChild(String id) async {
     try {
@@ -528,7 +459,6 @@ class Userapi {
       return null;
     }
   }
-
 
   static Future<ChildListModel?> getChildDetails(String id) async {
     try {
@@ -584,21 +514,6 @@ class Userapi {
     }
   }
 
-  static Future<SuccessModel?> createBooking(Map<String,dynamic> data) async {
-    try {
-      final response = await post("/api/users/create-appointment-request",data: data);
-      if (response.statusCode == 200) {
-        debugPrint("createBooking Status: ${response.data}");
-        return SuccessModel.fromJson(response.data);
-      }
-      debugPrint("Request failed with status: ${response.statusCode}");
-      return null;
-    } catch (e) {
-      debugPrint("Error occurred: $e");
-      return null;
-    }
-  }
-
   static Future<PreviousBookingModel?> getPreviousBookingHistory() async {
     try {
       final response = await get("${APIEndpointUrls.bookingHistory}");
@@ -630,7 +545,8 @@ class Userapi {
 
   static Future<ReviewListModel?> getReviewList(String pageSource) async {
     try {
-      final response = await get("${APIEndpointUrls.getReviewList}/$pageSource");
+      final response =
+          await get("${APIEndpointUrls.getReviewList}/$pageSource");
       if (response.statusCode == 200) {
         debugPrint("getReviewList response: ${response.data}");
         return ReviewListModel.fromJson(response.data);
@@ -652,7 +568,8 @@ class Userapi {
           contentType: mimeType != null ? MediaType.parse(mimeType) : null,
         ),
       });
-      final response = await post("${APIEndpointUrls.updateProfileImage}", data: formData);
+      final response =
+          await post("${APIEndpointUrls.updateProfileImage}", data: formData);
       if (response.statusCode == 200) {
         return LoginModel.fromJson(response.data);
       }
@@ -681,7 +598,8 @@ class Userapi {
   static Future<SuccessModel?> editAddressApi(
       Map<String, dynamic> data, String addressId) async {
     try {
-      final response = await put("${APIEndpointUrls.updateAddress}/$addressId", data: data);
+      final response =
+          await put("${APIEndpointUrls.updateAddress}/$addressId", data: data);
       if (response.statusCode == 200) {
         debugPrint("editAddressApi Response: ${response.data}");
         return SuccessModel.fromJson(response.data);
@@ -696,7 +614,8 @@ class Userapi {
 
   static Future<SuccessModel?> deleteAddressApi(int addressId) async {
     try {
-      final response = await delete("${APIEndpointUrls.deleteAddress}/$addressId");
+      final response =
+          await delete("${APIEndpointUrls.deleteAddress}/$addressId");
       if (response.statusCode == 200) {
         debugPrint("deleteAddressApi Response: ${response.data}");
         return SuccessModel.fromJson(response.data);
@@ -754,9 +673,11 @@ class Userapi {
     }
   }
 
-  static Future<PreviousBookingModel?> getPreviousBookings(String pageSource) async {
+  static Future<PreviousBookingModel?> getPreviousBookings(
+      String pageSource) async {
     try {
-      final response = await get("${APIEndpointUrls.checkPreviousBooking}/$pageSource");
+      final response =
+          await get("${APIEndpointUrls.checkPreviousBooking}/$pageSource");
       if (response.statusCode == 200) {
         debugPrint("getPreviousBookings response: ${response.data}");
         return PreviousBookingModel.fromJson(response.data);
@@ -772,7 +693,8 @@ class Userapi {
   static Future<BehaviouralTrackingModel?> getBehaviouralList(
       String id, String pageSource) async {
     try {
-      final response = await get("${APIEndpointUrls.getTheraphyTracking}/$id/$pageSource");
+      final response =
+          await get("${APIEndpointUrls.getTheraphyTracking}/$id/$pageSource");
       if (response.statusCode == 200) {
         debugPrint("getBehaviouralList response: ${response.data}");
         return BehaviouralTrackingModel.fromJson(response.data);
@@ -800,15 +722,30 @@ class Userapi {
     }
   }
 
-  static Future<FeedbackHelathModel?> postHealthFeedback(String msg) async {
+  static Future<UpcomingAppointmentsModel?> getUpcomingAppointment() async {
+    try {
+      final response = await get("${APIEndpointUrls.upcomingAppointment}");
+      if (response.statusCode == 200) {
+        debugPrint("getUpcomingAppointment response: ${response.data}");
+        return UpcomingAppointmentsModel.fromJson(response.data);
+      }
+      debugPrint("Request failed with status: ${response.statusCode}");
+      return null;
+    } catch (e) {
+      debugPrint("Error occurred: $e");
+      return null;
+    }
+  }
+
+  static Future<SuccessModel?> postHealthFeedback(String msg) async {
     try {
       final response = await post(
         "${APIEndpointUrls.dailyFeedBack}",
         data: {"message": msg},
       );
       if (response.statusCode == 200) {
-       debugPrint("postHealthFeedback response: ${response.data}");
-        return FeedbackHelathModel.fromJson(response.data);
+        debugPrint("postHealthFeedback response: ${response.data}");
+        return SuccessModel.fromJson(response.data);
       }
       debugPrint("Request failed with status: ${response.statusCode}");
       return null;

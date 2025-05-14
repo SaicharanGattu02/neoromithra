@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:neuromithra/Model/SuccessModel.dart';
 import '../Components/CustomSnackBar.dart';
 import '../Model/CounsellingsListModel.dart';
 import '../Model/ProfileDetailsModel.dart';
 import '../Model/TherapiesListModel.dart';
+import '../Model/UpcomingAppointmentsModel.dart';
 import '../services/Preferances.dart';
 import '../services/userapi.dart';
 
@@ -15,6 +17,7 @@ class HomeProviders with ChangeNotifier {
   List<TherapiesList> _therapieslist = [];
   List<TherapiesList> _therapyDetails = [];
   List<CounsellingsList> _counsellingslist = [];
+  List<UpcomingAppointments> _upcomingAppointments=[];
 
   // Getters
   bool get isLoading => _isLoading;
@@ -24,6 +27,7 @@ class HomeProviders with ChangeNotifier {
   List<TherapiesList> get therapieslist => _therapieslist;
   List<TherapiesList> get therapyDetails => _therapyDetails;
   List<CounsellingsList> get counsellingslist => _counsellingslist;
+  List<UpcomingAppointments> get upcomingAppointments=> _upcomingAppointments;
 
   /// Set loading state and notify
   void _setLoading(bool value) {
@@ -53,22 +57,20 @@ class HomeProviders with ChangeNotifier {
     }
   }
 
-  Future<void> postHealthFeedBack(String msg, BuildContext context) async {
+  Future<SuccessModel?> postHealthFeedBack(String msg) async {
     _setLoading(true);
     try {
       final res = await Userapi.postHealthFeedback(msg);
-      final message = res?.message ?? "Unknown error";
       if (res?.status == true) {
-        CustomSnackBar.show(context, message);
-      } else {
-        CustomSnackBar.show(context, message);
+        return res;
+      }else{
+        return res;
       }
     } catch (e) {
-      _setError('Feedback submission error: $e');
-      CustomSnackBar.show(context, "An error occurred");
     } finally {
       _setLoading(false);
     }
+    return null;
   }
 
   Future<void> getTherapiesList() async {
@@ -80,6 +82,20 @@ class HomeProviders with ChangeNotifier {
       }
     } catch (e) {
       _setError('Failed to fetch therapies: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> getUpcomingAppointment() async {
+    _setLoading(true);
+    try {
+      final response = await Userapi.getUpcomingAppointment();
+      if (response?.status == true) {
+        _upcomingAppointments = response?.upcomingAppointments ?? [];
+      }
+    } catch (e) {
+      _setError('Failed to fetch appointment: $e');
     } finally {
       _setLoading(false);
     }

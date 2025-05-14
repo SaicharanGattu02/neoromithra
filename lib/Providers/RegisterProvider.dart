@@ -1,34 +1,29 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:go_router/go_router.dart';
-import 'package:neuromithra/Components/CustomSnackBar.dart';
-
+import 'package:neuromithra/Model/SignInModel.dart';
+import '../Model/SuccessModel.dart';
 import '../services/userapi.dart';
 
 class RegisterProvider with ChangeNotifier {
   bool _isLoading = false;
-  String? _errorMessage;
   bool get isLoading => _isLoading;
-  String? get errorMessage => _errorMessage;
 
-  Future<void> Register(Map<String,dynamic> data) async {
+  Future<SignInModel?> register(Map<String, dynamic> data) async {
+    _isLoading = true;
+    notifyListeners();
     try {
-      _isLoading = true;
-      _errorMessage = null;
-      notifyListeners();
       final registerResponse = await Userapi.postRegister(data);
       if (registerResponse != null && registerResponse.status == true) {
-        //
-        // context.push('/login');
+        return registerResponse;
       } else {
-
+        return registerResponse;
       }
     } catch (e) {
-      _errorMessage = "An error occurred: $e";
-
+      debugPrint("Register error: $e");
+      return null;
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 }
+

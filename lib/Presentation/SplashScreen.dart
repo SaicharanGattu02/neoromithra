@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:neuromithra/Presentation/MainDashBoard.dart';
+import 'package:neuromithra/services/AuthService.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'Authentication/LogIn.dart';
 import 'OnBoardScreen.dart';
@@ -42,7 +43,7 @@ class _SplashState extends State<Splash> {
   }
 
   Future<void> _fetchDetails() async {
-    String token = await PreferenceService().getString('token') ?? "";
+    String token = await AuthService.getAccessToken()??"";
     var status = await PreferenceService().getString('on_boarding');
     setState(() {
       Status = status ?? '';

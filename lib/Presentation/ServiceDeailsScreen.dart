@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../Components/Shimmers.dart';
 import '../Model/ReviewListModel.dart';
 import '../Providers/HomeProviders.dart';
+import '../services/AuthService.dart';
 import '../utils/Color_Constants.dart';
 import '../utils/constants.dart';
 import '../utils/spinkits.dart';
@@ -20,7 +21,6 @@ class ServiceDetailsScreen extends StatefulWidget {
   @override
   State<ServiceDetailsScreen> createState() => _ServiceDetailsScreenState();
 }
-
 
 class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
   bool showFocus = true;
@@ -88,7 +88,8 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
                     _buildHeaderImage(data.image ?? "", w, h),
                     const SizedBox(height: 12),
                     _buildPrice(data.amount.toString(), w),
-                    _buildDescription(data.description ?? 'No description available'),
+                    _buildDescription(
+                        data.description ?? 'No description available'),
                     _buildTabs(data),
                     const SizedBox(height: 10),
                     _buildTabContent(data),
@@ -288,7 +289,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
         ),
       ),
       crossFadeState:
-      showFocus ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+          showFocus ? CrossFadeState.showFirst : CrossFadeState.showSecond,
       duration: const Duration(milliseconds: 300),
     );
   }
@@ -326,11 +327,33 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
         ),
         child: Row(
           children: [
-            _bottomButton("Call Us", primarycolor, () => _launchCall("8885320115")),
+            _bottomButton(
+                "Call Us", primarycolor, () => _launchCall("8885320115")),
             const SizedBox(width: 12),
-            _bottomButton("Book Now", primarycolor, () {
-              context.push('/book_appointment1');
-            }),
+            Consumer<HomeProviders>(
+              builder: (context, provider, child) {
+                final details = provider.therapyDetails.isNotEmpty ? provider.therapyDetails[0] : null;
+                String appointmentMode = "online"; // default
+
+                if (details != null && details.type == "Therapy") {
+                  if (details.name == "Speech Therapy") {
+                    appointmentMode = "both";
+                  } else {
+                    appointmentMode = "offline";
+                  }
+                }
+
+                final uri = '/book_appointment1?serviceID=${widget.serviceID}&appointmentMode=$appointmentMode&price=${details?.amount.toString()}';
+                return _bottomButton("Book Now", primarycolor, () async {
+                  final guest = await AuthService.isGuest;
+                  if (guest) {
+                    context.push('/login_with_mobile'); // Redirect to login if guest
+                  } else {
+                    context.push(uri); // Proceed to booking if logged in
+                  }
+                });
+              },
+            )
           ],
         ),
       ),

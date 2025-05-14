@@ -314,15 +314,21 @@ class _TherapiesListScreenState extends State<TherapiesListScreen> {
                         return therapyGridShimmerItem(context);
                       } else {
                         final therapy = homeProvider.therapieslist[index];
-                        return InkWell(
+                        return Material(
+                          color: Colors.transparent,
                           borderRadius: BorderRadius.circular(8),
-                          onTap: () {
-                            context.push(
-                                "/service_details_screen?serviceID=${therapy.id}&serviceName=${therapy.name}");
-                          },
-                          child: ProductGridItem(
-                            imageUrl: therapy.image ?? "",
-                            title: therapy.name ?? "",
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: () {
+                              print("Tapped: ${therapy.name}");
+                              context.push(
+                                "/service_details_screen?serviceID=${therapy.id}&serviceName=${therapy.name}",
+                              );
+                            },
+                            child: ProductGridItem(
+                              imageUrl: therapy.image ?? "",
+                              title: therapy.name ?? "",
+                            ),
                           ),
                         );
                       }

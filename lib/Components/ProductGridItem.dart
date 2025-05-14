@@ -13,60 +13,56 @@ class ProductGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
-      label: 'Therapy: $title',
-      child: Material(
-        borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
-        elevation: 1.5,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12.0),
-          onTap: () {}, // Action handled in parent InkWell
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // 🖼 Image
-                ClipRRect(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-                  child: AspectRatio(
-                    aspectRatio: 3 / 2, // Maintains consistent height
-                    child: CachedNetworkImage(
-                      imageUrl: imageUrl,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        color: Colors.grey[300],
-                        child: Center(child: spinkits.getSpinningLinespinkit()),
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        color: Colors.grey[300],
-                        child: Icon(Icons.broken_image, color: Colors.red),
-                      ),
+    return Material(
+      borderRadius: BorderRadius.circular(12),
+      color: Colors.white,
+      elevation: 1.5,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12.0),
+        onTap: () {}, // Action handled in parent InkWell
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // 🖼 Image
+              ClipRRect(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                child: AspectRatio(
+                  aspectRatio: 3 / 2, // Maintains consistent height
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      color: Colors.grey[300],
+                      child: Center(child: spinkits.getSpinningLinespinkit()),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      color: Colors.grey[300],
+                      child: Icon(Icons.broken_image, color: Colors.red),
                     ),
                   ),
                 ),
-
-                // 🏷 Title
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text(
-                    title,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 14.5,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: "general_sans",
-                      color: Colors.black87,
-                    ),
+              ),
+              // 🏷 Title
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 14.5,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: "general_sans",
+                    color: Colors.black87,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

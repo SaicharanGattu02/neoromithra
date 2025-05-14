@@ -6,9 +6,10 @@ class APIEndpointUrls {
   static const String userUrl = 'api/users/';
 
 
-  static const String userLogin = '${apiUrl}mobile-login';
-  static const String LoginWithMobile = '${apiUrl}/login-otp';
-  static const String userVerifyOtp = '${apiUrl}/verify-login-otp';
+  static const String user_register = '${apiUrl}register-user';
+  static const String login_with_username = '${apiUrl}mobile-login';
+  static const String login_with_mobile = '${apiUrl}/login-otp';
+  static const String verify_login_otp = '${apiUrl}/verify-login-otp';
   static const String updateprofileDetails = '${userUrl}profile-update';
   static const String serviceList = '${userUrl}guest-service';
   static const String guestServiceDetails = '${userUrl}guest-service';
@@ -38,6 +39,8 @@ class APIEndpointUrls {
   static const String getTheraphyTracking ='${apiUrl}get_therapy_traking';
   static const String quotes ='${userUrl}quatations';
   static const String dailyFeedBack ='${userUrl}daily-feedback';
+  static const String upcomingAppointment ='${userUrl}upcoming-appointments';
+  static const String bookAppointment ='${userUrl}create-appointment-request';
 
 
 }

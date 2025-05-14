@@ -6,7 +6,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:neuromithra/Providers/LogInWithMobileProvider.dart';
 import 'package:neuromithra/router.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
@@ -118,11 +117,10 @@ Future<void> main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => SignInProviders()),
     ChangeNotifierProvider(create: (_) => HomeProviders()),
-    ChangeNotifierProvider(create: (_) => BookingHistoryProviders()),
+    ChangeNotifierProvider(create: (_) => BookingHistoryProvider()),
     ChangeNotifierProvider(create: (_) => AddressListProvider()),
     ChangeNotifierProvider(create: (_) => UserProviders()),
     ChangeNotifierProvider(create: (_) => RegisterProvider()),
-    ChangeNotifierProvider(create: (_) => LoginWithMobileProvider()),
     ChangeNotifierProvider(create: (_) => ChildProvider()),
   ], child: MyApp()));
 }
