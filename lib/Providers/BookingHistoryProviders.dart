@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:neuromithra/Model/SuccessModel.dart';
 
 import '../Model/AppointmentsModel.dart';
+import '../Model/PhonepeDetails.dart';
 import '../Model/SessionFeedbackModel.dart';
 import '../Model/SessionsModel.dart';
 import '../services/userapi.dart';
@@ -23,6 +24,7 @@ class BookingHistoryProvider with ChangeNotifier {
   List<Appointments> _appointments = [];
   List<Sessions> _sessions = [];
   List<SessionFeedback> _sessionFeedback = [];
+  List<PhonepeKeys> _phonpekeys = [];
 
   // Getters
   bool get isLoading => _isLoading;
@@ -33,6 +35,7 @@ class BookingHistoryProvider with ChangeNotifier {
   List<Appointments> get appointments => _appointments;
   List<Sessions> get sessions => _sessions;
   List<SessionFeedback> get sessionFeedback => _sessionFeedback;
+  List<PhonepeKeys> get phonpekeys => _phonpekeys;
 
   /// 🧮 Update price based on selected days
   void updatePriceByDays(int days, {int ratePerDay = 800}) {
@@ -114,6 +117,25 @@ class BookingHistoryProvider with ChangeNotifier {
       }
     } catch (e) {
       debugPrint('Error fetching sessions: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> getPhonepeDetails() async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final response = await Userapi.getPhonepeDetails();
+      if (response != null && response.status == true) {
+        _phonpekeys = response.phonpekeys ?? [];
+      } else {
+        _phonpekeys = [];
+        debugPrint('No _phonpekeys or error in response');
+      }
+    } catch (e) {
+      debugPrint('Error fetching _phonpekeys: $e');
     } finally {
       _isLoading = false;
       notifyListeners();

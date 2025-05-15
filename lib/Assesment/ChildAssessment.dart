@@ -6,8 +6,10 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:neuromithra/Components/CustomAppButton.dart';
 import 'package:neuromithra/Presentation/MainDashBoard.dart';
+import 'package:provider/provider.dart';
 
 import '../Model/AssessmentQuestion.dart';
+import '../Providers/AssessmentProvider.dart';
 import '../services/userapi.dart';
 import '../utils/Color_Constants.dart';
 import 'ResultScreen.dart';
@@ -21,62 +23,33 @@ class ChildAssessment extends StatefulWidget {
 
 class _ChildAssessmentState extends State<ChildAssessment> {
   final _formKey = GlobalKey<FormState>();
-
-  TextEditingController _childNameController = TextEditingController();
-  TextEditingController _childAgeController = TextEditingController();
-  TextEditingController _childGenderController = TextEditingController();
-  TextEditingController _assessmentDateController = TextEditingController();
-
-  bool isLoading = true;
-  bool isSaving = false;
+  final _childNameController = TextEditingController();
+  final _childAgeController = TextEditingController();
+  final _childGenderController = TextEditingController();
+  final _assessmentDateController = TextEditingController();
   String? _selectedGender;
-  Map<int, String> selectedAnswers = {};
-  Map<String, List<AssessmentQuestion>> parsedData = {};
 
   @override
   void initState() {
     super.initState();
-    fetchQuestions();
-  }
-
-  // Fetch questions from UserApi
-  Future<void> fetchQuestions() async {
-    parsedData = await Userapi.fetchChildrenQuestions();
-    setState(() {
-      isLoading = false;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<AssessmentProvider>(context, listen: false)
+          .fetchQuestions("0");
     });
   }
 
-  Future<void> submitAnswersApi(Map<String, dynamic> data) async {
-    setState(() {
-      isSaving = true;
-    });
-
-    var res = await Userapi.submitChildrenAnswers(
-        data, "0"); // Change role dynamically
-
-    setState(() {
-      isSaving = false;
-    });
-
-    if (res["status"] == true) {
-      String role = res["role"].toString();
-      String resultString = res["result"];
-      Map<String, dynamic> resultData = jsonDecode(resultString);
-      context.pushReplacement(
-          '/result_screen?resultData=${resultData}&role=${role}');
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(res["message"] ?? "Failed to submit answers!"),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
+  @override
+  void dispose() {
+    _childNameController.dispose();
+    _childAgeController.dispose();
+    _childGenderController.dispose();
+    _assessmentDateController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<AssessmentProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -84,7 +57,7 @@ class _ChildAssessmentState extends State<ChildAssessment> {
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontFamily: "general_sans",
-            color: primarycolor,
+            color: primarycolor, // Ensure primarycolor is defined
             fontSize: 18,
           ),
         ),
@@ -130,7 +103,7 @@ class _ChildAssessmentState extends State<ChildAssessment> {
             ),
             const SizedBox(height: 10),
             const Text(
-              'Purpose ',
+              'Purpose',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -162,147 +135,113 @@ class _ChildAssessmentState extends State<ChildAssessment> {
                 ],
               ),
             ),
-
             const SizedBox(height: 20),
             // Questions Section
-            isLoading
+            provider.isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : provider.questions.isEmpty
                 ? const Center(
-                    child: CircularProgressIndicator()) // Show loader
-                : parsedData.isEmpty
-                    ? const Center(
-                        child: Text(
-                        "No questions available",
-                        style: TextStyle(
+              child: Text(
+                "No questions available",
+                style: TextStyle(fontFamily: "general_sans"),
+              ),
+            )
+                : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: provider.questions.entries.map<Widget>((entry) {
+                String sectionName = entry.key;
+                List<AssessmentQuestion> questions = entry.value;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Text(
+                        sectionName,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
                           fontFamily: "general_sans",
+                          color: primarycolor,
                         ),
-                      ))
-                    : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: parsedData.entries.map<Widget>((entry) {
-                          String sectionName = entry.key;
-                          List<AssessmentQuestion> questions = entry.value;
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                      ),
+                    ),
+                    ...questions.map((question) {
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        elevation: 3,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
                             children: [
-                              // Section Title
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10),
-                                child: Text(
-                                  sectionName,
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: "general_sans",
-                                    color: primarycolor,
-                                  ),
+                              Text(
+                                question.question,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontFamily: "general_sans",
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              // Questions List
-                              ...questions.map((question) {
-                                return Card(
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 8),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  elevation: 3,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          question.question,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontFamily: "general_sans",
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 8),
-                                        // Radio Button Options
-                                        Column(
-                                          children: ["Yes", "No", "Sometimes"]
-                                              .map(
-                                                (answer) => RadioListTile(
-                                                  visualDensity:
-                                                      VisualDensity.compact,
-                                                  title: Text(
-                                                    answer,
-                                                    style: TextStyle(
-                                                        fontFamily: "Poppins"),
-                                                  ),
-                                                  value: answer,
-                                                  groupValue: selectedAnswers[
-                                                      question.id],
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      selectedAnswers[
-                                                          question.id] = value!;
-                                                    });
-                                                  },
-                                                  activeColor: primarycolor,
-                                                ),
-                                              )
-                                              .toList(),
-                                        ),
-                                      ],
+                              const SizedBox(height: 8),
+                              Column(
+                                children: ["Yes", "No", "Sometimes"]
+                                    .map(
+                                      (answer) => RadioListTile(
+                                    visualDensity:
+                                    VisualDensity.compact,
+                                    title: Text(
+                                      answer,
+                                      style: const TextStyle(
+                                          fontFamily:
+                                          "general_sans"),
                                     ),
+                                    value: answer,
+                                    groupValue: provider
+                                        .selectedAnswers[
+                                    question.id],
+                                    onChanged: (value) {
+                                      provider.selectAnswer(
+                                          question.id, value!);
+                                    },
+                                    activeColor: primarycolor,
                                   ),
-                                );
-                              }).toList(),
+                                )
+                                    .toList(),
+                              ),
                             ],
-                          );
-                        }).toList(),
-                      ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ],
+                );
+              }).toList(),
+            ),
             const SizedBox(height: 20),
-            // Submit Button
             CustomAppButton(
               text: 'Submit',
-              isLoading: isSaving,
-              onPlusTap: isSaving
+              isLoading: provider.isSaving,
+              onPlusTap: provider.isSaving
                   ? null
                   : () {
-                      if (_formKey.currentState!.validate()) {
-                        // Ensure all answers are provided
-                        bool allAnswered = selectedAnswers.values
-                            .every((answer) => answer.isNotEmpty);
-                        if (!allAnswered) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(
-                                  "Please answer all questions before submitting!")));
-                          return;
-                        }
-                        // Prepare final JSON data for submission
-                        Map<String, dynamic> submissionData = {
-                          "child_info": {
-                            "name": _childNameController.text,
-                            "age": _childAgeController.text,
-                            "gender": _selectedGender,
-                            "assessment_date": _assessmentDateController.text
-                          },
-                          "role": "0",
-                          "answers": parsedData.map((section, questions) {
-                            return MapEntry(
-                              section,
-                              questions.map((question) {
-                                return {
-                                  "id": question.id,
-                                  "section_name": question.sectionName,
-                                  "question": question.question,
-                                  "answer": selectedAnswers[question.id] ?? ""
-                                };
-                              }).toList(),
-                            );
-                          })
-                        };
-                        debugPrint(
-                            "Final Submission JSON: ${jsonEncode(submissionData)}");
-                        submitAnswersApi(submissionData);
-                      }
+                if (_formKey.currentState!.validate()) {
+                  provider.submitAnswers(
+                    context,
+                    "0",
+                    childInfo: {
+                      "name": _childNameController.text,
+                      "age": _childAgeController.text,
+                      "gender": _selectedGender,
+                      "assessment_date": _assessmentDateController.text,
                     },
+                  );
+                }
+              },
             ),
             const SizedBox(height: 20),
           ],
@@ -311,7 +250,6 @@ class _ChildAssessmentState extends State<ChildAssessment> {
     );
   }
 
-  /// Builds a text input field with validation
   Widget _buildInputField(
       String label, TextEditingController controller, TextInputType inputType) {
     return Padding(
@@ -319,14 +257,47 @@ class _ChildAssessmentState extends State<ChildAssessment> {
       child: TextFormField(
         controller: controller,
         keyboardType: inputType,
-        inputFormatters:
-            label == "Age" ? [FilteringTextInputFormatter.digitsOnly] : [],
+        style: const TextStyle(
+          color: charcoal,
+          fontFamily: "general_sans",
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+        inputFormatters: label == "Age"
+            ? [FilteringTextInputFormatter.digitsOnly]
+            : [],
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(
+              fontFamily: "general_sans",
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+              color: Colors.black),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: primarycolor, width: 1),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: primarycolor, width: 1),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+          ),
+          errorStyle: TextStyle(
+            color: Colors.red,
+            fontSize: 12,
             fontFamily: "general_sans",
           ),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -344,20 +315,48 @@ class _ChildAssessmentState extends State<ChildAssessment> {
     );
   }
 
-  /// Builds a gender dropdown field
   Widget _buildGenderDropdown() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: DropdownButtonFormField<String>(
         decoration: InputDecoration(
           labelText: "Gender",
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          labelStyle: TextStyle(
+              fontFamily: "general_sans",
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+              color: Colors.black),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: primarycolor, width: 1),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: primarycolor, width: 1),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+          ),
+          errorStyle: TextStyle(
+            color: Colors.red,
+            fontSize: 12,
+            fontFamily: "general_sans",
+          ),
         ),
         value: _selectedGender,
         items: ["Male", "Female"].map((gender) {
           return DropdownMenuItem(
             value: gender,
-            child: Text(gender),
+            child: Text(gender, style: const TextStyle(fontFamily: "general_sans")),
           );
         }).toList(),
         onChanged: (value) {
@@ -370,17 +369,51 @@ class _ChildAssessmentState extends State<ChildAssessment> {
     );
   }
 
-  /// Builds a date picker field
   Widget _buildDatePickerField(String label, TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: TextFormField(
         controller: controller,
         readOnly: true,
+        style: const TextStyle(
+          color: charcoal,
+          fontFamily: "general_sans",
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
         decoration: InputDecoration(
           labelText: label,
-          suffixIcon: Icon(Icons.calendar_today),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          suffixIcon: Icon(Icons.calendar_today_outlined,color: Colors.black,),
+          labelStyle: TextStyle(
+              fontFamily: "general_sans",
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+              color: Colors.black),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: primarycolor, width: 1),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: primarycolor, width: 1),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+          ),
+          errorStyle: TextStyle(
+            color: Colors.red,
+            fontSize: 12,
+            fontFamily: "general_sans",
+          ),
         ),
         onTap: () async {
           DateTime? pickedDate = await showDatePicker(
@@ -389,7 +422,6 @@ class _ChildAssessmentState extends State<ChildAssessment> {
             firstDate: DateTime.now(),
             lastDate: DateTime(2100),
           );
-
           if (pickedDate != null) {
             setState(() {
               controller.text = DateFormat("yyyy-MM-dd").format(pickedDate);

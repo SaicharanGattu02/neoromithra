@@ -145,7 +145,7 @@ class Userapi {
 
   static Future<PhonepeDetails?> getPhonepeDetails() async {
     try {
-      final response = await get("/api/Phonepay");
+      final response = await get("${APIEndpointUrls.assessmentQuestions}");
       if (response.statusCode == 200) {
         debugPrint("getPhonepeDetails Status: ${response.data}");
         return PhonepeDetails.fromJson(response.data);
@@ -157,10 +157,9 @@ class Userapi {
     }
   }
 
-  static Future<Map<String, List<AssessmentQuestion>>>
-      fetchAdultQuestions() async {
+  static Future<Map<String, List<AssessmentQuestion>>> fetchAdultQuestions() async {
     try {
-      final response = await get("/api/list_of_questions_for_adults");
+      final response = await get("${APIEndpointUrls.assessmentQuestions}/1");
       if (response.statusCode == 200) {
         final data = response.data;
         Map<String, List<AssessmentQuestion>> parsedData = {};
@@ -178,29 +177,10 @@ class Userapi {
     }
   }
 
-  static Future<Map<String, dynamic>> submitChildrenAnswers(
-      Map<String, dynamic> data, String role) async {
-    try {
-      final formData = FormData.fromMap({
-        'data': jsonEncode(data),
-        'role': role,
-      });
-      final response = await post("/api/save_assement", data: formData);
-      if (response.statusCode == 200) {
-        debugPrint("Success: ${response.data["message"]}");
-        return response.data;
-      }
-      throw Exception("Submission failed: ${response.data["message"]}");
-    } catch (e) {
-      debugPrint("Error submitting answers: $e");
-      return {"status": false, "message": "Error submitting answers"};
-    }
-  }
-
   static Future<Map<String, List<AssessmentQuestion>>>
-      fetchChildrenQuestions() async {
+  fetchChildrenQuestions() async {
     try {
-      final response = await get("/api/list_of_questions");
+      final response = await get("${APIEndpointUrls.assessmentQuestions}/0");
       if (response.statusCode == 200) {
         final data = response.data;
         Map<String, List<AssessmentQuestion>> parsedData = {};
@@ -218,24 +198,22 @@ class Userapi {
     }
   }
 
-  static Future<String?> makeSOSCallApi(String loc) async {
+  static Future<Map<String, dynamic>> submitAnswers(
+      Map<String, dynamic> data, String role) async {
     try {
-      final response = await post(
-        "/api/sos-call",
-        data: {"location": loc},
-      );
+      final formData = FormData.fromMap({
+        'data': jsonEncode(data),
+        'role': role,
+      });
+      final response = await post("${APIEndpointUrls.submit_assessment}", data: formData);
       if (response.statusCode == 200) {
-        debugPrint("makeSOSCallApi Status: ${response.data}");
-        return response.data["message"];
-      } else if (response.statusCode == 401) {
-        debugPrint("Unauthorized: ${response.data['error']}");
-        return response.data["error"];
+        debugPrint("Success: ${response.data["message"]}");
+        return response.data;
       }
-      debugPrint("Request failed with status: ${response.statusCode}");
-      return null;
+      throw Exception("Submission failed: ${response.data["message"]}");
     } catch (e) {
-      debugPrint("Error occurred: $e");
-      return null;
+      debugPrint("Error submitting answers: $e");
+      return {"status": false, "message": "Error submitting answers"};
     }
   }
 
@@ -681,40 +659,6 @@ class Userapi {
       if (response.statusCode == 200) {
         debugPrint("downloadScriptApi response: ${response.data}");
         return response.data.toString();
-      }
-      debugPrint("Request failed with status: ${response.statusCode}");
-      return null;
-    } catch (e) {
-      debugPrint("Error occurred: $e");
-      return null;
-    }
-  }
-
-  static Future<PreviousBookingModel?> getPreviousBookings(
-      String pageSource) async {
-    try {
-      final response =
-          await get("${APIEndpointUrls.checkPreviousBooking}/$pageSource");
-      if (response.statusCode == 200) {
-        debugPrint("getPreviousBookings response: ${response.data}");
-        return PreviousBookingModel.fromJson(response.data);
-      }
-      debugPrint("Request failed with status: ${response.statusCode}");
-      return null;
-    } catch (e) {
-      debugPrint("Error occurred: $e");
-      return null;
-    }
-  }
-
-  static Future<BehaviouralTrackingModel?> getBehaviouralList(
-      String id, String pageSource) async {
-    try {
-      final response =
-          await get("${APIEndpointUrls.getTheraphyTracking}/$id/$pageSource");
-      if (response.statusCode == 200) {
-        debugPrint("getBehaviouralList response: ${response.data}");
-        return BehaviouralTrackingModel.fromJson(response.data);
       }
       debugPrint("Request failed with status: ${response.statusCode}");
       return null;

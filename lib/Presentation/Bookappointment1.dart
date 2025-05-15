@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import 'package:neuromithra/Providers/AddressListProviders.dart';
 import 'package:neuromithra/Providers/UserProvider.dart';
 import 'package:neuromithra/services/Preferances.dart';
-import 'package:neuromithra/services/userapi.dart';
 import 'package:phonepe_payment_sdk/phonepe_payment_sdk.dart';
 import 'package:provider/provider.dart';
 import '../Model/ChildListModel.dart';
@@ -24,7 +23,11 @@ class Bookappointment1 extends StatefulWidget {
   final String serviceID;
   final String price;
   final String appointmentMode;
-  const Bookappointment1({super.key, required this.serviceID,required this.appointmentMode,required this.price});
+  const Bookappointment1(
+      {super.key,
+      required this.serviceID,
+      required this.appointmentMode,
+      required this.price});
 
   @override
   State<Bookappointment1> createState() => _Bookappointment1State();
@@ -35,7 +38,8 @@ class _Bookappointment1State extends State<Bookappointment1> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _daysController = TextEditingController();
-  final TextEditingController _dateOfAppointmentController = TextEditingController();
+  final TextEditingController _dateOfAppointmentController =
+      TextEditingController();
 
   int address_id = 0;
   String patient_id = "";
@@ -55,16 +59,15 @@ class _Bookappointment1State extends State<Bookappointment1> {
   String _selected_appointment_type = 'self';
   String _selected_appointment_mode = 'online';
   String selectedGender = 'Male';
-  int total_amount=0;
+  int total_amount = 0;
 
   @override
   void initState() {
     super.initState();
-    _selected_appointment_mode = widget.appointmentMode == 'both'
-        ? 'online' // default to online when both are allowed
-        : widget.appointmentMode;
-    getPhonepeDetailsApi();
+    _selected_appointment_mode =
+        widget.appointmentMode == 'both' ? 'online' : widget.appointmentMode;
     Provider.of<AddressListProvider>(context, listen: false).getAddressList();
+    Provider.of<BookingHistoryProvider>(context, listen: false).getPhonepeDetails();
     var res = Provider.of<UserProviders>(context, listen: false).userData;
     setState(() {
       _fullNameController.text = res.name ?? "";
@@ -80,13 +83,11 @@ class _Bookappointment1State extends State<Bookappointment1> {
         _validatePhoneNumber = "";
       });
     });
-
     _ageController.addListener(() {
       setState(() {
         _validateAge = "";
       });
     });
-
     _daysController.addListener(() {
       setState(() {
         _validateDays = "";
@@ -119,7 +120,8 @@ class _Bookappointment1State extends State<Bookappointment1> {
 
   Future<void> initiateTransaction(int amount) async {
     try {
-      String user_mobile = await PreferenceService().getString('user_mobile') ?? "";
+      String user_mobile =
+          await PreferenceService().getString('user_mobile') ?? "";
       setState(() {
         transactionId = "TXN${DateTime.now().millisecondsSinceEpoch}";
         Orderamount = amount.toString();
@@ -160,46 +162,31 @@ class _Bookappointment1State extends State<Bookappointment1> {
     }
   }
 
-
-  Future<void> getPhonepeDetailsApi() async {
-    final response = await Userapi.getPhonepeDetails();
-    setState(() {
-      if (response?.status == true) {
-        environment = response?.data?[0].env ?? "";
-        appId = response?.data?[0].appId ?? "";
-        merchantId = response?.data?[0].merchantId ?? "";
-        saltKey = response?.data?[0].saltKey ?? "";
-        saltIndex = response?.data?[0].saltIndex ?? 0;
-        PhonePePaymentSdk.init(environment, appId, merchantId, true);
-      }
-    });
-  }
-
   int? selectedAddressIndex;
 
   Future<void> bookAppointment() async {
-    Map<String,dynamic> data = {
+    Map<String, dynamic> data = {
       "appointment_for": _selected_appointment_type,
-      "age":_ageController.text,
-      "gender":selectedGender,
-      "appointment_mode":_selected_appointment_mode,
+      "age": _ageController.text,
+      "gender": selectedGender,
+      "appointment_mode": _selected_appointment_mode,
       "appointment_request_date": _dateOfAppointmentController.text,
       "service_id": widget.serviceID,
       "days": _daysController.text,
-      "amount":total_amount,
-      "address":address_id,
+      "amount": total_amount,
+      "address": address_id,
       "calender_days": _selectedDays.toList(),
-      "patient_id":patient_id,
+      "patient_id": patient_id,
     };
-    final response = await  Provider.of<BookingHistoryProvider>(context, listen: false).bookAppointment(data);
-    if (response?.status==true) {
+    final response =
+        await Provider.of<BookingHistoryProvider>(context, listen: false)
+            .bookAppointment(data);
+    if (response?.status == true) {
       context.pushReplacement("/appointment_success");
     } else {
       debugPrint("Data not fetched.");
     }
   }
-
-
 
   String _validateFullName = "";
   String _validatePhoneNumber = "";
@@ -212,14 +199,16 @@ class _Bookappointment1State extends State<Bookappointment1> {
   void _validateFields() {
     setState(() {
       _validateAge = _ageController.text.isEmpty ? "Please Enter your Age" : "";
-      _validateDays = _daysController.text.isEmpty ? "Please Enter Number of Days" : "";
+      _validateDays =
+          _daysController.text.isEmpty ? "Please Enter Number of Days" : "";
 
       _validateDateOfAppointment = _dateOfAppointmentController.text.isEmpty
           ? "Please Enter The Date Of Appointment"
           : "";
 
       _validateLocation = address_id == 0 ? "Please Select Your Location" : "";
-      _validateWeekDays = _selectedDays.length <= 4 ? "Please Select Week Days" : "";
+      _validateWeekDays =
+          _selectedDays.length <= 4 ? "Please Select Week Days" : "";
 
       if (_validateAge.isEmpty &&
           _validateDateOfAppointment.isEmpty &&
@@ -433,8 +422,8 @@ class _Bookappointment1State extends State<Bookappointment1> {
                   final child = (provider.childDetails.length != 0)
                       ? provider.childDetails[0]
                       : null;
-                  patient_id = child?.id.toString()??"";
-                  _ageController.text= child?.age.toString()??"";
+                  patient_id = child?.id.toString() ?? "";
+                  _ageController.text = child?.age.toString() ?? "";
                   return ((child?.name ?? "").isNotEmpty)
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -585,11 +574,10 @@ class _Bookappointment1State extends State<Bookappointment1> {
                       ),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(36)),
-                      foregroundColor: selectedGender == 'Male'
-                          ? primarycolor
-                          : Colors.grey,
+                      foregroundColor:
+                          selectedGender == 'Male' ? primarycolor : Colors.grey,
                       padding:
-                      EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                       textStyle: TextStyle(
                         fontFamily: "general_sans",
                         fontWeight: FontWeight.w500,
@@ -629,7 +617,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                           ? primarycolor
                           : Colors.grey,
                       padding:
-                      EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                       textStyle: TextStyle(
                         fontFamily: "general_sans",
                         fontWeight: FontWeight.w500,
@@ -661,7 +649,8 @@ class _Bookappointment1State extends State<Bookappointment1> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                if (widget.appointmentMode == 'both' || widget.appointmentMode == 'online')
+                if (widget.appointmentMode == 'both' ||
+                    widget.appointmentMode == 'online')
                   Padding(
                     padding: const EdgeInsets.only(right: 15),
                     child: SizedBox(
@@ -670,10 +659,10 @@ class _Bookappointment1State extends State<Bookappointment1> {
                       child: OutlinedButton(
                         onPressed: widget.appointmentMode == 'both'
                             ? () {
-                          setState(() {
-                            _selected_appointment_mode = 'online';
-                          });
-                        }
+                                setState(() {
+                                  _selected_appointment_mode = 'online';
+                                });
+                              }
                             : null, // disable button if only one mode
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(
@@ -685,10 +674,12 @@ class _Bookappointment1State extends State<Bookappointment1> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(36),
                           ),
-                          foregroundColor: _selected_appointment_mode == 'online'
-                              ? primarycolor
-                              : Colors.grey,
-                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                          foregroundColor:
+                              _selected_appointment_mode == 'online'
+                                  ? primarycolor
+                                  : Colors.grey,
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                           textStyle: TextStyle(
                             fontFamily: "general_sans",
                             fontWeight: FontWeight.w500,
@@ -699,17 +690,18 @@ class _Bookappointment1State extends State<Bookappointment1> {
                       ),
                     ),
                   ),
-                if (widget.appointmentMode == 'both' || widget.appointmentMode == 'offline')
+                if (widget.appointmentMode == 'both' ||
+                    widget.appointmentMode == 'offline')
                   SizedBox(
                     width: 100,
                     height: 45,
                     child: OutlinedButton(
                       onPressed: widget.appointmentMode == 'both'
                           ? () {
-                        setState(() {
-                          _selected_appointment_mode = 'offline';
-                        });
-                      }
+                              setState(() {
+                                _selected_appointment_mode = 'offline';
+                              });
+                            }
                           : null,
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(
@@ -724,7 +716,8 @@ class _Bookappointment1State extends State<Bookappointment1> {
                         foregroundColor: _selected_appointment_mode == 'offline'
                             ? primarycolor
                             : Colors.grey,
-                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                         textStyle: TextStyle(
                           fontFamily: "general_sans",
                           fontWeight: FontWeight.w500,
@@ -748,13 +741,14 @@ class _Bookappointment1State extends State<Bookappointment1> {
               (value) {
                 final days = int.tryParse(value) ?? 1;
                 Provider.of<BookingHistoryProvider>(context, listen: false)
-                    .updatePriceByDays(days,ratePerDay: int.parse(widget.price));
+                    .updatePriceByDays(days,
+                        ratePerDay: int.parse(widget.price));
               },
             ),
 
             Consumer<BookingHistoryProvider>(
               builder: (context, provider, child) {
-                total_amount= provider.price;
+                total_amount = provider.price;
                 return Text(
                   "Total Price For Service : ₹${provider.price}",
                   style: TextStyle(
@@ -796,7 +790,9 @@ class _Bookappointment1State extends State<Bookappointment1> {
                         color: isSelected ? primarycolor : Colors.white,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                            color: isSelected ? primarycolor : primarycolor.withOpacity(0.5)),
+                            color: isSelected
+                                ? primarycolor
+                                : primarycolor.withOpacity(0.5)),
                       ),
                       child: Center(
                         child: Text(
@@ -885,7 +881,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                                   onChanged: (bool? value) {
                                     setState(() {
                                       selectedAddressIndex =
-                                      value == true ? index : null;
+                                          value == true ? index : null;
                                       address_id = address.id;
                                       _validateLocation = "";
                                     });
@@ -894,8 +890,8 @@ class _Bookappointment1State extends State<Bookappointment1> {
                               ),
                               Expanded(
                                 child: ListTile(
-                                  contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 8),
                                   title: Text(
                                     title,
                                     style: TextStyle(
@@ -954,43 +950,43 @@ class _Bookappointment1State extends State<Bookappointment1> {
               child: SizedBox(
                 width: double.infinity,
                 height: 48,
-                child: Consumer<BookingHistoryProvider>(builder: (context, provider, child) {
-                  return ElevatedButton(
-                    onPressed: () {
-                      if(!provider.isSubmitting){
-                        _validateFields();
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primarycolor, // Updated button color
-                      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                child: Consumer<BookingHistoryProvider>(
+                  builder: (context, provider, child) {
+                    return ElevatedButton(
+                      onPressed: () {
+                        if (!provider.isSubmitting) {
+                          _validateFields();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primarycolor, // Updated button color
+                        padding:
+                            EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        elevation: 0, // Adds a slight shadow for better UI
                       ),
-                      elevation: 0, // Adds a slight shadow for better UI
-                    ),
-                    child:
-                    provider.isSubmitting
-                        ? SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 3,
-                      ),
-                    )
-                        :
-                    Text(
-                      "Book Appointment",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Epi',
-                      ),
-                    ),
-                  );
-                },
+                      child: provider.isSubmitting
+                          ? SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 3,
+                              ),
+                            )
+                          : Text(
+                              "Book Appointment",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Epi',
+                              ),
+                            ),
+                    );
+                  },
                 ),
               ),
             ),

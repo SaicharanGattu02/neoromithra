@@ -203,83 +203,68 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
   //   }
   // ];
 
-  void _showSOSConfirmationDialog(BuildContext context, loc) {
-    showDialog(
-      context: context,
-      barrierDismissible: false, // Prevents accidental dismissal
-      builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: Row(
-            children: [
-              Text(
-                "Confirm SOS Call",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-          content: Text(
-            "Are you sure you want to make an SOS call? This action cannot be undone.",
-            style: TextStyle(
-              fontSize: 15,
-              fontFamily: "Epi",
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => context.pop(),
-              child: Text("No",
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontFamily: "Epi",
-                    fontWeight: FontWeight.w700,
-                    fontSize: 15,
-                  )),
-            ),
-            ElevatedButton.icon(
-              onPressed: () {
-                context.pop();
-                _makeSOSCall(loc);
-              },
-              icon: Icon(Icons.call, color: Colors.white),
-              label: Text(
-                "Yes",
-                style: TextStyle(
-                    fontFamily: "Epi",
-                    fontWeight: FontWeight.w700,
-                    fontSize: 15,
-                    color: Colors.white),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _makeSOSCall(loc) async {
-    try {
-      var res = await Userapi.makeSOSCallApi(loc);
-      setState(() {
-        if (res != null && res.isNotEmpty) {
-        } else {
-          debugPrint('No message received from the API');
-        }
-      });
-    } catch (e) {
-      debugPrint("${e.toString()}");
-    }
-  }
+  // void _showSOSConfirmationDialog(BuildContext context, loc) {
+  //   showDialog(
+  //     context: context,
+  //     barrierDismissible: false, // Prevents accidental dismissal
+  //     builder: (context) {
+  //       return AlertDialog(
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(16),
+  //         ),
+  //         title: Row(
+  //           children: [
+  //             Text(
+  //               "Confirm SOS Call",
+  //               style: TextStyle(fontWeight: FontWeight.bold),
+  //             ),
+  //           ],
+  //         ),
+  //         content: Text(
+  //           "Are you sure you want to make an SOS call? This action cannot be undone.",
+  //           style: TextStyle(
+  //             fontSize: 15,
+  //             fontFamily: "Epi",
+  //             fontWeight: FontWeight.w500,
+  //           ),
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () => context.pop(),
+  //             child: Text("No",
+  //                 style: TextStyle(
+  //                   color: Colors.grey[700],
+  //                   fontFamily: "Epi",
+  //                   fontWeight: FontWeight.w700,
+  //                   fontSize: 15,
+  //                 )),
+  //           ),
+  //           ElevatedButton.icon(
+  //             onPressed: () {
+  //               context.pop();
+  //             },
+  //             icon: Icon(Icons.call, color: Colors.white),
+  //             label: Text(
+  //               "Yes",
+  //               style: TextStyle(
+  //                   fontFamily: "Epi",
+  //                   fontWeight: FontWeight.w700,
+  //                   fontSize: 15,
+  //                   color: Colors.white),
+  //             ),
+  //             style: ElevatedButton.styleFrom(
+  //               backgroundColor: Colors.green,
+  //               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+  //               shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(12),
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   void launchWhatsApp() async {
     String url = "https://wa.me/+91 8885320115}"; // WhatsApp API URL

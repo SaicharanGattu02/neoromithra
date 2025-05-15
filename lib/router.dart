@@ -7,7 +7,6 @@ import 'package:neuromithra/Presentation/Aboutus.dart';
 import 'package:neuromithra/Presentation/AddAddressScreen.dart';
 import 'package:neuromithra/Presentation/AddressListScreen.dart';
 import 'package:neuromithra/Presentation/AppointmentSessions.dart';
-import 'package:neuromithra/Presentation/BookAppointment.dart';
 import 'package:neuromithra/Presentation/PrivacyPolicyScreen.dart';
 import 'package:neuromithra/Presentation/RefundPolicyScreen.dart';
 import 'package:neuromithra/Presentation/SelectLocation.dart';
@@ -62,14 +61,7 @@ final GoRouter goRouter =
   GoRoute(
       path: '/result_screen',
       pageBuilder: (context, state) {
-        final resultData = state.extra as Map<String, dynamic>;
-        final role = state.uri.queryParameters['role'] ?? "";
-        return buildSlideTransitionPage(
-            Resultscreen(
-              resultData: resultData,
-              role: role,
-            ),
-            state);
+        return buildSlideTransitionPage(Resultscreen(), state);
       }),
   GoRoute(
       path: '/payment_status',
@@ -130,14 +122,6 @@ final GoRouter goRouter =
           int.tryParse(state.uri.queryParameters['initialIndex'] ?? '0') ?? 0;
       return buildSlideTransitionPage(
           MainDashBoard(initialIndex: initialIndex), state);
-    },
-  ),
-  GoRoute(
-    path: '/book_appointment',
-    pageBuilder: (context, state) {
-      final pagesource = state.uri.queryParameters['pagesource'] ?? '0';
-      return buildSlideTransitionPage(
-          Bookappointment(pagesource: pagesource), state);
     },
   ),
   GoRoute(
@@ -221,11 +205,11 @@ final GoRouter goRouter =
           state);
     },
   ),
-      GoRoute(
-        path: '/appointment_success',
-        pageBuilder: (context, state) =>
-            buildSlideTransitionPage(ApointmentSuccess(), state),
-      ),
+  GoRoute(
+    path: '/appointment_success',
+    pageBuilder: (context, state) =>
+        buildSlideTransitionPage(ApointmentSuccess(), state),
+  ),
   GoRoute(
     path: '/booking_history',
     pageBuilder: (context, state) =>
@@ -237,12 +221,13 @@ final GoRouter goRouter =
         final id = state.uri.queryParameters['id'] ?? '';
         return buildSlideTransitionPage(Appointmentsessions(id: id), state);
       }),
-      GoRoute(
-          path: '/feedback_report',
-          pageBuilder: (context, state) {
-            final id = state.uri.queryParameters['id'] ?? '';
-            return buildSlideTransitionPage(BehavioralTrackingReport(id: id), state);
-          }),
+  GoRoute(
+      path: '/feedback_report',
+      pageBuilder: (context, state) {
+        final id = state.uri.queryParameters['id'] ?? '';
+        return buildSlideTransitionPage(
+            BehavioralTrackingReport(id: id), state);
+      }),
   GoRoute(
     path: '/adult_guide',
     pageBuilder: (context, state) =>

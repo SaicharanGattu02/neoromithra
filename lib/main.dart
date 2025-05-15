@@ -6,6 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:neuromithra/Providers/AssessmentProvider.dart';
 import 'package:neuromithra/router.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
@@ -122,6 +123,7 @@ Future<void> main() async {
     ChangeNotifierProvider(create: (_) => UserProviders()),
     ChangeNotifierProvider(create: (_) => RegisterProvider()),
     ChangeNotifierProvider(create: (_) => ChildProvider()),
+    ChangeNotifierProvider(create: (_) => AssessmentProvider()),
   ], child: MyApp()));
 }
 
