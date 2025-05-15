@@ -6,6 +6,7 @@ import 'package:neuromithra/Assesment/ChildAssessment.dart';
 import 'package:neuromithra/Presentation/Aboutus.dart';
 import 'package:neuromithra/Presentation/AddAddressScreen.dart';
 import 'package:neuromithra/Presentation/AddressListScreen.dart';
+import 'package:neuromithra/Presentation/AppointmentSessions.dart';
 import 'package:neuromithra/Presentation/BookAppointment.dart';
 import 'package:neuromithra/Presentation/PrivacyPolicyScreen.dart';
 import 'package:neuromithra/Presentation/RefundPolicyScreen.dart';
@@ -16,6 +17,7 @@ import 'package:neuromithra/Presentation/ServiceDeailsScreen.dart';
 import 'package:neuromithra/Presentation/TermsAndConditionsScreen.dart';
 import 'package:neuromithra/utils/constants.dart';
 import 'Assesment/ResultScreen.dart';
+import 'Presentation/BehavioralTrackingReport.dart';
 import 'Presentation/Bookappointment1.dart';
 import 'Presentation/Authentication/LogInWithMobile.dart';
 import 'Presentation/Authentication/Otp.dart';
@@ -56,11 +58,6 @@ final GoRouter goRouter =
     path: '/register',
     pageBuilder: (context, state) =>
         buildSlideTransitionPage(Register(), state),
-  ),
-  GoRoute(
-    path: '/appointment_success',
-    pageBuilder: (context, state) =>
-        buildSlideTransitionPage(ApointmentSuccess(), state),
   ),
   GoRoute(
       path: '/result_screen',
@@ -187,10 +184,14 @@ final GoRouter goRouter =
     path: '/book_appointment1',
     pageBuilder: (context, state) {
       final serviceID = state.uri.queryParameters['serviceID'] ?? '';
-      final appointmentMode = state.uri.queryParameters['appointmentMode'] ?? '';
+      final appointmentMode =
+          state.uri.queryParameters['appointmentMode'] ?? '';
       final price = state.uri.queryParameters['price'] ?? '';
       return buildSlideTransitionPage(
-          Bookappointment1(serviceID: serviceID, appointmentMode: appointmentMode,price: price),
+          Bookappointment1(
+              serviceID: serviceID,
+              appointmentMode: appointmentMode,
+              price: price),
           state);
     },
   ),
@@ -220,11 +221,28 @@ final GoRouter goRouter =
           state);
     },
   ),
+      GoRoute(
+        path: '/appointment_success',
+        pageBuilder: (context, state) =>
+            buildSlideTransitionPage(ApointmentSuccess(), state),
+      ),
   GoRoute(
     path: '/booking_history',
     pageBuilder: (context, state) =>
         buildSlideTransitionPage(BookingHistory(), state),
   ),
+  GoRoute(
+      path: '/sessions',
+      pageBuilder: (context, state) {
+        final id = state.uri.queryParameters['id'] ?? '';
+        return buildSlideTransitionPage(Appointmentsessions(id: id), state);
+      }),
+      GoRoute(
+          path: '/feedback_report',
+          pageBuilder: (context, state) {
+            final id = state.uri.queryParameters['id'] ?? '';
+            return buildSlideTransitionPage(BehavioralTrackingReport(id: id), state);
+          }),
   GoRoute(
     path: '/adult_guide',
     pageBuilder: (context, state) =>

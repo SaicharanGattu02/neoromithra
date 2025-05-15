@@ -332,10 +332,13 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                     padding: EdgeInsets.all(8.0),
                     child: Row(
                       children: [
-                        Image.asset(
-                          'assets/neuromitralogo.png',
-                          fit: BoxFit.contain,
-                          scale: 10,
+                        ClipOval(
+                          child: Image.asset(
+                            'assets/applogo.jpeg',
+                            fit: BoxFit.cover,
+                            width: 50,
+                            height: 50,
+                          ),
                         ),
                         SizedBox(
                           width: 10,

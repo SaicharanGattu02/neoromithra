@@ -29,8 +29,9 @@ class APIEndpointUrls {
 
 
   static const String submitReview ='${apiUrl}create_review';
-  static const String bookingHistory ='${apiUrl}get_user_booking_hisrory';
-  static const String previousBookingHistory ='${apiUrl}get_user_booking_hisrory';
+  static const String bookingHistory ='${userUrl}view-appointments';
+  static const String sessionsByID ='${userUrl}appointments_by_id';
+  static const String session_tracking ='${userUrl}session-tracking';
   static const String updateRefreshToken ='${apiUrl}refreshToken';
   static const String getReviewList ='${apiUrl}get_review';
   static const String updateProfileImage ='${apiUrl}update_profile_image';

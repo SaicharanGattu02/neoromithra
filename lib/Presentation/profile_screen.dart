@@ -305,7 +305,6 @@ void _showLogoutConfirmationDialog(BuildContext context) {
                   ),
                 ),
               ),
-
               // Dialog Content
               Positioned.fill(
                 top: 30.0, // Moves content down
@@ -333,7 +332,6 @@ void _showLogoutConfirmationDialog(BuildContext context) {
                             fontFamily: "Poppins"),
                       ),
                       const SizedBox(height: 20.0),
-
                       // Buttons Row
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

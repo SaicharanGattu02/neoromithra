@@ -3,6 +3,7 @@ import 'dart:convert' show base64Encode, jsonEncode, utf8;
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:neuromithra/Providers/AddressListProviders.dart';
 import 'package:neuromithra/Providers/UserProvider.dart';
@@ -191,7 +192,8 @@ class _Bookappointment1State extends State<Bookappointment1> {
       "patient_id":patient_id,
     };
     final response = await  Provider.of<BookingHistoryProvider>(context, listen: false).bookAppointment(data);
-    if (response != null) {
+    if (response?.status==true) {
+      context.pushReplacement("/appointment_success");
     } else {
       debugPrint("Data not fetched.");
     }
@@ -432,12 +434,13 @@ class _Bookappointment1State extends State<Bookappointment1> {
                       ? provider.childDetails[0]
                       : null;
                   patient_id = child?.id.toString()??"";
+                  _ageController.text= child?.age.toString()??"";
                   return ((child?.name ?? "").isNotEmpty)
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Childe Details',
+                              'Child Details',
                               style: TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.w500,
@@ -550,9 +553,9 @@ class _Bookappointment1State extends State<Bookappointment1> {
                   TextInputType.number,
                   r'^\d{0,10}$',
                   true),
+              _buildTextField("Age", _ageController, _validateAge,
+                  TextInputType.number, r'^\d{0,9}$'),
             ],
-            _buildTextField("Age", _ageController, _validateAge,
-                TextInputType.number, r'^\d{0,9}$'),
             Text(
               "Gender",
               style: TextStyle(
@@ -733,89 +736,6 @@ class _Bookappointment1State extends State<Bookappointment1> {
                   ),
               ],
             ),
-            // DropdownButtonFormField<String>(
-            //   value: appointmenttype,
-            //   onChanged: (value) {
-            //     setState(() {
-            //       appointmenttype = value;
-            //       if (appointmenttype == "Online") {
-            //         _appointmentTypeController.text = "0";
-            //       } else {
-            //         _appointmentTypeController.text = "1";
-            //       }
-            //       _validateAppointmentType = "";
-            //     });
-            //   },
-            //   items: [
-            //     'Online',
-            //     'Offline',
-            //   ].map((status) {
-            //     return DropdownMenuItem<String>(
-            //       value: status,
-            //       child: Text(
-            //         status,
-            //         style: TextStyle(
-            //           fontSize: 16,
-            //           fontFamily: "Poppins",
-            //           letterSpacing: 0,
-            //           height: 1.2,
-            //           color: Colors.black,
-            //           fontWeight: FontWeight.w400,
-            //         ),
-            //       ),
-            //     );
-            //   }).toList(),
-            //   decoration: InputDecoration(
-            //     filled: true,
-            //     fillColor: Color(0xffffffff),
-            //     enabledBorder: OutlineInputBorder(
-            //       borderRadius: BorderRadius.circular(15.0),
-            //       borderSide: BorderSide(width: 1, color: Color(0xffCDE2FB)),
-            //     ),
-            //     focusedBorder: OutlineInputBorder(
-            //       borderRadius: BorderRadius.circular(15.0),
-            //       borderSide: BorderSide(width: 1, color: Color(0xffCDE2FB)),
-            //     ),
-            //   ),
-            //   hint: Align(
-            //     alignment: Alignment.center,
-            //     child: Text(
-            //       "Select appointment type",
-            //       style: TextStyle(
-            //         fontSize: 15,
-            //         letterSpacing: 0,
-            //         color: Color(0xffAFAFAF),
-            //         fontFamily: 'Poppins',
-            //         fontWeight: FontWeight.w400,
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            // if (_validateAppointmentType.isNotEmpty) ...[
-            //   Container(
-            //     alignment: Alignment.topLeft,
-            //     margin: EdgeInsets.only(left: 8, bottom: 10, top: 5),
-            //     width: screenWidth * 0.6,
-            //     child: ShakeWidget(
-            //       key: Key("value"),
-            //       duration: Duration(milliseconds: 700),
-            //       child: Text(
-            //         _validateAppointmentType,
-            //         style: TextStyle(
-            //           fontFamily: "Poppins",
-            //           fontSize: 12,
-            //           color: Colors.red,
-            //           fontWeight: FontWeight.w500,
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ] else ...[
-            //   const SizedBox(
-            //     height: 15,
-            //   ),
-            // ],
-
             _buildDateField("Date Of Appointment", _dateOfAppointmentController,
                 _validateDateOfAppointment, context),
             _buildTextField(

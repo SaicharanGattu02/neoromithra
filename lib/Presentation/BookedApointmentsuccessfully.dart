@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'BookingHistory.dart';
 
 class ApointmentSuccess extends StatefulWidget {
   const ApointmentSuccess({super.key});
-
   @override
   State<ApointmentSuccess> createState() => _ApointmentSuccessState();
 }
@@ -50,7 +50,7 @@ class _ApointmentSuccessState extends State<ApointmentSuccess> {
     // Navigate to Dashboard after a delay
     SchedulerBinding.instance.addPostFrameCallback((_) {
       Future.delayed(Duration(seconds: 2), () {
-
+        context.pushReplacement("/booking_history");
       });
     });
   }

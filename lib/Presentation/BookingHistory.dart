@@ -3,22 +3,13 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
-import 'package:lottie/lottie.dart';
-import 'package:neuromithra/Presentation/AddRating.dart';
-import 'package:neuromithra/services/Preferances.dart';
-import 'package:neuromithra/services/userapi.dart';
+import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer/shimmer.dart';
-
 import '../Components/Shimmers.dart';
 import '../Providers/BookingHistoryProviders.dart';
 import '../utils/Color_Constants.dart';
-import 'BehavioralTrackingReport.dart';
-import 'CustomAppBar.dart';
-import '../Model/BookingHistoryModel.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
 
 class BookingHistory extends StatefulWidget {
   const BookingHistory({super.key});
@@ -30,8 +21,9 @@ class BookingHistory extends StatefulWidget {
 class _BookingHistoryState extends State<BookingHistory> {
   @override
   void initState() {
-    Provider.of<BookingHistoryProvider>(context, listen: false)
-        .getBookingHistory();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<BookingHistoryProvider>(context, listen: false).getBookingHistory();
+    });
     super.initState();
   }
 
@@ -102,9 +94,6 @@ class _BookingHistoryState extends State<BookingHistory> {
 
   @override
   Widget build(BuildContext context) {
-    var w = MediaQuery.of(context).size.width;
-    var h = MediaQuery.of(context).size.height;
-
     return Scaffold(
         appBar: AppBar(
           title: Text('Booking History',
@@ -127,248 +116,229 @@ class _BookingHistoryState extends State<BookingHistory> {
           builder: (context, bookingHistoryProvider, child) {
             if (bookingHistoryProvider.isLoading) {
               // 🟦 Shimmer loading skeleton
-              return ListView.builder(
-                itemCount: 3,
-                padding: EdgeInsets.only(top: 10),
-                itemBuilder: (_, __) => bookingHistoryShimmerCard(context),
+              return CustomScrollView(
+                slivers: [
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (_, __) => bookingHistoryShimmerCard(context),
+                      childCount: 3,
+                    ),
+                  ),
+                ],
               );
             }
-            if (bookingHistoryProvider.bookingHistory.isEmpty) {
-              // 📭 Empty state with visual
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset("assets/no_booking_history.png",
-                          width: 220, height: 220),
-                      SizedBox(height: 20),
-                      Text(
-                        "No Booking History Found",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: "general_sans",
+
+            if (bookingHistoryProvider.appointments.isEmpty) {
+              // 📭 Empty state
+              return CustomScrollView(
+                slivers: [
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(32.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset("assets/no_booking_history.png",
+                                width: 220, height: 220),
+                            SizedBox(height: 20),
+                            Text(
+                              "No Booking History Found",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: "general_sans",
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              "Looks like you haven’t booked any appointments yet.",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: "general_sans",
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      SizedBox(height: 10),
-                      Text(
-                        "Looks like you haven’t booked any appointments yet.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontFamily: "general_sans",
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               );
             }
 
             // ✅ Booking history UI
-            return Padding(
-              padding: const EdgeInsets.all(15),
-              child: ListView.separated(
-                itemCount: bookingHistoryProvider.bookingHistory.length,
-                separatorBuilder: (_, __) => SizedBox(height: 12),
-                itemBuilder: (BuildContext context, int index) {
-                  final booking = bookingHistoryProvider.bookingHistory[index];
-                  return Container(
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Color(0x4DA0F2F0),
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 4,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // 🔹 Header: ID + Type + Date
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Order No-${booking.id}",
-                              style: TextStyle(
-                                fontFamily: "general_sans",
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: Color(0x4DA0F2A3),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                booking.appointmentType == 0
-                                    ? "Online"
-                                    : "Offline",
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: Color(0xff0DC613),
-                                  fontWeight: FontWeight.w700,
-                                  fontFamily: "general_sans",
-                                ),
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 3),
-                              decoration: BoxDecoration(
-                                color: Color(0x80A0F2F0),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                "${booking.appointment}",
-                                style: TextStyle(
-                                  fontFamily: "general_sans",
-                                  fontSize: 14,
-                                  color: Color(0xff088A87),
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        // 🔹 Name and Source
-                        Text(
-                          booking.fullName??"",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xff088A87),
-                            fontFamily: "general_sans",
-                          ),
-                        ),
-                        SizedBox(height: 2),
-                        Text(
-                          booking.pageSource??"",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: "general_sans",
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        // 🔹 Date & Time
-                        Row(
-                          children: [
-                            Icon(Icons.calendar_month, size: 16),
-                            SizedBox(width: 6),
-                            Text(
-                              booking.dateOfAppointment??"",
-                              style: TextStyle(
-                                fontFamily: "general_sans",
-                                fontSize: 12,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            Spacer(),
-                            Icon(Icons.access_time, size: 16),
-                            SizedBox(width: 6),
-                            Text(
-                              booking.timeOfAppointment??"",
-                              style: TextStyle(
-                                fontFamily: "general_sans",
-                                fontSize: 12,
-                                color: Colors.black87,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        // 🔹 Prescription download
-                        if (booking.filePath != null) ...[
-                          InkWell(
-                            onTap: () {
-                              downloadInvoice(
-                                  "https://admin.neuromitra.com/api/downloadfile/${booking.id}");
-                            },
-                            child: Row(
+            return NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification scrollInfo) {
+                if (scrollInfo.metrics.pixels >=
+                    scrollInfo.metrics.maxScrollExtent - 200) {
+                  if (bookingHistoryProvider.hasMore &&
+                      !bookingHistoryProvider.isLoading) {
+                    bookingHistoryProvider.loadMoreBookingHistory();
+                  }
+                }
+                return false;
+              },
+              child: CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                    padding: EdgeInsets.all(15),
+                    sliver: SliverList.separated(
+                      itemCount: bookingHistoryProvider.appointments.length,
+                      itemBuilder: (context, index) {
+                        final booking =
+                            bookingHistoryProvider.appointments[index];
+                        return Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Icon(Icons.download_outlined,
-                                    color: Color(0xff088A87)),
-                                SizedBox(width: 5),
-                                Text(
-                                  "Download Prescription",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: "general_sans",
-                                    fontSize: 15,
-                                    color: Color(0xff088A87),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                        ],
-                        Divider(),
-                        // 🔹 Actions: Track & Rate
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                // View behaviour track
-                              },
-                              child: Row(
-                                children: [
-                                  Icon(Icons.list_alt_outlined,
-                                      color: Color(0xff088A87)),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    "View Behavioural Track",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontFamily: "general_sans",
-                                      fontSize: 15,
-                                      color: Color(0xff088A87),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            if (booking.ratingStatus != 1 &&
-                                booking.filePath != null)
-                              InkWell(
-                                onTap: () async {
-                                  // Handle rating logic
-                                },
-                                child: Row(
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Icon(Icons.star, color: Colors.yellow[700]),
-                                    SizedBox(width: 5),
                                     Text(
-                                      "Rate us",
+                                      "Order No-${booking.id}",
                                       style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500,
                                         fontFamily: "general_sans",
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: Color(0x4DA0F2A3),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        booking.appointmentMode ?? "",
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color: Color(0xff0DC613),
+                                          fontWeight: FontWeight.w700,
+                                          fontFamily: "general_sans",
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: Color(0x80A0F2F0),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        "${booking.appointmentFor}",
+                                        style: TextStyle(
+                                          fontFamily: "general_sans",
+                                          fontSize: 14,
+                                          color: Color(0xff088A87),
+                                          fontWeight: FontWeight.w700,
+                                        ),
                                       ),
                                     ),
                                   ],
                                 ),
-                              ),
-                          ],
-                        ),
-                      ],
+                                SizedBox(height: 10),
+                                Text(
+                                  booking.serviceName ?? "",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xff088A87),
+                                    fontFamily: "general_sans",
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  "Week Day's : ${booking.calenderDays ?? ""}",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "general_sans",
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "₹${booking.amount.toString()}",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: "general_sans",
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    Icon(Icons.calendar_month_outlined,
+                                        size: 16),
+                                    SizedBox(width: 6),
+                                    Text(
+                                      booking.appointmentRequestDate ?? "",
+                                      style: TextStyle(
+                                        fontFamily: "general_sans",
+                                        fontSize: 12,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Divider(
+                                    color: Colors.grey.shade300, thickness: 1),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    TextButton.icon(
+                                      onPressed: () {
+                                        context.push("/sessions?id=${booking.id}");
+                                      },
+                                      icon: Icon(
+                                        Icons.remove_red_eye_outlined,
+                                        color: Color(0xff088A87),
+                                      ),
+                                      label: Text(
+                                        "View Sessions",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: "general_sans",
+                                          fontSize: 15,
+                                          color: Color(0xff088A87),
+                                        ),
+                                      ),
+                                      style: TextButton.styleFrom(
+                                        padding: EdgeInsets.zero,
+                                        minimumSize: Size(0, 0),
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                      separatorBuilder: (_, __) => SizedBox(height: 12),
                     ),
-                  );
-                },
+                  ),
+                  if (bookingHistoryProvider.hasMore)
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Center(
+                            child: CircularProgressIndicator(
+                          strokeWidth: 1,
+                        )),
+                      ),
+                    ),
+                ],
               ),
             );
           },
@@ -442,5 +412,4 @@ class _BookingHistoryState extends State<BookingHistory> {
       ),
     );
   }
-
 }

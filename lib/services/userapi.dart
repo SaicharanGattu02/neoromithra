@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:neuromithra/Model/AppointmentsModel.dart';
 import 'package:neuromithra/Model/ChildListModel.dart';
 import 'package:neuromithra/Model/PhonepeDetails.dart';
 import 'package:neuromithra/Model/QuoteModel.dart';
+import 'package:neuromithra/Model/SessionsModel.dart';
 import 'package:neuromithra/Model/SignInModel.dart';
 import 'package:neuromithra/Model/SuccessModel.dart';
 import 'package:neuromithra/Model/UpcomingAppointmentsModel.dart';
@@ -12,13 +14,13 @@ import '../Model/AddressDetailsResponse.dart';
 import '../Model/AddressListModel.dart';
 import '../Model/AssessmentQuestion.dart';
 import '../Model/BehaviouralTrackingModel.dart';
-import '../Model/BookingHistoryModel.dart';
 import '../Model/CounsellingsListModel.dart';
 import '../Model/LoginModel.dart';
 import '../Model/PreviousBookingModel.dart';
 import '../Model/ProfileDetailsModel.dart';
 import '../Model/ReviewListModel.dart';
 import '../Model/ReviewSubmitModel.dart';
+import '../Model/SessionFeedbackModel.dart';
 import '../Model/TherapiesListModel.dart';
 import '../api_endpoint_urls.dart';
 import '../utils/constants.dart';
@@ -499,12 +501,12 @@ class Userapi {
     }
   }
 
-  static Future<BookingHistoryModel?> getBookingHistory() async {
+  static Future<AppointmentsModel?> getBookingHistory(int page) async {
     try {
-      final response = await get("${APIEndpointUrls.bookingHistory}");
+      final response = await get("${APIEndpointUrls.bookingHistory}?page=${page}");
       if (response.statusCode == 200) {
         debugPrint("getBookingHistory Status: ${response.data}");
-        return BookingHistoryModel.fromJson(response.data);
+        return AppointmentsModel.fromJson(response.data);
       }
       debugPrint("Request failed with status: ${response.statusCode}");
       return null;
@@ -514,12 +516,27 @@ class Userapi {
     }
   }
 
-  static Future<PreviousBookingModel?> getPreviousBookingHistory() async {
+  static Future<SessionsModel?> getSessionsById(String id) async {
     try {
-      final response = await get("${APIEndpointUrls.bookingHistory}");
+      final response = await get("${APIEndpointUrls.sessionsByID}/${id}");
       if (response.statusCode == 200) {
-        debugPrint("getPreviousBookingHistory Status: ${response.data}");
-        return PreviousBookingModel.fromJson(response.data);
+        debugPrint("getSessionsById Status: ${response.data}");
+        return SessionsModel.fromJson(response.data);
+      }
+      debugPrint("Request failed with status: ${response.statusCode}");
+      return null;
+    } catch (e) {
+      debugPrint("Error occurred: $e");
+      return null;
+    }
+  }
+
+  static Future<SessionFeedbackModel?> getSessionTracking(String id) async {
+    try {
+      final response = await get("${APIEndpointUrls.session_tracking}/${id}");
+      if (response.statusCode == 200) {
+        debugPrint("getSessionTracking Status: ${response.data}");
+        return SessionFeedbackModel.fromJson(response.data);
       }
       debugPrint("Request failed with status: ${response.statusCode}");
       return null;
