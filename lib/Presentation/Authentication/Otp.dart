@@ -53,8 +53,8 @@ class _OtpState extends State<Otp> {
       "fcm_token": fcmToken,
     };
    var res = await Provider.of<SignInProviders>(context,listen: false).verifyOtp(data);
-    if(res?.status ==true){
-      AuthService.saveTokens(res?.accessToken??"", res?.refreshToken??"", res?.expiresIn??0);
+    if(res!=null){
+      AuthService.saveTokens(res.accessToken??"", res.refreshToken??"", res.expiresIn??0);
       context.go("/main_dashBoard?initialIndex=0");
     }
 

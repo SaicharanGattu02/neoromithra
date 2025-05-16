@@ -300,7 +300,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     } else if (hour >= 12 && hour < 18) {
       greeting = 'Good Afternoon';
     } else {
-      greeting = 'Good Evening';
+        greeting = 'Good Evening';
     }
 
     var h = MediaQuery.of(context).size.height;

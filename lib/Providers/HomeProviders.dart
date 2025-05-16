@@ -78,7 +78,7 @@ class HomeProviders with ChangeNotifier {
     try {
       final response = await Userapi.getTherapiesList();
       if (response?.status == true) {
-        _therapieslist = response?.therapieslist ?? [];
+        _therapieslist = response?.data?.therapiesList ?? [];
       }
     } catch (e) {
       _setError('Failed to fetch therapies: $e');
@@ -106,7 +106,7 @@ class HomeProviders with ChangeNotifier {
     try {
       final response = await Userapi.getServiceDetails(id);
       if (response?.status == true) {
-        _therapyDetails = response?.therapieslist ?? [];
+        _therapyDetails = response?.data?.therapiesList ?? [];
       }
     } catch (e) {
       _setError('Failed to fetch getServiceDetails: $e');
@@ -120,7 +120,7 @@ class HomeProviders with ChangeNotifier {
     try {
       final response = await Userapi.getCounsellingsList();
       if (response?.status == true) {
-        _counsellingslist = response?.counsellingslist ?? [];
+        _counsellingslist = response?.data?.counsellingsList ?? [];
       }
     } catch (e) {
       _setError('Failed to fetch counsellings: $e');

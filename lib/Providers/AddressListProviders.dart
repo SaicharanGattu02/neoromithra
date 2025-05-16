@@ -25,7 +25,7 @@ class AddressListProvider with ChangeNotifier {
     try {
       final response = await Userapi.getAddressList();
       if (response?.status == true) {
-        _addresses = response?.data ?? [];
+        _addresses = response?.data?.addresses ?? [];
       } else {
         debugPrint("Failed to fetch addresses");
         _addresses = [];

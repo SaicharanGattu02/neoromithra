@@ -11,6 +11,7 @@ import 'package:neuromithra/services/Preferances.dart';
 import 'package:phonepe_payment_sdk/phonepe_payment_sdk.dart';
 import 'package:provider/provider.dart';
 import '../Model/ChildListModel.dart';
+import '../Model/PhonepeDetails.dart';
 import '../Model/SuccessModel.dart';
 import '../Providers/BookingHistoryProviders.dart';
 import '../Providers/ChildProvider.dart';
@@ -38,17 +39,16 @@ class _Bookappointment1State extends State<Bookappointment1> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _daysController = TextEditingController();
-  final TextEditingController _dateOfAppointmentController =
-      TextEditingController();
+  final TextEditingController _dateOfAppointmentController = TextEditingController();
 
   int address_id = 0;
   String patient_id = "";
 
   // final String environment = "PRODUCTION";
-  String environment = "PRODUCTION";
-  String appId = "";
-  String merchantId = "";
-  String saltKey = "";
+  String environment = "SANDBOX";
+  String appId = "PGTESTPAYUAT77";
+  String merchantId = "PGTESTPAYUAT77";
+  String saltKey = "14fa5465-f8a7-443f-8477-f986b8fcfde9";
   int saltIndex = 1;
   final String callbackUrl = "";
   final String apiEndPoint = "/pg/v1/pay";
@@ -60,6 +60,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
   String _selected_appointment_mode = 'online';
   String selectedGender = 'Male';
   int total_amount = 0;
+  List<PhonepeKeys> _phonepeKeys = [];
 
   @override
   void initState() {
@@ -67,7 +68,17 @@ class _Bookappointment1State extends State<Bookappointment1> {
     _selected_appointment_mode =
         widget.appointmentMode == 'both' ? 'online' : widget.appointmentMode;
     Provider.of<AddressListProvider>(context, listen: false).getAddressList();
-    Provider.of<BookingHistoryProvider>(context, listen: false).getPhonepeDetails();
+    final provider = Provider.of<BookingHistoryProvider>(context, listen: false);
+    PhonePePaymentSdk.init(environment, appId, merchantId, true);
+    // provider.getPhonepeDetails().then((_) {
+    //   setState(() {
+    //     _phonepeKeys = provider.phonpekeys;
+    //     merchantId=_phonepeKeys[0].merchantId??"";
+    //     appId=_phonepeKeys[0].appId??"";
+    //     saltIndex=_phonepeKeys[0].saltIndex??0;
+    //     saltKey=_phonepeKeys[0].saltKey??"";
+    //   });
+    // });
     var res = Provider.of<UserProviders>(context, listen: false).userData;
     setState(() {
       _fullNameController.text = res.name ?? "";
@@ -120,13 +131,11 @@ class _Bookappointment1State extends State<Bookappointment1> {
 
   Future<void> initiateTransaction(int amount) async {
     try {
-      String user_mobile =
-          await PreferenceService().getString('user_mobile') ?? "";
+      String user_mobile = await PreferenceService().getString('user_mobile') ?? "";
       setState(() {
         transactionId = "TXN${DateTime.now().millisecondsSinceEpoch}";
         Orderamount = amount.toString();
       });
-
       Map<String, dynamic> payload = {
         "merchantTransactionId": transactionId,
         "merchantId": merchantId,
@@ -135,9 +144,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
         "mobileNumber": "${user_mobile}",
         "paymentInstrument": {"type": "PAY_PAGE"}
       };
-
       log(payload.toString());
-
       String payloadEncoded = base64Encode(utf8.encode(jsonEncode(payload)));
       var byteCodes = utf8.encode(payloadEncoded + apiEndPoint + saltKey);
       String checksum = "${sha256.convert(byteCodes)}###$saltIndex";
@@ -154,6 +161,29 @@ class _Bookappointment1State extends State<Bookappointment1> {
       if (response != null) {
         log("Payment response: $response");
         String? status = response["status"];
+        if(status=="SUCCESS"){
+          Map<String, dynamic> data = {
+            "appointment_for": _selected_appointment_type,
+            "age": _ageController.text,
+            "gender": selectedGender,
+            "appointment_mode": _selected_appointment_mode,
+            "appointment_request_date": _dateOfAppointmentController.text,
+            "service_id": widget.serviceID,
+            "days": _daysController.text,
+            "amount": total_amount,
+            "address": address_id,
+            "calender_days": _selectedDays.toList(),
+            "patient_id": patient_id,
+          };
+          final response =
+          await Provider.of<BookingHistoryProvider>(context, listen: false)
+              .bookAppointment(data);
+          if (response?.status == true) {
+            context.pushReplacement("/appointment_success");
+          } else {
+            debugPrint("Data not fetched.");
+          }
+        }
       } else {
         log("⚠️ Payment response is null");
       }
@@ -164,29 +194,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
 
   int? selectedAddressIndex;
 
-  Future<void> bookAppointment() async {
-    Map<String, dynamic> data = {
-      "appointment_for": _selected_appointment_type,
-      "age": _ageController.text,
-      "gender": selectedGender,
-      "appointment_mode": _selected_appointment_mode,
-      "appointment_request_date": _dateOfAppointmentController.text,
-      "service_id": widget.serviceID,
-      "days": _daysController.text,
-      "amount": total_amount,
-      "address": address_id,
-      "calender_days": _selectedDays.toList(),
-      "patient_id": patient_id,
-    };
-    final response =
-        await Provider.of<BookingHistoryProvider>(context, listen: false)
-            .bookAppointment(data);
-    if (response?.status == true) {
-      context.pushReplacement("/appointment_success");
-    } else {
-      debugPrint("Data not fetched.");
-    }
-  }
+
 
   String _validateFullName = "";
   String _validatePhoneNumber = "";
@@ -214,7 +222,8 @@ class _Bookappointment1State extends State<Bookappointment1> {
           _validateDateOfAppointment.isEmpty &&
           _validateWeekDays.isEmpty &&
           _validateLocation.isEmpty) {
-        bookAppointment();
+        // bookAppointment();
+        initiateTransaction(1);
       }
     });
   }
