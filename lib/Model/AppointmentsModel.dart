@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class AppointmentsModel {
   bool? status;
   Data? data;
@@ -112,7 +114,7 @@ class Appointments {
   String? serviceName;
   int? serviceId;
   int? days;
-  String? calenderDays;
+  List<String>? calenderDays; // Changed type
   int? amount;
   int? address;
   String? status;
@@ -122,29 +124,30 @@ class Appointments {
   String? updatedAt;
   String? deletedAt;
 
-  Appointments(
-      {this.id,
-        this.name,
-        this.phone,
-        this.appointmentFor,
-        this.patientId,
-        this.userId,
-        this.age,
-        this.gender,
-        this.appointmentMode,
-        this.appointmentRequestDate,
-        this.serviceName,
-        this.serviceId,
-        this.days,
-        this.calenderDays,
-        this.amount,
-        this.address,
-        this.status,
-        this.staffId,
-        this.assignedId,
-        this.createdAt,
-        this.updatedAt,
-        this.deletedAt});
+  Appointments({
+    this.id,
+    this.name,
+    this.phone,
+    this.appointmentFor,
+    this.patientId,
+    this.userId,
+    this.age,
+    this.gender,
+    this.appointmentMode,
+    this.appointmentRequestDate,
+    this.serviceName,
+    this.serviceId,
+    this.days,
+    this.calenderDays,
+    this.amount,
+    this.address,
+    this.status,
+    this.staffId,
+    this.assignedId,
+    this.createdAt,
+    this.updatedAt,
+    this.deletedAt,
+  });
 
   Appointments.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -160,7 +163,18 @@ class Appointments {
     serviceName = json['service_name'];
     serviceId = json['service_id'];
     days = json['days'];
-    calenderDays = json['calender_days'];
+
+    // Fix calender_days deserialization for string or list
+    if (json['calender_days'] is String) {
+      try {
+        calenderDays = List<String>.from(jsonDecode(json['calender_days']));
+      } catch (e) {
+        calenderDays = [];
+      }
+    } else if (json['calender_days'] is List) {
+      calenderDays = List<String>.from(json['calender_days']);
+    }
+
     amount = json['amount'];
     address = json['address'];
     status = json['status'];
@@ -172,29 +186,29 @@ class Appointments {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['phone'] = this.phone;
-    data['appointment_for'] = this.appointmentFor;
-    data['patient_id'] = this.patientId;
-    data['user_id'] = this.userId;
-    data['age'] = this.age;
-    data['gender'] = this.gender;
-    data['appointment_mode'] = this.appointmentMode;
-    data['appointment_request_date'] = this.appointmentRequestDate;
-    data['service_name'] = this.serviceName;
-    data['service_id'] = this.serviceId;
-    data['days'] = this.days;
-    data['calender_days'] = this.calenderDays;
-    data['amount'] = this.amount;
-    data['address'] = this.address;
-    data['status'] = this.status;
-    data['staff_id'] = this.staffId;
-    data['assigned_id'] = this.assignedId;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    data['deleted_at'] = this.deletedAt;
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['name'] = name;
+    data['phone'] = phone;
+    data['appointment_for'] = appointmentFor;
+    data['patient_id'] = patientId;
+    data['user_id'] = userId;
+    data['age'] = age;
+    data['gender'] = gender;
+    data['appointment_mode'] = appointmentMode;
+    data['appointment_request_date'] = appointmentRequestDate;
+    data['service_name'] = serviceName;
+    data['service_id'] = serviceId;
+    data['days'] = days;
+    data['calender_days'] = calenderDays;
+    data['amount'] = amount;
+    data['address'] = address;
+    data['status'] = status;
+    data['staff_id'] = staffId;
+    data['assigned_id'] = assignedId;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    data['deleted_at'] = deletedAt;
     return data;
   }
 }

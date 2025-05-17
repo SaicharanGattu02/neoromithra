@@ -39,11 +39,11 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
       List<Future> futures = [
         homeScreenData.getTherapiesList(),
         homeScreenData.getCounsellingsList(),
+        homeScreenData.getQuotes(),
       ];
       // Add authenticated-only futures if not a guest
       if (!guest) {
         futures.addAll([
-          homeScreenData.getQuotes(),
           homeScreenData.getUpcomingAppointment(),
           userData.getProfileDetails(),
         ]);

@@ -7,6 +7,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../Components/Shimmers.dart';
 import '../Model/ReviewListModel.dart';
+import '../Providers/AddressListProviders.dart';
 import '../Providers/HomeProviders.dart';
 import '../services/AuthService.dart';
 import '../utils/Color_Constants.dart';
@@ -32,6 +33,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<HomeProviders>(context, listen: false)
           .getServiceDetails(widget.serviceID);
+      Provider.of<AddressListProvider>(context, listen: false).getAddressList();
     });
   }
 
@@ -234,7 +236,6 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
         style: {
           "body": Style(
             fontSize: FontSize(16),
-            lineHeight: LineHeight.number(1.5),
             fontFamily:'general_sans',
             color: Colors.black87,
           ),
@@ -274,7 +275,6 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
           style: {
             "body": Style(
               fontSize: FontSize(16),
-              lineHeight: LineHeight.number(1.5),
               fontFamily:'general_sans',
               color: Colors.black87,
             ),
@@ -283,14 +283,15 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
       ),
       secondChild: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Text(
-          data.benefits ?? "No benefits available",
-          style: const TextStyle(
-            fontSize: 16,
-            height: 1.5,
-            fontFamily: "general_sans",
-            color: Colors.black87,
-          ),
+        child: Html(
+          data:data.benefits ?? "No key areas of focus available",
+          style: {
+            "body": Style(
+              fontSize: FontSize(16),
+              fontFamily:'general_sans',
+              color: Colors.black87,
+            ),
+          },
         ),
       ),
       crossFadeState:
@@ -317,6 +318,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
   }
 
   Widget _buildBottomNavigationBar(BuildContext context, double h) {
+    var address_provider = Provider.of<AddressListProvider>(context, listen: false);
     return SafeArea(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
@@ -338,8 +340,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
             Consumer<HomeProviders>(
               builder: (context, provider, child) {
                 final details = provider.serviceDetails;
-                String appointmentMode = "online"; // default
-
+                String appointmentMode = "online";
                 if (details != null && details.type == "Therapy") {
                   if (details.name == "Speech Therapy") {
                     appointmentMode = "both";
@@ -347,14 +348,15 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
                     appointmentMode = "offline";
                   }
                 }
-
                 final uri = '/book_appointment1?serviceID=${widget.serviceID}&appointmentMode=$appointmentMode&price=${details?.amount.toString()}';
                 return _bottomButton("Book Now", primarycolor, () async {
                   final guest = await AuthService.isGuest;
                   if (guest) {
-                    context.push('/login_with_mobile'); // Redirect to login if guest
-                  } else {
-                    context.push(uri); // Proceed to booking if logged in
+                    context.push('/login_with_mobile');
+                  } else if(address_provider.addresses.isEmpty) {
+                    context.push("/address_list");
+                  }else{
+                    context.push(uri);
                   }
                 });
               },

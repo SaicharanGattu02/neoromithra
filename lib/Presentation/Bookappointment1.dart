@@ -447,12 +447,13 @@ class _Bookappointment1State extends State<Bookappointment1> {
                       : null;
                   patient_id = child?.id.toString() ?? "";
                   _ageController.text = child?.age.toString() ?? "";
+                  selectedGender = child?.gender?.toLowerCase()??"";
                   return ((child?.name ?? "").isNotEmpty)
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Child Details',
+                              'Patient Details',
                               style: TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.w500,
@@ -567,98 +568,100 @@ class _Bookappointment1State extends State<Bookappointment1> {
                   true),
               _buildTextField("Age", _ageController, _validateAge,
                   TextInputType.number, r'^\d{0,9}$'),
+              Text(
+                "Gender",
+                style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                    fontFamily: "general_sans"),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 100,
+                    height: 45,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        setState(() {
+                          selectedGender = 'Male';
+                        });
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(
+                          color: selectedGender == 'Male'
+                              ? primarycolor
+                              : Colors.grey.shade300,
+                          width: 1,
+                        ),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(36)),
+                        foregroundColor: selectedGender == 'Male'
+                            ? primarycolor
+                            : Colors.grey,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                        textStyle: TextStyle(
+                          fontFamily: "general_sans",
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        ),
+                      ),
+                      child: Text(
+                        'Male',
+                        style: TextStyle(
+                          fontFamily: "general_sans",
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  SizedBox(
+                    width: 100,
+                    height: 45,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        setState(() {
+                          selectedGender = 'Female';
+                        });
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(
+                          color: selectedGender == 'Female'
+                              ? primarycolor
+                              : Colors.grey.shade300,
+                          width: 1,
+                        ),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(36)),
+                        foregroundColor: selectedGender == 'Female'
+                            ? primarycolor
+                            : Colors.grey,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                        textStyle: TextStyle(
+                          fontFamily: "general_sans",
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        ),
+                      ),
+                      child: Text(
+                        'Female',
+                        style: TextStyle(
+                          fontFamily: "general_sans",
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
-            Text(
-              "Gender",
-              style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  fontFamily: "general_sans"),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 100,
-                  height: 45,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      setState(() {
-                        selectedGender = 'Male';
-                      });
-                    },
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(
-                        color: selectedGender == 'Male'
-                            ? primarycolor
-                            : Colors.grey.shade300,
-                        width: 1,
-                      ),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(36)),
-                      foregroundColor:
-                          selectedGender == 'Male' ? primarycolor : Colors.grey,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                      textStyle: TextStyle(
-                        fontFamily: "general_sans",
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                      ),
-                    ),
-                    child: Text(
-                      'Male',
-                      style: TextStyle(
-                        fontFamily: "general_sans",
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 15),
-                SizedBox(
-                  width: 100,
-                  height: 45,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      setState(() {
-                        selectedGender = 'Female';
-                      });
-                    },
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(
-                        color: selectedGender == 'Female'
-                            ? primarycolor
-                            : Colors.grey.shade300,
-                        width: 1,
-                      ),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(36)),
-                      foregroundColor: selectedGender == 'Female'
-                          ? primarycolor
-                          : Colors.grey,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                      textStyle: TextStyle(
-                        fontFamily: "general_sans",
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                      ),
-                    ),
-                    child: Text(
-                      'Female',
-                      style: TextStyle(
-                        fontFamily: "general_sans",
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+
             // _buildTextField("Appointment Mode", _appointmentTypeController, _validateAppointmentType, TextInputType.text),
             Text(
               "Appointment Mode",
@@ -1042,7 +1045,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Select Child',
+                        'Select Patient',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
@@ -1063,7 +1066,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                           ),
                         ),
                         child: Text(
-                          'Add Child',
+                          'Add Patient',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
@@ -1082,7 +1085,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                         ))
                       : provider.childDataList.isEmpty
                           ? Text(
-                              'No children added yet.',
+                              'No Patient added yet.',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.grey,
@@ -1239,7 +1242,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        isEdit ? 'Edit Child' : 'Add Child',
+                        isEdit ? 'Edit Patient' : 'Add Patient',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
@@ -1454,7 +1457,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                                     strokeWidth: 1,
                                   )
                                 : Text(
-                                    isEdit ? 'Update Child' : 'Add Child',
+                                    isEdit ? 'Update Patient' : 'Add Patient',
                                     style: TextStyle(
                                         fontFamily: "general_sans",
                                         fontWeight: FontWeight.w600,
