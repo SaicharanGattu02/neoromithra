@@ -6,6 +6,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../Components/ProductGridItem.dart';
 import '../Components/Shimmers.dart';
 import '../utils/Color_Constants.dart';
+import '../utils/spinkits.dart';
 import 'DetailsScreen.dart';
 
 class TherapiesListScreen extends StatefulWidget {
@@ -277,12 +278,15 @@ class _TherapiesListScreenState extends State<TherapiesListScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Therapies List',
-            style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontFamily: "general_sans",
-                color: primarycolor,
-                fontSize: 20)),
+        title: Text(
+          'Therapies List',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontFamily: "general_sans",
+            color: primarycolor, // Ensure primarycolor is defined
+            fontSize: 20,
+          ),
+        ),
         leading: IconButton.filled(
           icon: const Icon(Icons.arrow_back, color: primarycolor),
           onPressed: () {
@@ -298,15 +302,16 @@ class _TherapiesListScreenState extends State<TherapiesListScreen> {
           final isLoading = homeProvider.isLoading;
           final itemCount = isLoading ? 6 : homeProvider.therapieslist.length;
           return CustomScrollView(
+            physics: const BouncingScrollPhysics(), // Smooth scrolling
             slivers: [
               SliverPadding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(12.0), // Slightly increased
                 sliver: SliverGrid(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    crossAxisSpacing: 10.0,
-                    mainAxisSpacing: 10.0,
-                    childAspectRatio: 0.95,
+                    crossAxisSpacing: 12.0,
+                    mainAxisSpacing: 12.0,
+                    childAspectRatio: _getAspectRatio(context), // Dynamic
                   ),
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
@@ -314,22 +319,25 @@ class _TherapiesListScreenState extends State<TherapiesListScreen> {
                         return therapyGridShimmerItem(context);
                       } else {
                         final therapy = homeProvider.therapieslist[index];
-                        return Material(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.circular(8),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(8),
-                            onTap: () {
-                              print("Tapped: ${therapy.name}");
+                        return ProductGridItem(
+                          imageUrl: therapy.service_pic_url ?? "",
+                          title: therapy.name ?? "",
+                          onTap: () {
+                            debugPrint("Tapped: ${therapy.name}");
+                            try {
                               context.push(
-                                "/service_details_screen?serviceID=${therapy.id}&serviceName=${therapy.name}",
+                                "/service_details_screen?serviceID=${therapy.id}&serviceName=${Uri.encodeComponent(therapy.name ?? '')}",
                               );
-                            },
-                            child: ProductGridItem(
-                              imageUrl: therapy.image ?? "",
-                              title: therapy.name ?? "",
-                            ),
-                          ),
+                            } catch (e) {
+                              debugPrint("Navigation error: $e");
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content:
+                                      Text("Failed to navigate to details"),
+                                ),
+                              );
+                            }
+                          },
                         );
                       }
                     },
@@ -344,6 +352,13 @@ class _TherapiesListScreenState extends State<TherapiesListScreen> {
     );
   }
 
+  // Dynamic aspect ratio for responsiveness
+  double _getAspectRatio(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth > 600 ? 1.0 : 0.9; // Adjust for tablets vs phones
+  }
+
+  // Shimmer item aligned with ProductGridItem
   Widget therapyGridShimmerItem(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -351,24 +366,34 @@ class _TherapiesListScreenState extends State<TherapiesListScreen> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black12,
-            blurRadius: 3,
-            offset: Offset(0, 2),
-          )
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
-      padding: const EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: shimmerContainer(double.infinity, 106, context),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            child: AspectRatio(
+              aspectRatio: 3 / 2,
+              child: Container(
+                color: Colors.grey[300],
+                child: Center(child: spinkits.getSpinningLinespinkit()),
+              ),
+            ),
           ),
-          const SizedBox(height: 10),
-          shimmerText(100, 14, context),
-          const SizedBox(height: 6),
-          shimmerText(60, 12, context),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              children: [
+                shimmerText(100, 14, context),
+                const SizedBox(height: 6),
+              ],
+            ),
+          ),
         ],
       ),
     );

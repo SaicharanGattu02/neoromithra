@@ -87,7 +87,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildHeaderImage(homeProviders.serviceDetails?.image ?? "", w, h),
+                    _buildHeaderImage(homeProviders.serviceDetails?.service_pic_url ?? "", w, h),
                     const SizedBox(height: 12),
                     _buildPrice(homeProviders.serviceDetails?.amount.toString()??"", w),
                     _buildDescription(

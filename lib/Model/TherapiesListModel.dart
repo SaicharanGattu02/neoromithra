@@ -108,6 +108,7 @@ class TherapiesList {
   String? keyAreaFocus;
   String? benefits;
   String? image;
+  String? service_pic_url;
   String? appType;
   String? createdAt;
   String? updatedAt;
@@ -122,6 +123,7 @@ class TherapiesList {
     this.keyAreaFocus,
     this.benefits,
     this.image,
+    this.service_pic_url,
     this.appType,
     this.createdAt,
     this.updatedAt,
@@ -137,6 +139,7 @@ class TherapiesList {
     keyAreaFocus = json['key_area_focus'];
     benefits = json['benefits'];
     image = json['image'];
+    service_pic_url = json['service_pic_url'];
     appType = json['app_type'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
@@ -153,6 +156,7 @@ class TherapiesList {
     data['key_area_focus'] = keyAreaFocus;
     data['benefits'] = benefits;
     data['image'] = image;
+    data['service_pic_url'] = service_pic_url;
     data['app_type'] = appType;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;

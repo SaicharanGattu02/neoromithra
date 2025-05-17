@@ -76,10 +76,8 @@ class BookingHistoryProvider with ChangeNotifier {
   /// 📜 Fetch more booking history (pagination)
   Future<void> loadMoreBookingHistory() async {
     if (!_hasMore || _isFetchingMore) return;
-
     _isFetchingMore = true;
     notifyListeners();
-
     try {
       final response = await Userapi.getBookingHistory(_currentPage);
       if (response != null && response.status == true) {

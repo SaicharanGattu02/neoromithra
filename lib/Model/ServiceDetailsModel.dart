@@ -7,6 +7,7 @@ class ServiceModel {
   final String keyAreaFocus;
   final String benefits;
   final String image;
+  final String service_pic_url;
   final String? appType;
   final DateTime createdAt;
   final DateTime? updatedAt;
@@ -21,6 +22,7 @@ class ServiceModel {
     required this.keyAreaFocus,
     required this.benefits,
     required this.image,
+    required this.service_pic_url,
     this.appType,
     required this.createdAt,
     this.updatedAt,
@@ -37,6 +39,7 @@ class ServiceModel {
       keyAreaFocus: json['key_area_focus'],
       benefits: json['benefits'],
       image: json['image'],
+      service_pic_url: json['service_pic_url'],
       appType: json['app_type'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: json['updated_at'] != null ? DateTime.tryParse(json['updated_at']) : null,
@@ -54,6 +57,7 @@ class ServiceModel {
       'key_area_focus': keyAreaFocus,
       'benefits': benefits,
       'image': image,
+      'service_pic_url': service_pic_url,
       'app_type': appType,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),

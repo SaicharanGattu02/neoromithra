@@ -388,16 +388,25 @@ class _CounsellingListScreenState extends State<CounsellingListScreen> {
                         } else {
                           final counselling =
                               homeProvider.counsellingslist[index];
-                          return InkWell(
-                            borderRadius: BorderRadius.circular(8),
+                          return ProductGridItem(
+                            imageUrl: counselling.service_pic_url ?? "",
+                            title: counselling.name ?? "",
                             onTap: () {
-                              context.push(
-                                  "/service_details_screen?serviceID=${counselling.id}&serviceName=${counselling.name}");
+                              debugPrint("Tapped: ${counselling.name}");
+                              try {
+                                context.push(
+                                  "/service_details_screen?serviceID=${counselling.id}&serviceName=${Uri.encodeComponent(counselling.name ?? '')}",
+                                );
+                              } catch (e) {
+                                debugPrint("Navigation error: $e");
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                    Text("Failed to navigate to details"),
+                                  ),
+                                );
+                              }
                             },
-                            child: ProductGridItem(
-                              imageUrl: counselling.image ?? "",
-                              title: counselling.name ?? "",
-                            ),
                           );
                         }
                       },
