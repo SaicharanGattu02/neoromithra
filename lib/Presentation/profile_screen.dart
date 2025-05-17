@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:neuromithra/Providers/UserProvider.dart';
@@ -68,20 +69,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       CircleAvatar(
                         radius: 35,
                         backgroundColor: primarycolor,
-                        child: Text(
-                          isGuest
-                              ? 'G'
-                              : (profileDetails.userData.name != null &&
-                              profileDetails.userData.name!.isNotEmpty
+                        backgroundImage: (!isGuest &&
+                            profileDetails.userData.profilePicUrl != null &&
+                            profileDetails.userData.profilePicUrl!.isNotEmpty)
+                            ? CachedNetworkImageProvider(profileDetails.userData.profilePicUrl!)
+                        as ImageProvider<Object>
+                            : null,
+                        child: (!isGuest &&
+                            (profileDetails.userData.profilePicUrl == null ||
+                                profileDetails.userData.profilePicUrl!.isEmpty))
+                            ? Text(
+                          (profileDetails.userData.name != null &&
+                              profileDetails.userData.name!.isNotEmpty)
                               ? profileDetails.userData.name![0].toUpperCase()
-                              : ''),
+                              : '',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 26,
+                            fontFamily: "general_sans",
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                            : isGuest
+                            ? const Text(
+                          'G',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 26,
                             fontFamily: "general_sans",
                             fontWeight: FontWeight.bold,
                           ),
-                        ),
+                        )
+                            : null,
                       ),
                       SizedBox(width: 15),
                       Expanded(
@@ -128,14 +147,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             );
                           },
-                          child: ClipRRect(
+                          child: Container(
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: primarycolor.withOpacity(0.6)),
+                              borderRadius: BorderRadius.circular(6),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 4,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
                             child: Icon(
                               Icons.edit,
                               color: primarycolor,
                               size: 16,
                             ),
                           ),
-                        ),
+                        )
                     ],
                   ),
                   SizedBox(height: 20),

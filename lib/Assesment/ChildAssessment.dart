@@ -12,6 +12,7 @@ import '../Model/AssessmentQuestion.dart';
 import '../Providers/AssessmentProvider.dart';
 import '../services/userapi.dart';
 import '../utils/Color_Constants.dart';
+import '../utils/constants.dart';
 import 'ResultScreen.dart';
 
 class ChildAssessment extends StatefulWidget {
@@ -138,7 +139,7 @@ class _ChildAssessmentState extends State<ChildAssessment> {
             const SizedBox(height: 20),
             // Questions Section
             provider.isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator(color: primarycolor,))
                 : provider.questions.isEmpty
                 ? const Center(
               child: Text(
@@ -240,6 +241,9 @@ class _ChildAssessmentState extends State<ChildAssessment> {
                       "assessment_date": _assessmentDateController.text,
                     },
                   );
+                }else{
+                  showAnimatedTopSnackBar(
+                      context, 'Please Fill Child Details Above!');
                 }
               },
             ),
@@ -421,6 +425,23 @@ class _ChildAssessmentState extends State<ChildAssessment> {
             initialDate: DateTime.now(),
             firstDate: DateTime.now(),
             lastDate: DateTime(2100),
+            builder: (context, child) {
+              return Theme(
+                data: Theme.of(context).copyWith(
+                  colorScheme: ColorScheme.light(
+                    primary: primarycolor, // Header background color
+                    onPrimary: Colors.white, // Header text color
+                    onSurface: Colors.black, // Body text color
+                  ),
+                  textButtonTheme: TextButtonThemeData(
+                    style: TextButton.styleFrom(
+                      foregroundColor: primarycolor, // Button text color
+                    ),
+                  ),
+                ),
+                child: child!,
+              );
+            },
           );
           if (pickedDate != null) {
             setState(() {

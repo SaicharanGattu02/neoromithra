@@ -20,6 +20,7 @@ import '../Model/PreviousBookingModel.dart';
 import '../Model/ProfileDetailsModel.dart';
 import '../Model/ReviewListModel.dart';
 import '../Model/ReviewSubmitModel.dart';
+import '../Model/ServiceDetailsModel.dart';
 import '../Model/SessionFeedbackModel.dart';
 import '../Model/TherapiesListModel.dart';
 import '../api_endpoint_urls.dart';
@@ -331,13 +332,12 @@ class Userapi {
       return null;
     }
   }
-
-  static Future<TherapiesListModel?> getServiceDetails(String id) async {
+  static Future<ServiceModel?> getServiceDetails(String id) async {
     try {
       final response = await get("${APIEndpointUrls.guestServiceDetails}/$id");
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && response.data['status'] == true) {
         debugPrint("getServiceDetails Status: ${response.data}");
-        return TherapiesListModel.fromJson(response.data);
+        return ServiceModel.fromJson(response.data['data']);
       }
       debugPrint("Request failed with status: ${response.statusCode}");
       return null;
@@ -346,6 +346,7 @@ class Userapi {
       return null;
     }
   }
+
 
   static Future<CounsellingsListModel?> getCounsellingsList() async {
     try {

@@ -113,7 +113,7 @@ class _LogInState extends State<LogIn> {
                     ),
                     SizedBox(height: height * 0.03),
                     _buildUsernameField(),
-                    SizedBox(height: height * 0.03),
+                    SizedBox(height: height * 0.01),
                     _buildPasswordField(),
                     SizedBox(height: height * 0.04),
                     _buildSignInButton(),

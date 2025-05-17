@@ -137,7 +137,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         title: Text("Forgot Password",
             style: TextStyle(
                 fontWeight: FontWeight.w600,
-                fontFamily: "Inter",
+                fontFamily: "general_sans",
                 color: primarycolor,
                 fontSize: 18)),
         centerTitle: true,
@@ -163,6 +163,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   controller: _emailController,
                   cursorColor: Colors.black,
                   keyboardType: TextInputType.emailAddress,
+                  style: TextStyle(
+                    fontSize: 15,
+                    letterSpacing: 0,
+                    height: 1.2,
+                    color: Colors.black,
+                    fontFamily: "general_sans",
+                    fontWeight: FontWeight.w400,
+                  ),
                   decoration: InputDecoration(
                     hintText: "Enter Your Email",
                     hintStyle: TextStyle(
@@ -170,30 +178,36 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       letterSpacing: 0,
                       height: 1.2,
                       color: Color(0xffAFAFAF),
-                      fontFamily: 'Poppins',
+                      fontFamily: "general_sans",
                       fontWeight: FontWeight.w400,
                     ),
                     filled: true,
                     fillColor: Color(0xffF3F4F6),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: primarycolor, width: 1),
+                    ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                      borderSide:
-                          BorderSide(width: 1, color: Colors.transparent),
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                      borderSide:
-                          BorderSide(width: 1, color: Color(0xff14B8A6)),
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: primarycolor, width: 1),
                     ),
                     errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                      borderSide: BorderSide(width: 1, color: Colors.red),
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
                     ),
                     focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                      borderSide: BorderSide(width: 1, color: Colors.red),
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
                     ),
-
+                    errorStyle: TextStyle(
+                      color: Colors.red,
+                      fontSize: 12,
+                      fontFamily: "general_sans",
+                    ),
                     // Always visible email icon at the start
                     prefixIcon: Padding(
                       padding:
@@ -233,6 +247,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 SizedBox(height: 20.0),
                 SizedBox(
                   width: double.infinity,
+                  height: 48,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         backgroundColor: primarycolor,
@@ -253,12 +268,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     child: sendResetCode
                         ? CircularProgressIndicator(
                             color: Colors.white,
+                      strokeWidth: 1,
                           )
                         : Text(
                             'Send Reset Code',
                             style: TextStyle(
                               color: Colors.white,
-                              fontFamily: "Inter",
+                              fontFamily: "general_sans",
                               fontSize: 15,
                             ),
                           ),
@@ -447,7 +463,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             'Reset Password',
                             style: TextStyle(
                               color: Colors.white,
-                              fontFamily: "Inter",
+                              fontFamily: "general_sans",
                               fontSize: 15,
                             ),
                           ),

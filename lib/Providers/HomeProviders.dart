@@ -3,6 +3,7 @@ import 'package:neuromithra/Model/SuccessModel.dart';
 import '../Components/CustomSnackBar.dart';
 import '../Model/CounsellingsListModel.dart';
 import '../Model/ProfileDetailsModel.dart';
+import '../Model/ServiceDetailsModel.dart';
 import '../Model/TherapiesListModel.dart';
 import '../Model/UpcomingAppointmentsModel.dart';
 import '../services/Preferances.dart';
@@ -15,7 +16,7 @@ class HomeProviders with ChangeNotifier {
   bool _status = false;
 
   List<TherapiesList> _therapieslist = [];
-  List<TherapiesList> _therapyDetails = [];
+  ServiceModel? _serviceDetails;
   List<CounsellingsList> _counsellingslist = [];
   List<UpcomingAppointments> _upcomingAppointments=[];
 
@@ -25,7 +26,7 @@ class HomeProviders with ChangeNotifier {
   String get quote => _quote;
   bool get status => _status;
   List<TherapiesList> get therapieslist => _therapieslist;
-  List<TherapiesList> get therapyDetails => _therapyDetails;
+  ServiceModel? get serviceDetails => _serviceDetails;
   List<CounsellingsList> get counsellingslist => _counsellingslist;
   List<UpcomingAppointments> get upcomingAppointments=> _upcomingAppointments;
 
@@ -79,6 +80,7 @@ class HomeProviders with ChangeNotifier {
       final response = await Userapi.getTherapiesList();
       if (response?.status == true) {
         _therapieslist = response?.data?.therapiesList ?? [];
+        notifyListeners();
       }
     } catch (e) {
       _setError('Failed to fetch therapies: $e');
@@ -93,6 +95,7 @@ class HomeProviders with ChangeNotifier {
       final response = await Userapi.getUpcomingAppointment();
       if (response?.status == true) {
         _upcomingAppointments = response?.upcomingAppointments ?? [];
+        notifyListeners();
       }
     } catch (e) {
       _setError('Failed to fetch appointment: $e');
@@ -101,19 +104,25 @@ class HomeProviders with ChangeNotifier {
     }
   }
 
+
+
   Future<void> getServiceDetails(String id) async {
     _setLoading(true);
     try {
       final response = await Userapi.getServiceDetails(id);
-      if (response?.status == true) {
-        _therapyDetails = response?.data?.therapiesList ?? [];
+      if (response != null) {
+        _serviceDetails = response;
+        notifyListeners();
+      } else {
+        _setError('No data found');
       }
     } catch (e) {
-      _setError('Failed to fetch getServiceDetails: $e');
+      _setError('Failed to fetch service details: $e');
     } finally {
       _setLoading(false);
     }
   }
+
 
   Future<void> getCounsellingsList() async {
     _setLoading(true);
@@ -121,6 +130,7 @@ class HomeProviders with ChangeNotifier {
       final response = await Userapi.getCounsellingsList();
       if (response?.status == true) {
         _counsellingslist = response?.data?.counsellingsList ?? [];
+        notifyListeners();
       }
     } catch (e) {
       _setError('Failed to fetch counsellings: $e');

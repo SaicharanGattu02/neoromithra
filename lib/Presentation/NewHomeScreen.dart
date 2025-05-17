@@ -40,7 +40,6 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
         homeScreenData.getTherapiesList(),
         homeScreenData.getCounsellingsList(),
       ];
-
       // Add authenticated-only futures if not a guest
       if (!guest) {
         futures.addAll([
@@ -49,7 +48,6 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
           userData.getProfileDetails(),
         ]);
       }
-
       await Future.wait(futures);
     } catch (e) {
       debugPrint("Error loading dashboard data: $e");
@@ -443,7 +441,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
 
                                       final isGuest = snapshot.data!;
 
-                                      if (homeProvider.status == false && !isGuest) {
+                                      if (userData.healthFeedback.status == false && !isGuest) {
                                         return Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
@@ -702,164 +700,169 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                           ));
                                     }).toList(),
                                   ),
-                                  if (hasAppointment && upcomingAppointment != null)...[
-                                  Card(
-                                    elevation: 5,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    margin: const EdgeInsets.all(0),
-                                    child: Container(
-                                      width: 340,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          // Header
-                                          Container(
-                                            width: double.infinity,
-                                            padding: const EdgeInsets.all(16),
-                                            decoration: const BoxDecoration(
-                                              color: primarycolor,
-                                              borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(12),
-                                                topRight: Radius.circular(12),
-                                              ),
-                                            ),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Appointment #${upcomingAppointment.appointmentId}',
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 20,
-                                                    fontFamily: "general_sans",
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 4),
-                                                Text(
-                                                  '${upcomingAppointment.appointmentMode?.toUpperCase()}${upcomingAppointment.appointmentMode?.substring(1)} Meeting',
-                                                  style: const TextStyle(
-                                                    color: Colors.white70,
-                                                    fontSize: 14,
-                                                    fontFamily: "general_sans",
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                                  FutureBuilder<bool>(
+                                    future: AuthService.isGuest, // Replace with your actual class name
+                                    builder: (context, snapshot) {
+                                      if (!snapshot.hasData) return SizedBox(); // or a loader/spinner
+
+                                      final isGuest = snapshot.data!;
+
+                                      // Show appointment card only if user is NOT a guest
+                                      if (!isGuest && hasAppointment && upcomingAppointment != null) {
+                                        return Card(
+                                          elevation: 5,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(12),
                                           ),
-                                          // Body
-                                          Padding(
-                                            padding: const EdgeInsets.all(16),
+                                          margin: const EdgeInsets.all(0),
+                                          child: Container(
+                                            width: 340,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                // Date & Time
-                                                _buildSectionTitle('Date & Time'),
-                                                const SizedBox(height: 8),
-                                                Text(
-                                                  formattedDate,
-                                                  style: const TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 14,
-                                                    fontFamily: "general_sans",
-                                                  ),
-                                                ),
-                                                Text(
-                                                  '${upcomingAppointment.startTime} - ${upcomingAppointment.endTime}',
-                                                  style: const TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 14,
-                                                    fontFamily: "general_sans",
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 16),
-                                                // Staff Details
-                                                _buildSectionTitle('Therapist Details'),
-                                                const SizedBox(height: 8),
-                                                Text(
-                                                  'Name: ${upcomingAppointment.staff?.name}',
-                                                  style: const TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 14,
-                                                    fontFamily: "general_sans",
-                                                  ),
-                                                ),
-                                                Text(
-                                                  'Email: ${upcomingAppointment.staff?.email}',
-                                                  style: const TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 14,
-                                                    fontFamily: "general_sans",
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 16),
-                                                // Status
-                                                _buildSectionTitle('Status'),
-                                                const SizedBox(height: 8),
+                                                // Header
                                                 Container(
-                                                  padding: const EdgeInsets.symmetric(
-                                                    horizontal: 12,
-                                                    vertical: 6,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: upcomingAppointment.status == 'not started'
-                                                        ? Colors.orange[100]
-                                                        : Colors.green[100],
-                                                    borderRadius: BorderRadius.circular(12),
-                                                  ),
-                                                  child: Text(
-                                                    upcomingAppointment.status != null
-                                                        ? "${upcomingAppointment.status![0].toUpperCase()}${upcomingAppointment.status!.substring(1)}"
-                                                        : "",
-                                                    style: TextStyle(
-                                                      color: upcomingAppointment.status == 'not started'
-                                                          ? Colors.orange[800]
-                                                          : Colors.green[800],
-                                                      fontSize: 14,
-                                                      fontFamily: "general_sans",
-                                                      fontWeight: FontWeight.w600,
+                                                  width: double.infinity,
+                                                  padding: const EdgeInsets.all(16),
+                                                  decoration: const BoxDecoration(
+                                                    color: primarycolor,
+                                                    borderRadius: BorderRadius.only(
+                                                      topLeft: Radius.circular(12),
+                                                      topRight: Radius.circular(12),
                                                     ),
-                                                  )
+                                                  ),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        'Appointment #${upcomingAppointment.appointmentId}',
+                                                        style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 20,
+                                                          fontFamily: "general_sans",
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      Text(
+                                                        '${upcomingAppointment.appointmentMode?.toUpperCase()}${upcomingAppointment.appointmentMode?.substring(1)} Meeting',
+                                                        style: const TextStyle(
+                                                          color: Colors.white70,
+                                                          fontSize: 14,
+                                                          fontFamily: "general_sans",
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                                const SizedBox(height: 16),
-                                                // Meeting Link
-                                                _buildSectionTitle('Meeting Link'),
-                                                const SizedBox(height: 8),
-                                                InkWell(
-                                                  onTap: () async {
-                                                    final url = Uri.parse(upcomingAppointment?.url??"");
-                                                    if (await canLaunchUrl(url)) {
-                                                      await launchUrl(url, mode: LaunchMode.externalApplication);
-                                                    } else {
-                                                      ScaffoldMessenger.of(context).showSnackBar(
-                                                        SnackBar(content: Text('Cannot launch ${upcomingAppointment?.url}')),
-                                                      );
-                                                    }
-                                                  },
-                                                  child: Text(
-                                                    upcomingAppointment.url??"",
-                                                    style: const TextStyle(
-                                                      color: Colors.blue,
-                                                      fontSize: 14,
-                                                      fontFamily: "general_sans",
-                                                      decoration: TextDecoration.underline,
-                                                    ),
+                                                // Body
+                                                Padding(
+                                                  padding: const EdgeInsets.all(16),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      _buildSectionTitle('Date & Time'),
+                                                      const SizedBox(height: 8),
+                                                      Text(
+                                                        formattedDate,
+                                                        style: const TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: 14,
+                                                          fontFamily: "general_sans",
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        '${upcomingAppointment.startTime} - ${upcomingAppointment.endTime}',
+                                                        style: const TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: 14,
+                                                          fontFamily: "general_sans",
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 16),
+                                                      _buildSectionTitle('Therapist Details'),
+                                                      const SizedBox(height: 8),
+                                                      Text(
+                                                        'Name: ${upcomingAppointment.staff?.name}',
+                                                        style: const TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: 14,
+                                                          fontFamily: "general_sans",
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        'Email: ${upcomingAppointment.staff?.email}',
+                                                        style: const TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: 14,
+                                                          fontFamily: "general_sans",
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 16),
+                                                      _buildSectionTitle('Status'),
+                                                      const SizedBox(height: 8),
+                                                      Container(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                                        decoration: BoxDecoration(
+                                                          color: upcomingAppointment.status == 'not started'
+                                                              ? Colors.orange[100]
+                                                              : Colors.green[100],
+                                                          borderRadius: BorderRadius.circular(12),
+                                                        ),
+                                                        child: Text(
+                                                          upcomingAppointment.status != null
+                                                              ? "${upcomingAppointment.status![0].toUpperCase()}${upcomingAppointment.status!.substring(1)}"
+                                                              : "",
+                                                          style: TextStyle(
+                                                            color: upcomingAppointment.status == 'not started'
+                                                                ? Colors.orange[800]
+                                                                : Colors.green[800],
+                                                            fontSize: 14,
+                                                            fontFamily: "general_sans",
+                                                            fontWeight: FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 16),
+                                                      _buildSectionTitle('Meeting Link'),
+                                                      const SizedBox(height: 8),
+                                                      InkWell(
+                                                        onTap: () async {
+                                                          final url = Uri.parse(upcomingAppointment?.url ?? "");
+                                                          if (await canLaunchUrl(url)) {
+                                                            await launchUrl(url, mode: LaunchMode.externalApplication);
+                                                          } else {
+                                                            ScaffoldMessenger.of(context).showSnackBar(
+                                                              SnackBar(content: Text('Cannot launch ${upcomingAppointment?.url}')),
+                                                            );
+                                                          }
+                                                        },
+                                                        child: Text(
+                                                          upcomingAppointment.url ?? "",
+                                                          style: const TextStyle(
+                                                            color: Colors.blue,
+                                                            fontSize: 14,
+                                                            fontFamily: "general_sans",
+                                                            decoration: TextDecoration.underline,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                               ],
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                    ),
+                                        );
+                                      }
+
+                                      return SizedBox(); // no widget if guest or no appointment
+                                    },
                                   )
-                                  ],
                                 ],
                               ),
                             ),
@@ -899,8 +902,11 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     return Column(
       children: [
         Bounce(
-          onTap: (){
-            Provider.of<HomeProviders>(context, listen: false).postHealthFeedBack(mood);
+          onTap: () async {
+            var res= await Provider.of<HomeProviders>(context, listen: false).postHealthFeedBack(mood);
+            if(res?.status==true){
+              Provider.of<UserProviders>(context, listen: false).getProfileDetails();
+            }
           },
           child: Container(
             width: 60,

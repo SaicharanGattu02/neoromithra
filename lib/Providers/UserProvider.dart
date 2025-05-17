@@ -10,13 +10,15 @@ class UserProviders with ChangeNotifier {
   bool _isLoading = false;
   bool _isSaving = false;
   String _error = '';
-  Users _userData = Users();
+  User _userData = User();
+  HealthFeedback _healthFeedback = HealthFeedback();
   bool _status = false;
 
   bool get isLoading => _isLoading;
   bool get isSaving => _isSaving;
   String get error => _error;
-  Users get userData => _userData;
+  User get userData => _userData;
+  HealthFeedback get healthFeedback => _healthFeedback;
   bool get status => _status;
 
   Future<void> getProfileDetails() async {
@@ -26,7 +28,8 @@ class UserProviders with ChangeNotifier {
       String userId = await PreferenceService().getString('user_id') ?? "";
       final response = await Userapi.getProfileDetails(userId);
       if (response != null) {
-        _userData = response.user ?? Users();
+        _userData = response.user ?? User();
+        _healthFeedback = response.healthFeedback ?? HealthFeedback();
         _status = response.status ?? false;
         PreferenceService()
             .saveString("user_mobile", _userData.contact.toString() ?? "");

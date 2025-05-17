@@ -62,7 +62,7 @@ class _ResultscreenState extends State<Resultscreen> {
                 "Thank you! Your responses have been sent to the therapist. They will review them and contact you to schedule your session.",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontFamily: "Poppins",
+                  fontFamily: "general_sans",
                   fontWeight: FontWeight.w600,
                   fontSize: 18,
                 ),
@@ -79,11 +79,11 @@ class _ResultscreenState extends State<Resultscreen> {
             ]else...[
               Text(
                 "Scoring and Reflection:",
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16,fontFamily: "Poppins",height: 1),
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16,   fontFamily: "general_sans",height: 1),
               ),
               SizedBox(height: 10),
               Text("Total your scores for each section.",style: TextStyle(
-                  fontFamily: "Poppins",
+                  fontFamily: "general_sans",
                 fontSize: 15
               ),),
               SizedBox(height: 10),
@@ -123,7 +123,7 @@ class _ResultscreenState extends State<Resultscreen> {
               SizedBox(height: 20),
               Text("Interpretation:",style: TextStyle(
                 fontSize: 16,
-                fontFamily: "Poppins",
+                  fontFamily: "general_sans",
                 fontWeight: FontWeight.w600
               ),),
               // if(widget.role=="1")...[

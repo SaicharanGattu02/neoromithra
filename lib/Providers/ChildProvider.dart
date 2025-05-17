@@ -23,7 +23,7 @@ class ChildProvider extends ChangeNotifier {
     try {
       final response = await Userapi.getChildDetails(id);
       if (response != null && response.childData != null) {
-        _childDetails = response.childData!;
+        _childDetails = response.childData?.children??[];
       }
     } catch (e) {
       debugPrint('Error fetching child details: $e');
@@ -37,7 +37,7 @@ class ChildProvider extends ChangeNotifier {
     try {
       final response = await Userapi.getChildList();
       if (response != null && response.childData != null) {
-        _childDataList = response.childData!;
+        _childDataList = response.childData?.children??[];
       }
     } catch (e) {
       debugPrint('Error fetching child list: $e');

@@ -39,7 +39,8 @@ class _Bookappointment1State extends State<Bookappointment1> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _daysController = TextEditingController();
-  final TextEditingController _dateOfAppointmentController = TextEditingController();
+  final TextEditingController _dateOfAppointmentController =
+      TextEditingController();
 
   int address_id = 0;
   String patient_id = "";
@@ -68,7 +69,8 @@ class _Bookappointment1State extends State<Bookappointment1> {
     _selected_appointment_mode =
         widget.appointmentMode == 'both' ? 'online' : widget.appointmentMode;
     Provider.of<AddressListProvider>(context, listen: false).getAddressList();
-    final provider = Provider.of<BookingHistoryProvider>(context, listen: false);
+    final provider =
+        Provider.of<BookingHistoryProvider>(context, listen: false);
     PhonePePaymentSdk.init(environment, appId, merchantId, true);
     // provider.getPhonepeDetails().then((_) {
     //   setState(() {
@@ -104,7 +106,6 @@ class _Bookappointment1State extends State<Bookappointment1> {
         _validateDays = "";
       });
     });
-
     _dateOfAppointmentController.addListener(() {
       setState(() {
         _validateDateOfAppointment = "";
@@ -131,7 +132,8 @@ class _Bookappointment1State extends State<Bookappointment1> {
 
   Future<void> initiateTransaction(int amount) async {
     try {
-      String user_mobile = await PreferenceService().getString('user_mobile') ?? "";
+      String user_mobile =
+          await PreferenceService().getString('user_mobile') ?? "";
       setState(() {
         transactionId = "TXN${DateTime.now().millisecondsSinceEpoch}";
         Orderamount = amount.toString();
@@ -161,7 +163,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
       if (response != null) {
         log("Payment response: $response");
         String? status = response["status"];
-        if(status=="SUCCESS"){
+        if (status == "SUCCESS") {
           Map<String, dynamic> data = {
             "appointment_for": _selected_appointment_type,
             "age": _ageController.text,
@@ -176,8 +178,8 @@ class _Bookappointment1State extends State<Bookappointment1> {
             "patient_id": patient_id,
           };
           final response =
-          await Provider.of<BookingHistoryProvider>(context, listen: false)
-              .bookAppointment(data);
+              await Provider.of<BookingHistoryProvider>(context, listen: false)
+                  .bookAppointment(data);
           if (response?.status == true) {
             context.pushReplacement("/appointment_success");
           } else {
@@ -193,8 +195,6 @@ class _Bookappointment1State extends State<Bookappointment1> {
   }
 
   int? selectedAddressIndex;
-
-
 
   String _validateFullName = "";
   String _validatePhoneNumber = "";
@@ -386,7 +386,14 @@ class _Bookappointment1State extends State<Bookappointment1> {
                         fontSize: 16,
                       ),
                     ),
-                    child: Text('Self'),
+                    child: Text(
+                      'Self',
+                      style: TextStyle(
+                        fontFamily: "general_sans",
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(width: 15),
@@ -396,20 +403,20 @@ class _Bookappointment1State extends State<Bookappointment1> {
                   child: OutlinedButton(
                     onPressed: () {
                       setState(() {
-                        _selected_appointment_type = 'children';
+                        _selected_appointment_type = 'child';
                       });
                       _showChildListBottomSheet(context);
                     },
                     style: OutlinedButton.styleFrom(
                       side: BorderSide(
-                        color: _selected_appointment_type == 'children'
+                        color: _selected_appointment_type == 'child'
                             ? primarycolor
                             : Colors.grey.shade300,
                         width: 1,
                       ),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(36)),
-                      foregroundColor: _selected_appointment_type == 'children'
+                      foregroundColor: _selected_appointment_type == 'child'
                           ? primarycolor
                           : Colors.grey,
                       padding:
@@ -420,7 +427,14 @@ class _Bookappointment1State extends State<Bookappointment1> {
                         fontSize: 16,
                       ),
                     ),
-                    child: Text('Children'),
+                    child: Text(
+                      'Children',
+                      style: TextStyle(
+                        fontFamily: "general_sans",
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -1162,11 +1176,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                                                   await provider.deleteChild(
                                                       child.id.toString());
                                               if (result?.status == true) {
-                                                showAnimatedTopSnackBar(context,
-                                                    'Child deleted successfully');
-                                              } else {
-                                                showAnimatedTopSnackBar(context,
-                                                    'Failed to delete child');
+                                                provider.getChildList();
                                               }
                                             },
                                             icon: Icon(Icons.delete, size: 18),

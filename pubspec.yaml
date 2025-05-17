@@ -68,6 +68,7 @@ dependencies:
   cached_network_image: ^3.4.1
   skeletonizer: ^1.4.3
   google_maps_flutter: ^2.12.1
+  flutter_html: ^3.0.0
 
 
 

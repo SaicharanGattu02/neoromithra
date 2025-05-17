@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -74,10 +75,9 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
           if (homeProviders.isLoading) {
             return _buildShimmerLoading(w, h);
           }
-          if (homeProviders.therapyDetails.isEmpty) {
+          if (homeProviders.serviceDetails?.name==null) {
             return _buildErrorState('No therapy data available');
           }
-          final data = homeProviders.therapyDetails[0];
           return Stack(
             children: [
               SingleChildScrollView(
@@ -85,14 +85,14 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildHeaderImage(data.image ?? "", w, h),
+                    _buildHeaderImage(homeProviders.serviceDetails?.image ?? "", w, h),
                     const SizedBox(height: 12),
-                    _buildPrice(data.amount.toString(), w),
+                    _buildPrice(homeProviders.serviceDetails?.amount.toString()??"", w),
                     _buildDescription(
-                        data.description ?? 'No description available'),
-                    _buildTabs(data),
+                        homeProviders.serviceDetails?.description ?? 'No description available'),
+                    _buildTabs(homeProviders.serviceDetails),
                     const SizedBox(height: 10),
-                    _buildTabContent(data),
+                    _buildTabContent(homeProviders.serviceDetails),
                   ],
                 ),
               ),
@@ -228,18 +228,21 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
 
   Widget _buildDescription(String description) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-      child: Text(
-        description,
-        style: const TextStyle(
-          fontSize: 16,
-          height: 1.5,
-          fontFamily: "general_sans",
-          color: Colors.black87,
-        ),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
+      child: Html(
+        data: description,
+        style: {
+          "body": Style(
+            fontSize: FontSize(16),
+            lineHeight: LineHeight.number(1.5),
+            fontFamily:'general_sans',
+            color: Colors.black87,
+          ),
+        },
       ),
     );
   }
+
 
   Widget _buildTabs(dynamic data) {
     return Padding(
@@ -266,14 +269,16 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
     return AnimatedCrossFade(
       firstChild: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Text(
-          data.keyAreaFocus ?? "No key areas of focus available",
-          style: const TextStyle(
-            fontSize: 16,
-            height: 1.5,
-            fontFamily: "general_sans",
-            color: Colors.black87,
-          ),
+        child: Html(
+          data:data.keyAreaFocus ?? "No key areas of focus available",
+          style: {
+            "body": Style(
+              fontSize: FontSize(16),
+              lineHeight: LineHeight.number(1.5),
+              fontFamily:'general_sans',
+              color: Colors.black87,
+            ),
+          },
         ),
       ),
       secondChild: Padding(
@@ -332,7 +337,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
             const SizedBox(width: 12),
             Consumer<HomeProviders>(
               builder: (context, provider, child) {
-                final details = provider.therapyDetails.isNotEmpty ? provider.therapyDetails[0] : null;
+                final details = provider.serviceDetails;
                 String appointmentMode = "online"; // default
 
                 if (details != null && details.type == "Therapy") {

@@ -23,7 +23,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<UserProviders>(context, listen: false).getProfileDetails();
+      var provider = Provider.of<UserProviders>(context, listen: false);
+      provider.getProfileDetails().then((success) {
+        final userData = provider.userData;
+        _nameController.text = userData.name ?? '';
+        _emailController.text = userData.email ?? '';
+        _mobileController.text = userData.contact?.toString() ?? '';
+      });
     });
     super.initState();
   }
@@ -151,11 +157,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
             );
           }
-          _nameController.text = profileProvider.userData.name ?? '';
-          _emailController.text = profileProvider.userData.email ?? '';
-          _mobileController.text =
-              profileProvider.userData.contact?.toString() ?? '';
-
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -166,14 +167,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     children: [
                       CircleAvatar(
                         radius: 50,
-                        backgroundColor: Colors.grey,
+                        backgroundColor: Colors.grey[300],
                         backgroundImage: _image != null
                             ? FileImage(_image!)
-                            : (profile_image != null &&
-                                    profile_image.isNotEmpty)
-                                ? CachedNetworkImageProvider(profile_image)
-                                    as ImageProvider
-                                : null,
+                            : (profileProvider.userData.profilePicUrl != null &&
+                            profileProvider.userData.profilePicUrl!.isNotEmpty)
+                            ? CachedNetworkImageProvider(profileProvider.userData.profilePicUrl!)
+                        as ImageProvider<Object>
+                            : null,
+                        child: (_image == null &&
+                            (profileProvider.userData.profilePicUrl == null ||
+                                profileProvider.userData.profilePicUrl!.isEmpty))
+                            ? const Icon(
+                          Icons.person,
+                          size: 40,
+                          color: Colors.white70,
+                        )
+                            : null,
                       ),
                       Positioned(
                         bottom: 0,
@@ -211,6 +221,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             fontWeight: FontWeight.w500,
                             fontFamily: "general_sans"),
                         decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16,vertical: 4),
                           labelText: 'Name',
                           labelStyle: TextStyle(
                               fontSize: 16,
@@ -245,6 +256,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       SizedBox(height: 16),
                       TextFormField(
                         controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
                         cursorColor: Colors.black,
                         style: TextStyle(
                             fontSize: 16,
@@ -252,6 +264,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             fontWeight: FontWeight.w500,
                             fontFamily: "general_sans"),
                         decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16,vertical: 4),
                           labelText: 'Email',
                           labelStyle: TextStyle(
                               fontSize: 16,
@@ -287,12 +300,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       TextFormField(
                         controller: _mobileController,
                         cursorColor: Colors.black,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(10)
+                        ],
                         style: TextStyle(
                             fontSize: 16,
                             color: Colors.black,
                             fontWeight: FontWeight.w500,
                             fontFamily: "general_sans"),
                         decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16,vertical: 4),
                           labelText: 'Mobile Number',
                           labelStyle: TextStyle(
                               fontSize: 16,
@@ -322,10 +340,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             fontFamily: "general_sans",
                           ),
                         ),
-                        keyboardType: TextInputType.phone,
+                        keyboardType: TextInputType.number,
                         validator: _validateMobile,
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 16),
                       TextFormField(
                         controller: _pwdController,
                         cursorColor: Colors.black,
@@ -335,6 +353,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             fontWeight: FontWeight.w500,
                             fontFamily: "general_sans"),
                         decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16,vertical: 4),
                           labelText: 'Enter Your Password',
                           labelStyle: TextStyle(
                               fontSize: 16,

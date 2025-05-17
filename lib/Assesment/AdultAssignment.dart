@@ -104,7 +104,7 @@ class _AdultassignmentState extends State<Adultassignment> {
             ),
             const SizedBox(height: 20),
             provider.isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator(color: primarycolor,))
                 : SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
