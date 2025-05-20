@@ -2,7 +2,7 @@ class ServiceModel {
   final int id;
   final String type;
   final String name;
-  final int amount;
+  final String amount;
   final String description;
   final String keyAreaFocus;
   final String benefits;

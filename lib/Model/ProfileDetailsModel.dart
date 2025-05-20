@@ -30,7 +30,7 @@ class User {
   int? id;
   String? name;
   String? email;
-  int? contact;
+  String? contact; // Changed from int? to String? to match JSON
   String? emailVerifiedAt;
   String? refreshToken;
   String? webFcmToken;
@@ -45,7 +45,7 @@ class User {
   String? uniqueHostalId;
   String? emailOtp;
   String? expiredTime;
-  int? deletedAt;
+  String? deletedAt; // Changed from int? to String? to match JSON
   String? createdAt;
   String? updatedAt;
   String? profilePicUrl;
@@ -79,7 +79,7 @@ class User {
     id = json['id'];
     name = json['name'];
     email = json['email'];
-    contact = json['contact'];
+    contact = json['contact']; // Now expects a String
     emailVerifiedAt = json['email_verified_at'];
     refreshToken = json['refresh_token'];
     webFcmToken = json['web_fcm_token'];
@@ -94,7 +94,7 @@ class User {
     uniqueHostalId = json['unique_hostal_id'];
     emailOtp = json['email_otp'];
     expiredTime = json['expired_time'];
-    deletedAt = json['deleted_at'];
+    deletedAt = json['deleted_at']; // Now expects a String
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     profilePicUrl = json['profile_pic_url'];

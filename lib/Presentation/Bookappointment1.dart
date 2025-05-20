@@ -68,23 +68,24 @@ class _Bookappointment1State extends State<Bookappointment1> {
     super.initState();
     _selected_appointment_mode =
         widget.appointmentMode == 'both' ? 'online' : widget.appointmentMode;
-    Provider.of<AddressListProvider>(context, listen: false).getAddressList();
-    final provider =
-        Provider.of<BookingHistoryProvider>(context, listen: false);
-    PhonePePaymentSdk.init(environment, appId, merchantId, true);
-    // provider.getPhonepeDetails().then((_) {
-    //   setState(() {
-    //     _phonepeKeys = provider.phonpekeys;
-    //     merchantId=_phonepeKeys[0].merchantId??"";
-    //     appId=_phonepeKeys[0].appId??"";
-    //     saltIndex=_phonepeKeys[0].saltIndex??0;
-    //     saltKey=_phonepeKeys[0].saltKey??"";
-    //   });
-    // });
-    var res = Provider.of<UserProviders>(context, listen: false).userData;
-    setState(() {
-      _fullNameController.text = res.name ?? "";
-      _phoneNumberController.text = res.contact.toString() ?? '';
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<AddressListProvider>(context, listen: false).getAddressList();
+      final provider = Provider.of<BookingHistoryProvider>(context, listen: false);
+      PhonePePaymentSdk.init(environment, appId, merchantId, true);
+      // provider.getPhonepeDetails().then((_) {
+      //   setState(() {
+      //     _phonepeKeys = provider.phonpekeys;
+      //     merchantId=_phonepeKeys[0].merchantId??"";
+      //     appId=_phonepeKeys[0].appId??"";
+      //     saltIndex=_phonepeKeys[0].saltIndex??0;
+      //     saltKey=_phonepeKeys[0].saltKey??"";
+      //   });
+      // });
+      var res = Provider.of<UserProviders>(context, listen: false).userData;
+      setState(() {
+        _fullNameController.text = res.name ?? "";
+        _phoneNumberController.text = res.contact.toString() ?? '';
+      });
     });
     _fullNameController.addListener(() {
       setState(() {

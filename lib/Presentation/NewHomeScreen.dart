@@ -298,7 +298,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     } else if (hour >= 12 && hour < 18) {
       greeting = 'Good Afternoon';
     } else {
-        greeting = 'Good Evening';
+      greeting = 'Good Evening';
     }
 
     var h = MediaQuery.of(context).size.height;
@@ -346,9 +346,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                 final isGuestUser = snapshot.data!;
                                 final String greeting = isGuestUser
                                     ? 'Hey Guest'
-                                    : 'Hey ${userData.userData.name != null && userData.userData.name!.isNotEmpty
-                                    ? '${userData.userData.name![0].toUpperCase()}${userData.userData.name!.substring(1)}'
-                                    : 'User'}';
+                                    : 'Hey ${userData.userData.name != null && userData.userData.name!.isNotEmpty ? '${userData.userData.name![0].toUpperCase()}${userData.userData.name!.substring(1)}' : 'User'}';
                                 return Text(
                                   greeting,
                                   style: TextStyle(
@@ -392,7 +390,8 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                 ),
                 body: Consumer<HomeProviders>(
                   builder: (context, homeProviders, child) {
-                    final upcomingAppointments = homeProviders.upcomingAppointments;
+                    final upcomingAppointments =
+                        homeProviders.upcomingAppointments;
                     final hasAppointment = upcomingAppointments.isNotEmpty;
 
                     UpcomingAppointments? upcomingAppointment;
@@ -400,9 +399,11 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
 
                     if (hasAppointment) {
                       upcomingAppointment = upcomingAppointments[0];
-                      final date = DateTime.tryParse(upcomingAppointment.date ?? '');
+                      final date =
+                          DateTime.tryParse(upcomingAppointment.date ?? '');
                       if (date != null) {
-                        formattedDate = DateFormat('EEEE, MMMM d, yyyy').format(date);
+                        formattedDate =
+                            DateFormat('EEEE, MMMM d, yyyy').format(date);
                       }
                     }
                     return isLoading
@@ -441,9 +442,12 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
 
                                       final isGuest = snapshot.data!;
 
-                                      if (userData.healthFeedback.status == false && !isGuest) {
+                                      if (userData.healthFeedback.status ==
+                                              false &&
+                                          !isGuest) {
                                         return Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               'How are you feeling today ?',
@@ -456,12 +460,27 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                             ),
                                             SizedBox(height: 12),
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
-                                                _buildMoodColumn('Happy', 'assets/smile.png', Color(0xffEF5DA8),),
-                                                _buildMoodColumn('Calm', 'assets/calm.png', Color(0xffAEAFF7)),
-                                                _buildMoodColumn('Angry', 'assets/angry.png', Color(0xffEA6D33)),
-                                                _buildMoodColumn('Sad', 'assets/smile.png', Color(0xffC3F2A6)),
+                                                _buildMoodColumn(
+                                                  'Happy',
+                                                  'assets/smile.png',
+                                                  Color(0xffEF5DA8),
+                                                ),
+                                                _buildMoodColumn(
+                                                    'Calm',
+                                                    'assets/calm.png',
+                                                    Color(0xffAEAFF7)),
+                                                _buildMoodColumn(
+                                                    'Angry',
+                                                    'assets/angry.png',
+                                                    Color(0xffEA6D33)),
+                                                _buildMoodColumn(
+                                                    'Sad',
+                                                    'assets/smile.png',
+                                                    Color(0xffC3F2A6)),
                                               ],
                                             ),
                                             SizedBox(height: 10),
@@ -501,7 +520,8 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                         homeProviders.therapieslist.map((item) {
                                       return InkResponse(
                                           onTap: () {
-                                            context.push("/service_details_screen?serviceID=${item.id}&serviceName=${item.name}");
+                                            context.push(
+                                                "/service_details_screen?serviceID=${item.id}&serviceName=${item.name}");
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(
@@ -524,7 +544,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                                             .start,
                                                     children: [
                                                       Text(
-                                                        item.name ??"",
+                                                        item.name ?? "",
                                                         maxLines: 2,
                                                         overflow: TextOverflow
                                                             .ellipsis,
@@ -611,10 +631,12 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                       pauseAutoPlayOnTouch: true,
                                       aspectRatio: 1,
                                     ),
-                                    items: homeProviders.counsellingslist.map((item) {
+                                    items: homeProviders.counsellingslist
+                                        .map((item) {
                                       return InkResponse(
                                           onTap: () {
-                                            context.push("/service_details_screen?serviceID=${item.id}&serviceName=${item.name}");
+                                            context.push(
+                                                "/service_details_screen?serviceID=${item.id}&serviceName=${item.name}");
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(
@@ -637,8 +659,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                                             .start,
                                                     children: [
                                                       Text(
-                                                        item.name ??
-                                                            'No Title',
+                                                        item.name ?? 'No Title',
                                                         maxLines: 2,
                                                         overflow: TextOverflow
                                                             .ellipsis,
@@ -701,50 +722,66 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                     }).toList(),
                                   ),
                                   FutureBuilder<bool>(
-                                    future: AuthService.isGuest, // Replace with your actual class name
+                                    future: AuthService
+                                        .isGuest, // Replace with your actual class name
                                     builder: (context, snapshot) {
-                                      if (!snapshot.hasData) return SizedBox(); // or a loader/spinner
+                                      if (!snapshot.hasData)
+                                        return SizedBox(); // or a loader/spinner
 
                                       final isGuest = snapshot.data!;
 
                                       // Show appointment card only if user is NOT a guest
-                                      if (!isGuest && hasAppointment && upcomingAppointment != null) {
+                                      if (!isGuest &&
+                                          hasAppointment &&
+                                          upcomingAppointment != null) {
                                         return Card(
                                           elevation: 5,
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
+                                            borderRadius:
+                                                BorderRadius.circular(12),
                                           ),
                                           margin: const EdgeInsets.all(0),
                                           child: Container(
                                             width: 340,
                                             decoration: BoxDecoration(
                                               color: Colors.white,
-                                              borderRadius: BorderRadius.circular(12),
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
                                             ),
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 // Header
                                                 Container(
                                                   width: double.infinity,
-                                                  padding: const EdgeInsets.all(16),
-                                                  decoration: const BoxDecoration(
+                                                  padding:
+                                                      const EdgeInsets.all(16),
+                                                  decoration:
+                                                      const BoxDecoration(
                                                     color: primarycolor,
-                                                    borderRadius: BorderRadius.only(
-                                                      topLeft: Radius.circular(12),
-                                                      topRight: Radius.circular(12),
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(12),
+                                                      topRight:
+                                                          Radius.circular(12),
                                                     ),
                                                   ),
                                                   child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
                                                       Text(
                                                         'Appointment #${upcomingAppointment.appointmentId}',
                                                         style: const TextStyle(
                                                           color: Colors.white,
                                                           fontSize: 20,
-                                                          fontFamily: "general_sans",
-                                                          fontWeight: FontWeight.bold,
+                                                          fontFamily:
+                                                              "general_sans",
+                                                          fontWeight:
+                                                              FontWeight.bold,
                                                         ),
                                                       ),
                                                       const SizedBox(height: 4),
@@ -753,7 +790,8 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                                         style: const TextStyle(
                                                           color: Colors.white70,
                                                           fontSize: 14,
-                                                          fontFamily: "general_sans",
+                                                          fontFamily:
+                                                              "general_sans",
                                                         ),
                                                       ),
                                                     ],
@@ -761,18 +799,23 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                                 ),
                                                 // Body
                                                 Padding(
-                                                  padding: const EdgeInsets.all(16),
+                                                  padding:
+                                                      const EdgeInsets.all(16),
                                                   child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
-                                                      _buildSectionTitle('Date & Time'),
+                                                      _buildSectionTitle(
+                                                          'Date & Time'),
                                                       const SizedBox(height: 8),
                                                       Text(
                                                         formattedDate,
                                                         style: const TextStyle(
                                                           color: Colors.grey,
                                                           fontSize: 14,
-                                                          fontFamily: "general_sans",
+                                                          fontFamily:
+                                                              "general_sans",
                                                         ),
                                                       ),
                                                       Text(
@@ -780,18 +823,22 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                                         style: const TextStyle(
                                                           color: Colors.grey,
                                                           fontSize: 14,
-                                                          fontFamily: "general_sans",
+                                                          fontFamily:
+                                                              "general_sans",
                                                         ),
                                                       ),
-                                                      const SizedBox(height: 16),
-                                                      _buildSectionTitle('Therapist Details'),
+                                                      const SizedBox(
+                                                          height: 16),
+                                                      _buildSectionTitle(
+                                                          'Therapist Details'),
                                                       const SizedBox(height: 8),
                                                       Text(
                                                         'Name: ${upcomingAppointment.staff?.name}',
                                                         style: const TextStyle(
                                                           color: Colors.grey,
                                                           fontSize: 14,
-                                                          fontFamily: "general_sans",
+                                                          fontFamily:
+                                                              "general_sans",
                                                         ),
                                                       ),
                                                       Text(
@@ -799,55 +846,95 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                                         style: const TextStyle(
                                                           color: Colors.grey,
                                                           fontSize: 14,
-                                                          fontFamily: "general_sans",
+                                                          fontFamily:
+                                                              "general_sans",
                                                         ),
                                                       ),
-                                                      const SizedBox(height: 16),
-                                                      _buildSectionTitle('Status'),
+                                                      const SizedBox(
+                                                          height: 16),
+                                                      _buildSectionTitle(
+                                                          'Status'),
                                                       const SizedBox(height: 8),
                                                       Container(
-                                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                                        decoration: BoxDecoration(
-                                                          color: upcomingAppointment.status == 'not started'
-                                                              ? Colors.orange[100]
-                                                              : Colors.green[100],
-                                                          borderRadius: BorderRadius.circular(12),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal: 12,
+                                                                vertical: 6),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: upcomingAppointment
+                                                                      .status ==
+                                                                  'not started'
+                                                              ? Colors
+                                                                  .orange[100]
+                                                              : Colors
+                                                                  .green[100],
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(12),
                                                         ),
                                                         child: Text(
-                                                          upcomingAppointment.status != null
+                                                          upcomingAppointment
+                                                                      .status !=
+                                                                  null
                                                               ? "${upcomingAppointment.status![0].toUpperCase()}${upcomingAppointment.status!.substring(1)}"
                                                               : "",
                                                           style: TextStyle(
-                                                            color: upcomingAppointment.status == 'not started'
-                                                                ? Colors.orange[800]
-                                                                : Colors.green[800],
+                                                            color: upcomingAppointment
+                                                                        .status ==
+                                                                    'not started'
+                                                                ? Colors
+                                                                    .orange[800]
+                                                                : Colors
+                                                                    .green[800],
                                                             fontSize: 14,
-                                                            fontFamily: "general_sans",
-                                                            fontWeight: FontWeight.w600,
+                                                            fontFamily:
+                                                                "general_sans",
+                                                            fontWeight:
+                                                                FontWeight.w600,
                                                           ),
                                                         ),
                                                       ),
-                                                      const SizedBox(height: 16),
-                                                      _buildSectionTitle('Meeting Link'),
+                                                      const SizedBox(
+                                                          height: 16),
+                                                      _buildSectionTitle(
+                                                          'Meeting Link'),
                                                       const SizedBox(height: 8),
                                                       InkWell(
                                                         onTap: () async {
-                                                          final url = Uri.parse(upcomingAppointment?.url ?? "");
-                                                          if (await canLaunchUrl(url)) {
-                                                            await launchUrl(url, mode: LaunchMode.externalApplication);
+                                                          final url = Uri.parse(
+                                                              upcomingAppointment
+                                                                      ?.url ??
+                                                                  "");
+                                                          if (await canLaunchUrl(
+                                                              url)) {
+                                                            await launchUrl(url,
+                                                                mode: LaunchMode
+                                                                    .externalApplication);
                                                           } else {
-                                                            ScaffoldMessenger.of(context).showSnackBar(
-                                                              SnackBar(content: Text('Cannot launch ${upcomingAppointment?.url}')),
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(
+                                                              SnackBar(
+                                                                  content: Text(
+                                                                      'Cannot launch ${upcomingAppointment?.url}')),
                                                             );
                                                           }
                                                         },
                                                         child: Text(
-                                                          upcomingAppointment.url ?? "",
-                                                          style: const TextStyle(
+                                                          upcomingAppointment
+                                                                  .url ??
+                                                              "",
+                                                          style:
+                                                              const TextStyle(
                                                             color: Colors.blue,
                                                             fontSize: 14,
-                                                            fontFamily: "general_sans",
-                                                            decoration: TextDecoration.underline,
+                                                            fontFamily:
+                                                                "general_sans",
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .underline,
                                                           ),
                                                         ),
                                                       ),
@@ -903,9 +990,11 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
       children: [
         Bounce(
           onTap: () async {
-            var res= await Provider.of<HomeProviders>(context, listen: false).postHealthFeedBack(mood);
-            if(res?.status==true){
-              Provider.of<UserProviders>(context, listen: false).getProfileDetails();
+            var res = await Provider.of<HomeProviders>(context, listen: false)
+                .postHealthFeedBack(mood);
+            if (res?.status == true) {
+              Provider.of<UserProviders>(context, listen: false)
+                  .getProfileDetails();
             }
           },
           child: Container(
@@ -1032,14 +1121,14 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                 //   }).toList(),
                 // ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8, horizontal: 8),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                   child: Stack(
                     children: [
                       shimmerContainer(w, 150, context),
                       Container(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 20),
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                         width: w * 0.5,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1067,14 +1156,14 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                 ),
                 shimmerText(120, 12, context),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8, horizontal: 8),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                   child: Stack(
                     children: [
                       shimmerContainer(w, 150, context),
                       Container(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 20),
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                         width: w * 0.5,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

@@ -103,12 +103,12 @@ class TherapiesList {
   int? id;
   String? type;
   String? name;
-  int? amount;
+  String? amount; // Changed from int? to String? to match JSON
   String? description;
   String? keyAreaFocus;
   String? benefits;
   String? image;
-  String? service_pic_url;
+  String? servicePicUrl; // Updated to camelCase for consistency
   String? appType;
   String? createdAt;
   String? updatedAt;
@@ -123,7 +123,7 @@ class TherapiesList {
     this.keyAreaFocus,
     this.benefits,
     this.image,
-    this.service_pic_url,
+    this.servicePicUrl,
     this.appType,
     this.createdAt,
     this.updatedAt,
@@ -134,12 +134,12 @@ class TherapiesList {
     id = json['id'];
     type = json['type'];
     name = json['name'];
-    amount = json['amount'];
+    amount = json['amount']; // Now expects a String
     description = json['description'];
     keyAreaFocus = json['key_area_focus'];
     benefits = json['benefits'];
     image = json['image'];
-    service_pic_url = json['service_pic_url'];
+    servicePicUrl = json['service_pic_url'];
     appType = json['app_type'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
@@ -156,7 +156,7 @@ class TherapiesList {
     data['key_area_focus'] = keyAreaFocus;
     data['benefits'] = benefits;
     data['image'] = image;
-    data['service_pic_url'] = service_pic_url;
+    data['service_pic_url'] = servicePicUrl;
     data['app_type'] = appType;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;

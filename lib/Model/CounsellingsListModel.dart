@@ -103,7 +103,7 @@ class CounsellingsList {
   int? id;
   String? type;
   String? name;
-  int? amount;
+  String? amount; // Changed from int? to String? to match JSON
   String? description;
   String? keyAreaFocus;
   String? benefits;

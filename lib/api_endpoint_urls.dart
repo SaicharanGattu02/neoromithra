@@ -1,6 +1,6 @@
 class APIEndpointUrls {
-  // static const String baseUrl = 'https://api.ridev.in/';
-  static const String baseUrl = 'http://192.168.80.237:8000/';
+  static const String baseUrl = 'https://api.neuromitra.com/';
+  // static const String baseUrl = 'http://192.168.80.237:8000/';
 
   static const String apiUrl = 'api/';
   static const String userUrl = 'api/users/';
@@ -8,8 +8,8 @@ class APIEndpointUrls {
   ///Authentication Module
   static const String user_register = '${apiUrl}register-user';
   static const String login_with_username = '${apiUrl}mobile-login';
-  static const String login_with_mobile = '${apiUrl}/login-otp';
-  static const String verify_login_otp = '${apiUrl}/verify-login-otp';
+  static const String login_with_mobile = '${apiUrl}login-otp';
+  static const String verify_login_otp = '${apiUrl}verify-login-otp';
   static const String updateprofileDetails = '${userUrl}profile-update';
   static const String getprofileDetails = '${userUrl}view-profile';
   static const String dailyFeedBack = '${userUrl}daily-feedback';

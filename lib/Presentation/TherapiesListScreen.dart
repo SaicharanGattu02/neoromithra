@@ -320,7 +320,7 @@ class _TherapiesListScreenState extends State<TherapiesListScreen> {
                       } else {
                         final therapy = homeProvider.therapieslist[index];
                         return ProductGridItem(
-                          imageUrl: therapy.service_pic_url ?? "",
+                          imageUrl: therapy.servicePicUrl ?? "",
                           title: therapy.name ?? "",
                           onTap: () {
                             debugPrint("Tapped: ${therapy.name}");
