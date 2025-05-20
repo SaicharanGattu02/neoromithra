@@ -92,13 +92,13 @@ class AddressData {
 
 class Address {
   final int id;
-  final int uid;
+  final dynamic uid; // Changed from int to String
   final String flatNo;
   final String street;
   final String area;
   final String landmark;
-  final int pincode;
-  final int typeOfAddress;
+  final dynamic pincode; // Changed from int to String
+  final dynamic typeOfAddress; // Changed from int to String
   final String locationAccess;
 
   Address({
@@ -116,13 +116,13 @@ class Address {
   factory Address.fromJson(Map<String, dynamic> json) {
     return Address(
       id: json['id'] ?? 0,
-      uid: json['uid'] ?? 0,
+      uid: json['uid'] ?? '', // Now expects a String
       flatNo: json['Flat_no'] ?? '',
       street: json['street'] ?? '',
       area: json['area'] ?? '',
       landmark: json['landmark'] ?? '',
-      pincode: json['pincode'] ?? 0,
-      typeOfAddress: json['type_of_address'] ?? 0,
+      pincode: json['pincode'] ?? '', // Now expects a String
+      typeOfAddress: json['type_of_address'] ?? '', // Now expects a String
       locationAccess: json['location_access'] ?? '',
     );
   }

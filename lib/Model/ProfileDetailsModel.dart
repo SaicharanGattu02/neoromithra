@@ -30,7 +30,7 @@ class User {
   int? id;
   String? name;
   String? email;
-  String? contact; // Changed from int? to String? to match JSON
+  dynamic? contact; // Changed from int? to String? to match JSON
   String? emailVerifiedAt;
   String? refreshToken;
   String? webFcmToken;
@@ -45,7 +45,7 @@ class User {
   String? uniqueHostalId;
   String? emailOtp;
   String? expiredTime;
-  String? deletedAt; // Changed from int? to String? to match JSON
+  dynamic deletedAt; // Changed from int? to String? to match JSON
   String? createdAt;
   String? updatedAt;
   String? profilePicUrl;

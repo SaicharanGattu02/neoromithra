@@ -64,7 +64,7 @@ android {
         release {
             keyAlias 'upload'
             keyPassword 'neuromithra'
-            storeFile file('C:\\Users\\muluk\\AndroidStudioProjects\\neoromithra\\android\\app\\neuromita-keystore.jks')
+            storeFile file('C:\\Users\\user\\AndroidStudioProjects\\neoromithra\\android\\app\\neuromita-keystore.jks')
             storePassword 'neuromithra'
         }
     }

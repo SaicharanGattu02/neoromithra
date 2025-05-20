@@ -8,12 +8,12 @@ class AppointmentsModel {
 
   AppointmentsModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
+    final Map<String, dynamic> data = {};
+    data['status'] = status;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
@@ -36,27 +36,28 @@ class Data {
   int? to;
   int? total;
 
-  Data(
-      {this.currentPage,
-        this.appointments,
-        this.firstPageUrl,
-        this.from,
-        this.lastPage,
-        this.lastPageUrl,
-        this.links,
-        this.nextPageUrl,
-        this.path,
-        this.perPage,
-        this.prevPageUrl,
-        this.to,
-        this.total});
+  Data({
+    this.currentPage,
+    this.appointments,
+    this.firstPageUrl,
+    this.from,
+    this.lastPage,
+    this.lastPageUrl,
+    this.links,
+    this.nextPageUrl,
+    this.path,
+    this.perPage,
+    this.prevPageUrl,
+    this.to,
+    this.total,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     currentPage = json['current_page'];
     if (json['data'] != null) {
       appointments = <Appointments>[];
       json['data'].forEach((v) {
-        appointments!.add(new Appointments.fromJson(v));
+        appointments!.add(Appointments.fromJson(v));
       });
     }
     firstPageUrl = json['first_page_url'];
@@ -66,7 +67,7 @@ class Data {
     if (json['links'] != null) {
       links = <Links>[];
       json['links'].forEach((v) {
-        links!.add(new Links.fromJson(v));
+        links!.add(Links.fromJson(v));
       });
     }
     nextPageUrl = json['next_page_url'];
@@ -78,48 +79,48 @@ class Data {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['current_page'] = this.currentPage;
-    if (this.appointments != null) {
-      data['data'] = this.appointments!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = {};
+    data['current_page'] = currentPage;
+    if (appointments != null) {
+      data['data'] = appointments!.map((v) => v.toJson()).toList();
     }
-    data['first_page_url'] = this.firstPageUrl;
-    data['from'] = this.from;
-    data['last_page'] = this.lastPage;
-    data['last_page_url'] = this.lastPageUrl;
-    if (this.links != null) {
-      data['links'] = this.links!.map((v) => v.toJson()).toList();
+    data['first_page_url'] = firstPageUrl;
+    data['from'] = from;
+    data['last_page'] = lastPage;
+    data['last_page_url'] = lastPageUrl;
+    if (links != null) {
+      data['links'] = links!.map((v) => v.toJson()).toList();
     }
-    data['next_page_url'] = this.nextPageUrl;
-    data['path'] = this.path;
-    data['per_page'] = this.perPage;
-    data['prev_page_url'] = this.prevPageUrl;
-    data['to'] = this.to;
-    data['total'] = this.total;
+    data['next_page_url'] = nextPageUrl;
+    data['path'] = path;
+    data['per_page'] = perPage;
+    data['prev_page_url'] = prevPageUrl;
+    data['to'] = to;
+    data['total'] = total;
     return data;
   }
 }
 
 class Appointments {
-  int? id;
+  dynamic id;
   String? name;
-  int? phone;
+  dynamic phone;
   String? appointmentFor;
-  int? patientId;
-  int? userId;
-  int? age;
+  dynamic patientId;
+  dynamic userId;
+  dynamic age;
   String? gender;
   String? appointmentMode;
   String? appointmentRequestDate;
   String? serviceName;
-  int? serviceId;
-  int? days;
-  List<String>? calenderDays; // Changed type
-  int? amount;
-  int? address;
+  dynamic serviceId;
+  dynamic days;
+  List<String>? calenderDays;
+  dynamic amount;
+  dynamic address; // Changed to dynamic to handle both int and String
   String? status;
-  int? staffId;
-  int? assignedId;
+  dynamic staffId;
+  dynamic assignedId;
   String? createdAt;
   String? updatedAt;
   String? deletedAt;
@@ -151,20 +152,19 @@ class Appointments {
 
   Appointments.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    name = json['name'];
-    phone = json['phone'];
-    appointmentFor = json['appointment_for'];
+    name = json['name']?.toString();
+    phone = json['phone']; // Keep dynamic to handle int or String
+    appointmentFor = json['appointment_for']?.toString();
     patientId = json['patient_id'];
     userId = json['user_id'];
     age = json['age'];
-    gender = json['gender'];
-    appointmentMode = json['appointment_mode'];
-    appointmentRequestDate = json['appointment_request_date'];
-    serviceName = json['service_name'];
+    gender = json['gender']?.toString();
+    appointmentMode = json['appointment_mode']?.toString();
+    appointmentRequestDate = json['appointment_request_date']?.toString();
+    serviceName = json['service_name']?.toString();
     serviceId = json['service_id'];
     days = json['days'];
-
-    // Fix calender_days deserialization for string or list
+    // Handle calender_days deserialization
     if (json['calender_days'] is String) {
       try {
         calenderDays = List<String>.from(jsonDecode(json['calender_days']));
@@ -172,17 +172,18 @@ class Appointments {
         calenderDays = [];
       }
     } else if (json['calender_days'] is List) {
-      calenderDays = List<String>.from(json['calender_days']);
+      calenderDays = List<String>.from(json['calender_days'].map((e) => e.toString()));
+    } else {
+      calenderDays = [];
     }
-
     amount = json['amount'];
-    address = json['address'];
-    status = json['status'];
+    address = json['address']; // Keep dynamic to handle int or String
+    status = json['status']?.toString();
     staffId = json['staff_id'];
     assignedId = json['assigned_id'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
+    createdAt = json['created_at']?.toString();
+    updatedAt = json['updated_at']?.toString();
+    deletedAt = json['deleted_at']?.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -200,7 +201,7 @@ class Appointments {
     data['service_name'] = serviceName;
     data['service_id'] = serviceId;
     data['days'] = days;
-    data['calender_days'] = calenderDays;
+    data['calender_days'] = calenderDays != null ? jsonEncode(calenderDays) : null;
     data['amount'] = amount;
     data['address'] = address;
     data['status'] = status;
@@ -227,10 +228,10 @@ class Links {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['url'] = this.url;
-    data['label'] = this.label;
-    data['active'] = this.active;
+    final Map<String, dynamic> data = {};
+    data['url'] = url;
+    data['label'] = label;
+    data['active'] = active;
     return data;
   }
 }

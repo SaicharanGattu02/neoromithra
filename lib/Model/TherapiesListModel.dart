@@ -103,7 +103,7 @@ class TherapiesList {
   int? id;
   String? type;
   String? name;
-  String? amount; // Changed from int? to String? to match JSON
+  dynamic amount; // Changed from int? to String? to match JSON
   String? description;
   String? keyAreaFocus;
   String? benefits;

@@ -83,8 +83,9 @@ class _RegisterState extends State<Register> {
             child: ClipOval(
               child: Image.asset(
                 "assets/applogo.jpeg",
-                height: 100,
-                width: 100,
+                height: 120,
+                width: 120,
+                fit: BoxFit.contain,
               ),
             ),
           ),
