@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../services/userapi.dart';
 
@@ -56,7 +57,7 @@ class _PaymentStatusScreenState extends State<PaymentStatusScreen> {
     String? status = widget.response["status"];
     if (status == "SUCCESS") {
       _isSuccess = true;
-      await _bookAppointment();
+      // await _bookAppointment();
     } else {
       setState(() {
         _isLoading = false;
@@ -64,62 +65,62 @@ class _PaymentStatusScreenState extends State<PaymentStatusScreen> {
     }
   }
 
-  Future<void> _bookAppointment() async {
-    Map<String, dynamic> orderData = {
-      "amount": widget.amount,
-      "transactionID": widget.transactionId,
-    };
+  // Future<void> _bookAppointment() async {
+  //   Map<String, dynamic> orderData = {
+  //     "amount": widget.amount,
+  //     "transactionID": widget.transactionId,
+  //   };
+  //
+  //   bool success;
+  //   // if (widget.isExistingPatient) {
+  //   //   success = await ExistBookAppointment(orderData);
+  //   // } else {
+  //   //   success = await NewBookAppointment(orderData);
+  //   // }
+  //
+  //   if (success) {
+  //     await Future.delayed(Duration(seconds: 1));
+  //     widget.onSuccess();
+  //   } else {
+  //     setState(() {
+  //       _isLoading = false;
+  //       _isSuccess = false;
+  //     });
+  //   }
+  // }
 
-    bool success;
-    if (widget.isExistingPatient) {
-      success = await ExistBookAppointment(orderData);
-    } else {
-      success = await NewBookAppointment(orderData);
-    }
-
-    if (success) {
-      await Future.delayed(Duration(seconds: 1));
-      widget.onSuccess();
-    } else {
-      setState(() {
-        _isLoading = false;
-        _isSuccess = false;
-      });
-    }
-  }
-
-  Future<bool> NewBookAppointment(Map<String, dynamic> orderData) async {
-    final data = await Userapi.newApointment(
-        widget.fullName,
-        widget.phoneNumber,
-        widget.appointment,
-        widget.age,
-        widget.appointmentType,
-        widget.date,
-        widget.addressId,
-        widget.pageSource,
-        widget.timeOfAppointment,
-        widget.userId,
-        orderData);
-    return data != null && data.status == true;
-  }
-
-  Future<bool> ExistBookAppointment(Map<String, dynamic> orderData) async {
-    final data = await Userapi.existApointment(
-        widget.fullName,
-        widget.phoneNumber,
-        widget.appointment,
-        widget.age,
-        widget.appointmentType,
-        widget.date,
-        widget.addressId,
-        widget.pageSource,
-        widget.timeOfAppointment,
-        widget.userId,
-        widget.patientId,
-        orderData);
-    return data != null && data.status == true;
-  }
+  // Future<bool> NewBookAppointment(Map<String, dynamic> orderData) async {
+  //   final data = await Userapi.newApointment(
+  //       widget.fullName,
+  //       widget.phoneNumber,
+  //       widget.appointment,
+  //       widget.age,
+  //       widget.appointmentType,
+  //       widget.date,
+  //       widget.addressId,
+  //       widget.pageSource,
+  //       widget.timeOfAppointment,
+  //       widget.userId,
+  //       orderData);
+  //   return data != null && data.status == true;
+  // }
+  //
+  // Future<bool> ExistBookAppointment(Map<String, dynamic> orderData) async {
+  //   final data = await Userapi.existApointment(
+  //       widget.fullName,
+  //       widget.phoneNumber,
+  //       widget.appointment,
+  //       widget.age,
+  //       widget.appointmentType,
+  //       widget.date,
+  //       widget.addressId,
+  //       widget.pageSource,
+  //       widget.timeOfAppointment,
+  //       widget.userId,
+  //       widget.patientId,
+  //       orderData);
+  //   return data != null && data.status == true;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -204,7 +205,7 @@ class _PaymentStatusScreenState extends State<PaymentStatusScreen> {
                 SizedBox(height: 32),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                   context.pop();
                   },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),

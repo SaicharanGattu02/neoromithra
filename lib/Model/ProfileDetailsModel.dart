@@ -1,23 +1,26 @@
 class ProfileDetailsModel {
+  bool? status;
   User? user;
   HealthFeedback? healthFeedback;
 
-  ProfileDetailsModel({this.user, this.healthFeedback});
+  ProfileDetailsModel({this.status, this.user, this.healthFeedback});
 
   ProfileDetailsModel.fromJson(Map<String, dynamic> json) {
-    user = json['user'] != null ? new User.fromJson(json['user']) : null;
+    status = json['status'];
+    user = json['message'] != null ? User.fromJson(json['message']) : null;
     healthFeedback = json['health_feedback'] != null
-        ? new HealthFeedback.fromJson(json['health_feedback'])
+        ? HealthFeedback.fromJson(json['health_feedback'])
         : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.user != null) {
-      data['user'] = this.user!.toJson();
+    final Map<String, dynamic> data = {};
+    data['status'] = status;
+    if (user != null) {
+      data['message'] = user!.toJson();
     }
-    if (this.healthFeedback != null) {
-      data['health_feedback'] = this.healthFeedback!.toJson();
+    if (healthFeedback != null) {
+      data['health_feedback'] = healthFeedback!.toJson();
     }
     return data;
   }
@@ -27,79 +30,100 @@ class User {
   int? id;
   String? name;
   String? email;
-  Null? emailVerifiedAt;
-  int? phone;
-  int? sos1;
-  int? sos2;
-  int? sos3;
-  int? userType;
-  String? userProfile;
-  String? fcmToken;
-  String? addressId;
+  dynamic? contact; // Changed from int? to String? to match JSON
+  String? emailVerifiedAt;
+  String? refreshToken;
+  String? webFcmToken;
+  String? deviceFcmToken;
+  String? role;
+  String? gender;
+  String? profilePic;
+  String? state;
+  String? city;
+  String? country;
+  String? postalcode;
+  String? uniqueHostalId;
+  String? emailOtp;
+  String? expiredTime;
+  dynamic deletedAt; // Changed from int? to String? to match JSON
   String? createdAt;
   String? updatedAt;
-  int? code;
-  String? codeexp;
-  int? codestatus;
+  String? profilePicUrl;
 
-  User(
-      {this.id,
-        this.name,
-        this.email,
-        this.emailVerifiedAt,
-        this.phone,
-        this.sos1,
-        this.sos2,
-        this.sos3,
-        this.userType,
-        this.userProfile,
-        this.fcmToken,
-        this.addressId,
-        this.createdAt,
-        this.updatedAt,
-        this.code,
-        this.codeexp,
-        this.codestatus});
+  User({
+    this.id,
+    this.name,
+    this.email,
+    this.contact,
+    this.emailVerifiedAt,
+    this.refreshToken,
+    this.webFcmToken,
+    this.deviceFcmToken,
+    this.role,
+    this.gender,
+    this.profilePic,
+    this.state,
+    this.city,
+    this.country,
+    this.postalcode,
+    this.uniqueHostalId,
+    this.emailOtp,
+    this.expiredTime,
+    this.deletedAt,
+    this.createdAt,
+    this.updatedAt,
+    this.profilePicUrl,
+  });
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     email = json['email'];
+    contact = json['contact']; // Now expects a String
     emailVerifiedAt = json['email_verified_at'];
-    phone = json['phone'];
-    sos1 = json['sos_1'];
-    sos2 = json['sos_2'];
-    sos3 = json['sos_3'];
-    userType = json['user_type'];
-    userProfile = json['user_profile'];
-    fcmToken = json['fcm_token'];
-    addressId = json['address_id'];
+    refreshToken = json['refresh_token'];
+    webFcmToken = json['web_fcm_token'];
+    deviceFcmToken = json['device_fcm_token'];
+    role = json['role'];
+    gender = json['gender'];
+    profilePic = json['profile_pic'];
+    state = json['state'];
+    city = json['city'];
+    country = json['country'];
+    postalcode = json['postalcode'];
+    uniqueHostalId = json['unique_hostal_id'];
+    emailOtp = json['email_otp'];
+    expiredTime = json['expired_time'];
+    deletedAt = json['deleted_at']; // Now expects a String
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    code = json['code'];
-    codeexp = json['codeexp'];
-    codestatus = json['codestatus'];
+    profilePicUrl = json['profile_pic_url'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['email'] = this.email;
-    data['email_verified_at'] = this.emailVerifiedAt;
-    data['phone'] = this.phone;
-    data['sos_1'] = this.sos1;
-    data['sos_2'] = this.sos2;
-    data['sos_3'] = this.sos3;
-    data['user_type'] = this.userType;
-    data['user_profile'] = this.userProfile;
-    data['fcm_token'] = this.fcmToken;
-    data['address_id'] = this.addressId;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    data['code'] = this.code;
-    data['codeexp'] = this.codeexp;
-    data['codestatus'] = this.codestatus;
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['name'] = name;
+    data['email'] = email;
+    data['contact'] = contact;
+    data['email_verified_at'] = emailVerifiedAt;
+    data['refresh_token'] = refreshToken;
+    data['web_fcm_token'] = webFcmToken;
+    data['device_fcm_token'] = deviceFcmToken;
+    data['role'] = role;
+    data['gender'] = gender;
+    data['profile_pic'] = profilePic;
+    data['state'] = state;
+    data['city'] = city;
+    data['country'] = country;
+    data['postalcode'] = postalcode;
+    data['unique_hostal_id'] = uniqueHostalId;
+    data['email_otp'] = emailOtp;
+    data['expired_time'] = expiredTime;
+    data['deleted_at'] = deletedAt;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    data['profile_pic_url'] = profilePicUrl;
     return data;
   }
 }
@@ -114,8 +138,8 @@ class HealthFeedback {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    return data;
+    return {
+      'status': status,
+    };
   }
 }

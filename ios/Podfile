@@ -1,7 +1,3 @@
-# Uncomment this line to define a global platform for your project
-# platform :ios, '12.0'
-
-# CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
 project 'Runner', {
@@ -28,10 +24,16 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 flutter_ios_podfile_setup
 
 target 'Runner' do
+  use_frameworks! :linkage => :static
   use_frameworks!
   use_modular_headers!
 
+  # Explicitly include Firebase pods
+  pod 'Firebase/Core', '~> 11.3'
+  pod 'Firebase/Messaging', '~> 11.3'
+
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+
   target 'RunnerTests' do
     inherit! :search_paths
   end
@@ -40,5 +42,20 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+    target.build_configurations.each do |config|
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
+        '$(inherited)',
+        'PERMISSION_CAMERA=1',
+        'PERMISSION_PHOTOS=1',
+        'PERMISSION_LOCATION=1',
+        'PERMISSION_LOCATION_WHENINUSE=0',
+        'PERMISSION_NOTIFICATIONS=1',
+      ]
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
+      # Ensure Firebase pods use the correct linker flags
+      config.build_settings['OTHER_LDFLAGS'] ||= ['$(inherited)']
+      # Suppress warnings for third-party pods
+      config.build_settings['GCC_WARN_INHIBIT_ALL_WARNINGS'] = 'YES'
+    end
   end
 end

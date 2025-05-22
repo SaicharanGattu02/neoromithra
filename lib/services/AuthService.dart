@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,6 +11,12 @@ class AuthService {
   static Future<String?> getAccessToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_accessTokenKey);
+  }
+
+  /// Check if the user is a guest (no token or empty token)
+  static Future<bool> get isGuest async {
+    final token = await getAccessToken();
+    return token == null || token.isEmpty;
   }
 
   /// Get stored refresh token
@@ -58,8 +65,9 @@ class AuthService {
         return true;
       }
     } catch (e) {
-      print("Token refresh failed: $e");
+      debugPrint("Token refresh failed: $e");
     }
     return false;
   }
 }
+

@@ -1,34 +1,39 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
-
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:neuromithra/Providers/AssessmentProvider.dart';
+import 'package:neuromithra/router.dart';
 import 'package:neuromithra/services/Preferances.dart';
 import 'package:neuromithra/services/userapi.dart';
 import 'package:neuromithra/state_injector.dart';
-import 'Presentation/LogIn.dart';
-import 'Presentation/SplashScreen.dart';
-
+import 'package:neuromithra/utils/media_query_helper.dart';
+import 'package:neuromithra/utils/Color_Constants.dart';
+import 'package:provider/provider.dart';
+import 'Providers/AddressListProviders.dart';
+import 'Providers/BookingHistoryProviders.dart';
+import 'Providers/ChildProvider.dart';
+import 'Providers/HomeProviders.dart';
+import 'Providers/RegisterProvider.dart';
+import 'Providers/SignInProviders.dart';
+import 'Providers/UserProvider.dart';
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    'high_importance_channel',
-    'High Importance Notifications',
-    description:
-        'This channel is used for important notifications.',
+    'high_importance_channel', 'High Importance Notifications',
+    description: 'This channel is used for important notifications.',
     importance: Importance.high,
     playSound: true);
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
 
 Future<void> main() async {
-  Userapi.setupInterceptors(navigatorKey);
+  Userapi.setupInterceptors();
   WidgetsFlutterBinding.ensureInitialized();
   Platform.isAndroid
       ? await Firebase.initializeApp(
@@ -41,45 +46,19 @@ Future<void> main() async {
         )
       : await Firebase.initializeApp();
 
-  FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
-
-  const fatalError = true;
-  // Non-async exceptions
-  FlutterError.onError = (errorDetails) {
-    if (fatalError) {
-      // If you want to record a "fatal" exception
-      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-      // ignore: dead_code
-    } else {
-      // If you want to record a "non-fatal" exception
-      FirebaseCrashlytics.instance.recordFlutterError(errorDetails);
-    }
-  };
-  // Async exceptions
-  PlatformDispatcher.instance.onError = (error, stack) {
-    if (fatalError) {
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-      // ignore: dead_code
-    } else {
-      // If you want to record a "non-fatal" exception
-      FirebaseCrashlytics.instance.recordError(error, stack);
-    }
-    return true;
-  };
-
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   if (Platform.isAndroid) {
     FirebaseMessaging.instance.getToken().then((value) {
       String? token = value;
-      print("Androidfbstoken:{$token}");
+      debugPrint("Androidfbstoken:{$token}");
       PreferenceService().saveString("fbstoken", token!);
       // toast(BuildContext , token);
     });
   } else {
     FirebaseMessaging.instance.getToken().then((value) {
       String? token = value;
-      print("IOSfbstoken:{$token}");
+      debugPrint("IOSfbstoken:{$token}");
       PreferenceService().saveString("fbstoken", token!);
       // toast(BuildContext , token);
     });
@@ -121,8 +100,8 @@ Future<void> main() async {
     RemoteNotification? notification = message.notification;
     AndroidNotification? android = message.notification?.android;
     if (notification != null && android != null) {
-      // print('A new message received: ${notification.title}');
-      // print('RemoteMessage data: ${message.data.toString()}');
+      // debugPrint('A new message received: ${notification.title}');
+      // debugPrint('RemoteMessage data: ${message.data.toString()}');
       showNotification(notification, android, message.data);
     }
   });
@@ -131,26 +110,26 @@ Future<void> main() async {
   // Stream listener
   FirebaseMessaging.onMessageOpenedApp.listen((message) {
     // _handleMessage(message);
-    // print("onMessageOpenedApp:${message.data['type']}");
+    // debugPrint("onMessageOpenedApp:${message.data['type']}");
   });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  // debugInvertOversizedImages = true;
-  FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-
-  FlutterError.onError = (FlutterErrorDetails details) {
-    // Log the error details to a logging service or print them
-    print("Errrrrrrrrrr:${details.exceptionAsString()}");
-    // Optionally report the error to a remote server
-  };
 // Motion.instance.setUpdateInterval(60.fps);
-  runApp(MyApp(navigatorKey: navigatorKey));
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => SignInProviders()),
+    ChangeNotifierProvider(create: (_) => HomeProviders()),
+    ChangeNotifierProvider(create: (_) => BookingHistoryProvider()),
+    ChangeNotifierProvider(create: (_) => AddressListProvider()),
+    ChangeNotifierProvider(create: (_) => UserProviders()),
+    ChangeNotifierProvider(create: (_) => RegisterProvider()),
+    ChangeNotifierProvider(create: (_) => ChildProvider()),
+    ChangeNotifierProvider(create: (_) => AssessmentProvider()),
+  ], child: MyApp()));
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  // print('A Background message just showed up :  ${message.data}');
+  // debugPrint('A Background message just showed up :  ${message.data}');
 }
 
 // Function to display local notifications
@@ -178,16 +157,14 @@ void showNotification(RemoteNotification notification,
 }
 
 class MyApp extends StatelessWidget {
-  final GlobalKey<NavigatorState> navigatorKey;
-
-  const MyApp({super.key, required this.navigatorKey});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     return MultiBlocProvider(
       providers: StateInjector.blocProviders,
-      child: MaterialApp(
-        navigatorKey: navigatorKey, // ✅ Key part for navigation via interceptors
+      child: MaterialApp.router(
         builder: (context, child) {
           return MediaQuery(
             data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
@@ -205,7 +182,6 @@ class MyApp extends StatelessWidget {
           dialogBackgroundColor: Colors.white,
           cardColor: Colors.white,
           searchBarTheme: const SearchBarThemeData(),
-          tabBarTheme: const TabBarTheme(),
           dialogTheme: const DialogTheme(
             shadowColor: Colors.white,
             surfaceTintColor: Colors.white,
@@ -227,19 +203,42 @@ class MyApp extends StatelessWidget {
             surfaceTintColor: Colors.white,
             color: Colors.white,
           ),
-          textButtonTheme: TextButtonThemeData(
-            style: ButtonStyle(),
-          ),
           bottomSheetTheme: const BottomSheetThemeData(
             surfaceTintColor: Colors.white,
             backgroundColor: Colors.white,
           ),
           colorScheme: const ColorScheme.light(background: Colors.white),
+          switchTheme: SwitchThemeData(
+            thumbColor: MaterialStateProperty.all(primarycolor),
+            trackColor: MaterialStateProperty.all(primarycolor.withOpacity(0.5)),
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              foregroundColor: primarycolor,
+            ),
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primarycolor,
+              foregroundColor: Colors.white,
+            ),
+          ),
+          outlinedButtonTheme: OutlinedButtonThemeData(
+            style: OutlinedButton.styleFrom(
+              foregroundColor: primarycolor,
+              side: BorderSide(color: primarycolor),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+          ),
+          textTheme: TextTheme(
+            bodyMedium: TextStyle(color: Colors.black),
+            titleLarge: TextStyle(fontWeight: FontWeight.bold),
+            // Add more if needed
+          ),
         ),
-        routes: {
-          '/signin': (context) => LogIn(),
-        },
-        home: Splash(),
+        routerConfig: goRouter,
       ),
     );
   }

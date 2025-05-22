@@ -37,7 +37,7 @@ class CustomAppButton extends StatelessWidget implements PreferredSizeWidget {
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
-          backgroundColor: MaterialStateProperty.all(color ?? primary),
+          backgroundColor: MaterialStateProperty.all(color ?? primarycolor),
         ),
         onPressed: isLoading ? null : onPlusTap, // Disable button if loading
         child: isLoading

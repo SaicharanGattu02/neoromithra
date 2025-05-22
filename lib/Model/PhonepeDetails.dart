@@ -1,15 +1,15 @@
 class PhonepeDetails {
   bool? status;
-  List<Data>? data;
+  List<PhonepeKeys>? phonpekeys;
 
-  PhonepeDetails({this.status, this.data});
+  PhonepeDetails({this.status, this.phonpekeys});
 
   PhonepeDetails.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     if (json['data'] != null) {
-      data = <Data>[];
+      phonpekeys = <PhonepeKeys>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        phonpekeys!.add(new PhonepeKeys.fromJson(v));
       });
     }
   }
@@ -17,14 +17,14 @@ class PhonepeDetails {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['status'] = this.status;
-    if (this.data != null) {
-      data['data'] = this.data!.map((v) => v.toJson()).toList();
+    if (this.phonpekeys != null) {
+      data['data'] = this.phonpekeys!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
-class Data {
+class PhonepeKeys {
   int? id;
   String? env;
   String? appId;
@@ -32,7 +32,7 @@ class Data {
   String? saltKey;
   int? saltIndex;
 
-  Data(
+  PhonepeKeys(
       {this.id,
         this.env,
         this.appId,
@@ -40,7 +40,7 @@ class Data {
         this.saltKey,
         this.saltIndex});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  PhonepeKeys.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     env = json['env'];
     appId = json['appId'];

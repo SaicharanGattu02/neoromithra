@@ -1,17 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:neuromithra/services/userapi.dart';
+import 'package:provider/provider.dart';
 
+import '../Components/Shimmers.dart';
+import '../Providers/BookingHistoryProviders.dart';
+import '../utils/Color_Constants.dart';
 import 'CustomAppBar.dart';
 import '../Model/BehaviouralTrackingModel.dart';
 
 class BehavioralTrackingReport extends StatefulWidget {
-  final int id;
-  final String page_source;
-  const BehavioralTrackingReport({Key? key, required this.id,required this.page_source})
+  final String id;
+  const BehavioralTrackingReport({Key? key, required this.id})
       : super(key: key);
-
   @override
   _BehavioralTrackingReportState createState() =>
       _BehavioralTrackingReportState();
@@ -20,155 +23,229 @@ class BehavioralTrackingReport extends StatefulWidget {
 class _BehavioralTrackingReportState extends State<BehavioralTrackingReport> {
   @override
   void initState() {
-    GetBehaviouraltrackingreport();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<BookingHistoryProvider>(context, listen: false)
+          .getSessionFeedback(widget.id);
+    });
     super.initState();
-  }
-  bool is_loading = true;
-  List<Details> details = [];
-  Future<void> GetBehaviouraltrackingreport() async {
-    final Response = await Userapi.getBehaviouralList(widget.id.toString(),widget.page_source);
-    if (Response != null) {
-      setState(() {
-        if (Response.status == true) {
-          details = Response.details ?? [];
-          is_loading = false;
-        } else {
-          is_loading = false;
-        }
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar:  AppBar(
+        appBar: AppBar(
           title: const Text(
             'Behavioral Tracking Report',
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              fontFamily: "Inter",
-              color: Color(0xff3EA4D2),
+              fontFamily: "general_sans",
+              color: primarycolor,
               fontSize: 18,
             ),
           ),
           centerTitle: true,
           backgroundColor: Colors.white,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Color(0xff3EA4D2)),
-            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.arrow_back, color: primarycolor),
+            onPressed: () => context.pop(),
           ),
         ),
-        body: (is_loading)?Center(
-          child: CircularProgressIndicator(),
-        )
-        :SingleChildScrollView(
-          child: details.isEmpty
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(height: MediaQuery.of(context).size.height*0.2,),
-                    Lottie.asset(
-                      'assets/animations/nodata1.json',
-                      height: 360,
-                      width: 360,
+        body: Consumer<BookingHistoryProvider>(
+          builder: (context, provider, child) {
+            final details = provider.sessionFeedback;
+            if (provider.isLoading) {
+              return CustomScrollView(
+                slivers: [
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (_, __) => bookingHistoryShimmerCard(context),
+                      childCount: 3,
                     ),
-                  ],
-                )
-              : Column(
-                  children: details.map((report) {
-                    return Container(
-                      margin: EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 16), // Adjust outer margin
-                      child: Material(
-                        elevation: 4.0,
-                        borderRadius: BorderRadius.circular(
-                            12.0), // Match the outer container
-                        child: Container(
-                          padding: EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Color(0x4DA0F2F0),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                  ),
+                ],
+              );
+            }
+            if (details.isEmpty) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset("assets/no_booking_history.png",
+                          width: 220, height: 220),
+                      SizedBox(height: 20),
+                      Text(
+                        "No Behavioural report found!",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: "general_sans",
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+            return SingleChildScrollView(
+              child: Column(
+                children: details.map((report) {
+                  return Card(
+                    elevation: 4, // Subtle shadow for depth
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(12), // Rounded corners
+                    ),
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Therapist Name
+                          Row(
                             children: [
-                              Row(
-                                children: [
-                                  RichText(
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: 'Name: ',
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
-                                              color: Colors.black),
-                                        ),
-                                        TextSpan(
-                                          text: report.pname,
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
+                              const Icon(
+                                Icons.person_outline,
+                                size: 20,
+                                color: Colors.teal,
                               ),
-                              SizedBox(height: 10),
-                              Row(
-                                children: [
-                                  Icon(Icons.date_range_outlined, size: 18),
-                                  SizedBox(width: 5),
-                                  RichText(
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: 'Date: ',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.normal,
-                                              color: Colors.black),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: RichText(
+                                  text: TextSpan(
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          fontSize: 16,
+                                          color: Colors.black87,
+                                          fontFamily: "general_sans",
                                         ),
-                                        TextSpan(
-                                          text: report.dataDetails,
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                              SizedBox(height: 10),
-                              RichText(
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: "Track Details: ",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black),
-                                    ),
-                                    TextSpan(
-                                      text: "${report.details}",
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                  ],
+                                    children: [
+                                      const TextSpan(
+                                        text: 'Therapist: ',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      TextSpan(
+                                        text: report.staffId?.toString() ?? "-",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        ),
+                          const SizedBox(height: 12),
+
+                          // Date
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.date_range_outlined,
+                                size: 18,
+                                color: Colors.teal,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                report.createdAt ?? "-",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "general_sans",
+                                      color: Colors.black54,
+                                    ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+
+                          // Behavioral Report
+                          RichText(
+                            text: TextSpan(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    fontSize: 14,
+                                    color: Colors.black87,
+                                    fontFamily: "general_sans",
+                                  ),
+                              children: [
+                                const TextSpan(
+                                  text: "Behavioral Report : ",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text: report.text ?? "-",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.normal),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    );
-                  }).toList(), // Use toList() to convert Iterable to List
-                ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            );
+          },
         ));
+  }
+
+  Widget bookingHistoryShimmerCard(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 3,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 🟦 Top row (Order No - Type - Appointment)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              shimmerText(100, 16, context),
+              shimmerText(80, 16, context),
+            ],
+          ),
+          SizedBox(height: 10),
+          // 🟦 Name
+          shimmerText(140, 14, context),
+          SizedBox(height: 6),
+          // 🟦 Page Source
+          shimmerText(100, 14, context),
+          SizedBox(height: 10),
+          // 🟦 Date and Time row
+          Row(
+            children: [
+              shimmerText(100, 12, context),
+              Spacer(),
+              shimmerText(80, 12, context),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

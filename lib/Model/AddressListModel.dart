@@ -1,70 +1,171 @@
-class AddressListModel {
-  List<Address>? address;
-  bool? status;
+class AddressResponse {
+  final bool status;
+  final AddressData? data;
 
-  AddressListModel({this.address, this.status});
+  AddressResponse({
+    required this.status,
+    this.data,
+  });
 
-  AddressListModel.fromJson(Map<String, dynamic> json) {
-    if (json['address'] != null) {
-      address = <Address>[];
-      json['address'].forEach((v) {
-        address!.add(new Address.fromJson(v));
-      });
-    }
-    status = json['status'];
+  factory AddressResponse.fromJson(Map<String, dynamic> json) {
+    return AddressResponse(
+      status: json['status'] ?? false,
+      data: json['data'] != null ? AddressData.fromJson(json['data']) : null,
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.address != null) {
-      data['address'] = this.address!.map((v) => v.toJson()).toList();
-    }
-    data['status'] = this.status;
-    return data;
+    return {
+      'status': status,
+      'data': data?.toJson(),
+    };
+  }
+}
+
+class AddressData {
+  final int? currentPage;
+  final List<Address>? addresses;
+  final String? firstPageUrl;
+  final int? from;
+  final int? lastPage;
+  final String? lastPageUrl;
+  final List<Link>? links;
+  final String? nextPageUrl;
+  final String? path;
+  final int? perPage;
+  final String? prevPageUrl;
+  final int? to;
+  final int? total;
+
+  AddressData({
+    this.currentPage,
+    this.addresses,
+    this.firstPageUrl,
+    this.from,
+    this.lastPage,
+    this.lastPageUrl,
+    this.links,
+    this.nextPageUrl,
+    this.path,
+    this.perPage,
+    this.prevPageUrl,
+    this.to,
+    this.total,
+  });
+
+  factory AddressData.fromJson(Map<String, dynamic> json) {
+    return AddressData(
+      currentPage: json['current_page'],
+      addresses: (json['data'] as List<dynamic>?)?.map((e) => Address.fromJson(e)).toList(),
+      firstPageUrl: json['first_page_url'],
+      from: json['from'],
+      lastPage: json['last_page'],
+      lastPageUrl: json['last_page_url'],
+      links: (json['links'] as List<dynamic>?)?.map((e) => Link.fromJson(e)).toList(),
+      nextPageUrl: json['next_page_url'],
+      path: json['path'],
+      perPage: json['per_page'],
+      prevPageUrl: json['prev_page_url'],
+      to: json['to'],
+      total: json['total'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'current_page': currentPage,
+      'data': addresses?.map((v) => v.toJson()).toList(),
+      'first_page_url': firstPageUrl,
+      'from': from,
+      'last_page': lastPage,
+      'last_page_url': lastPageUrl,
+      'links': links?.map((v) => v.toJson()).toList(),
+      'next_page_url': nextPageUrl,
+      'path': path,
+      'per_page': perPage,
+      'prev_page_url': prevPageUrl,
+      'to': to,
+      'total': total,
+    };
   }
 }
 
 class Address {
-  int? id;
-  int? uid;
-  String? flatNo;
-  String? street;
-  String? area;
-  String? landmark;
-  int? pincode;
-  int? typeOfAddress;
+  final int id;
+  final dynamic uid; // Changed from int to String
+  final String flatNo;
+  final String street;
+  final String area;
+  final String landmark;
+  final dynamic pincode; // Changed from int to String
+  final dynamic typeOfAddress; // Changed from int to String
+  final String locationAccess;
 
-  Address(
-      {this.id,
-        this.uid,
-        this.flatNo,
-        this.street,
-        this.area,
-        this.landmark,
-        this.pincode,
-        this.typeOfAddress});
+  Address({
+    required this.id,
+    required this.uid,
+    required this.flatNo,
+    required this.street,
+    required this.area,
+    required this.landmark,
+    required this.pincode,
+    required this.typeOfAddress,
+    required this.locationAccess,
+  });
 
-  Address.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    uid = json['uid'];
-    flatNo = json['Flat_no'];
-    street = json['street'];
-    area = json['area'];
-    landmark = json['landmark'];
-    pincode = json['pincode'];
-    typeOfAddress = json['type_of_address'];
+  factory Address.fromJson(Map<String, dynamic> json) {
+    return Address(
+      id: json['id'] ?? 0,
+      uid: json['uid'] ?? '', // Now expects a String
+      flatNo: json['Flat_no'] ?? '',
+      street: json['street'] ?? '',
+      area: json['area'] ?? '',
+      landmark: json['landmark'] ?? '',
+      pincode: json['pincode'] ?? '', // Now expects a String
+      typeOfAddress: json['type_of_address'] ?? '', // Now expects a String
+      locationAccess: json['location_access'] ?? '',
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['uid'] = this.uid;
-    data['Flat_no'] = this.flatNo;
-    data['street'] = this.street;
-    data['area'] = this.area;
-    data['landmark'] = this.landmark;
-    data['pincode'] = this.pincode;
-    data['type_of_address'] = this.typeOfAddress;
-    return data;
+    return {
+      'id': id,
+      'uid': uid,
+      'Flat_no': flatNo,
+      'street': street,
+      'area': area,
+      'landmark': landmark,
+      'pincode': pincode,
+      'type_of_address': typeOfAddress,
+      'location_access': locationAccess,
+    };
+  }
+}
+
+class Link {
+  final String? url;
+  final String? label;
+  final bool? active;
+
+  Link({
+    this.url,
+    this.label,
+    this.active,
+  });
+
+  factory Link.fromJson(Map<String, dynamic> json) {
+    return Link(
+      url: json['url'],
+      label: json['label'],
+      active: json['active'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'url': url,
+      'label': label,
+      'active': active,
+    };
   }
 }

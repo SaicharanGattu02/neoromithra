@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:neuromithra/services/Preferances.dart';
 
-import 'LogIn.dart';
+import '../utils/Color_Constants.dart';
+import 'Authentication/LogIn.dart';
 
 class OnBoardScreen extends StatefulWidget {
   const OnBoardScreen({super.key});
@@ -61,7 +63,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
                       fontFamily: "Epi",
-                      color: Color(0xFF3EA4D2),
+                      color: primarycolor,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -86,13 +88,10 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (_) => LogIn()),
-                        );
+                        context.push('/login_with_mobile');
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF3EA4D2), // Button background
+                        backgroundColor:  primarycolor, // Button background
                         foregroundColor: Colors.white, // Text color
                         padding: const EdgeInsets.symmetric(
                             horizontal: 24, vertical: 14), // Button padding

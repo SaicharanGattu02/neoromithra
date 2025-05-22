@@ -12,7 +12,7 @@ class CustomSnackBar {
           style: TextStyle(color: Colors.white, fontFamily: "Inter"),
         ),
         duration: Duration(seconds: 2),
-        backgroundColor: primary,
+        backgroundColor: primarycolor,
       ),
     );
   }

@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:neuromithra/Presentation/MainDashBoard.dart';
+import 'package:neuromithra/services/AuthService.dart';
 import 'package:neuromithra/services/Preferances.dart';
-import 'LogIn.dart';
+import 'Authentication/LogIn.dart';
 import 'OnBoardScreen.dart';
-
 
 class Splash extends StatefulWidget {
   const Splash({super.key});
@@ -31,21 +32,22 @@ class _SplashState extends State<Splash> {
     if (!mounted) return;
 
     Future.delayed(Duration(seconds: 2), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => Status.isEmpty? OnBoardScreen():userId.isNotEmpty ? MainDashBoard(initialIndex: 0,) : LogIn(),
-        ),
-      );
+      if (Status.isEmpty) {
+        context.pushReplacement('/on_boarding');
+      } else if (userId.isNotEmpty) {
+        context.pushReplacement('/main_dashBoard?initialIndex=${0}');
+      } else {
+        context.pushReplacement('/login_with_mobile');
+      }
     });
   }
 
   Future<void> _fetchDetails() async {
-    String token = await PreferenceService().getString('token') ?? "";
+    String token = await AuthService.getAccessToken()??"";
     var status = await PreferenceService().getString('on_boarding');
     setState(() {
       Status = status ?? '';
-      print('Status::${Status}');
+      debugPrint('Status::${Status}');
       userId = token;
     });
     debugPrint("Token: $token");

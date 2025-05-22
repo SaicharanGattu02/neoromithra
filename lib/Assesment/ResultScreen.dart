@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../Components/CustomAppButton.dart';
 import '../Presentation/MainDashBoard.dart';
+import '../utils/Color_Constants.dart';
 
 class Resultscreen extends StatefulWidget {
-  final Map<String, dynamic> resultData;
-  final String role;
-
-  const Resultscreen({Key? key, required this.resultData, required this.role}) : super(key: key);
+  const Resultscreen({Key? key}) : super(key: key);
 
   @override
   State<Resultscreen> createState() => _ResultscreenState();
@@ -25,7 +24,6 @@ class _ResultscreenState extends State<Resultscreen> {
       throw 'Could not launch $launchUri';
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,15 +33,15 @@ class _ResultscreenState extends State<Resultscreen> {
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontFamily: "Inter",
-            color: Color(0xff3EA4D2),
+            color: primarycolor,
             fontSize: 18,
           ),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xff3EA4D2)),
-          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back, color: primarycolor),
+          onPressed: () =>  context.pop(),
         ),
       ),
       body: SingleChildScrollView(
@@ -61,188 +59,182 @@ class _ResultscreenState extends State<Resultscreen> {
               ),
               SizedBox(height: 10),
               Text(
-                "Assessment Submitted Successfully!",
+                "Thank you! Your responses have been sent to the therapist. They will review them and contact you to schedule your session.",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontFamily: "Poppins",
+                  fontFamily: "general_sans",
                   fontWeight: FontWeight.w600,
                   fontSize: 18,
                 ),
               ),
               SizedBox(height: 30),
-              CustomAppButton(
-                text: 'View Score',
-                onPlusTap: () {
-                  setState(() {
-                    viewIndex=1;
-                  });
-                },
-              ),
+              // CustomAppButton(
+              //   text: 'View Score',
+              //   onPlusTap: () {
+              //     setState(() {
+              //       viewIndex=1;
+              //     });
+              //   },
+              // ),
             ]else...[
               Text(
                 "Scoring and Reflection:",
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16,fontFamily: "Poppins",height: 1),
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16,   fontFamily: "general_sans",height: 1),
               ),
               SizedBox(height: 10),
               Text("Total your scores for each section.",style: TextStyle(
-                  fontFamily: "Poppins",
+                  fontFamily: "general_sans",
                 fontSize: 15
               ),),
               SizedBox(height: 10),
-              SizedBox(
-                height: 400,
-                child: ListView(
-                  children: widget.resultData.entries.map((entry) {
-                    return Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      elevation: 1,
-                      margin: EdgeInsets.symmetric(vertical: 8,horizontal: 3),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.blueAccent,
-                          child: Icon(Icons.check, color: Colors.white),
-                        ),
-                        title: Text(
-                          entry.key,
-                          style: TextStyle(fontSize: 16, fontFamily: "Poppins", fontWeight: FontWeight.w500),
-                        ),
-                        trailing: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: Colors.blueAccent,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            entry.value.toString(),
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
+              // SizedBox(
+              //   height: 400,
+              //   child: ListView(
+              //     children: widget.resultData.entries.map((entry) {
+              //       return Card(
+              //         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              //         elevation: 1,
+              //         margin: EdgeInsets.symmetric(vertical: 8,horizontal: 3),
+              //         child: ListTile(
+              //           leading: CircleAvatar(
+              //             backgroundColor: Colors.blueAccent,
+              //             child: Icon(Icons.check, color: Colors.white),
+              //           ),
+              //           title: Text(
+              //             entry.key,
+              //             style: TextStyle(fontSize: 16, fontFamily: "Poppins", fontWeight: FontWeight.w500),
+              //           ),
+              //           trailing: Container(
+              //             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              //             decoration: BoxDecoration(
+              //               color: Colors.blueAccent,
+              //               borderRadius: BorderRadius.circular(8),
+              //             ),
+              //             child: Text(
+              //               entry.value.toString(),
+              //               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+              //             ),
+              //           ),
+              //         ),
+              //       );
+              //     }).toList(),
+              //   ),
+              // ),
               SizedBox(height: 20),
               Text("Interpretation:",style: TextStyle(
                 fontSize: 16,
-                fontFamily: "Poppins",
+                  fontFamily: "general_sans",
                 fontWeight: FontWeight.w600
               ),),
-              if(widget.role=="1")...[
-                SizedBox(
-                  height: 500, // Adjust based on your requirement
-                  child: ListView(
-                    shrinkWrap: true, // Ensures proper scrolling inside Column
-                    physics: NeverScrollableScrollPhysics(), // Prevents double scrolling issues
-                    children: [
-                      ScoreCard(
-                        scoreRange: "85-100",
-                        description:
-                        "Strong development and self-awareness. You’re generally satisfied with your growth.",
-                        color: Colors.green,
-                        icon: Icons.thumb_up,
-                      ),
-                      ScoreCard(
-                        scoreRange: "65-84",
-                        description:
-                        "Some room for improvement. You may be doing well but could focus on specific aspects.",
-                        color: Colors.blue,
-                        icon: Icons.trending_up,
-                      ),
-                      ScoreCard(
-                        scoreRange: "45-64",
-                        description:
-                        "Moderate development. Consider strengthening cognitive and emotional well-being.",
-                        color: Colors.orange,
-                        icon: Icons.warning,
-                      ),
-                      ScoreCard(
-                        scoreRange: "Below 45",
-                        description:
-                        "Significant areas need attention. Seek support or engage in personal growth activities.",
-                        color: Colors.red,
-                        icon: Icons.error,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20,),
-                CustomAppButton(
-                  text: 'View our Counselling services',
-                  onPlusTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MainDashBoard(initialIndex: 2,)));
-                  },
-                ),
-                SizedBox(height: 10),
-                CustomAppButton(
-                  textcolor: Colors.white,
-                  text: 'Schedule A Session',
-                  color: Colors.green,
-                  onPlusTap: () {
-                    _launchCall("8885320115");
-                  },
-                ),
-              ]else...[
-                SizedBox(
-                  height: 450, // Adjust height as needed
-                  child: ListView(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
-                      ScoreCard(
-                        scoreRange: "41-50",
-                        description:
-                        "Development appears typical for age. No significant concerns.",
-                        color: Colors.green,
-                        icon: Icons.check_circle,
-                      ),
-                      ScoreCard(
-                        scoreRange: "31-40",
-                        description:
-                        "Some areas of concern. Consider monitoring and engaging in activities to boost skills.",
-                        color: Colors.blue,
-                        icon: Icons.info,
-                      ),
-                      ScoreCard(
-                        scoreRange: "21-30",
-                        description:
-                        "Potential developmental delays. A professional evaluation is recommended.",
-                        color: Colors.orange,
-                        icon: Icons.warning,
-                      ),
-                      ScoreCard(
-                        scoreRange: "0-20",
-                        description:
-                        "High likelihood of developmental concerns. Immediate professional consultation is advised.",
-                        color: Colors.red,
-                        icon: Icons.error,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20,),
-                CustomAppButton(
-                  text: 'View our Therapy services',
-                  onPlusTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MainDashBoard(initialIndex: 1,)));
-                  },
-                ),
-                SizedBox(height: 10),
-                CustomAppButton(
-                  textcolor: Colors.white,
-                  text: 'Schedule A Session',
-                  color: Colors.green,
-                  onPlusTap: () {
-                    _launchCall("8885320115");
-                  },
-                ),
-              ]
+              // if(widget.role=="1")...[
+              //   SizedBox(
+              //     height: 500, // Adjust based on your requirement
+              //     child: ListView(
+              //       shrinkWrap: true, // Ensures proper scrolling inside Column
+              //       physics: NeverScrollableScrollPhysics(), // Prevents double scrolling issues
+              //       children: [
+              //         ScoreCard(
+              //           scoreRange: "85-100",
+              //           description:
+              //           "Strong development and self-awareness. You’re generally satisfied with your growth.",
+              //           color: Colors.green,
+              //           icon: Icons.thumb_up,
+              //         ),
+              //         ScoreCard(
+              //           scoreRange: "65-84",
+              //           description:
+              //           "Some room for improvement. You may be doing well but could focus on specific aspects.",
+              //           color: Colors.blue,
+              //           icon: Icons.trending_up,
+              //         ),
+              //         ScoreCard(
+              //           scoreRange: "45-64",
+              //           description:
+              //           "Moderate development. Consider strengthening cognitive and emotional well-being.",
+              //           color: Colors.orange,
+              //           icon: Icons.warning,
+              //         ),
+              //         ScoreCard(
+              //           scoreRange: "Below 45",
+              //           description:
+              //           "Significant areas need attention. Seek support or engage in personal growth activities.",
+              //           color: Colors.red,
+              //           icon: Icons.error,
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              //   SizedBox(height: 20,),
+              //   CustomAppButton(
+              //     text: 'View our Counselling services',
+              //     onPlusTap: () {
+              //       context.push('/main_dashBoard?initialIndex=${2}');
+              //     },
+              //   ),
+              //   SizedBox(height: 10),
+              //   CustomAppButton(
+              //     textcolor: Colors.white,
+              //     text: 'Schedule A Session',
+              //     color: Colors.green,
+              //     onPlusTap: () {
+              //       _launchCall("8885320115");
+              //     },
+              //   ),
+              // ]else...[
+              //   SizedBox(
+              //     height: 450, // Adjust height as needed
+              //     child: ListView(
+              //       shrinkWrap: true,
+              //       physics: NeverScrollableScrollPhysics(),
+              //       children: [
+              //         ScoreCard(
+              //           scoreRange: "41-50",
+              //           description:
+              //           "Development appears typical for age. No significant concerns.",
+              //           color: Colors.green,
+              //           icon: Icons.check_circle,
+              //         ),
+              //         ScoreCard(
+              //           scoreRange: "31-40",
+              //           description:
+              //           "Some areas of concern. Consider monitoring and engaging in activities to boost skills.",
+              //           color: Colors.blue,
+              //           icon: Icons.info,
+              //         ),
+              //         ScoreCard(
+              //           scoreRange: "21-30",
+              //           description:
+              //           "Potential developmental delays. A professional evaluation is recommended.",
+              //           color: Colors.orange,
+              //           icon: Icons.warning,
+              //         ),
+              //         ScoreCard(
+              //           scoreRange: "0-20",
+              //           description:
+              //           "High likelihood of developmental concerns. Immediate professional consultation is advised.",
+              //           color: Colors.red,
+              //           icon: Icons.error,
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              //   SizedBox(height: 20,),
+              //   CustomAppButton(
+              //     text: 'View our Therapy services',
+              //     onPlusTap: () {
+              //       context.push('/main_dashBoard?initialIndex=${1}');
+              //     },
+              //   ),
+              //   SizedBox(height: 10),
+              //   CustomAppButton(
+              //     textcolor: Colors.white,
+              //     text: 'Schedule A Session',
+              //     color: Colors.green,
+              //     onPlusTap: () {
+              //       _launchCall("8885320115");
+              //     },
+              //   ),
+              // ]
             ]
 
           ],

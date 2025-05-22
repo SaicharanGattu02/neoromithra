@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:go_router/go_router.dart';
 import 'package:neuromithra/Components/CustomAppButton.dart';
 import 'package:neuromithra/Presentation/SelectingTypes/ExploreAdults.dart';
 import 'package:neuromithra/Presentation/SelectingTypes/ExploreChildren.dart';
+
+import '../../utils/Color_Constants.dart';
 
 class SelectingTypes extends StatefulWidget {
   const SelectingTypes({super.key});
@@ -19,16 +22,16 @@ class _SelectingTypesState extends State<SelectingTypes> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text( 'About NeuroMitra',
+        title: Text('About NeuroMitra',
             style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: "Inter",
-                color: Color(0xff3EA4D2),
+                color: primarycolor,
                 fontSize: 18)),
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton.filled(
-          icon: Icon(Icons.arrow_back, color: Color(0xff3EA4D2)), // Icon color
+          icon: Icon(Icons.arrow_back, color: primarycolor), // Icon color
           onPressed: () => Navigator.pop(context),
           style: IconButton.styleFrom(
             backgroundColor: Color(0xFFECFAFA), // Filled color
@@ -47,7 +50,7 @@ class _SelectingTypesState extends State<SelectingTypes> {
                   borderRadius: BorderRadius.circular(12),
                   child: Image.asset(
                     'assets/applogo.jpeg',
-                   scale: 12,
+                    scale: 12,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -84,24 +87,24 @@ class _SelectingTypesState extends State<SelectingTypes> {
             ),
             SizedBox(height: 14),
             Center(
-              child: Text('“From children with developmental delays to adults seeking mental wellness, we’re here for you."',
+              child: Text(
+                '“From children with developmental delays to adults seeking mental wellness, we’re here for you."',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
-                    fontFamily: "Epi"
-                ),
+                    fontFamily: "Epi"),
               ),
             ),
             SizedBox(height: 10),
             Center(
-              child: Text('“We believe in empowering Neurodiverse Minds & Mental Wellness for All.”',
+              child: Text(
+                '“We believe in empowering Neurodiverse Minds & Mental Wellness for All.”',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
-                    fontFamily: "Epi"
-                ),
+                    fontFamily: "Epi"),
               ),
             ),
             SizedBox(height: 20),
@@ -110,7 +113,10 @@ class _SelectingTypesState extends State<SelectingTypes> {
               width: double.infinity,
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.asset("assets/banner.webp",fit: BoxFit.cover,)),
+                  child: Image.asset(
+                    "assets/banner.webp",
+                    fit: BoxFit.cover,
+                  )),
             ),
             SizedBox(height: 32),
 
@@ -127,8 +133,7 @@ class _SelectingTypesState extends State<SelectingTypes> {
             CustomAppButton(
               text: 'Explore Support for Children',
               onPlusTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ExploreChildren()));
+                context.push("/explore_child");
               },
             ),
             SizedBox(height: 24),
@@ -147,8 +152,7 @@ class _SelectingTypesState extends State<SelectingTypes> {
             CustomAppButton(
               text: 'Discover Services for Adults',
               onPlusTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ExploreAdults()));
+                context.push("/explore_adult");
               },
             ),
           ],

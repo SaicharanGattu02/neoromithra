@@ -1,17 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:neuromithra/Presentation/Aboutus.dart';
-import 'package:neuromithra/Presentation/RefundPolicyScreen.dart';
+import 'package:go_router/go_router.dart';
+import 'package:neuromithra/Providers/UserProvider.dart';
 import 'package:neuromithra/services/Preferances.dart';
-import 'package:neuromithra/services/userapi.dart';
+import 'package:provider/provider.dart';
 import '../Components/Shimmers.dart';
-import 'AddressListScreen.dart';
+import '../services/AuthService.dart';
+import '../utils/Color_Constants.dart';
 import 'Editprofile _screen.dart';
-import 'GovtSupportinfo.dart';
-import 'LastBooking.dart';
-import 'LogIn.dart';
-import '../Model/ProfileDetailsModel.dart';
-import 'PrivacyPolicyScreen.dart';
-import 'TermsAndConditionsScreen.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -19,361 +16,205 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  bool is_loading = true;
   @override
   void initState() {
-    GetProfileDetails();
     super.initState();
-  }
-
-  User user_data= User();
-  Future<void> GetProfileDetails() async {
-    String user_id = await PreferenceService().getString('user_id') ?? "";
-    final Response = await Userapi.getProfileDetails(user_id);
-    if (Response != null) {
-      setState(() {
-        user_data = Response.user??User();
-        is_loading = false;
-      });
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if(!await AuthService.isGuest){
+        Provider.of<UserProviders>(context, listen: false).getProfileDetails();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile Screen'),
-        leading: Container(),
-        leadingWidth: 0,
+        automaticallyImplyLeading: false,
+        title: Text(
+          'Profile',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontFamily: "general_sans",
+            color: primarycolor,
+            fontSize: 20,
+          ),
+        ),
+        leading: IconButton.filled(
+          icon: const Icon(Icons.arrow_back, color: primarycolor),
+          onPressed: () {
+            context.push("/main_dashBoard?initialIndex=0");
+          },
+          style: IconButton.styleFrom(
+            backgroundColor: const Color(0xFFECFAFA),
+          ),
+        ),
       ),
-      body: (is_loading)
-          ? _buildShimmerEffect()
-          :Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-        child: Column(
-          children: <Widget>[
-            Row(
-              children: [
-                Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 8,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      ),
-                      child: CircleAvatar(
+      body: FutureBuilder<bool>(
+        future: AuthService.isGuest,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+
+          final isGuest = snapshot.data!;
+
+          return Consumer<UserProviders>(builder: (context, profileDetails, child) {
+            return profileDetails.isLoading
+                ? _buildShimmerEffect()
+                : Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    children: [
+                      CircleAvatar(
                         radius: 35,
-                        backgroundColor: Colors.blue.shade700,
-                        child: Text(
-                          (user_data.name!.isNotEmpty)
-                              ? user_data.name![0].toUpperCase()
+                        backgroundColor: primarycolor,
+                        backgroundImage: (!isGuest &&
+                            profileDetails.userData.profilePicUrl != null &&
+                            profileDetails.userData.profilePicUrl!.isNotEmpty)
+                            ? CachedNetworkImageProvider(profileDetails.userData.profilePicUrl!)
+                        as ImageProvider<Object>
+                            : null,
+                        child: (!isGuest &&
+                            (profileDetails.userData.profilePicUrl == null ||
+                                profileDetails.userData.profilePicUrl!.isEmpty))
+                            ? Text(
+                          (profileDetails.userData.name != null &&
+                              profileDetails.userData.name!.isNotEmpty)
+                              ? profileDetails.userData.name![0].toUpperCase()
                               : '',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 26,
+                            fontFamily: "general_sans",
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                            : isGuest
+                            ? const Text(
+                          'G',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 26,
+                            fontFamily: "general_sans",
                             fontWeight: FontWeight.bold,
                           ),
+                        )
+                            : null,
+                      ),
+                      SizedBox(width: 15),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              isGuest
+                                  ? 'Guest User'
+                                  : (profileDetails.userData.name != null &&
+                                  profileDetails.userData.name!.isNotEmpty
+                                  ? '${profileDetails.userData.name![0].toUpperCase()}${profileDetails.userData.name!.substring(1)}'
+                                  : 'Unknown'),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: "general_sans",
+                                color: Colors.black87,
+                              ),
+                            ),
+                            if (!isGuest)
+                              Text(
+                                profileDetails.userData.email ?? "",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.grey.shade600,
+                                  fontFamily: "general_sans",
+                                ),
+                              ),
+                          ],
                         ),
                       ),
-                    ),
-                    Positioned(
-                      right: 2,
-                      bottom: 2,
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => EditProfileScreen()));
-                        },
-                        child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          radius: 14,
-                          child: Icon(
-                            Icons.edit,
-                            color: Colors.blue,
-                            size: 16,
+                      if (!isGuest)
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditProfileScreen(),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: primarycolor.withOpacity(0.6)),
+                              borderRadius: BorderRadius.circular(6),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 4,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              Icons.edit,
+                              color: primarycolor,
+                              size: 16,
+                            ),
                           ),
-                        ),
-                      ),
+                        )
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        if (!isGuest)
+                          _buildOptionTile(Icons.history, 'Booking History', () {
+                            context.push('/booking_history');
+                          }),
+                        if (!isGuest)
+                          _buildOptionTile(Icons.location_on_outlined, 'Address List', () {
+                            context.push("/address_list");
+                          }),
+                        _buildOptionTile(Icons.support, 'Govt Support Information', () {
+                          context.push("/govt_support_info");
+                        }),
+                        _buildOptionTile(Icons.info_outline, 'About Us', () {
+                          context.push("/about_us");
+                        }),
+                        _buildOptionTile(Icons.privacy_tip_outlined, 'Privacy Policy', () {
+                          context.push("/privacy_policy");
+                        }),
+                        _buildOptionTile(Icons.policy_outlined, 'Terms and Conditions', () {
+                          context.push("/terms_conditions");
+                        }),
+                        _buildOptionTile(Icons.assignment_return_outlined, 'Refund Policy', () {
+                          context.push("/refund_policy");
+                        }),
+                        SizedBox(height: 10),
+                        !isGuest
+                            ? _buildLogoutTile(context)
+                            : _buildOptionTile(Icons.login, 'Login', () {
+                          context.go('/login_with_mobile');
+                        }),
+                      ],
                     ),
-                  ],
-                ),
-                SizedBox(width: 15),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      user_data.name??"",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    Text(
-                      user_data.email??"",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                  ],
-                ),
-                Spacer(),
-              ],
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: ListView(
-                children: [
-                  _buildOptionTile(Icons.history, 'Booking History', () {
-                    Navigator.of(context)
-                        .push(PageRouteBuilder(
-                      pageBuilder: (context,
-                          animation,
-                          secondaryAnimation) {
-                        return LastBooking();
-                      },
-                      transitionsBuilder:
-                          (context,
-                          animation,
-                          secondaryAnimation,
-                          child) {
-                        const begin =
-                        Offset(1.0, 0.0);
-                        const end = Offset.zero;
-                        const curve =
-                            Curves.easeInOut;
-                        var tween = Tween(
-                            begin: begin,
-                            end: end)
-                            .chain(CurveTween(
-                            curve: curve));
-                        var offsetAnimation =
-                        animation
-                            .drive(tween);
-                        return SlideTransition(
-                            position:
-                            offsetAnimation,
-                            child: child);
-                      },
-                    ));
-                  }),
-                  _buildOptionTile(Icons.location_on_outlined, 'Address List', () {
-                    Navigator.of(context)
-                        .push(PageRouteBuilder(
-                      pageBuilder: (context,
-                          animation,
-                          secondaryAnimation) {
-                        return AddressListScreen();
-                      },
-                      transitionsBuilder:
-                          (context,
-                          animation,
-                          secondaryAnimation,
-                          child) {
-                        const begin =
-                        Offset(1.0, 0.0);
-                        const end = Offset.zero;
-                        const curve =
-                            Curves.easeInOut;
-                        var tween = Tween(
-                            begin: begin,
-                            end: end)
-                            .chain(CurveTween(
-                            curve: curve));
-                        var offsetAnimation =
-                        animation
-                            .drive(tween);
-                        return SlideTransition(
-                            position:
-                            offsetAnimation,
-                            child: child);
-                      },
-                    ));
-                  }),
-                  _buildOptionTile(Icons.support, 'Govt Support Information', () {
-                    Navigator.of(context)
-                        .push(PageRouteBuilder(
-                      pageBuilder: (context,
-                          animation,
-                          secondaryAnimation) {
-                        return SupportProgramsScreen();
-                      },
-                      transitionsBuilder:
-                          (context,
-                          animation,
-                          secondaryAnimation,
-                          child) {
-                        const begin =
-                        Offset(1.0, 0.0);
-                        const end = Offset.zero;
-                        const curve =
-                            Curves.easeInOut;
-                        var tween = Tween(
-                            begin: begin,
-                            end: end)
-                            .chain(CurveTween(
-                            curve: curve));
-                        var offsetAnimation =
-                        animation
-                            .drive(tween);
-                        return SlideTransition(
-                            position:
-                            offsetAnimation,
-                            child: child);
-                      },
-                    ));
-                  }),
-                  _buildOptionTile(Icons.info_outline, 'About Us', () {
-                    Navigator.of(context)
-                        .push(PageRouteBuilder(
-                      pageBuilder: (context,
-                          animation,
-                          secondaryAnimation) {
-                        return AboutUsScreen();
-                      },
-                      transitionsBuilder:
-                          (context,
-                          animation,
-                          secondaryAnimation,
-                          child) {
-                        const begin =
-                        Offset(1.0, 0.0);
-                        const end = Offset.zero;
-                        const curve =
-                            Curves.easeInOut;
-                        var tween = Tween(
-                            begin: begin,
-                            end: end)
-                            .chain(CurveTween(
-                            curve: curve));
-                        var offsetAnimation =
-                        animation
-                            .drive(tween);
-                        return SlideTransition(
-                            position:
-                            offsetAnimation,
-                            child: child);
-                      },
-                    ));
-                  }),
-                  _buildOptionTile(Icons.privacy_tip_outlined, 'Privacy Policy', () {
-                    Navigator.of(context)
-                        .push(PageRouteBuilder(
-                      pageBuilder: (context,
-                          animation,
-                          secondaryAnimation) {
-                        return PrivacyPolicyScreen();
-                      },
-                      transitionsBuilder:
-                          (context,
-                          animation,
-                          secondaryAnimation,
-                          child) {
-                        const begin =
-                        Offset(1.0, 0.0);
-                        const end = Offset.zero;
-                        const curve =
-                            Curves.easeInOut;
-                        var tween = Tween(
-                            begin: begin,
-                            end: end)
-                            .chain(CurveTween(
-                            curve: curve));
-                        var offsetAnimation =
-                        animation
-                            .drive(tween);
-                        return SlideTransition(
-                            position:
-                            offsetAnimation,
-                            child: child);
-                      },
-                    ));
-                  }),
-                  _buildOptionTile(Icons.policy_outlined, 'Terms and Conditions', () {
-                    Navigator.of(context)
-                        .push(PageRouteBuilder(
-                      pageBuilder: (context,
-                          animation,
-                          secondaryAnimation) {
-                        return TermsAndConditionsScreen();
-                      },
-                      transitionsBuilder:
-                          (context,
-                          animation,
-                          secondaryAnimation,
-                          child) {
-                        const begin =
-                        Offset(1.0, 0.0);
-                        const end = Offset.zero;
-                        const curve =
-                            Curves.easeInOut;
-                        var tween = Tween(
-                            begin: begin,
-                            end: end)
-                            .chain(CurveTween(
-                            curve: curve));
-                        var offsetAnimation =
-                        animation
-                            .drive(tween);
-                        return SlideTransition(
-                            position:
-                            offsetAnimation,
-                            child: child);
-                      },
-                    ));
-                  }),
-                  _buildOptionTile(Icons.assignment_return_outlined, 'Refund Policy', () {
-                    Navigator.of(context)
-                        .push(PageRouteBuilder(
-                      pageBuilder: (context,
-                          animation,
-                          secondaryAnimation) {
-                        return RefundPolicyScreen();
-                      },
-                      transitionsBuilder:
-                          (context,
-                          animation,
-                          secondaryAnimation,
-                          child) {
-                        const begin =
-                        Offset(1.0, 0.0);
-                        const end = Offset.zero;
-                        const curve =
-                            Curves.easeInOut;
-                        var tween = Tween(
-                            begin: begin,
-                            end: end)
-                            .chain(CurveTween(
-                            curve: curve));
-                        var offsetAnimation =
-                        animation
-                            .drive(tween);
-                        return SlideTransition(
-                            position:
-                            offsetAnimation,
-                            child: child);
-                      },
-                    ));
-                  }),
-                  SizedBox(height: 10),
-                  _buildLogoutTile(context),
+                  ),
                 ],
               ),
-            ),
-          ],
-        ),
-      )
+            );
+          });
+        },
+      ),
     );
   }
-
   Widget _buildShimmerEffect() {
     return Padding(
       padding: EdgeInsets.all(16.0),
@@ -382,33 +223,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           Row(
             children: [
-              shimmerCircle(70,context),
+              shimmerCircle(70, context),
               SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  shimmerText(120, 16,context),
+                  shimmerText(120, 16, context),
                   SizedBox(height: 5),
-                  shimmerText(140, 12,context),
+                  shimmerText(140, 12, context),
                 ],
               ),
             ],
           ),
           SizedBox(height: 20),
-          shimmerContainer(MediaQuery.of(context).size.width, 80,context),
+          shimmerContainer(MediaQuery.of(context).size.width, 80, context),
           SizedBox(height: 15),
-          shimmerContainer(MediaQuery.of(context).size.width, 80,context),
+          shimmerContainer(MediaQuery.of(context).size.width, 80, context),
           SizedBox(height: 15),
-          shimmerContainer(MediaQuery.of(context).size.width, 80,context),
+          shimmerContainer(MediaQuery.of(context).size.width, 80, context),
           SizedBox(height: 15),
-          shimmerContainer(MediaQuery.of(context).size.width, 80,context),
+          shimmerContainer(MediaQuery.of(context).size.width, 80, context),
           SizedBox(height: 15),
-          shimmerContainer(MediaQuery.of(context).size.width, 80,context),
+          shimmerContainer(MediaQuery.of(context).size.width, 80, context),
         ],
       ),
     );
   }
-
 
   Widget _buildLogoutTile(BuildContext context) {
     return Card(
@@ -423,7 +263,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         title: Text(
           "Log out",
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.red,fontFamily: "Inter"),
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Colors.red,
+            fontFamily: "general_sans",
+          ),
         ),
         onTap: () {
           _showLogoutConfirmationDialog(context);
@@ -433,25 +278,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-  Widget _buildOptionTile(IconData icon, String title, VoidCallback onTap) {
-    return Card(
-      elevation: 3,
-      margin: EdgeInsets.symmetric(vertical: 6,horizontal: 5),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: Colors.blue.shade50,
-          child: Icon(icon, color: Colors.blue.shade700),
-        ),
-        title: Text(
-          title,
-          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500,fontFamily: "Inter"),
-        ),
-        trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-        onTap: onTap,
+Widget _buildOptionTile(IconData icon, String title, VoidCallback onTap) {
+  return Card(
+    elevation: 3,
+    margin: EdgeInsets.symmetric(vertical: 6, horizontal: 5),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    child: ListTile(
+      leading: CircleAvatar(
+        backgroundColor: primarycolor.withOpacity(0.1),
+        child: Icon(icon, color: primarycolor),
       ),
-    );
-  }
+      title: Text(
+        title,
+        style: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+          fontFamily: "general_sans",
+        ),
+      ),
+      trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+      onTap: onTap,
+    ),
+  );
+}
 
 void _showLogoutConfirmationDialog(BuildContext context) {
   showDialog(
@@ -461,7 +310,7 @@ void _showLogoutConfirmationDialog(BuildContext context) {
         elevation: 4.0,
         insetPadding: const EdgeInsets.symmetric(horizontal: 14.0),
         shape:
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
         child: SizedBox(
           width: 300.0,
           height: 200.0,
@@ -489,7 +338,6 @@ void _showLogoutConfirmationDialog(BuildContext context) {
                   ),
                 ),
               ),
-
               // Dialog Content
               Positioned.fill(
                 top: 30.0, // Moves content down
@@ -504,7 +352,7 @@ void _showLogoutConfirmationDialog(BuildContext context) {
                         style: TextStyle(
                             fontSize: 24.0,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xff3EA4D2),
+                            color: primarycolor,
                             fontFamily: "Poppins"),
                       ),
                       const SizedBox(height: 10.0),
@@ -517,7 +365,6 @@ void _showLogoutConfirmationDialog(BuildContext context) {
                             fontFamily: "Poppins"),
                       ),
                       const SizedBox(height: 20.0),
-
                       // Buttons Row
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -530,7 +377,7 @@ void _showLogoutConfirmationDialog(BuildContext context) {
                               style: ElevatedButton.styleFrom(
                                 elevation: 0,
                                 backgroundColor:
-                                Color(0xff3EA4D2), // Filled button color
+                                    primarycolor, // Filled button color
                                 foregroundColor: Colors.white, // Text color
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 20, vertical: 10),
@@ -544,24 +391,19 @@ void _showLogoutConfirmationDialog(BuildContext context) {
                               ),
                             ),
                           ),
-
-                          // Yes Button (Outlined)
                           SizedBox(
                             width: 100,
                             child: OutlinedButton(
                               onPressed: () async {
-                                PreferenceService().clearPreferences();
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            LogIn()));
+                                PreferenceService().remove("access_token");
+                                context.go("/login_with_mobile");
                               },
                               style: OutlinedButton.styleFrom(
-                                foregroundColor:
-                                Color(0xff3EA4D2), // Text color
+                                foregroundColor: primarycolor, // Text color
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(36)),
                                 side: BorderSide(
-                                    color: Color(0xff3EA4D2)), // Border color
+                                    color: primarycolor), // Border color
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 20, vertical: 10),
                               ),
@@ -587,4 +429,3 @@ void _showLogoutConfirmationDialog(BuildContext context) {
     },
   );
 }
-
