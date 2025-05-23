@@ -6,9 +6,9 @@ class SessionsModel {
 
   SessionsModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
-    if (json['data'] != null) {
+    if (json['data'] != null && json['data']['data'] != null) {
       sessions = <Sessions>[];
-      json['data'].forEach((v) {
+      json['data']['data'].forEach((v) {
         sessions!.add(Sessions.fromJson(v));
       });
     }
@@ -18,7 +18,7 @@ class SessionsModel {
     final Map<String, dynamic> data = {};
     data['status'] = status;
     if (sessions != null) {
-      data['data'] = sessions!.map((v) => v.toJson()).toList();
+      data['data'] = {'data': sessions!.map((v) => v.toJson()).toList()};
     }
     return data;
   }
@@ -26,62 +26,64 @@ class SessionsModel {
 
 class Sessions {
   int? slotId;
+  String? appId;
   String? date;
   String? startTime;
   String? endTime;
   String? rawStatus;
   String? computedStatus;
-  String? url;
-  String? feedback; // Added to match JSON
+  String? meetUrl;
+  String? feedback;
   Staff? staff;
   User? user;
-  String? meetUrl;
 
   Sessions({
     this.slotId,
+    this.appId,
     this.date,
     this.startTime,
     this.endTime,
     this.rawStatus,
     this.computedStatus,
-    this.url,
+    this.meetUrl,
     this.feedback,
     this.staff,
     this.user,
-    this.meetUrl,
   });
 
   Sessions.fromJson(Map<String, dynamic> json) {
-    slotId = json['slot_id'];
+    slotId = json['slot_id'] is int
+        ? json['slot_id']
+        : int.tryParse(json['slot_id'].toString());
+    appId = json['app_id']?.toString();
     date = json['date'];
     startTime = json['start_time'];
     endTime = json['end_time'];
     rawStatus = json['raw_status'];
     computedStatus = json['computed_status'];
-    url = json['url'];
-    feedback = json['feedback']; // Added to handle JSON field
+    meetUrl = json['meet_url'];
+    feedback = json['feedback']?.toString();
     staff = json['staff'] != null ? Staff.fromJson(json['staff']) : null;
     user = json['user'] != null ? User.fromJson(json['user']) : null;
-    meetUrl = json['meet_url'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
     data['slot_id'] = slotId;
+    data['app_id'] = appId;
     data['date'] = date;
     data['start_time'] = startTime;
     data['end_time'] = endTime;
     data['raw_status'] = rawStatus;
     data['computed_status'] = computedStatus;
-    data['url'] = url;
-    data['feedback'] = feedback; // Added to serialize field
+    data['meet_url'] = meetUrl;
+    data['feedback'] = feedback;
     if (staff != null) {
       data['staff'] = staff!.toJson();
     }
     if (user != null) {
       data['user'] = user!.toJson();
     }
-    data['meet_url'] = meetUrl;
     return data;
   }
 }
@@ -111,7 +113,7 @@ class Staff {
 class User {
   int? id;
   String? name;
-  String? age; // Changed from int? to String? to match JSON
+  String? age;
   String? gender;
 
   User({this.id, this.name, this.age, this.gender});
@@ -119,7 +121,7 @@ class User {
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
-    age = json['age']; // Now expects a String
+    age = json['age'];
     gender = json['gender'];
   }
 

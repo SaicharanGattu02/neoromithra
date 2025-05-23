@@ -31,6 +31,7 @@ import 'Presentation/PaymentStatusScreen.dart';
 import 'Presentation/Authentication/Register.dart';
 import 'Presentation/SelectingTypes/Selecting_types.dart';
 import 'Presentation/SplashScreen.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 final GoRouter goRouter =
     GoRouter(initialLocation: '/', navigatorKey: navigatorKey, routes: [
@@ -255,8 +256,10 @@ final GoRouter goRouter =
   ),
 ]);
 
+// Function to build a page with slide transition
 Page<dynamic> buildSlideTransitionPage(Widget child, GoRouterState state) {
-  if (Platform.isIOS) {
+  // Use CupertinoPage for iOS (non-web) or CustomTransitionPage for others
+  if (!kIsWeb == TargetPlatform.iOS) {
     return CupertinoPage(key: state.pageKey, child: child);
   }
 

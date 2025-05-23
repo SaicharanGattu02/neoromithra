@@ -196,10 +196,10 @@ class _AppointmentsessionsState extends State<Appointmentsessions> {
                                 ],
                               ),
                               SizedBox(height: 6),
-                              if (booking.url != "N/A") ...[
+                              if (booking.meetUrl != "N/A") ...[
                                 InkWell(
                                   onTap: () async {
-                                    final url = Uri.parse(booking.url ?? "");
+                                    final url = Uri.parse(booking.meetUrl ?? "");
                                     if (await canLaunchUrl(url)) {
                                       await launchUrl(url,
                                           mode: LaunchMode.externalApplication);
@@ -208,7 +208,7 @@ class _AppointmentsessionsState extends State<Appointmentsessions> {
                                           .showSnackBar(
                                         SnackBar(
                                             content: Text(
-                                                'Cannot launch ${booking.url}')),
+                                                'Cannot launch ${booking.meetUrl}')),
                                       );
                                     }
                                   },
@@ -223,7 +223,7 @@ class _AppointmentsessionsState extends State<Appointmentsessions> {
                                       children: [
                                         TextSpan(text: "Meet URL: "),
                                         TextSpan(
-                                          text: booking.url ?? "",
+                                          text: booking.meetUrl ?? "",
                                           style: TextStyle(
                                             fontWeight: FontWeight.w600,
                                           ),

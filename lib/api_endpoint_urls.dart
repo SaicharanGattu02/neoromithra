@@ -16,7 +16,7 @@ class APIEndpointUrls {
   static const String updateProfileImage = '${apiUrl}update_profile_image';
   static const String updateRefreshToken = '${apiUrl}refreshToken';
 
-  static const String quotes = '${userUrl}quatations';
+  static const String quotes = '${userUrl}guest-quatations';
 
   ///service Module
   static const String serviceList = '${userUrl}guest-service';

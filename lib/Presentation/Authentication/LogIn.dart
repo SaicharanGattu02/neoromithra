@@ -40,7 +40,7 @@ class _LogInState extends State<LogIn> {
 
   Future<void> login() async {
     if (_formKey.currentState?.validate() ?? false) {
-      String fcmToken = await PreferenceService().getString("fbstoken") ?? "";
+      String fcmToken = await PreferenceService().getString("fbstoken") ?? "iaeuhfipeurghekg";
       final Map<String, dynamic> data = {
         "username": _emailController.text,
         "password": _passwordController.text,
