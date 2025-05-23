@@ -265,6 +265,15 @@ class _BookingHistoryState extends State<BookingHistory> {
                                   ),
                                 ),
                                 SizedBox(height: 10),
+                                Text(
+                                  "No of Sessions : ${booking.days.toString() ?? ""}",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "general_sans",
+                                  ),
+                                ),
+                                SizedBox(height: 10),
                                 Row(
                                   children: [
                                     Text(
@@ -289,37 +298,39 @@ class _BookingHistoryState extends State<BookingHistory> {
                                     ),
                                   ],
                                 ),
-                                Divider(
-                                    color: Colors.grey.shade300, thickness: 1),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    TextButton.icon(
-                                      onPressed: () {
-                                        context.push("/sessions?id=${booking.id}");
-                                      },
-                                      icon: Icon(
-                                        Icons.remove_red_eye_outlined,
-                                        color: Color(0xff088A87),
-                                      ),
-                                      label: Text(
-                                        "View Sessions",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: "general_sans",
-                                          fontSize: 15,
+                                if(booking.status=="assigned")...[
+                                  Divider(
+                                      color: Colors.grey.shade300, thickness: 1),
+                                  Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      TextButton.icon(
+                                        onPressed: () {
+                                          context.push("/sessions?id=${booking.id}");
+                                        },
+                                        icon: Icon(
+                                          Icons.remove_red_eye_outlined,
                                           color: Color(0xff088A87),
                                         ),
+                                        label: Text(
+                                          "View Sessions",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontFamily: "general_sans",
+                                            fontSize: 15,
+                                            color: Color(0xff088A87),
+                                          ),
+                                        ),
+                                        style: TextButton.styleFrom(
+                                          padding: EdgeInsets.zero,
+                                          minimumSize: Size(0, 0),
+                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        ),
                                       ),
-                                      style: TextButton.styleFrom(
-                                        padding: EdgeInsets.zero,
-                                        minimumSize: Size(0, 0),
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  ),
+                                ]
                               ],
                             ),
                           ),

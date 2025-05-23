@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:neuromithra/Logic/Location/location_cubit.dart';
-import 'package:neuromithra/Logic/Location/location_state.dart';
 import 'package:neuromithra/Presentation/NewHomeScreen.dart';
 import 'package:neuromithra/Presentation/profile_screen.dart';
 import 'CounsellingListScreen.dart';
 import 'SelectingTypes/GuideScreen.dart';
 import 'TherapiesListScreen.dart';
-
 
 class MainDashBoard extends StatefulWidget {
   final int initialIndex; // Add this
@@ -17,7 +13,6 @@ class MainDashBoard extends StatefulWidget {
   @override
   State<MainDashBoard> createState() => _MainDashBoardState();
 }
-
 
 class _MainDashBoardState extends State<MainDashBoard> {
   late int _selectedIndex;
@@ -42,7 +37,8 @@ class _MainDashBoardState extends State<MainDashBoard> {
   @override
   void initState() {
     _selectedIndex = widget.initialIndex; // Use the passed index
-    pageController = PageController(initialPage: widget.initialIndex); // Initialize controller
+    pageController = PageController(
+        initialPage: widget.initialIndex); // Initialize controller
     // context.read<LocationCubit>().checkLocationPermission();
     super.initState();
   }
@@ -51,8 +47,16 @@ class _MainDashBoardState extends State<MainDashBoard> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        SystemNavigator.pop();
-        return false;
+        if (_selectedIndex == 0) {
+          SystemNavigator.pop();
+          return false;
+        } else {
+          setState(() {
+            _selectedIndex = 0;
+            pageController.jumpToPage(0);
+          });
+          return false;
+        }
       },
       child: Scaffold(
         body: PageView(
@@ -99,20 +103,22 @@ class _MainDashBoardState extends State<MainDashBoard> {
         // }),
         // floatingActionButtonLocation:
         //     FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: BottomAppBar(
-          surfaceTintColor: Colors.blue,
-          // shape: CircularNotchedRectangle(),
-          // notchMargin: 8.0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              _buildIconButton('assets/Home.png', "Home", 0),
-              _buildIconButton('assets/therapy.png', "Therapies", 1),
-              _buildIconButton('assets/consultation.png', "Counselling", 2),
-              _buildIconButton('assets/UserCircle.png', "Profile", 3),
-              // _buildIconButton('assets/Info.png', "Info", 4),
-              _buildIconButton('assets/guide.png', "Guide", 5),
-            ],
+        bottomNavigationBar: SafeArea(
+          child: BottomAppBar(
+            surfaceTintColor: Colors.blue,
+            // shape: CircularNotchedRectangle(),
+            // notchMargin: 8.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                _buildIconButton('assets/Home.png', "Home", 0),
+                _buildIconButton('assets/therapy.png', "Therapies", 1),
+                _buildIconButton('assets/consultation.png', "Counselling", 2),
+                _buildIconButton('assets/UserCircle.png', "Profile", 3),
+                // _buildIconButton('assets/Info.png', "Info", 4),
+                _buildIconButton('assets/guide.png', "Guide", 5),
+              ],
+            ),
           ),
         ),
       ),
@@ -257,7 +263,9 @@ class _MainDashBoardState extends State<MainDashBoard> {
             iconPath,
             width: 25,
             height: 25,
-            color: isSelected ? Colors.black : Colors.grey, // Selected vs Unselected color
+            color: isSelected
+                ? Colors.black
+                : Colors.grey, // Selected vs Unselected color
           ),
           onPressed: () {
             onItemTapped(index);
@@ -275,5 +283,4 @@ class _MainDashBoardState extends State<MainDashBoard> {
       ],
     );
   }
-
 }

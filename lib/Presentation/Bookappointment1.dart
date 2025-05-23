@@ -42,15 +42,16 @@ class _Bookappointment1State extends State<Bookappointment1> {
   final TextEditingController _dateOfAppointmentController =
       TextEditingController();
 
-  int address_id = 0;
+  int? address_id;
   String patient_id = "";
 
-  // final String environment = "PRODUCTION";
   String environment = "SANDBOX";
   String appId = "PGTESTPAYUAT77";
   String merchantId = "PGTESTPAYUAT77";
   String saltKey = "14fa5465-f8a7-443f-8477-f986b8fcfde9";
   int saltIndex = 1;
+
+  // final String environment = "PRODUCTION";
   final String callbackUrl = "";
   final String apiEndPoint = "/pg/v1/pay";
   String transactionId = "TXN${DateTime.now().millisecondsSinceEpoch}";
@@ -70,7 +71,8 @@ class _Bookappointment1State extends State<Bookappointment1> {
         widget.appointmentMode == 'both' ? 'online' : widget.appointmentMode;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<AddressListProvider>(context, listen: false).getAddressList();
-      final provider = Provider.of<BookingHistoryProvider>(context, listen: false);
+      final provider =
+          Provider.of<BookingHistoryProvider>(context, listen: false);
       PhonePePaymentSdk.init(environment, appId, merchantId, true);
       // provider.getPhonepeDetails().then((_) {
       //   setState(() {
@@ -177,6 +179,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
             "address": address_id,
             "calender_days": _selectedDays.toList(),
             "patient_id": patient_id,
+            "transaction_id": transactionId
           };
           final response =
               await Provider.of<BookingHistoryProvider>(context, listen: false)
@@ -214,8 +217,10 @@ class _Bookappointment1State extends State<Bookappointment1> {
       _validateDateOfAppointment = _dateOfAppointmentController.text.isEmpty
           ? "Please Enter The Date Of Appointment"
           : "";
-
-      _validateLocation = address_id == 0 ? "Please Select Your Location" : "";
+      _validateLocation =
+          address_id == null && _selected_appointment_mode != "online"
+              ? "Please Select Your Address"
+              : "";
       _validateWeekDays =
           _selectedDays.length <= 4 ? "Please Select Week Days" : "";
 
@@ -224,7 +229,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
           _validateWeekDays.isEmpty &&
           _validateLocation.isEmpty) {
         // bookAppointment();
-        initiateTransaction(1);
+        initiateTransaction(total_amount);
       }
     });
   }
@@ -448,13 +453,13 @@ class _Bookappointment1State extends State<Bookappointment1> {
                       : null;
                   patient_id = child?.id.toString() ?? "";
                   _ageController.text = child?.age.toString() ?? "";
-                  selectedGender = child?.gender?.toLowerCase()??"";
+                  selectedGender = child?.gender?.toLowerCase() ?? "";
                   return ((child?.name ?? "").isNotEmpty)
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Patient Details',
+                              'Child Details',
                               style: TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.w500,
@@ -859,120 +864,122 @@ class _Bookappointment1State extends State<Bookappointment1> {
             ] else ...[
               SizedBox(height: 15),
             ],
-            Text(
-              "Select Address",
-              style: TextStyle(
-                fontSize: 17,
-                fontFamily: "general_sans",
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
+            if (_selected_appointment_mode != "online") ...[
+              Text(
+                "Select Address",
+                style: TextStyle(
+                  fontSize: 17,
+                  fontFamily: "general_sans",
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                ),
               ),
-            ),
-            Consumer<AddressListProvider>(
-              builder: (context, provider, _) {
-                final addresses = provider.addresses;
+              Consumer<AddressListProvider>(
+                builder: (context, provider, _) {
+                  final addresses = provider.addresses;
 
-                if (addresses.isEmpty) {
-                  return SizedBox.shrink();
-                }
+                  if (addresses.isEmpty) {
+                    return SizedBox.shrink();
+                  }
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: List.generate(addresses.length, (index) {
-                    final address = addresses[index];
-                    final title = address.typeOfAddress == 1
-                        ? "Current Address"
-                        : "Permanent Address";
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: List.generate(addresses.length, (index) {
+                      final address = addresses[index];
+                      final title = address.typeOfAddress == 1
+                          ? "Current Address"
+                          : "Permanent Address";
 
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0),
-                      child: Material(
-                        elevation: 2,
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: selectedAddressIndex == index
-                                ? Colors.blue.shade50
-                                : Colors.white,
-                          ),
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Checkbox(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4)),
-                                  value: selectedAddressIndex == index,
-                                  activeColor: primarycolor,
-                                  onChanged: (bool? value) {
-                                    setState(() {
-                                      selectedAddressIndex =
-                                          value == true ? index : null;
-                                      address_id = address.id;
-                                      _validateLocation = "";
-                                    });
-                                  },
-                                ),
-                              ),
-                              Expanded(
-                                child: ListTile(
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 8),
-                                  title: Text(
-                                    title,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: "general_sans",
-                                      color: Colors.blueGrey[800],
-                                    ),
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: Material(
+                          elevation: 2,
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: selectedAddressIndex == index
+                                  ? Colors.blue.shade50
+                                  : Colors.white,
+                            ),
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Checkbox(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(4)),
+                                    value: selectedAddressIndex == index,
+                                    activeColor: primarycolor,
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        selectedAddressIndex =
+                                            value == true ? index : null;
+                                        address_id = address.id;
+                                        _validateLocation = "";
+                                      });
+                                    },
                                   ),
-                                  subtitle: Padding(
-                                    padding: const EdgeInsets.only(top: 4.0),
-                                    child: Text(
-                                      "${address.flatNo}, ${address.street}, ${address.area} - ${address.landmark}, ${address.pincode}",
+                                ),
+                                Expanded(
+                                  child: ListTile(
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 8),
+                                    title: Text(
+                                      title,
                                       style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
                                         fontFamily: "general_sans",
-                                        color: Colors.grey[700],
+                                        color: Colors.blueGrey[800],
+                                      ),
+                                    ),
+                                    subtitle: Padding(
+                                      padding: const EdgeInsets.only(top: 4.0),
+                                      child: Text(
+                                        "${address.flatNo}, ${address.street}, ${address.area} - ${address.landmark}, ${address.pincode}",
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontFamily: "general_sans",
+                                          color: Colors.grey[700],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
+                      );
+                    }),
+                  );
+                },
+              ),
+              if (_validateLocation.isNotEmpty) ...[
+                Container(
+                  alignment: Alignment.topLeft,
+                  margin: EdgeInsets.only(left: 8, bottom: 10, top: 5),
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  child: ShakeWidget(
+                    key: Key("value"),
+                    duration: Duration(milliseconds: 700),
+                    child: Text(
+                      _validateLocation,
+                      style: TextStyle(
+                        fontFamily: "Poppins",
+                        fontSize: 12,
+                        color: Colors.red,
+                        fontWeight: FontWeight.w500,
                       ),
-                    );
-                  }),
-                );
-              },
-            ),
-            if (_validateLocation.isNotEmpty) ...[
-              Container(
-                alignment: Alignment.topLeft,
-                margin: EdgeInsets.only(left: 8, bottom: 10, top: 5),
-                width: MediaQuery.of(context).size.width * 0.6,
-                child: ShakeWidget(
-                  key: Key("value"),
-                  duration: Duration(milliseconds: 700),
-                  child: Text(
-                    _validateLocation,
-                    style: TextStyle(
-                      fontFamily: "Poppins",
-                      fontSize: 12,
-                      color: Colors.red,
-                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
-              ),
-            ] else ...[
-              SizedBox(height: 15),
+              ] else ...[
+                SizedBox(height: 15),
+              ],
+              const SizedBox(height: 20),
             ],
-            const SizedBox(height: 20),
             Center(
               child: SizedBox(
                 width: double.infinity,
@@ -1046,7 +1053,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Select Patient',
+                        'Select Child',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
@@ -1067,7 +1074,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                           ),
                         ),
                         child: Text(
-                          'Add Patient',
+                          'Add Child',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
@@ -1086,7 +1093,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                         ))
                       : provider.childDataList.isEmpty
                           ? Text(
-                              'No Patient added yet.',
+                              'No Child added yet.',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.grey,
@@ -1243,7 +1250,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        isEdit ? 'Edit Patient' : 'Add Patient',
+                        isEdit ? 'Edit Child' : 'Add Child',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,

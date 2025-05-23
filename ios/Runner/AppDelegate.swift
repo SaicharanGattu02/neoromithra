@@ -2,6 +2,7 @@ import Flutter
 import UIKit
 import FirebaseCore
 import UserNotifications
+import GoogleMaps // Add this import
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -12,7 +13,10 @@ import UserNotifications
   ) -> Bool {
 
     // Configure Firebase
-     FirebaseApp.configure()
+    FirebaseApp.configure()
+
+    // Initialize Google Maps with your API key
+    GMSServices.provideAPIKey("AIzaSyD0-eauuJ1zBrknaL4uNexkR21cYVOkj7k") // Replace with your actual API key
 
     // Register Flutter plugins
     GeneratedPluginRegistrant.register(with: self)

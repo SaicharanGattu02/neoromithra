@@ -30,10 +30,16 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
   @override
   void initState() {
     super.initState();
+    GetDetails();
+  }
+
+  GetDetails() async {
+    final bool guest = await AuthService.isGuest;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<HomeProviders>(context, listen: false)
-          .getServiceDetails(widget.serviceID);
-      Provider.of<AddressListProvider>(context, listen: false).getAddressList();
+      Provider.of<HomeProviders>(context, listen: false).getServiceDetails(widget.serviceID);
+      if (!guest) {
+        Provider.of<AddressListProvider>(context, listen: false).getAddressList();
+      }
     });
   }
 

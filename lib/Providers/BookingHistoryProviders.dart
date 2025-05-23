@@ -165,7 +165,6 @@ class BookingHistoryProvider with ChangeNotifier {
   Future<SuccessModel?> bookAppointment(Map<String, dynamic> data) async {
     _isSubmitting = true;
     notifyListeners();
-
     try {
       final response = await Userapi.bookAppointment(data);
       if (response != null && response.status == true) {

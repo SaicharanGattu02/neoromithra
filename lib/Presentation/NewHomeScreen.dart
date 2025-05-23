@@ -742,7 +742,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                                           ),
                                           margin: const EdgeInsets.all(0),
                                           child: Container(
-                                            width: 340,
+                                            width: double.infinity,
                                             decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius:
