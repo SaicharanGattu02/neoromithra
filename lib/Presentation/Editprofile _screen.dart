@@ -395,38 +395,40 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ),
       bottomNavigationBar: Consumer<UserProviders>(
         builder: (context, userDetails, child) {
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SizedBox(
-              height: 48,
-              child: ElevatedButton(
-                  onPressed: isLoading ? null : () => _submitForm(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primarycolor, // Button Background Color
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+          return SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SizedBox(
+                height: 48,
+                child: ElevatedButton(
+                    onPressed: isLoading ? null : () => _submitForm(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primarycolor, // Button Background Color
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      elevation: 0, // Light shadow for better visibility
                     ),
-                    elevation: 0, // Light shadow for better visibility
-                  ),
-                  child: userDetails.isSaving
-                      ? SizedBox(
-                          height: 24,
-                          width: 24,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
-                        )
-                      : Text(
-                          "Save",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontFamily: "general_sans",
-                            fontWeight: FontWeight.w600,
-                          ),
-                        )),
+                    child: userDetails.isSaving
+                        ? SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        : Text(
+                            "Save",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontFamily: "general_sans",
+                              fontWeight: FontWeight.w600,
+                            ),
+                          )),
+              ),
             ),
           );
         },

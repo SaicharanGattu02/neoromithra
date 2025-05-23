@@ -1522,6 +1522,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
           controller: controller,
           cursorColor: Colors.black,
           keyboardType: keyboardType,
+          textInputAction: TextInputAction.done,
           onChanged: onChanged, // <-- use here
           inputFormatters: pattern != null
               ? [FilteringTextInputFormatter.allow(RegExp(pattern))]

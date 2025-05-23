@@ -259,7 +259,11 @@ final GoRouter goRouter =
 // Function to build a page with slide transition
 Page<dynamic> buildSlideTransitionPage(Widget child, GoRouterState state) {
   // Use CupertinoPage for iOS (non-web) or CustomTransitionPage for others
-  if (!kIsWeb == TargetPlatform.iOS) {
+  // if (!kIsWeb == TargetPlatform.iOS) {
+  //   return CupertinoPage(key: state.pageKey, child: child);
+  // }
+
+  if (Platform.isIOS) {
     return CupertinoPage(key: state.pageKey, child: child);
   }
 

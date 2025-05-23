@@ -47,8 +47,8 @@ class _AddressListScreenState extends State<AddressListScreen> {
               height: 30,
               child: OutlinedButton.icon(
                 onPressed: () async {
-                  // context.push("/add_address?type=add&id=");
-                  context.push("/select_location?type=add&id=");
+                  context.push("/add_address?type=add&id=");
+                  // context.push("/select_location?type=add&id=");
                 },
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: primarycolor, width: 1.5),
@@ -123,7 +123,8 @@ class _AddressListScreenState extends State<AddressListScreen> {
                       SizedBox(height: 20),
                       OutlinedButton.icon(
                         onPressed: () {
-                          context.push("/select_location?type=add&id=");
+                          // context.push("/select_location?type=add&id=");
+                          context.push("/add_address?type=add&id=");
                         },
                         icon: Icon(Icons.add_location_alt, color: primarycolor),
                         label: Text(
@@ -188,7 +189,8 @@ class _AddressListScreenState extends State<AddressListScreen> {
                                 children: [
                                   IconButton.filled(
                                     onPressed: () async {
-                                      context.push("/select_location?type=edit&id=${data.id}");
+                                      // context.push("/select_location?type=edit&id=${data.id}");
+                                      context.push("/add_address?type=edit&id=${data.id}");
                                     },
                                     icon: Icon(Icons.edit, size: 18),
                                     style: IconButton.styleFrom(

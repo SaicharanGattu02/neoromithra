@@ -35,85 +35,85 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 Future<void> main() async {
   Userapi.setupInterceptors();
   WidgetsFlutterBinding.ensureInitialized();
-  // Platform.isAndroid
-  //     ? await Firebase.initializeApp(
-  //         options: FirebaseOptions(
-  //           apiKey: "AIzaSyAJ_g_TtIFpj8FMAs1EpcE2mudfOFvtFK4",
-  //           appId: "1:814004941342:android:fe8d8e1b907f639c72b40f",
-  //           messagingSenderId: "814004941342",
-  //           projectId: "neuromithra",
-  //         ),
-  //       )
-  //     : await Firebase.initializeApp();
-  //
-  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  //
-  // if (Platform.isAndroid) {
-  //   FirebaseMessaging.instance.getToken().then((value) {
-  //     String? token = value;
-  //     debugPrint("Androidfbstoken:{$token}");
-  //     PreferenceService().saveString("fbstoken", token!);
-  //     // toast(BuildContext , token);
-  //   });
-  // } else {
-  //   FirebaseMessaging.instance.getToken().then((value) {
-  //     String? token = value;
-  //     debugPrint("IOSfbstoken:{$token}");
-  //     PreferenceService().saveString("fbstoken", token!);
-  //     // toast(BuildContext , token);
-  //   });
-  // }
-  //
-  // FirebaseMessaging messaging = FirebaseMessaging.instance;
-  // NotificationSettings settings = await messaging.requestPermission(
-  //   alert: true,
-  //   announcement: false,
-  //   badge: true,
-  //   carPlay: false,
-  //   criticalAlert: false,
-  //   provisional: false,
-  //   sound: true,
-  // );
-  //
-  // await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-  //   alert: true,
-  //   badge: true,
-  //   sound: true,
-  // );
-  //
-  // await flutterLocalNotificationsPlugin
-  //     .resolvePlatformSpecificImplementation<
-  //         AndroidFlutterLocalNotificationsPlugin>()
-  //     ?.createNotificationChannel(channel);
-  //
-  // const InitializationSettings initializationSettings = InitializationSettings(
-  //     android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-  //     iOS: DarwinInitializationSettings());
-  //
-  // flutterLocalNotificationsPlugin.initialize(
-  //   initializationSettings,
-  //   onDidReceiveNotificationResponse:
-  //       (NotificationResponse notificationResponse) async {},
-  // );
-  //
-  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-  //   RemoteNotification? notification = message.notification;
-  //   AndroidNotification? android = message.notification?.android;
-  //   if (notification != null && android != null) {
-  //     // debugPrint('A new message received: ${notification.title}');
-  //     // debugPrint('RemoteMessage data: ${message.data.toString()}');
-  //     showNotification(notification, android, message.data);
-  //   }
-  // });
-  //
-  // // Also handle any interaction when the app is in the background via a
-  // // Stream listener
-  // FirebaseMessaging.onMessageOpenedApp.listen((message) {
-  //   // _handleMessage(message);
-  //   // debugPrint("onMessageOpenedApp:${message.data['type']}");
-  // });
-  //
-  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  Platform.isAndroid
+      ? await Firebase.initializeApp(
+          options: FirebaseOptions(
+            apiKey: "AIzaSyAJ_g_TtIFpj8FMAs1EpcE2mudfOFvtFK4",
+            appId: "1:814004941342:android:fe8d8e1b907f639c72b40f",
+            messagingSenderId: "814004941342",
+            projectId: "neuromithra",
+          ),
+        )
+      : await Firebase.initializeApp();
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  if (Platform.isAndroid) {
+    FirebaseMessaging.instance.getToken().then((value) {
+      String? token = value;
+      debugPrint("Androidfbstoken:{$token}");
+      PreferenceService().saveString("fbstoken", token!);
+      // toast(BuildContext , token);
+    });
+  } else {
+    FirebaseMessaging.instance.getToken().then((value) {
+      String? token = value;
+      debugPrint("IOSfbstoken:{$token}");
+      PreferenceService().saveString("fbstoken", token!);
+      // toast(BuildContext , token);
+    });
+  }
+
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+  const InitializationSettings initializationSettings = InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      iOS: DarwinInitializationSettings());
+
+  flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+    onDidReceiveNotificationResponse:
+        (NotificationResponse notificationResponse) async {},
+  );
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? android = message.notification?.android;
+    if (notification != null && android != null) {
+      // debugPrint('A new message received: ${notification.title}');
+      // debugPrint('RemoteMessage data: ${message.data.toString()}');
+      showNotification(notification, android, message.data);
+    }
+  });
+
+  // Also handle any interaction when the app is in the background via a
+  // Stream listener
+  FirebaseMessaging.onMessageOpenedApp.listen((message) {
+    // _handleMessage(message);
+    // debugPrint("onMessageOpenedApp:${message.data['type']}");
+  });
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 // Motion.instance.setUpdateInterval(60.fps);
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => SignInProviders()),
@@ -127,34 +127,34 @@ Future<void> main() async {
   ], child: MyApp()));
 }
 
-// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   await Firebase.initializeApp();
-//   // debugPrint('A Background message just showed up :  ${message.data}');
-// }
-//
-// // Function to display local notifications
-// void showNotification(RemoteNotification notification,
-//     AndroidNotification android, Map<String, dynamic> data) async {
-//   AndroidNotificationDetails androidPlatformChannelSpecifics =
-//       AndroidNotificationDetails(
-//     'your_channel_id', // Your channel ID
-//     'your_channel_name', // Your channel name
-//     importance: Importance.max,
-//     priority: Priority.high,
-//     playSound: true,
-//     icon: '@mipmap/ic_launcher',
-//   );
-//   NotificationDetails platformChannelSpecifics =
-//       NotificationDetails(android: androidPlatformChannelSpecifics);
-//
-//   await flutterLocalNotificationsPlugin.show(
-//     notification.hashCode,
-//     notification.title,
-//     notification.body,
-//     platformChannelSpecifics,
-//     payload: jsonEncode(data),
-//   );
-// }
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  // debugPrint('A Background message just showed up :  ${message.data}');
+}
+
+// Function to display local notifications
+void showNotification(RemoteNotification notification,
+    AndroidNotification android, Map<String, dynamic> data) async {
+  AndroidNotificationDetails androidPlatformChannelSpecifics =
+      AndroidNotificationDetails(
+    'your_channel_id', // Your channel ID
+    'your_channel_name', // Your channel name
+    importance: Importance.max,
+    priority: Priority.high,
+    playSound: true,
+    icon: '@mipmap/ic_launcher',
+  );
+  NotificationDetails platformChannelSpecifics =
+      NotificationDetails(android: androidPlatformChannelSpecifics);
+
+  await flutterLocalNotificationsPlugin.show(
+    notification.hashCode,
+    notification.title,
+    notification.body,
+    platformChannelSpecifics,
+    payload: jsonEncode(data),
+  );
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

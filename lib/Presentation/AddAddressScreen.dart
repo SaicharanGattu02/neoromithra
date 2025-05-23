@@ -69,11 +69,13 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                 _hNoControllerCurrent.text = address?.flatNo??"";
                 _streetControllerCurrent.text = address?.street??"";
                 _landmarkControllerCurrent.text = address?.landmark??"";
+                _pincodeControllerCurrent.text = address?.pincode??"";
               } else {
                 isPermanentChecked = true;
                 _hNoControllerPermanent.text = address?.flatNo??"";
                 _streetControllerPermanent.text = address?.street??"";
                 _landmarkControllerPermanent.text = address?.landmark??"";
+                _pincodeControllerPermanent.text = address?.pincode??"";
               }
             });
 
@@ -90,7 +92,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     final prefs = await SharedPreferences.getInstance();
 
     final locationName = prefs.getString('location_name') ?? '';
-    latlongs = prefs.getString('latlongs') ?? '';
+    latlongs = prefs.getString('latlongs') ?? '17.4065, 78.4772';
     final area = prefs.getString('area') ?? '';
     final city = prefs.getString('city') ?? '';
     final pincode = prefs.getString('pincode') ?? '';
