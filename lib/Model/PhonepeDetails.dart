@@ -1,15 +1,15 @@
 class PhonepeDetails {
   bool? status;
-  List<PhonepeKeys>? phonpekeys;
+  List<Keys>? keys;
 
-  PhonepeDetails({this.status, this.phonpekeys});
+  PhonepeDetails({this.status, this.keys});
 
   PhonepeDetails.fromJson(Map<String, dynamic> json) {
     status = json['status'];
-    if (json['data'] != null) {
-      phonpekeys = <PhonepeKeys>[];
-      json['data'].forEach((v) {
-        phonpekeys!.add(new PhonepeKeys.fromJson(v));
+    if (json['keys'] != null) {
+      keys = <Keys>[];
+      json['keys'].forEach((v) {
+        keys!.add(new Keys.fromJson(v));
       });
     }
   }
@@ -17,46 +17,66 @@ class PhonepeDetails {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['status'] = this.status;
-    if (this.phonpekeys != null) {
-      data['data'] = this.phonpekeys!.map((v) => v.toJson()).toList();
+    if (this.keys != null) {
+      data['keys'] = this.keys!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
-class PhonepeKeys {
+class Keys {
   int? id;
-  String? env;
-  String? appId;
-  String? merchantId;
-  String? saltKey;
-  int? saltIndex;
+  String? pHONEPEMERCHANTID;
+  String? pHONEPEMERCHANTUSERID;
+  String? pHONEPEENV;
+  String? pHONEPESALTKEY;
+  int? pHONEPESALTINDEX;
+  String? pHONEPECALLBACKURL;
+  String? pHONEPEBASEURL;
+  String? saasId;
+  String? createdAt;
+  Null? updatedAt;
 
-  PhonepeKeys(
+  Keys(
       {this.id,
-        this.env,
-        this.appId,
-        this.merchantId,
-        this.saltKey,
-        this.saltIndex});
+        this.pHONEPEMERCHANTID,
+        this.pHONEPEMERCHANTUSERID,
+        this.pHONEPEENV,
+        this.pHONEPESALTKEY,
+        this.pHONEPESALTINDEX,
+        this.pHONEPECALLBACKURL,
+        this.pHONEPEBASEURL,
+        this.saasId,
+        this.createdAt,
+        this.updatedAt});
 
-  PhonepeKeys.fromJson(Map<String, dynamic> json) {
+  Keys.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    env = json['env'];
-    appId = json['appId'];
-    merchantId = json['merchantId'];
-    saltKey = json['saltKey'];
-    saltIndex = json['saltIndex'];
+    pHONEPEMERCHANTID = json['PHONEPE_MERCHANT_ID'];
+    pHONEPEMERCHANTUSERID = json['PHONEPE_MERCHANT_USER_ID'];
+    pHONEPEENV = json['PHONEPE_ENV'];
+    pHONEPESALTKEY = json['PHONEPE_SALT_KEY'];
+    pHONEPESALTINDEX = json['PHONEPE_SALT_INDEX'];
+    pHONEPECALLBACKURL = json['PHONEPE_CALLBACK_URL'];
+    pHONEPEBASEURL = json['PHONEPE_BASE_URL'];
+    saasId = json['saas_id'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['env'] = this.env;
-    data['appId'] = this.appId;
-    data['merchantId'] = this.merchantId;
-    data['saltKey'] = this.saltKey;
-    data['saltIndex'] = this.saltIndex;
+    data['PHONEPE_MERCHANT_ID'] = this.pHONEPEMERCHANTID;
+    data['PHONEPE_MERCHANT_USER_ID'] = this.pHONEPEMERCHANTUSERID;
+    data['PHONEPE_ENV'] = this.pHONEPEENV;
+    data['PHONEPE_SALT_KEY'] = this.pHONEPESALTKEY;
+    data['PHONEPE_SALT_INDEX'] = this.pHONEPESALTINDEX;
+    data['PHONEPE_CALLBACK_URL'] = this.pHONEPECALLBACKURL;
+    data['PHONEPE_BASE_URL'] = this.pHONEPEBASEURL;
+    data['saas_id'] = this.saasId;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
     return data;
   }
 }

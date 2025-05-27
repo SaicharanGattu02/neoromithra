@@ -74,11 +74,12 @@ class _OtpState extends State<Otp> {
                   children: [
                     SizedBox(height: SizeConfig.screenHeight * 0.1),
                     Center(
-                      child: Image.asset(
-                        "assets/neuromitralogo.png",
-                        width: SizeConfig.screenWidth * 0.35,
-                        height: SizeConfig.screenHeight * 0.15,
-                        fit: BoxFit.contain,
+                      child:ClipOval(
+                        child: Image.asset(
+                          "assets/applogo.jpeg",
+                          height: SizeConfig.screenHeight * 0.18,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 40),

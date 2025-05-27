@@ -146,7 +146,7 @@ class Userapi {
 
   static Future<PhonepeDetails?> getPhonepeDetails() async {
     try {
-      final response = await get("${APIEndpointUrls.assessmentQuestions}");
+      final response = await get("${APIEndpointUrls.phonepe_details}");
       if (response.statusCode == 200) {
         debugPrint("getPhonepeDetails Status: ${response.data}");
         return PhonepeDetails.fromJson(response.data);

@@ -45,15 +45,20 @@ class _Bookappointment1State extends State<Bookappointment1> {
   int? address_id;
   String patient_id = "";
 
-  String environment = "SANDBOX";
-  String appId = "PGTESTPAYUAT77";
-  String merchantId = "PGTESTPAYUAT77";
-  String saltKey = "14fa5465-f8a7-443f-8477-f986b8fcfde9";
+  // String environment = "SANDBOX";
+  // String appId = "PGTESTPAYUAT77";
+  // String merchantId = "PGTESTPAYUAT77";
+  // String saltKey = "14fa5465-f8a7-443f-8477-f986b8fcfde9";
+  // int saltIndex = 1;
+
+  String environment = "PRODUCTION";
+  String appId = "";
+  String merchantId = "";
+  String saltKey = "";
   int saltIndex = 1;
 
-  // final String environment = "PRODUCTION";
-  final String callbackUrl = "";
-  final String apiEndPoint = "/pg/v1/pay";
+  String callbackUrl = "";
+  String apiEndPoint = "/pg/v1/pay";
   String transactionId = "TXN${DateTime.now().millisecondsSinceEpoch}";
   String Orderamount = "";
   String user_id = "";
@@ -62,33 +67,50 @@ class _Bookappointment1State extends State<Bookappointment1> {
   String _selected_appointment_mode = 'online';
   String selectedGender = 'Male';
   int total_amount = 0;
-  List<PhonepeKeys> _phonepeKeys = [];
+  List<Keys> _phonepeKeys = [];
 
   @override
   void initState() {
     super.initState();
     _selected_appointment_mode =
-        widget.appointmentMode == 'both' ? 'online' : widget.appointmentMode;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    widget.appointmentMode == 'both' ? 'online' : widget.appointmentMode;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       Provider.of<AddressListProvider>(context, listen: false).getAddressList();
-      final provider =
-          Provider.of<BookingHistoryProvider>(context, listen: false);
-      PhonePePaymentSdk.init(environment, appId, merchantId, true);
-      // provider.getPhonepeDetails().then((_) {
-      //   setState(() {
-      //     _phonepeKeys = provider.phonpekeys;
-      //     merchantId=_phonepeKeys[0].merchantId??"";
-      //     appId=_phonepeKeys[0].appId??"";
-      //     saltIndex=_phonepeKeys[0].saltIndex??0;
-      //     saltKey=_phonepeKeys[0].saltKey??"";
-      //   });
-      // });
+
+      final provider = Provider.of<BookingHistoryProvider>(context, listen: false);
+      try {
+        await provider.getPhonepeDetails();
+        _phonepeKeys = provider.phonpekeys;
+
+        // Debug print statements for PhonePe values
+        print("PhonePe Keys Fetched:");
+        print("Merchant ID: ${_phonepeKeys[0].pHONEPEMERCHANTID}");
+        print("App ID: ${_phonepeKeys[0].pHONEPEMERCHANTID}");
+        print("Salt Index: ${_phonepeKeys[0].pHONEPESALTINDEX}");
+        print("Salt Key: ${_phonepeKeys[0].pHONEPESALTKEY}");
+        print("Callback URL: ${_phonepeKeys[0].pHONEPECALLBACKURL}");
+
+        setState(() {
+          merchantId = _phonepeKeys[0].pHONEPEMERCHANTID ?? "";
+          appId = _phonepeKeys[0].pHONEPEMERCHANTID ?? "";
+          saltIndex = _phonepeKeys[0].pHONEPESALTINDEX ?? 0;
+          saltKey = _phonepeKeys[0].pHONEPESALTKEY ?? "";
+          callbackUrl = _phonepeKeys[0].pHONEPECALLBACKURL ?? "";
+        });
+
+        PhonePePaymentSdk.init(environment, appId, merchantId, true);
+      } catch (e) {
+        print("PhonePe error: $e");
+      }
+
       var res = Provider.of<UserProviders>(context, listen: false).userData;
       setState(() {
         _fullNameController.text = res.name ?? "";
-        _phoneNumberController.text = res.contact.toString() ?? '';
+        _phoneNumberController.text = res.contact?.toString() ?? '';
       });
     });
+
     _fullNameController.addListener(() {
       setState(() {
         _validateFullName = "";

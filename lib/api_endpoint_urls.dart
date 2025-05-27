@@ -54,5 +54,5 @@ class APIEndpointUrls {
   static const String submitReview = '${apiUrl}create_review';
   static const String getReviewList = '${apiUrl}get_review';
   static const String downloadScriptAPi = '${apiUrl}downloadfile';
-  static const String phonepe_details = '${userUrl}submit-assesement';
+  static const String phonepe_details = '${userUrl}get_keys';
 }
