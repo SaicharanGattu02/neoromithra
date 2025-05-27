@@ -46,7 +46,7 @@ class _OtpState extends State<Otp> {
   }
 
   Future<void> _verifyOtp() async {
-    String fcmToken =  await PreferenceService().getString("fbstoken") ?? "";
+    String fcmToken =  await PreferenceService().getString("fbstoken") ?? "wgergergerg";
     Map<String, dynamic> data = {
       "phone": widget.mobile,
       "otp": _otpController.text,

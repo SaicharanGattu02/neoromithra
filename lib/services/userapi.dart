@@ -760,7 +760,7 @@ class Userapi {
   static Future<SuccessModel?> deleteAccountApi() async {
     try {
       final response =
-      await _dio.delete(APIEndpointUrls.delete_account);
+      await _dio.get(APIEndpointUrls.delete_account);
       if (response.statusCode == 200) {
         print("deleteAccountApi Status: ${response.data}");
         return SuccessModel.fromJson(response.data);

@@ -569,6 +569,8 @@ class DeleteAccountConfirmation {
                                   elevation: 0,
                                   backgroundColor: primarycolor,
                                   foregroundColor: primarycolor,
+                                  disabledForegroundColor: primarycolor,
+                                  disabledBackgroundColor: primarycolor
                                 ),
                                 child:signInProvider.isLoading
                                     ? const SizedBox(

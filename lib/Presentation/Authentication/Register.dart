@@ -47,7 +47,7 @@ class _RegisterState extends State<Register> {
   }
 
   Future<void> RegisterApi() async {
-    String fcmToken = await PreferenceService().getString("fbstoken") ?? "";
+    String fcmToken = await PreferenceService().getString("fbstoken") ?? "kakjgsg";
     Map<String, dynamic> data = {
       "name": _nameController.text,
       "email": _emailController.text,

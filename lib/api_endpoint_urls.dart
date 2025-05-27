@@ -17,7 +17,7 @@ class APIEndpointUrls {
   static const String updateRefreshToken = '${apiUrl}refreshToken';
   static const String forgetPassword = '${apiUrl}reset_password';
   static const String forgetOTPVerification = '${apiUrl}verify_otp';
-  static const String delete_account = '${apiUrl}delete_account';
+  static const String delete_account = '${userUrl}delete-user';
 
   static const String quotes = '${userUrl}guest-quatations';
 
