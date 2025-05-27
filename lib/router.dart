@@ -65,48 +65,6 @@ final GoRouter goRouter =
         return buildSlideTransitionPage(Resultscreen(), state);
       }),
   GoRoute(
-      path: '/payment_status',
-      pageBuilder: (context, state) {
-        final res = state.extra as Map<String, dynamic>;
-        final addressId = state.uri.queryParameters['addressId'] ?? "";
-        final age = state.uri.queryParameters['age'] ?? "";
-        final amount = state.uri.queryParameters['amount'] ?? "";
-        final appointment = state.uri.queryParameters['appointment'] ?? "";
-        final appointmentType =
-            state.uri.queryParameters['appointmentType'] ?? "";
-        final date = state.uri.queryParameters['date'] ?? "";
-        final fullName = state.uri.queryParameters['fullName'] ?? "";
-        final pageSource = state.uri.queryParameters['pageSource'] ?? "";
-        final patientId = state.uri.queryParameters['patientId'] ?? "";
-        final phoneNumber = state.uri.queryParameters['phoneNumber'] ?? "";
-        final timeOfAppointment =
-            state.uri.queryParameters['timeOfAppointment'] ?? "";
-        final userId = state.uri.queryParameters['userId'] ?? "";
-        final transactionId = state.uri.queryParameters['transactionId'] ?? "";
-        final onSuccess = res['onSuccess'] as VoidCallback;
-        final isExistingPatient = res['isExistingPatient'] as bool? ?? false;
-        return buildSlideTransitionPage(
-            PaymentStatusScreen(
-              response: res,
-              addressId: addressId,
-              age: age,
-              amount: amount,
-              appointment: appointment,
-              appointmentType: appointmentType,
-              date: date,
-              fullName: fullName,
-              pageSource: pageSource,
-              patientId: patientId,
-              phoneNumber: phoneNumber,
-              timeOfAppointment: timeOfAppointment,
-              userId: userId,
-              transactionId: transactionId,
-              onSuccess: onSuccess,
-              isExistingPatient: isExistingPatient,
-            ),
-            state);
-      }),
-  GoRoute(
     path: '/forgot_password',
     pageBuilder: (context, state) =>
         buildSlideTransitionPage(ForgotPasswordScreen(), state),
@@ -263,9 +221,9 @@ Page<dynamic> buildSlideTransitionPage(Widget child, GoRouterState state) {
   //   return CupertinoPage(key: state.pageKey, child: child);
   // }
 
-  if (Platform.isIOS) {
-    return CupertinoPage(key: state.pageKey, child: child);
-  }
+  // if (Platform.isIOS) {
+  //   return CupertinoPage(key: state.pageKey, child: child);
+  // }
 
   return CustomTransitionPage(
     key: state.pageKey,

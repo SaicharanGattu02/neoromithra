@@ -85,8 +85,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       try {
         final res = await Provider.of<UserProviders>(context, listen: false)
             .updateProfileDetails(formData);
-        if (res == true) {
+        if (res?.status == true) {
           context.pop();
+          CustomSnackBar.show(context, "${res?.message}");
+        }else{
+          CustomSnackBar.show(context, "${res?.message}");
         }
       } catch (e) {
         print("Error submitting form: $e");

@@ -78,5 +78,70 @@ class SignInProviders with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<SuccessModel?> forgetPassword(String email) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      final response = await Userapi.forgetPassword(email);
+      if (response?.status == true) {
+        return response;
+      } else {
+        return response;
+      }
+    } catch (e) {
+      debugPrint("forgetPassword error: $e");
+      _errorMessage = "Something went wrong. Please try again.";
+      return null;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+
+  Future<SuccessModel?> forgetOTPVerify(Map<String, dynamic> data) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      final response = await Userapi.forgetOTPVerify(data);
+      if (response?.status == true) {
+        return response;
+      } else {
+        return response;
+      }
+    } catch (e) {
+      debugPrint("forgetOTPVerify error: $e");
+      _errorMessage = "Something went wrong. Please try again.";
+      return null;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+
+  Future<SuccessModel?> deleteAccount() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      final response = await Userapi.deleteAccountApi();
+      if (response?.status == true) {
+        return response;
+      } else {
+        return response;
+      }
+    } catch (e) {
+      debugPrint("deleteAccount error: $e");
+      _errorMessage = "Something went wrong. Please try again.";
+      return null;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }
 

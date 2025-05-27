@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:neuromithra/Model/SuccessModel.dart';
 
 import '../Components/CustomSnackBar.dart';
 import '../Model/ProfileDetailsModel.dart';
@@ -44,21 +45,20 @@ class UserProviders with ChangeNotifier {
     }
   }
 
-  Future<bool?> updateProfileDetails(FormData formData) async {
+  Future<SuccessModel?> updateProfileDetails(FormData formData) async {
     _isSaving = true;
     notifyListeners();
     try {
       final result = await Userapi.updateProfileDetails(formData);
-      if (result != null && result.containsKey("message")) {
-        print("Success: ${result["message"]}");
+      if (result?.status == true) {
         getProfileDetails();
-        return true;
-      } else if (result != null && result.containsKey("error")) {
-        print("Error: ${result["error"]}");
-        return false;
+        return result;
+      } else {
+        return null;
       }
     } catch (e) {
       _error = e.toString();
+      return null;
     } finally {
       _isSaving = false;
       notifyListeners();

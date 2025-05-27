@@ -79,7 +79,7 @@ class User {
     id = json['id'];
     name = json['name'];
     email = json['email'];
-    contact = json['contact']; // Now expects a String
+    contact = json['contact'].toString();
     emailVerifiedAt = json['email_verified_at'];
     refreshToken = json['refresh_token'];
     webFcmToken = json['web_fcm_token'];
@@ -91,14 +91,15 @@ class User {
     city = json['city'];
     country = json['country'];
     postalcode = json['postalcode'];
-    uniqueHostalId = json['unique_hostal_id'];
-    emailOtp = json['email_otp'];
+    uniqueHostalId = json['unique_hostal_id'].toString(); // Convert to String
+    emailOtp = json['email_otp'].toString(); // Convert to String
     expiredTime = json['expired_time'];
-    deletedAt = json['deleted_at']; // Now expects a String
+    deletedAt = json['deleted_at'].toString(); // Convert to String
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     profilePicUrl = json['profile_pic_url'];
   }
+
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};

@@ -284,6 +284,44 @@ class Userapi {
     }
   }
 
+  static Future<SuccessModel?> forgetPassword(String email) async {
+    try {
+      Map<String, dynamic> data = {
+        "email": email
+      };
+      final response =
+      await _dio.post(APIEndpointUrls.forgetPassword, data: data);
+      if (response.statusCode == 200) {
+        print("forgetPassword Status: ${response.data}");
+        return SuccessModel.fromJson(response.data);
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print("Error occurred: $e");
+      return null;
+    }
+  }
+
+
+  static Future<SuccessModel?> forgetOTPVerify(Map<String, dynamic> data) async {
+    try {
+      final response =
+      await _dio.post(APIEndpointUrls.forgetOTPVerification, data: data);
+      if (response.statusCode == 200) {
+        print("forgetOTPVerify Status: ${response.data}");
+        return SuccessModel.fromJson(response.data);
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print("Error occurred: $e");
+      return null;
+    }
+  }
+
   static Future<SignInModel?> verifyOtp(data) async {
     try {
       final response = await _dio.post(APIEndpointUrls.verify_login_otp, data: data);
@@ -300,21 +338,22 @@ class Userapi {
     }
   }
 
-  static Future<Map<String, dynamic>?> updateProfileDetails(formData) async {
+  static Future<SuccessModel?> updateProfileDetails(formData) async {
     try {
       final response = await post(
         APIEndpointUrls.updateprofileDetails,
         data: formData,
       );
       if (response.statusCode == 200) {
-        debugPrint("postProfileDetails Status: ${response.data}");
-        return {"message": response.data["message"]};
+        print("updateProfileDetails Status: ${response.data}");
+        return SuccessModel.fromJson(response.data);
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+        return null;
       }
-      debugPrint("Request failed with status: ${response.statusCode}");
-      return {"error": "Request failed with status: ${response.statusCode}"};
     } catch (e) {
       debugPrint("Error occurred: $e");
-      return {"error": e.toString()};
+      return null;
     }
   }
 
@@ -713,6 +752,24 @@ class Userapi {
       return null;
     } catch (e) {
       debugPrint("Error occurred: $e");
+      return null;
+    }
+  }
+
+
+  static Future<SuccessModel?> deleteAccountApi() async {
+    try {
+      final response =
+      await _dio.delete(APIEndpointUrls.delete_account);
+      if (response.statusCode == 200) {
+        print("deleteAccountApi Status: ${response.data}");
+        return SuccessModel.fromJson(response.data);
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print("Error occurred: $e");
       return null;
     }
   }

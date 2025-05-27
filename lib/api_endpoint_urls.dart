@@ -15,6 +15,9 @@ class APIEndpointUrls {
   static const String dailyFeedBack = '${userUrl}daily-feedback';
   static const String updateProfileImage = '${apiUrl}update_profile_image';
   static const String updateRefreshToken = '${apiUrl}refreshToken';
+  static const String forgetPassword = '${apiUrl}reset_password';
+  static const String forgetOTPVerification = '${apiUrl}verify_otp';
+  static const String delete_account = '${apiUrl}delete_account';
 
   static const String quotes = '${userUrl}guest-quatations';
 

@@ -21,6 +21,8 @@ import 'Providers/HomeProviders.dart';
 import 'Providers/RegisterProvider.dart';
 import 'Providers/SignInProviders.dart';
 import 'Providers/UserProvider.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'high_importance_channel', 'High Importance Notifications',
@@ -35,101 +37,97 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 Future<void> main() async {
   Userapi.setupInterceptors();
   WidgetsFlutterBinding.ensureInitialized();
-  Platform.isAndroid
-      ? await Firebase.initializeApp(
-          options: FirebaseOptions(
-            apiKey: "AIzaSyAJ_g_TtIFpj8FMAs1EpcE2mudfOFvtFK4",
-            appId: "1:814004941342:android:fe8d8e1b907f639c72b40f",
-            messagingSenderId: "814004941342",
-            projectId: "neuromithra",
-          ),
-        )
-      : await Firebase.initializeApp();
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  if (Platform.isAndroid) {
-    FirebaseMessaging.instance.getToken().then((value) {
-      String? token = value;
-      debugPrint("Androidfbstoken:{$token}");
-      PreferenceService().saveString("fbstoken", token!);
-      // toast(BuildContext , token);
-    });
+  if (!kIsWeb && Platform.isAndroid) {
+    await Firebase.initializeApp(
+      options: FirebaseOptions(
+        apiKey: "AIzaSyAJ_g_TtIFpj8FMAs1EpcE2mudfOFvtFK4",
+        appId: "1:814004941342:android:fe8d8e1b907f639c72b40f",
+        messagingSenderId: "814004941342",
+        projectId: "neuromithra",
+      ),
+    );
+  } else if (!kIsWeb && Platform.isIOS) {
+    await Firebase.initializeApp();
   } else {
+    debugPrint("Web detected — Firebase not initialized.");
+  }
+
+  if (!kIsWeb) {
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+
+    const InitializationSettings initializationSettings = InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      iOS: DarwinInitializationSettings(),
+    );
+
+    flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) async {},
+    );
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      if (notification != null && android != null) {
+        showNotification(notification, android, message.data);
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      // Optional: Handle notification tap
+    });
+
+    // FCM token storage
     FirebaseMessaging.instance.getToken().then((value) {
       String? token = value;
-      debugPrint("IOSfbstoken:{$token}");
+      debugPrint("FCM Token: {$token}");
       PreferenceService().saveString("fbstoken", token!);
-      // toast(BuildContext , token);
     });
   }
 
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
-
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
-
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
-
-  const InitializationSettings initializationSettings = InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-      iOS: DarwinInitializationSettings());
-
-  flutterLocalNotificationsPlugin.initialize(
-    initializationSettings,
-    onDidReceiveNotificationResponse:
-        (NotificationResponse notificationResponse) async {},
-  );
-
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    RemoteNotification? notification = message.notification;
-    AndroidNotification? android = message.notification?.android;
-    if (notification != null && android != null) {
-      // debugPrint('A new message received: ${notification.title}');
-      // debugPrint('RemoteMessage data: ${message.data.toString()}');
-      showNotification(notification, android, message.data);
-    }
-  });
-
-  // Also handle any interaction when the app is in the background via a
-  // Stream listener
-  FirebaseMessaging.onMessageOpenedApp.listen((message) {
-    // _handleMessage(message);
-    // debugPrint("onMessageOpenedApp:${message.data['type']}");
-  });
-
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-// Motion.instance.setUpdateInterval(60.fps);
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_) => SignInProviders()),
-    ChangeNotifierProvider(create: (_) => HomeProviders()),
-    ChangeNotifierProvider(create: (_) => BookingHistoryProvider()),
-    ChangeNotifierProvider(create: (_) => AddressListProvider()),
-    ChangeNotifierProvider(create: (_) => UserProviders()),
-    ChangeNotifierProvider(create: (_) => RegisterProvider()),
-    ChangeNotifierProvider(create: (_) => ChildProvider()),
-    ChangeNotifierProvider(create: (_) => AssessmentProvider()),
-  ], child: MyApp()));
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => SignInProviders()),
+      ChangeNotifierProvider(create: (_) => HomeProviders()),
+      ChangeNotifierProvider(create: (_) => BookingHistoryProvider()),
+      ChangeNotifierProvider(create: (_) => AddressListProvider()),
+      ChangeNotifierProvider(create: (_) => UserProviders()),
+      ChangeNotifierProvider(create: (_) => RegisterProvider()),
+      ChangeNotifierProvider(create: (_) => ChildProvider()),
+      ChangeNotifierProvider(create: (_) => AssessmentProvider()),
+    ],
+    child: MyApp(),
+  ));
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  // debugPrint('A Background message just showed up :  ${message.data}');
+  if (!kIsWeb) {
+    await Firebase.initializeApp();
+  }
 }
 
 // Function to display local notifications
