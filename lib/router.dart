@@ -221,9 +221,9 @@ Page<dynamic> buildSlideTransitionPage(Widget child, GoRouterState state) {
   //   return CupertinoPage(key: state.pageKey, child: child);
   // }
 
-  // if (Platform.isIOS) {
-  //   return CupertinoPage(key: state.pageKey, child: child);
-  // }
+  if (Platform.isIOS) {
+    return CupertinoPage(key: state.pageKey, child: child);
+  }
 
   return CustomTransitionPage(
     key: state.pageKey,

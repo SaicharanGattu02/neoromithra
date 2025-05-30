@@ -180,7 +180,7 @@ class MyApp extends StatelessWidget {
           dialogBackgroundColor: Colors.white,
           cardColor: Colors.white,
           searchBarTheme: const SearchBarThemeData(),
-          dialogTheme: const DialogTheme(
+          dialogTheme: const DialogThemeData(
             shadowColor: Colors.white,
             surfaceTintColor: Colors.white,
             backgroundColor: Colors.white,
@@ -196,7 +196,7 @@ class MyApp extends StatelessWidget {
           appBarTheme: const AppBarTheme(
             surfaceTintColor: Colors.white,
           ),
-          cardTheme: const CardTheme(
+          cardTheme: const CardThemeData(
             shadowColor: Colors.white,
             surfaceTintColor: Colors.white,
             color: Colors.white,
