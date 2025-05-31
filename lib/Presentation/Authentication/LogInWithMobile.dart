@@ -104,8 +104,9 @@ class _LoginWithMobileState extends State<LoginWithMobile>
     if (validationResult == null) {
       _phoneFocusNode.unfocus();
       Map<String, dynamic> data = {"phone": _mobileController.text};
-      final res = await Provider.of<LoginWithMobileProvider>(context, listen: false)
-          .LogInWithMobileProvider(context, data);
+      final res =
+          await Provider.of<LoginWithMobileProvider>(context, listen: false)
+              .LogInWithMobileProvider(context, data);
       if (res == true) {
         context.push('/otp?mobile=${_mobileController.text}');
       }
