@@ -116,7 +116,7 @@ class _OtpState extends State<Otp> {
                               padding: const EdgeInsets.only(bottom: 4),
                               child: IconButton(
                                 onPressed: () {
-                                  context.pushReplacement('/login_mobile', extra: widget.mobile);
+                                  context.pushReplacement('/login', extra: widget.mobile);
                                 },
                                 icon: Image.asset("assets/edit1.png",scale: 35,),
                               ),

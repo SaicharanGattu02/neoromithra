@@ -778,7 +778,7 @@ class _Bookappointment1State extends State<Bookappointment1> {
                           fontSize: 16,
                         ),
                       ),
-                      child: Text('Offline'),
+                      child: Text('At Home'),
                     ),
                   ),
               ],

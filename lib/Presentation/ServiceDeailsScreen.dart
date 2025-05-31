@@ -223,7 +223,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Text(
-        "Price: ₹$amount /-",
+        "Price: ₹$amount /-   per session",
         style: const TextStyle(
           fontSize: 18,
           color: primarycolor,
